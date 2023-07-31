@@ -1,0 +1,26 @@
+security:
+  # 服服务器网络地址
+  address:
+
+spring:
+  data:
+    redis:
+      # redis 服务器主机
+      host: soil-redis
+      # redis 密码
+      password:
+  datasource:
+    # 数据库的 JDBC URL。
+    url:
+    # 数据库的登录用户名。
+    username:
+    # 数据库的登录密码。
+    password:
+  elasticsearch:
+    # 要使用的 Elasticsearch 实例的逗号分隔列表。
+    uris:
+      - soil-elasticsearch:9200
+    # 用于 Elasticsearch 身份验证的用户名。
+    username:
+    # Elasticsearch 身份验证的密码。
+    password:

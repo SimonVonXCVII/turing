@@ -1,0 +1,34 @@
+logging:
+  level:
+    # root：根记录器，用于分配默认日志记录级别。
+    root: debug
+
+security:
+  # 服务器网络地址
+  address: localhost
+
+spring:
+  data:
+    redis:
+      # redis 服务器主机
+      host:
+      # redis 密码
+      password:
+  datasource:
+    # 数据库的 JDBC URL。
+    url:
+    # 数据库的登录用户名。
+    username:
+    # 数据库的登录密码。
+    password:
+    hikari:
+      # 连接最大生命时间。用于防止远程数据库连接关闭。
+      max-lifetime: 30000
+  elasticsearch:
+    # 要使用的 Elasticsearch 实例的逗号分隔列表。
+    uris:
+      - ${spring.data.redis.host}:9200
+    # 用于 Elasticsearch 身份验证的用户名。
+    username:
+    # Elasticsearch 身份验证的密码。
+    password:

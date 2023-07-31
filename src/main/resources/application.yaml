@@ -1,0 +1,82 @@
+logging:
+  level:
+    # sql：SQL 日志记录组，包括 Hibernate SQL 记录器。
+    sql: debug
+    # web：Web 日志记录组，包括编解码器。
+    web: debug
+
+management:
+  endpoint:
+    health:
+      # 何时显示完整的健康详细信息。
+      show-details: always
+  endpoints:
+    web:
+      exposure:
+        # 应包含的端点 ID 或全部为 '*'。
+        include: '*'
+
+mybatis-plus:
+  # 全局配置
+  global-config:
+    # 数据库配置
+    db-config:
+      # 表名前缀（这是全局配置，这样无需在表实体类名上添加 @TableName("soil_*")）
+      table-prefix: turing_
+      # 使用的数据库架构
+      schema: public
+      # 逻辑删除字段
+      logic-delete-field: deleted
+      # 更新策略：忽略
+      update-strategy: ignored
+  # 实体类包别名
+  type-aliases-package: com.shiminfxcvii.turing.entity
+
+security:
+  # 放行白名单配置
+  whitelist:
+    - /actuator/**
+    - /error
+    - /swagger-ui/**
+    - /v3/api-docs/**
+    - /webjars/**
+    - /api/register
+    - /api/login/getCaptcha
+    - /api/dict/getAreaByCode
+    - /api/appFile/**
+  # jwt 有效期时长，单位秒，默认一周
+  expires: 604800
+
+spring:
+  application:
+    # 应用程序名称
+    name: turing-backend
+  datasource:
+    # JDBC 驱动程序的完全限定名称。默认情况下根据 URL 自动检测。
+    driver-class-name: com.kingbase8.Driver
+  jackson:
+    # 时区
+    time-zone: GMT+8
+    # 全局统一接收和返回的时间格式
+    date-format: yyyy-MM-dd HH:mm:ss
+  profiles:
+    # 指定起作用的配置文件
+    active: dev
+  servlet:
+    multipart:
+      # 支持的每次请求中最大的单个文件的大小
+      max-file-size: 512MB
+      # 支持的每次请求中最大的多个文件的大小
+      max-request-size: 1024MB
+
+springdoc:
+  cache:
+    # 是否禁用 springdoc-openapi 缓存
+    disabled: true
+  # 是否显示 Spring 安全登录端点
+  show-login-endpoint: true
+  swagger-ui:
+    # 用于按字母顺序对端点进行排序
+    operationsSorter: alpha
+    # 按字母顺序对标签进行排序
+    tagsSorter: alpha

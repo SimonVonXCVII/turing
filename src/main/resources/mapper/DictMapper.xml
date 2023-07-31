@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shiminfxcvii.turing.mapper.DictMapper">
+
+    <!--    <select id="getDictTypeList" resultType="java.lang.String">-->
+    <!--        select distinct "type" from "soil_dict" where pid = 20230104-->
+    <!--    </select>-->
+    <select id="getDictTypeList" resultType="com.shiminfxcvii.turing.entity.Dict">
+        select "name", "type"
+        from "soil_dict"
+        where pid = 20230104
+    </select>
+</mapper>
