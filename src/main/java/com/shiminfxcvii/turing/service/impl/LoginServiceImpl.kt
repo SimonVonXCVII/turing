@@ -38,10 +38,10 @@ import java.util.function.Predicate
  */
 @Service
 class LoginServiceImpl(
-        private val randomUtils: RandomUtils,
-        private val menuRepository: MenuRepository,
-        private val rolePermissionRepository: RolePermissionRepository,
-        private val redisTemplate: RedisTemplate<String, Any>
+    private val randomUtils: RandomUtils,
+    private val menuRepository: MenuRepository,
+    private val rolePermissionRepository: RolePermissionRepository,
+    private val redisTemplate: RedisTemplate<String, Any>
 ) : LoginService {
     /**
      * 获取登录验证码
@@ -89,42 +89,42 @@ class LoginServiceImpl(
         val user = UserUtils.getUser()
         if (user.admin) {
             menuList.stream()
-                    .map { menu: Menu -> menuConvertToDTO(menu) }
-            // 区分父级和子级菜单
+                .map { menu: Menu -> menuConvertToDTO(menu) }
+                // 区分父级和子级菜单
                 .forEach { menuDTO: MenuDTO ->
-                if (menuDTO.pid == null) {
-                    menuDTOList.add(menuDTO)
-                } else {
-                    menuDTOList.stream()
+                    if (menuDTO.pid == null) {
+                        menuDTOList.add(menuDTO)
+                    } else {
+                        menuDTOList.stream()
                             .filter { parentMenuDTO: MenuDTO -> parentMenuDTO.id == menuDTO.pid }
                             .forEach { parentMenuDTO: MenuDTO ->
-                            parentMenuDTO.children.add(menuDTO)
+                                parentMenuDTO.children.add(menuDTO)
+                            }
                     }
                 }
-            }
             return menuDTOList
         }
 
         // 获取所有角色的所有角色与权限中间表数据
         val rolePermissionList =
-                rolePermissionRepository.findAll { root: Root<RolePermission?>, _: CriteriaQuery<*>?, _: CriteriaBuilder? ->
-            root.get<Any>(RolePermission.ROLE_ID).`in`(
+            rolePermissionRepository.findAll { root: Root<RolePermission?>, _: CriteriaQuery<*>?, _: CriteriaBuilder? ->
+                root.get<Any>(RolePermission.ROLE_ID).`in`(
                     user.authorities.stream().map(
-                            AbstractAuditable::id
+                        AbstractAuditable::id
                     ).toList()
-            )
-        }
+                )
+            }
         if (rolePermissionList.isEmpty()) {
             throw BizRuntimeException("无法获取菜单，因为当前用户的角色没有任何权限")
         }
 
         // 该用户权限对应的所有子级菜单
         menuDTOList = menuList.stream()
-                .filter { menu: Menu ->
+            .filter { menu: Menu ->
                 rolePermissionList.stream().map { obj: RolePermission -> obj.permissionId }
                     .anyMatch(Predicate.isEqual(menu.permissionId))
-        }
-        // 只需要子级
+            }
+            // 只需要子级
             .filter { menu: Menu -> menu.pid != null }
             .map { menu: Menu -> menuConvertToDTO(menu) }
             .toList()
@@ -134,16 +134,16 @@ class LoginServiceImpl(
 
         // 匹配父级和子级菜单
         return menuList.stream()
-                .filter { menu: Menu ->
+            .filter { menu: Menu ->
                 menuDTOList.stream().map { obj: MenuDTO -> obj.pid }
                     .anyMatch(Predicate.isEqual(menu.id))
-        }
+            }
             .map { menu: Menu -> menuConvertToDTO(menu) }
             .peek { menuDTO: MenuDTO ->
                 menuDTOList.stream()
-                        .filter { childMenuDTO: MenuDTO -> menuDTO.id == childMenuDTO.pid }
+                    .filter { childMenuDTO: MenuDTO -> menuDTO.id == childMenuDTO.pid }
                     .forEach { childMenuDTO: MenuDTO? -> menuDTO.children.add(childMenuDTO) }
-        }
+            }
             .toList()
     }
 
