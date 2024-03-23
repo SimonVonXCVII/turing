@@ -6,7 +6,7 @@
 
 ## 开发规范
 
-1. swagger ui 路径：http://localhost:9699/swagger-ui/index.html
+1. swagger ui 路径：http://localhost:8080/swagger-ui/index.html
 
 2. 如要获取字符串 "UTF-8" 推荐使用 StandardCharsets.UTF_8.name()
 

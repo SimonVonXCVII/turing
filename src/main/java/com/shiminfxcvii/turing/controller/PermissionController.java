@@ -1,16 +1,12 @@
 package com.shiminfxcvii.turing.controller;
 
 import com.shiminfxcvii.turing.common.result.Result;
-import com.shiminfxcvii.turing.model.cmd.PermissionCmd;
-import com.shiminfxcvii.turing.model.query.PermissionQuery;
+import com.shiminfxcvii.turing.model.dto.PermissionDTO;
 import com.shiminfxcvii.turing.service.IPermissionService;
-import com.shiminfxcvii.turing.utils.Update;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Map;
 
 /**
  * <p>
@@ -32,30 +28,23 @@ public class PermissionController {
         this.service = service;
     }
 
+    @Operation(summary = "单个新增或修改")
+    @PostMapping("/insertOrUpdate")
+    public Result<Object> insertOrUpdate(@RequestBody @Validated PermissionDTO dto) {
+        service.insertOrUpdate(dto);
+        return Result.ok();
+    }
+
     @Operation(summary = "获取所有的权限列表")
     @PostMapping("/selectList")
-    public Result<Object> selectList(@RequestBody PermissionQuery query) {
-        return Result.ok(service.selectList(query));
+    public Result<Object> selectList(@RequestBody PermissionDTO dto) {
+        return Result.ok(service.selectList(dto));
     }
 
-    @Operation(summary = "插入")
-    @PostMapping("/insert")
-    public Result<Object> insert(@RequestBody @Validated PermissionCmd cmd) {
-        service.insert(cmd);
-        return Result.ok();
-    }
-
-    @Operation(summary = "更新")
-    @PutMapping("/update")
-    public Result<Object> update(@RequestBody @Validated(Update.class) PermissionCmd cmd) {
-        service.update(cmd);
-        return Result.ok();
-    }
-
-    @Operation(summary = "删除")
-    @DeleteMapping("/deleteById")
-    public Result<Object> deleteById(@RequestBody Map<String, String> map) {
-        service.deleteById(map.get("id"));
+    @Operation(summary = "根据主键 id 逻辑删除")
+    @DeleteMapping("/deleteById/{id}")
+    public Result<Object> deleteById(@PathVariable String id) {
+        service.deleteById(id);
         return Result.ok();
     }
 

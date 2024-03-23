@@ -1,17 +1,18 @@
 package com.shiminfxcvii.turing.service.impl;
 
-import com.baomidou.mybatisplus.core.toolkit.IdWorker;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.shiminfxcvii.turing.common.exception.BizRuntimeException;
-import com.shiminfxcvii.turing.common.result.ResultCode;
 import com.shiminfxcvii.turing.entity.AppFile;
+import com.shiminfxcvii.turing.entity.Dict;
 import com.shiminfxcvii.turing.enums.FileTypeEnum;
-import com.shiminfxcvii.turing.mapper.AppFileMapper;
 import com.shiminfxcvii.turing.model.dto.UploadFileDTO;
+import com.shiminfxcvii.turing.repository.AppFileRepository;
 import com.shiminfxcvii.turing.service.IAppFileService;
 import com.shiminfxcvii.turing.utils.UserUtils;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import net.coobird.thumbnailator.Thumbnails;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
@@ -27,6 +28,8 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Optional;
+import java.util.UUID;
 
 /**
  * <p>
@@ -36,8 +39,13 @@ import java.nio.file.Path;
  * @author ShiminFXCVII
  * @since 2023-04-01 23:08:08
  */
+@RequiredArgsConstructor
 @Service
-public class AppFileServiceImpl extends ServiceImpl<AppFileMapper, AppFile> implements IAppFileService {
+public class AppFileServiceImpl implements IAppFileService {
+
+    private static final Log log = LogFactory.getLog(AppFileServiceImpl.class);
+
+    private final AppFileRepository appFileRepository;
 
     /**
      * 上传文件
@@ -83,25 +91,25 @@ public class AppFileServiceImpl extends ServiceImpl<AppFileMapper, AppFile> impl
             }
             bytes = os.toByteArray();
         } catch (IOException e) {
-            log.error("上传文件失败：" + e.getMessage());
-            throw BizRuntimeException.from(ResultCode.ERROR, "上传文件失败：" + e.getMessage());
+            throw BizRuntimeException.from("上传文件失败：" + e.getMessage());
         }
         // 生成 md5
         String md5 = DigestUtils.md5DigestAsHex(bytes);
         // 通过 md5 查询文件
-        AppFile appFile = lambdaQuery().eq(AppFile::getMd5, md5).one();
+        Optional<AppFile> appFileOptional = appFileRepository.findOne((root, query, criteriaBuilder) ->
+                query.where(root.get(AppFile.MD5).in(md5), root.get(Dict.TYPE).in("area")).getRestriction());
         UploadFileDTO dto = new UploadFileDTO();
         // 如果文件存在则直接返回文件信息
-        if (appFile != null) {
+        if (appFileOptional.isPresent()) {
             // 设置需要返回的文件信息
-            dto.setId(appFile.getId());
+            dto.setId(appFileOptional.get().getId());
             dto.setFilename(originalFilename);
             return dto;
         }
         // 保存文件名
-        String filename = IdWorker.getIdStr() + suffix;
+        String filename = UUID.randomUUID() + suffix; // todo
         // 将文件保存在不同的路径
-        File directory = new File("/shiting/project/soil/file/" + bizType.getDesc());
+        File directory = new File("/shiting/project/turing/file/" + bizType.getDesc());
         // 如果当前不存在该文件夹则创建
         if (!directory.exists() && directory.mkdirs()) {
             log.debug("已创建文件夹: " + directory);
@@ -109,9 +117,9 @@ public class AppFileServiceImpl extends ServiceImpl<AppFileMapper, AppFile> impl
         File file = new File(directory, filename);
         Path path = file.toPath();
         Files.write(path, bytes);
-        appFile = new AppFile();
+        AppFile appFile = new AppFile();
         // 所有者 id
-        appFile.setOwnerId(UserUtils.getUserId());
+        appFile.setOwnerId(UserUtils.getId());
         // 文件名
         appFile.setFilename(filename);
         // 原始文件名
@@ -130,7 +138,7 @@ public class AppFileServiceImpl extends ServiceImpl<AppFileMapper, AppFile> impl
         appFile.setBizType(bizType);
         // 备注
         appFile.setRemark(remark);
-        save(appFile);
+        appFileRepository.save(appFile);
         // 设置需要返回的文件信息
         dto.setId(appFile.getId());
         dto.setFilename(originalFilename);
@@ -147,20 +155,14 @@ public class AppFileServiceImpl extends ServiceImpl<AppFileMapper, AppFile> impl
      */
     @Override
     public void getFileById(String id, HttpServletResponse response) throws IOException {
-        if (id == null) {
-            throw BizRuntimeException.from(ResultCode.ERROR, "文件 id 不能为空");
-        }
-        AppFile appFile = getById(id);
-        if (appFile == null) {
-            throw BizRuntimeException.from(ResultCode.ERROR, "没有找到该文件");
-        }
+        AppFile appFile = appFileRepository.findById(id).orElseThrow(() -> BizRuntimeException.from("没有找到该文件"));
         String appFilePath = appFile.getPath();
         if (appFilePath == null) {
-            throw BizRuntimeException.from(ResultCode.ERROR, "文件路径为空");
+            throw BizRuntimeException.from("文件路径为空");
         }
         File file = new File(appFilePath);
         if (!file.isFile()) {
-            throw BizRuntimeException.from(ResultCode.ERROR, "无法获取该文件，当前所在路径中没有该文件");
+            throw BizRuntimeException.from("无法获取该文件，当前所在路径中没有该文件");
         }
         // 设置发送到客户端的响应的内容类型（如果尚未提交响应）
         response.setContentType(appFile.getContentType());
@@ -193,20 +195,14 @@ public class AppFileServiceImpl extends ServiceImpl<AppFileMapper, AppFile> impl
      */
     @Override
     public void getOriginalImageById(String id, HttpServletResponse response) throws IOException {
-        if (id == null) {
-            throw BizRuntimeException.from(ResultCode.ERROR, "图片文件 id 不能为空");
-        }
-        AppFile appFile = getById(id);
-        if (appFile == null) {
-            throw BizRuntimeException.from(ResultCode.ERROR, "没有找到该图片");
-        }
+        AppFile appFile = appFileRepository.findById(id).orElseThrow(() -> BizRuntimeException.from("没有找到该图片"));
         String appFilePath = appFile.getPath();
         if (!StringUtils.hasText(appFilePath)) {
-            throw BizRuntimeException.from(ResultCode.ERROR, "图片路径为空");
+            throw BizRuntimeException.from("图片路径为空");
         }
         File file = new File(appFilePath);
         if (!file.isFile()) {
-            throw BizRuntimeException.from(ResultCode.ERROR, "无法获取该图片，当前所在路径中没有该图片");
+            throw BizRuntimeException.from("无法获取该图片，当前所在路径中没有该图片");
         }
         // 设置发送到客户端的响应的内容类型（如果尚未提交响应）
         response.setContentType(appFile.getContentType());
@@ -215,7 +211,8 @@ public class AppFileServiceImpl extends ServiceImpl<AppFileMapper, AppFile> impl
         // 文件名
         String filename = appFile.getOriginFilename();
         // 处理空格变成加号的问题
-        filename = filename.replaceAll("\\+", "%20");
+        // TODO: 2023/4/11 是否还需要处理？先注释，不对再放开
+//        filename = filename.replaceAll("\\+", "%20");
         // 使用给定的名称和值设置响应标头
         // 使用 ContentDisposition 构建 CONTENT_DISPOSITION 可以避免文件名称乱码的问题
         response.setHeader(HttpHeaders.CONTENT_DISPOSITION, ContentDisposition.attachment()
@@ -238,12 +235,7 @@ public class AppFileServiceImpl extends ServiceImpl<AppFileMapper, AppFile> impl
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void deleteById(String id) {
-        AppFile appFile = getById(id);
-        if (null == appFile) {
-            throw BizRuntimeException.from(ResultCode.ERROR, "没有找到该文件");
-        } else {
-            removeById(appFile);
-        }
+        appFileRepository.deleteById(id);
     }
 
 }

@@ -12,23 +12,41 @@ networks:
 services:
   turing-redis:
     # 覆盖容器映像声明的默认命令（即通过 Dockerfile 的 CMD）。
-    command: redis-server /etc/redis/conf/redis.conf
+    command: >
+      bash -c '
+        chmod +x /usr/local/bin/healthcheck.sh;
+        redis-server /etc/redis/redis.conf;
+      '
     # 指定自定义容器名称，而不是生成的默认名称。
     container_name: turing-redis
+    # 声明运行以确定该服务的容器是否“健康”的检查。
+    healthcheck:
+      test: [ "CMD-SHELL", "/usr/local/bin/healthcheck.sh" ]
+      # 运行状况检查将在容器启动后首先运行间隔秒，然后在之前的每个检查完成后再次运行间隔秒。
+      interval: 10s
+      # 如果单次运行检查花费的时间超过超时秒数，则检查被视为失败。
+      timeout: 10s
+      # 需要重试健康检查连续失败才能将容器视为不健康。
+      retries: 3
+      # 为需要时间引导的容器提供初始化时间。
+      start_period: 40s
     # 声明用于服务容器的自定义主机名。
     hostname: turing-redis
     # 指定启动容器的图像。
-    image: redis:7.0.12
+    image: redis:7.2.4
     # 定义服务容器附加到的网络，引用顶级网络键下的条目。
     networks:
       - turing
     # 暴露端口。 指定两个端口 (HOST:CONTAINER)，或仅指定容器端口（选择临时主机端口）。
     ports:
       - "6379:6379"
+    # 定义平台在容器终止时应用的策略。
+    restart: always
     # 定义服务容器必须可以访问的挂载主机路径或命名卷。
     volumes:
-      - ./docker/redis/conf/redis.conf:/etc/redis/conf/redis.conf
-      - ./docker/redis/data:/etc/redis/data
+      - ./docker/redis/conf/redis.conf:/etc/redis/redis.conf
+      - ./docker/redis/data:/data
+      - ./docker/redis/sh/healthcheck.sh:/usr/local/bin/healthcheck.sh
   turing-elasticsearch:
     # 指定自定义容器名称，而不是生成的默认名称。
     container_name: turing-elasticsearch
@@ -38,12 +56,16 @@ services:
       ES_JAVA_OPTS: -Xms512m -Xmx512m
       DISCOVERY: single-node
     # 声明运行以确定该服务的容器是否“健康”的检查。
-    #    healthcheck:
-    #      test:
-    #        [
-    #          "CMD-SHELL",
-    #          "curl -s --cacert config/certs/ca/ca.crt https://localhost:9200 | grep -q 'missing authentication credentials'"
-    #        ]
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -k -u elastic:${ELASTIC_PASSWORD} https://localhost:9200/_cat/health?h=status | grep -q '[(green)(yellow)]'" ]
+      # 运行状况检查将在容器启动后首先运行间隔秒，然后在之前的每个检查完成后再次运行间隔秒。
+      interval: 10s
+      # 如果单次运行检查花费的时间超过超时秒数，则检查被视为失败。
+      timeout: 10s
+      # 需要重试健康检查连续失败才能将容器视为不健康。
+      retries: 3
+      # 为需要时间引导的容器提供初始化时间。
+      start_period: 40s
     # 声明用于服务容器的自定义主机名。
     hostname: turing-elasticsearch
     # 指定启动容器的图像。
@@ -54,23 +76,36 @@ services:
     # 暴露端口。 指定两个端口 (HOST:CONTAINER)，或仅指定容器端口（选择临时主机端口）。
     ports:
       - "9200:9200"
+      - "9300:9300"
+    # 定义平台在容器终止时应用的策略。
+    restart: always
   turing-kibana:
     # 指定自定义容器名称，而不是生成的默认名称。
     container_name: turing-kibana
     # 表示服务之间的启动和关闭依赖关系。
     depends_on:
-      - turing-elasticsearch
+      turing-elasticsearch:
+        condition: service_healthy
     # 定义容器中设置的环境变量。
     environment:
+      # - i18n.locale=zh-CN 没有效果，并且字母必须大写，. 用 _ 代替
       I18N_LOCALE: zh-CN
+      # 最终用户访问 Kibana 的公开可用 URL。
+      # http必须包括协议、主机名、端口（如果与和 的默认值不同https，分别为 80 和 443）以及 server.basePath（如果已配置）。
+      # 此设置不能以斜杠 (/) 结尾。
       SERVER_PUBLICBASEURL: http://turing-kibana:5601
+      XPACK_REPORTING_ROLES_ENABLED: false
     # 声明运行以确定该服务的容器是否“健康”的检查。
-    #    healthcheck:
-    #      test:
-    #        [
-    #          "CMD-SHELL",
-    #          "curl -s -I http://localhost:5601 | grep -q 'HTTP/1.1 302 Found'"
-    #        ]
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -s -I http://localhost:5601/api | grep -q 'HTTP/1.1 200 OK'" ]
+      # 运行状况检查将在容器启动后首先运行间隔秒，然后在之前的每个检查完成后再次运行间隔秒。
+      interval: 10s
+      # 如果单次运行检查花费的时间超过超时秒数，则检查被视为失败。
+      timeout: 10s
+      # 需要重试健康检查连续失败才能将容器视为不健康。
+      retries: 3
+      # 为需要时间引导的容器提供初始化时间。
+      start_period: 40s
     # 声明用于服务容器的自定义主机名。
     hostname: turing-kibana
     # 指定启动容器的图像。
@@ -81,12 +116,29 @@ services:
     # 暴露端口。 指定两个端口 (HOST:CONTAINER)，或仅指定容器端口（选择临时主机端口）。
     ports:
       - "5601:5601"
+    # 定义平台在容器终止时应用的策略。
+    restart: always
   turing-logstash:
     # 指定自定义容器名称，而不是生成的默认名称。
     container_name: turing-logstash
     # 表示服务之间的启动和关闭依赖关系。
     depends_on:
-      - turing-elasticsearch
+      turing-elasticsearch:
+        condition: service_healthy
+    # 定义容器中设置的环境变量。（源于日志提示）
+    environment:
+      XPACK_MONITORING_ENABLED: true
+    # 声明运行以确定该服务的容器是否“健康”的检查。
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -f http://localhost:9600/_node | grep -q '\"status\":\"green\"'" ]
+      # 运行状况检查将在容器启动后首先运行间隔秒，然后在之前的每个检查完成后再次运行间隔秒。
+      interval: 10s
+      # 如果单次运行检查花费的时间超过超时秒数，则检查被视为失败。
+      timeout: 10s
+      # 需要重试健康检查连续失败才能将容器视为不健康。
+      retries: 3
+      # 为需要时间引导的容器提供初始化时间。
+      start_period: 40s
     # 声明用于服务容器的自定义主机名。
     hostname: turing-logstash
     # 指定启动容器的图像。
@@ -97,6 +149,12 @@ services:
     # 暴露端口。 指定两个端口 (HOST:CONTAINER)，或仅指定容器端口（选择临时主机端口）。
     ports:
       - "5044:5044"
+      - "9600:9600"
+    # 定义平台在容器终止时应用的策略。
+    restart: always
+    # 定义服务容器必须可以访问的挂载主机路径或命名卷。
+    volumes:
+      - /docker/elastic/logstash/logs:/usr/share/logstash/logs
   turing-backend:
     # 指定用于从源创建容器映像的构建配置。
     build:
@@ -106,28 +164,85 @@ services:
       dockerfile: Dockerfile
     # 指定自定义容器名称，而不是生成的默认名称。
     container_name: turing-backend
+    # 表示服务之间的启动和关闭依赖关系。
+    depends_on:
+      turing-redis:
+        condition: service_healthy
+      turing-elasticsearch:
+        condition: service_healthy
+    # 声明运行以确定该服务的容器是否“健康”的检查。
+    healthcheck:
+      test: [ "CMD-SHELL", "curl http://localhost:8080/actuator/health | grep -q '^{\"status\":\"UP\"'" ]
+      # 运行状况检查将在容器启动后首先运行间隔秒，然后在之前的每个检查完成后再次运行间隔秒。
+      interval: 10s
+      # 如果单次运行检查花费的时间超过超时秒数，则检查被视为失败。
+      timeout: 10s
+      # 需要重试健康检查连续失败才能将容器视为不健康。
+      retries: 3
+      # 为需要时间引导的容器提供初始化时间。
+      start_period: 40s
     # 声明用于服务容器的自定义主机名。
     hostname: turing-backend
+    # 指定启动容器的图像。
+    #    image: turing-backend:0.0.1-SNAPSHOT
     # 定义服务容器附加到的网络，引用顶级网络键下的条目。
     networks:
       - turing
     # 暴露端口。 指定两个端口 (HOST:CONTAINER)，或仅指定容器端口（选择临时主机端口）。
     ports:
       - "8080:8080"
+    # 定义平台在容器终止时应用的策略。
+    restart: always
   turing-nginx:
     # 指定自定义容器名称，而不是生成的默认名称。
     container_name: turing-nginx
+    # 表示服务之间的启动和关闭依赖关系。
+    depends_on:
+      turing-backend:
+        condition: service_healthy
+    # 声明运行以确定该服务的容器是否“健康”的检查。
+    healthcheck:
+      test: [ "CMD-SHELL", "curl http://localhost:80 | grep -q '^<!doctype html>'" ]
+      # 运行状况检查将在容器启动后首先运行间隔秒，然后在之前的每个检查完成后再次运行间隔秒。
+      interval: 10s
+      # 如果单次运行检查花费的时间超过超时秒数，则检查被视为失败。
+      timeout: 10s
+      # 需要重试健康检查连续失败才能将容器视为不健康。
+      retries: 3
+      # 为需要时间引导的容器提供初始化时间。
+      start_period: 40s
     # 声明用于服务容器的自定义主机名。
     hostname: turing-nginx
     # 指定启动容器的图像。
-    image: nginx:1.25.1
+    image: nginx:1.25.4
     # 定义服务容器附加到的网络，引用顶级网络键下的条目。
     networks:
       - turing
     # 暴露端口。 指定两个端口 (HOST:CONTAINER)，或仅指定容器端口（选择临时主机端口）。
     ports:
       - "80:80"
+    # 定义平台在容器终止时应用的策略。
+    restart: always
     # 定义服务容器必须可以访问的挂载主机路径或命名卷。
     volumes:
       - ./docker/nginx/conf/nginx.conf:/etc/nginx/nginx.conf
       - ./docker/nginx/docs/html:/etc/nginx/docs/html
+  turing-portainer:
+    # 指定自定义容器名称，而不是生成的默认名称。
+    container_name: turing-portainer
+    # 声明用于服务容器的自定义主机名。
+    hostname: turing-portainer
+    # 指定启动容器的图像。
+    image: portainer/portainer-ce:2.19.4
+    # 定义服务容器附加到的网络，引用顶级网络键下的条目。
+    networks:
+      - turing
+    # 暴露端口。 指定两个端口 (HOST:CONTAINER)，或仅指定容器端口（选择临时主机端口）。
+    ports:
+      - "9000:9000"
+      - "9443:9443"
+    # 定义平台在容器终止时应用的策略。
+    restart: always
+    # 定义服务容器必须可以访问的挂载主机路径或命名卷。
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock

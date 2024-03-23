@@ -1,31 +1,25 @@
 package com.shiminfxcvii.turing.service.impl;
 
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.shiminfxcvii.turing.common.exception.BizRuntimeException;
-import com.shiminfxcvii.turing.entity.Organization;
-import com.shiminfxcvii.turing.entity.OrganizationBusiness;
+import com.shiminfxcvii.turing.entity.*;
 import com.shiminfxcvii.turing.enums.OrganizationBusinessBusinessLinksEnum;
 import com.shiminfxcvii.turing.enums.OrganizationBusinessStateEnum;
-import com.shiminfxcvii.turing.mapper.OrganizationBusinessMapper;
-import com.shiminfxcvii.turing.mapper.OrganizationMapper;
-import com.shiminfxcvii.turing.model.dto.*;
-import com.shiminfxcvii.turing.model.query.OrganizationPageQuery;
-import com.shiminfxcvii.turing.service.IDictService;
+import com.shiminfxcvii.turing.model.dto.OrganizationDTO;
+import com.shiminfxcvii.turing.repository.OrganizationBusinessRepository;
+import com.shiminfxcvii.turing.repository.OrganizationRepository;
+import com.shiminfxcvii.turing.repository.UserRepository;
+import com.shiminfxcvii.turing.repository.UserRoleRepository;
 import com.shiminfxcvii.turing.service.IOrganizationService;
-import com.shiminfxcvii.turing.service.IUserService;
+import jakarta.persistence.criteria.Predicate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.TreeSet;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -38,127 +32,94 @@ import java.util.stream.Collectors;
  */
 @RequiredArgsConstructor
 @Service
-public class OrganizationServiceImpl extends ServiceImpl<OrganizationMapper, Organization> implements IOrganizationService {
+public class OrganizationServiceImpl implements IOrganizationService {
 
-    private final OrganizationBusinessMapper organizationBusinessMapper;
-    private final IUserService userService;
-    private final IDictService dictService;
+    private final OrganizationRepository organizationRepository;
+    private final OrganizationBusinessRepository organizationBusinessRepository;
+    private final UserRepository userRepository;
+    private final UserRoleRepository userRoleRepository;
+    private final RedisTemplate<String, Object> redisTemplate;
 
     @Override
-    public IPage<OrganizationDTO> getOrganizationPage(OrganizationPageQuery query) {
-
-        boolean flag = StringUtils.hasText(query.getDistrictCode()) ||
-                StringUtils.hasText(query.getCityCode()) ||
-                StringUtils.hasText(query.getProvinceCode()) ||
-                StringUtils.hasText(query.getOrgName()) ||
-                query.getOrgType() != null;
-        if (query.getOrgType() != null) {
-            query.setType(query.getOrgType().getValue());
+    @Transactional(rollbackFor = Exception.class)
+    public void insertOrUpdate(OrganizationDTO dto) {
+        Organization organization;
+        // 新增
+        if (!StringUtils.hasText(dto.getId())) {
+            organization = new Organization();
         }
-        IPage<OrganizationDTO> page =
-                this.baseMapper.getOrganizationPage(
-                        new Page<>(query.getPageIndex(), query.getPageSize()), query, flag);
-        for (OrganizationDTO record : page.getRecords()) {
-            if (record.getManagerId() != null) record.setNeedSetManager(false);
-            //TODO 待优化：使用caffeine优化字典查询
-            if (record.getProvinceCode() != null) {
-                String province = dictService.getAreaNameByValue(record.getProvinceCode());
-                String city = dictService.getAreaNameByValue(record.getCityCode());
-                String district = dictService.getAreaNameByValue(record.getDistrictCode());
-                record.setProvince(province);
-                record.setCity(city);
-                record.setDistrict(district);
-            }
+        // 修改
+        else {
+            organization = organizationRepository.findById(dto.getId()).orElseThrow(() -> BizRuntimeException.from("无法查找到该数据"));
         }
-        return page;
+        BeanUtils.copyProperties(dto, organization, AbstractAuditable.CREATED_DATE);
+        // 获取省市县名称
+        String provinceName = (String) redisTemplate.opsForValue().get(Dict.REDIS_KEY_PREFIX + dto.getProvinceCode().toString());
+        organization.setProvinceName(provinceName);
+        String cityName = (String) redisTemplate.opsForValue().get(Dict.REDIS_KEY_PREFIX + dto.getCityCode().toString());
+        organization.setCityName(cityName);
+        String districtName = (String) redisTemplate.opsForValue().get(Dict.REDIS_KEY_PREFIX + dto.getDistrictCode().toString());
+        organization.setDistrictName(districtName);
+        organizationRepository.save(organization);
     }
 
     @Override
-    public OrgDetailDTO getOrgDetailById(String id) {
-        OrgDetailDTO dto = new OrgDetailDTO();
-        Organization organization = getById(id);
-        OrganizationDTO organizationDTO = new OrganizationDTO();
-        BeanUtils.copyProperties(organization, organizationDTO);
-        //TODO 待优化：使用caffeine优化字典查询
-        String province = dictService.getAreaNameByValue(organization.getProvinceCode());
-        String city = dictService.getAreaNameByValue(organization.getCityCode());
-        String district = dictService.getAreaNameByValue(organization.getDistrictCode());
-        organizationDTO.setProvince(province);
-        organizationDTO.setCity(city);
-        organizationDTO.setDistrict(district);
-        dto.setOrganizationDTO(organizationDTO);
-        OrgManagerDTO orgManagerDTO = userService.getOrgManager(id);
-        dto.setOrgManagerDTO(orgManagerDTO);
-        if (organization.getPid() != null) {
-            Organization up = getById(organization.getPid());
-            dto.setUpOrganization(up);
-        }
-        return dto;
+    public org.springframework.data.domain.Page<OrganizationDTO> selectPage(OrganizationDTO dto) {
+        return organizationRepository.findAll((root, query, criteriaBuilder) -> {
+                            List<Predicate> predicateList = new LinkedList<>();
+                            if (StringUtils.hasText(dto.getName())) {
+                                Predicate name = criteriaBuilder.like(root.get(Organization.NAME),
+                                        "%" + dto.getName() + "%", '/');
+                                predicateList.add(name);
+                            }
+                            if (StringUtils.hasText(dto.getCode())) {
+                                Predicate code = criteriaBuilder.like(criteriaBuilder.lower(root.get(Organization.CODE)),
+                                        "%" + dto.getCode().toLowerCase() + "%", '/');
+                                predicateList.add(code);
+                            }
+                            if (StringUtils.hasText(dto.getType())) {
+                                Predicate type = criteriaBuilder.equal(root.get(Organization.TYPE), dto.getType());
+                                predicateList.add(type);
+                            }
+                            if (dto.getProvinceCode() != null) {
+                                Predicate provinceCode = criteriaBuilder.equal(root.get(Organization.PROVINCE_CODE), dto.getProvinceCode());
+                                predicateList.add(provinceCode);
+                            }
+                            if (dto.getCityCode() != null) {
+                                Predicate cityCode = criteriaBuilder.equal(root.get(Organization.CITY_CODE), dto.getCityCode());
+                                predicateList.add(cityCode);
+                            }
+                            if (dto.getDistrictCode() != null) {
+                                Predicate districtCode = criteriaBuilder.equal(root.get(Organization.DISTRICT_CODE), dto.getDistrictCode());
+                                predicateList.add(districtCode);
+                            }
+                            if (StringUtils.hasText(dto.getLegalPerson())) {
+                                Predicate legalPerson = criteriaBuilder.like(root.get(Organization.LEGAL_PERSON),
+                                        "%" + dto.getLegalPerson() + "%", '/');
+                                predicateList.add(legalPerson);
+                            }
+                            return query.where(predicateList.toArray(Predicate[]::new)).getRestriction();
+                        },
+                        // TODO: 2023/8/29 设置前端 number 默认从 0 开始，或许就不需要减一了
+                        PageRequest.of(dto.getNumber() - 1, dto.getSize()))
+                .map(organization -> {
+                    OrganizationDTO organizationDTO = new OrganizationDTO();
+                    BeanUtils.copyProperties(organization, organizationDTO);
+                    return organizationDTO;
+                });
     }
 
     @Override
-    public void updateOrganization(Organization organization) {
-        //校验code
-        Organization old = getById(organization.getId());
-        if (old == null) {
-            throw new BizRuntimeException("您所要修改的单位不存在");
-        }
-        if (StringUtils.hasText(organization.getCode())) {
-            //比较code是否相等
-            if (!organization.getCode().equals(old.getCode())) {
-                throw new BizRuntimeException("本次信用代码与原信用代码不一致，请联系管理员修改");
-            }
-            //防止BaseEntity中的字段没传
-            organization.setCreateBy(old.getCreateBy());
-            organization.setCreateTime(old.getCreateTime());
-            organization.setVersion(old.getVersion());
-            organization.setDeleted(old.getDeleted());
-            updateById(organization);
-        } else {
-            throw new BizRuntimeException("信用代码不能为空");
-        }
-    }
-
-    @Transactional
-    @Override
-    public void deleteById(String id) {
-        Organization organization = getById(id);
-        removeById(id);
-    }
-
-    /**
-     * @param level 0表示省级，1表示市级，2表示县级
-     * @param code  省/市/县编码
-     * @return
-     */
-    @Override
-    public List<TechOrgSelectDTO> getOrgListWithLead(Integer level, String code) {
-        return this.baseMapper.getOrgListWithLead(level, code, 0);
-    }
-
-    @Override
-    public List<TechOrgSelectDTO> getOrgListWithQc(Integer level, String code, String type) {
-        return this.baseMapper.getOrgListWithQc(level, code, type);
-    }
-
-    @Override
-    public void addTechOrgUser(TechOrgUserDTO dto) {
-        userService.addTechOrgUser(dto);
-    }
-
-    @Override
-    public void updateTechOrgUser(TechOrgUserDTO dto) {
-        userService.updateTechOrgUser(dto);
-    }
-
-    @Override
-    public void deleteTechOrgUser(String userId) {
-        userService.deleteTechOrgUser(userId);
-    }
-
-    @Override
-    public List<TechOrgSelectDTO> getOrgListWithTech(Integer level, String code, String type) {
-        return this.baseMapper.getOrgListWithTech(level, code, type);
+    public List<OrganizationDTO> selectIdAndNameList() {
+        return organizationRepository.findAll()
+                .stream()
+                .map(organization -> {
+                    OrganizationDTO dto = new OrganizationDTO();
+                    dto.setId(organization.getId());
+                    dto.setName(organization.getName());
+                    return dto;
+                })
+                .toList();
     }
 
     /**
@@ -170,20 +131,43 @@ public class OrganizationServiceImpl extends ServiceImpl<OrganizationMapper, Org
      * @since 2023/4/4 14:52
      */
     @Override
-    public List<TechOrgSelectDTO> selectList(String name) {
-        return organizationBusinessMapper
-                .selectList(Wrappers.<OrganizationBusiness>lambdaQuery()
-                        .like(OrganizationBusiness::getLink, String.valueOf(OrganizationBusinessBusinessLinksEnum.SAMPLE_TESTING.getDesc()))
-                        .eq(OrganizationBusiness::getState, OrganizationBusinessStateEnum.PASSES)
-                        .like(OrganizationBusiness::getOrgName, name))
+    public List<OrganizationDTO> selectList(String name) {
+        return organizationBusinessRepository.findAll((root, query, criteriaBuilder) -> {
+                    List<Predicate> predicateList = new LinkedList<>();
+                    Predicate linkPredicate = criteriaBuilder.like(root.get(OrganizationBusiness.LINK),
+                            "%" + OrganizationBusinessBusinessLinksEnum.SAMPLE_TESTING.getDesc() + "%", '/');
+                    predicateList.add(linkPredicate);
+                    Predicate statePredicate = criteriaBuilder.like(root.get(OrganizationBusiness.STATE),
+                            "%" + OrganizationBusinessStateEnum.PASSES + "%", '/');
+                    predicateList.add(statePredicate);
+                    Predicate namePredicate = criteriaBuilder.like(root.get(OrganizationBusiness.ORG_NAME),
+                            "%" + name + "%", '/');
+                    predicateList.add(namePredicate);
+                    return query.where(predicateList.toArray(Predicate[]::new)).getRestriction();
+                })
                 .stream()
                 .map(organizationBusiness -> {
-                    TechOrgSelectDTO dto = new TechOrgSelectDTO();
-                    dto.setOrgId(organizationBusiness.getOrgId());
-                    dto.setOrgName(organizationBusiness.getOrgName());
+                    OrganizationDTO dto = new OrganizationDTO();
+                    dto.setId(organizationBusiness.getOrgId());
+                    dto.setName(organizationBusiness.getOrgName());
                     return dto;
                 })
-                .collect(Collectors.collectingAndThen(Collectors.toCollection(() -> new TreeSet<>(Comparator.comparing(TechOrgSelectDTO::getOrgId))), ArrayList::new));
+                .collect(Collectors.collectingAndThen(Collectors.toCollection(() ->
+                        new TreeSet<>(Comparator.comparing(OrganizationDTO::getId))), ArrayList::new));
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void deleteById(String id) {
+        // 逻辑删除用户-角色关联数据
+        // TODO: 2023/9/7 是否能实现查询指定列
+        List<User> userList = userRepository.findAll((root, query, criteriaBuilder) -> root.get(User.ORG_ID).in(id));
+        List<String> userIdList = userList.stream().map(AbstractAuditable::getId).toList();
+        userRoleRepository.delete((root, query, criteriaBuilder) -> root.get(UserRole.USER_ID).in(userIdList));
+        // 删除单位下的所有用户
+        userRepository.delete((root, query, criteriaBuilder) -> root.get(User.ORG_ID).in(id));
+        // 删除单位
+        organizationRepository.deleteById(id);
     }
 
 }

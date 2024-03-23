@@ -1,6 +1,6 @@
 package com.shiminfxcvii.turing.service;
 
-import com.shiminfxcvii.turing.model.cmd.RegisterCmd;
+import com.shiminfxcvii.turing.model.dto.RegisterDTO;
 
 /**
  * 注册 服务类
@@ -16,6 +16,6 @@ public interface RegisterService {
      * @author ShiminFXCVII
      * @since 2023/4/12 22:20
      */
-    void register(RegisterCmd cmd);
+    void register(RegisterDTO dto);
 
 }

@@ -1,22 +1,21 @@
 package com.shiminfxcvii.turing.service.impl;
 
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.shiminfxcvii.turing.common.exception.BizRuntimeException;
-import com.shiminfxcvii.turing.common.result.ResultCode;
 import com.shiminfxcvii.turing.entity.Dict;
-import com.shiminfxcvii.turing.mapper.DictMapper;
 import com.shiminfxcvii.turing.model.dto.DictDTO;
-import com.shiminfxcvii.turing.model.query.DictPageQuery;
+import com.shiminfxcvii.turing.repository.DictRepository;
 import com.shiminfxcvii.turing.service.IDictService;
-import com.shiminfxcvii.turing.utils.Constants;
+import jakarta.persistence.criteria.Predicate;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -27,32 +26,65 @@ import java.util.List;
  * @author ShiminFXCVII
  * @since 2022-12-30 12:49:40
  */
+@RequiredArgsConstructor
 @Service
-public class DictServiceImpl extends ServiceImpl<DictMapper, Dict> implements IDictService {
+public class DictServiceImpl  implements IDictService {
 
-    private static DictDTO convertToDictDTO(Dict dict) {
-        DictDTO dictDTO = new DictDTO();
-        BeanUtils.copyProperties(dict, dictDTO);
-        dictDTO.setChildren(new ArrayList<>());
-        return dictDTO;
+    private final DictRepository dictRepository;
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void insertOrUpdate(DictDTO dto) {
+        Dict dict;
+        // 新增
+        if (!StringUtils.hasText(dto.getId())) {
+            dict = new Dict();
+        }
+        // 修改
+        else {
+            dict = dictRepository.findById(dto.getId()).orElseThrow(() -> BizRuntimeException.from("无法查找到该数据"));
+        }
+        if (dto.getSort() == null) {
+            BeanUtils.copyProperties(dto, dict, Dict.SORT);
+        } else {
+            BeanUtils.copyProperties(dto, dict);
+        }
+        dictRepository.save(dict);
     }
 
-    /**
-     * 获取字典
-     */
     @Override
-    public DictDTO getDictByValue(String type, String value) {
-        return convertToDictDTO(
-                getOne(
-                        Wrappers.<Dict>query()
-                                .eq("type", type)
-                                .eq("value", value)
-                )
-        );
+    public Page<DictDTO> selectPage(DictDTO dto) {
+        return dictRepository.findAll((root, query, criteriaBuilder) -> {
+                            List<Predicate> predicateList = new LinkedList<>();
+                            if (StringUtils.hasText(dto.getType())) {
+                                Predicate name = criteriaBuilder.like(root.get(Dict.TYPE),
+                                        "%" + dto.getType() + "%", '/');
+                                predicateList.add(name);
+                            }
+                            if (StringUtils.hasText(dto.getName())) {
+                                Predicate name = criteriaBuilder.like(root.get(Dict.NAME),
+                                        "%" + dto.getName() + "%", '/');
+                                predicateList.add(name);
+                            }
+                            if (StringUtils.hasText(dto.getValue())) {
+                                Predicate code = criteriaBuilder.like(criteriaBuilder.lower(root.get(Dict.VALUE)),
+                                        "%" + dto.getValue().toLowerCase() + "%", '/');
+                                predicateList.add(code);
+                            }
+                            return query.where(predicateList.toArray(Predicate[]::new)).getRestriction();
+                        },
+                        // TODO: 2023/8/29 设置前端 number 默认从 0 开始，或许就不需要减一了
+                        PageRequest.of(dto.getNumber() - 1, dto.getSize()))
+                .map(dict -> {
+                    DictDTO dictDTO = new DictDTO();
+                    BeanUtils.copyProperties(dict, dictDTO);
+                    return dictDTO;
+                });
     }
 
     /**
      * 根据区域行政编码获取区域数据
+     * // TODO: 2023/9/7 改为从 redis 查询
      *
      * @param code 区域行政编码
      * @return 区域数据
@@ -63,82 +95,42 @@ public class DictServiceImpl extends ServiceImpl<DictMapper, Dict> implements ID
     public DictDTO getAreaByCode(Integer code) {
         if (code == null) {
             DictDTO dictDTO = new DictDTO();
-            List<Dict> children = lambdaQuery().isNull(Dict::getPid).eq(Dict::getType, Constants.AREA).orderByAsc(Dict::getSort).list();
+            List<Dict> children = dictRepository.findAll((root, query, criteriaBuilder) ->
+                    query.where(root.get(Dict.PID).isNull(), root.get(Dict.TYPE).in("area"))
+                            .orderBy(criteriaBuilder.asc(root.get(Dict.SORT)))
+                            .getRestriction()
+            );
             if (!children.isEmpty()) {
-                dictDTO.setChildren(children.stream().map(DictServiceImpl::convertToDictDTO).toList());
+                dictDTO.setChildren(children.stream().map(this::convertToDictDTO).toList());
             }
             return dictDTO;
         }
-        Dict dict = lambdaQuery().eq(Dict::getValue, code.toString()).eq(Dict::getType, Constants.AREA).one();
-        if (dict == null) {
-            throw BizRuntimeException.from(ResultCode.ERROR, "没有找到区域编号：" + code);
-        }
+        Dict dict = dictRepository.findOne((root, query, criteriaBuilder) ->
+                        query.where(root.get(Dict.VALUE).in(code.toString()), root.get(Dict.TYPE).in("area")).getRestriction())
+                .orElseThrow(() -> BizRuntimeException.from("没有找到区域编号：" + code));
         DictDTO dictDTO = convertToDictDTO(dict);
-        List<Dict> children = lambdaQuery().eq(Dict::getPid, code).eq(Dict::getType, Constants.AREA).orderByAsc(Dict::getSort).list();
+        List<Dict> children = dictRepository.findAll((root, query, criteriaBuilder) ->
+                query.where(root.get(Dict.PID).in(code), root.get(Dict.TYPE).in("area"))
+                        .orderBy(criteriaBuilder.asc(root.get(Dict.SORT)))
+                        .getRestriction()
+        );
         if (!children.isEmpty()) {
-            dictDTO.setChildren(children.stream().map(DictServiceImpl::convertToDictDTO).toList());
+            dictDTO.setChildren(children.stream().map(this::convertToDictDTO).toList());
         }
         return dictDTO;
     }
 
     @Override
-    public IPage<Dict> getDictPage(DictPageQuery query) {
-        return page(new Page<>(query.getPageIndex(), query.getPageSize()),
-                Wrappers.<Dict>lambdaQuery()
-                        .eq(StringUtils.hasText(query.getType()), Dict::getType, query.getType())
-                        .like(StringUtils.hasText(query.getName()), Dict::getName, query.getName())
-                        .like(StringUtils.hasText(query.getValue()), Dict::getValue, query.getValue())
-                        .eq(Dict::getStatus, "ENABLED")
-        );
+    @Transactional(rollbackFor = Exception.class)
+    public void deleteById(String id) {
+        dictRepository.deleteById(id);
     }
 
-    @Override
-    public List<Dict> getDictTypeList() {
-        return this.baseMapper.getDictTypeList();
+    public DictDTO convertToDictDTO(Dict dict) {
+        DictDTO dictDTO = new DictDTO();
+        BeanUtils.copyProperties(dict, dictDTO);
+        dictDTO.setChildren(new ArrayList<>());
+        return dictDTO;
     }
 
-    @Override
-    public void addDict(Dict dict) {
-        //TODO 需要做哪些校验？
-        save(dict);
-    }
-
-    @Override
-    public void updateDict(Dict dict) {
-        //TODO 需要做哪些校验？
-        updateById(dict);
-    }
-
-    /**
-     * 添加分类之后，将分类的pid设置为20230104，这个没什么别的意义，只是一个魔数，用来表示该记录只是作为分类使用
-     *
-     * @param dict
-     */
-    @Override
-    public void addDictType(Dict dict) {
-        dict.setValue(dict.getName());
-        //pid为魔数，无其他含义，起标识作用
-        dict.setPid("20230104");
-        save(dict);
-    }
-
-    @Override
-    public void changeDictStatus(String id) {
-        Dict dict = getById(id);
-        if (dict != null) {
-            if (dict.getStatus().equalsIgnoreCase("enabled")) {
-                dict.setStatus("disabled".toUpperCase());
-                updateById(dict);
-            } else {
-                dict.setStatus("enabled".toUpperCase());
-                updateById(dict);
-            }
-        }
-    }
-
-    @Override
-    public String getAreaNameByValue(String value) {
-        Dict dict = getOne(Wrappers.<Dict>lambdaQuery().eq(Dict::getValue, value));
-        return dict.getName();
-    }
 }

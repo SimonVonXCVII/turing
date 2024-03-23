@@ -1,12 +1,7 @@
 package com.shiminfxcvii.turing.service;
 
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.service.IService;
-import com.shiminfxcvii.turing.entity.Dict;
 import com.shiminfxcvii.turing.model.dto.DictDTO;
-import com.shiminfxcvii.turing.model.query.DictPageQuery;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
 
 /**
  * <p>
@@ -16,7 +11,23 @@ import java.util.List;
  * @author ShiminFXCVII
  * @since 2022-12-30 12:49:40
  */
-public interface IDictService extends IService<Dict> {
+public interface IDictService {
+
+    /**
+     * 单个新增或修改
+     *
+     * @author ShiminFXCVII
+     * @since 2023/9/7 16:25
+     */
+    void insertOrUpdate(DictDTO dto);
+
+    /**
+     * 分页查询
+     *
+     * @author ShiminFXCVII
+     * @since 2023/9/7 15:48
+     */
+    Page<DictDTO> selectPage(DictDTO dto);
 
     /**
      * 根据区域行政编码获取区域数据
@@ -28,19 +39,13 @@ public interface IDictService extends IService<Dict> {
      */
     DictDTO getAreaByCode(Integer code);
 
-    IPage<Dict> getDictPage(DictPageQuery query);
+    /**
+     * 根据主键 id 逻辑删除
+     *
+     * @param id 字典主键 id
+     * @author ShiminFXCVII
+     * @since 2023/9/7 16:49
+     */
+    void deleteById(String id);
 
-    List<Dict> getDictTypeList();
-
-    void addDict(Dict dict);
-
-    void updateDict(Dict dict);
-
-    void addDictType(Dict dict);
-
-    void changeDictStatus(String id);
-
-    String getAreaNameByValue(String value);
-
-    DictDTO getDictByValue(String type, String value);
 }

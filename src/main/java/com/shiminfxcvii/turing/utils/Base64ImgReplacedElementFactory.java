@@ -2,7 +2,6 @@ package com.shiminfxcvii.turing.utils;
 
 import com.lowagie.text.BadElementException;
 import com.lowagie.text.Image;
-import com.lowagie.text.pdf.codec.Base64;
 import org.w3c.dom.Element;
 import org.xhtmlrenderer.extend.FSImage;
 import org.xhtmlrenderer.extend.ReplacedElement;
@@ -15,6 +14,7 @@ import org.xhtmlrenderer.render.BlockBox;
 import org.xhtmlrenderer.simple.extend.FormSubmissionListener;
 
 import java.io.IOException;
+import java.util.Base64;
 
 /**
  * Base64 工具类
@@ -71,7 +71,7 @@ public class Base64ImgReplacedElementFactory implements ReplacedElementFactory {
         if (srcAttr.toLowerCase().startsWith("data:image/")) {
             String base64Code = srcAttr.substring(srcAttr.indexOf("base64,") + "base64,".length());
             // 解码
-            byte[] decodedBytes = Base64.decode(base64Code);
+            byte[] decodedBytes = Base64.getDecoder().decode(base64Code);
             fiImg = new ITextFSImage(Image.getInstance(decodedBytes));
         } else {
             fiImg = uac.getImageResource(srcAttr).getImage();

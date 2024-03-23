@@ -1,18 +1,14 @@
 package com.shiminfxcvii.turing.controller;
 
 import com.shiminfxcvii.turing.common.result.Result;
-import com.shiminfxcvii.turing.model.cmd.MenuCmd;
 import com.shiminfxcvii.turing.model.dto.MenuDTO;
-import com.shiminfxcvii.turing.model.query.MenuQuery;
 import com.shiminfxcvii.turing.service.IMenuService;
-import com.shiminfxcvii.turing.utils.Update;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * <p>
@@ -33,30 +29,23 @@ public class MenuController {
         this.service = service;
     }
 
+    @Operation(summary = "单个新增或修改")
+    @PostMapping("/insertOrUpdate")
+    public Result<Object> insertOrUpdate(@RequestBody @Validated MenuDTO dto) {
+        service.insertOrUpdate(dto);
+        return Result.ok();
+    }
+
     @Operation(summary = "获取菜单集合")
     @PostMapping("/selectList")
-    public Result<List<MenuDTO>> selectList(@RequestBody MenuQuery query) {
-        return Result.ok(service.selectList(query));
+    public Result<List<MenuDTO>> selectList(@RequestBody MenuDTO dto) {
+        return Result.ok(service.selectList(dto));
     }
 
-    @Operation(summary = "添加")
-    @PostMapping("/insert")
-    public Result<Object> insert(@RequestBody @Validated MenuCmd cmd) {
-        service.insert(cmd);
-        return Result.ok();
-    }
-
-    @Operation(summary = "更新")
-    @PutMapping("/update")
-    public Result<Object> update(@RequestBody @Validated(Update.class) MenuCmd cmd) {
-        service.update(cmd);
-        return Result.ok();
-    }
-
-    @Operation(summary = "删除")
-    @DeleteMapping("/deleteById")
-    public Result<Object> deleteById(@RequestBody Map<String, String> map) {
-        service.deleteById(map.get("id"));
+    @Operation(summary = "根据主键 id 逻辑删除")
+    @DeleteMapping("/deleteById/{id}")
+    public Result<Object> deleteById(@PathVariable String id) {
+        service.deleteById(id);
         return Result.ok();
     }
 

@@ -1,42 +1,40 @@
 package com.shiminfxcvii.turing.model.dto;
 
-import io.swagger.v3.oas.annotations.media.Schema;
+import com.shiminfxcvii.turing.model.query.PageQuery;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
 import java.util.List;
 
+@Accessors(chain = true)
 @Getter
 @Setter
-@Accessors(chain = true)
-@Schema(name = "RoleDTO")
-public class RoleDTO {
-
+public class RoleDTO extends PageQuery {
     /**
      * 角色 id
      */
-    @Schema(description = "角色 id")
     private String id;
     /**
      * 角色名称
      */
-    @Schema(description = "角色名称")
+    @NotBlank(message = "角色名称不能为空")
     private String name;
     /**
      * 角色编码
      */
-    @Schema(description = "角色编码")
-    private String code;
+    @NotBlank(message = "角色编码不能为空")
+    private String authority;
     /**
      * 角色说明
      */
-    @Schema(description = "角色说明")
+    @NotBlank(message = "角色说明不能为空")
     private String description;
     /**
-     * 角色权限
+     * 权限 id 集合
      */
-    @Schema(description = "角色权限")
+    @NotEmpty(message = "权限 id 集合不能为空")
     private List<String> permissionIdList;
-
 }

@@ -1,6 +1,5 @@
 package com.shiminfxcvii.turing.config
 
-import lombok.SneakyThrows
 import org.apache.http.conn.ssl.NoopHostnameVerifier
 import org.apache.http.conn.ssl.TrustAllStrategy
 import org.apache.http.ssl.SSLContexts
@@ -22,7 +21,6 @@ class ElasticsearchConfig(private val elasticsearchProperties: ElasticsearchProp
      *
      * @return configuration, must not be null
      */
-    @SneakyThrows
     override fun clientConfiguration(): ClientConfiguration {
         return ClientConfiguration.builder()
             .connectedTo(*elasticsearchProperties.uris.toTypedArray())

@@ -19,7 +19,6 @@ import org.springframework.security.web.authentication.session.SessionAuthentica
 import org.springframework.security.web.authentication.www.NonceExpiredException
 import org.springframework.stereotype.Component
 import org.springframework.util.StringUtils
-import java.io.IOException
 import java.nio.charset.StandardCharsets
 
 /**
@@ -40,7 +39,6 @@ class AuthenticationEntryPointImpl(private val objectMapper: ObjectMapper) : Aut
      * @param response      so that the user agent can begin authentication
      * @param authException that caused the invocation
      */
-    @Throws(IOException::class)
     override fun commence(
         request: HttpServletRequest,
         response: HttpServletResponse,

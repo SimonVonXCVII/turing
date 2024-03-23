@@ -1,11 +1,14 @@
 package com.shiminfxcvii.turing.entity;
 
-import com.baomidou.mybatisplus.annotation.TableName;
 import com.shiminfxcvii.turing.enums.FileTypeEnum;
-import com.shiting.soil.entity.BaseEntity;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import lombok.experimental.Accessors;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 /**
  * <p>
@@ -15,11 +18,37 @@ import lombok.experimental.Accessors;
  * @author ShiminFXCVII
  * @since 2023-04-01 23:08:08
  */
+@Accessors(chain = true)
 @Getter
 @Setter
-@Accessors(chain = true)
-@TableName("soil_app_file")
-public class AppFile extends BaseEntity {
+@ToString
+@Entity
+@Table(schema = "public", name = "turing_app_file")
+// @SQLDelete 只支持 delete(T entity) 和 deleteById(ID id)
+@SQLDelete(sql = "UPDATE turing_app_file SET deleted = TRUE WHERE id = ? AND version = ? AND deleted = FALSE")
+@Where(clause = "deleted = FALSE")
+public class AppFile extends AbstractAuditable {
+
+    /**
+     * ES 索引名称
+     */
+    public static final String INDEX = "turing_app_file";
+
+    /**
+     * Redis key 前缀
+     */
+    public static final String REDIS_KEY_PREFIX = INDEX + ":";
+
+    public static final String OWNER_ID = "ownerId";
+    public static final String FILENAME = "filename";
+    public static final String ORIGIN_FILENAME = "originFilename";
+    public static final String SUFFIX = "suffix";
+    public static final String CONTENT_TYPE = "contentType";
+    public static final String CONTENT_LENGTH = "contentLength";
+    public static final String MD5 = "md5";
+    public static final String PATH = "path";
+    public static final String BIZ_TYPE = "bizType";
+    public static final String REMARK = "remark";
 
     /**
      * 所有者 id

@@ -1,7 +1,5 @@
 package com.shiminfxcvii.turing.service;
 
-import com.baomidou.mybatisplus.extension.service.IService;
-import com.shiminfxcvii.turing.entity.AppFile;
 import com.shiminfxcvii.turing.enums.FileTypeEnum;
 import com.shiminfxcvii.turing.model.dto.UploadFileDTO;
 import jakarta.servlet.http.HttpServletResponse;
@@ -17,7 +15,7 @@ import java.io.IOException;
  * @author ShiminFXCVII
  * @since 2023-04-01 23:08:08
  */
-public interface IAppFileService extends IService<AppFile> {
+public interface IAppFileService {
 
     /**
      * 上传文件

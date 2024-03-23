@@ -7,7 +7,6 @@ import org.springframework.http.HttpStatus
 import org.springframework.security.access.AccessDeniedException
 import org.springframework.security.web.access.AccessDeniedHandler
 import org.springframework.stereotype.Component
-import java.io.IOException
 
 /**
  * 由 ExceptionTranslationFilter 用于处理 AccessDeniedException。
@@ -25,7 +24,6 @@ class CustomAccessDeniedHandlerImpl : AccessDeniedHandler {
     /**
      * 处理拒绝访问失败。
      */
-    @Throws(IOException::class)
     override fun handle(
         request: HttpServletRequest, response: HttpServletResponse,
         accessDeniedException: AccessDeniedException

@@ -1,6 +1,9 @@
 package com.shiminfxcvii.turing.model.dto;
 
-import io.swagger.v3.oas.annotations.media.Schema;
+import com.shiminfxcvii.turing.model.query.PageQuery;
+import com.shiminfxcvii.turing.utils.Insert;
+import com.shiminfxcvii.turing.utils.Update;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,57 +13,54 @@ import lombok.Setter;
  * @author ShiminFXCVII
  * @since 1/4/2023 4:59 PM
  */
-@Schema(name = "单位申请业务实体类")
 @Getter
 @Setter
-public class OrganizationBusinessDTO {
-
+public class OrganizationBusinessDTO extends PageQuery {
     /**
      * 业务 id
      */
-    @Schema(description = "业务 id")
+    @NotNull(message = "业务 id 不能为空", groups = Update.class)
     private String id;
-
     /**
      * 单位名称
      */
-    @Schema(description = "单位名称")
     private String orgName;
-
     /**
-     * 业务申请所在省
+     * 业务申请所在省编码
      */
-    @Schema(description = "业务申请所在省")
+    @NotNull(message = "业务申请所在省不能为空", groups = Insert.class)
+    private Integer provinceCode;
+    /**
+     * 业务申请所在市编码
+     */
+    private Integer cityCode;
+    /**
+     * 业务申请所在区县编码
+     */
+    private Integer districtCode;
+    /**
+     * 业务申请所在省名称
+     */
     private String provinceName;
-
     /**
-     * 业务申请所在市
+     * 业务申请所在市名称
      */
-    @Schema(description = "业务申请所在市")
     private String cityName;
-
     /**
-     * 业务申请所在区县
+     * 业务申请所在区县名称
      */
-    @Schema(description = "业务申请所在区县")
     private String districtName;
-
     /**
      * 业务环节
      */
-    @Schema(description = "业务环节")
     private String[] link;
-
     /**
      * 质控类型
      */
-    @Schema(description = "质控类型")
     private String[] type;
-
     /**
      * 业务申请状态
      */
-    @Schema(description = "业务申请状态")
+    @NotNull(message = "业务申请状态不能为空", groups = Update.class)
     private String state;
-
 }

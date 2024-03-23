@@ -1,14 +1,11 @@
 package com.shiminfxcvii.turing.controller;
 
-import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.shiminfxcvii.turing.common.result.Result;
-import com.shiminfxcvii.turing.model.cmd.RoleCmd;
 import com.shiminfxcvii.turing.model.dto.RoleDTO;
-import com.shiminfxcvii.turing.model.query.RoleQuery;
 import com.shiminfxcvii.turing.service.IRoleService;
-import com.shiminfxcvii.turing.utils.Update;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.data.domain.Page;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,9 +20,9 @@ import java.util.List;
  * @author JiangEEZzz
  * @since 2022-12-22 16:22:50
  */
-@Tag(name = "RoleController", description = "角色表 前端控制器")
 @RestController
 @RequestMapping("/api/role")
+@Tag(name = "RoleController", description = "角色表 前端控制器")
 public class RoleController {
 
     private final IRoleService service;
@@ -34,36 +31,29 @@ public class RoleController {
         this.service = service;
     }
 
+    @Operation(summary = "单个新增或修改")
+    @PostMapping("/insertOrUpdate")
+    public Result<Object> insertOrUpdate(@RequestBody @Validated RoleDTO dto) {
+        service.insertOrUpdate(dto);
+        return Result.ok();
+    }
+
     @Operation(summary = "分页查询")
     @PostMapping("/selectPage")
-    public Result<IPage<RoleDTO>> selectPage(@RequestBody RoleQuery query) {
-        return Result.ok(service.selectPage(query));
+    public Result<Page<RoleDTO>> selectPage(@RequestBody RoleDTO dto) {
+        return Result.ok(service.selectPage(dto));
     }
 
     @Operation(summary = "列表查询")
     @PostMapping("/selectList")
-    public Result<List<RoleDTO>> selectList(@RequestBody RoleQuery query) {
-        return Result.ok(service.selectList(query));
+    public Result<List<RoleDTO>> selectList(@RequestBody RoleDTO dto) {
+        return Result.ok(service.selectList(dto));
     }
 
     @Operation(summary = "根据角色 id 获取单个角色")
-    @GetMapping("/selectOneById")
-    public Result<RoleDTO> selectOneById(String id) {
-        return Result.ok(service.selectOneById(id));
-    }
-
-    @Operation(summary = "新增")
-    @PostMapping("/insert")
-    public Result<Object> insert(@RequestBody @Validated RoleCmd cmd) {
-        service.insert(cmd);
-        return Result.ok();
-    }
-
-    @Operation(summary = "更新")
-    @PutMapping("/update")
-    public Result<Object> update(@RequestBody @Validated(Update.class) RoleCmd cmd) {
-        service.update(cmd);
-        return Result.ok();
+    @GetMapping("/selectById")
+    public Result<RoleDTO> selectById(String id) {
+        return Result.ok(service.selectById(id));
     }
 
     @Operation(summary = "删除")

@@ -62,7 +62,7 @@ class SecurityConfig {
         val config = CorsConfiguration()
         // 设置允许的来源
         // 允许跨源请求的源列表。默认情况下未设置，这意味着不允许任何来源
-        config.allowedOrigins = listOf("http://" + securityProperties.address + ":5522")
+        config.allowedOrigins = listOf("http://" + securityProperties.address)
         // TODO 设置允许的原点模式
         // setAllowedOrigins 的替代方案，它支持更灵活的来源模式，除了端口列表之外，主机名中的任何位置都带有“*”。 例子：
         // https://*.domain1.com -- 以 domain1.com 结尾的域
@@ -120,7 +120,6 @@ class SecurityConfig {
      * @since 2022/5/1 14:50
      */
     @Bean
-    @Throws(Exception::class)
     fun securityFilterChain(
         http: HttpSecurity,
         corsConfigurationSource: CorsConfigurationSource,
@@ -605,7 +604,8 @@ class SecurityConfig {
 //        );
 
         // 配置 OAuth 2.0 资源服务器支持
-//        http.oauth2ResourceServer(httpSecurityOAuth2ResourceServerConfigurer -> httpSecurityOAuth2ResourceServerConfigurer
+//        http.oauth2ResourceServer { httpSecurityOAuth2ResourceServerConfigurer ->
+//            httpSecurityOAuth2ResourceServerConfigurer
 //                .accessDeniedHandler(accessDeniedHandler)
 //                .authenticationEntryPoint(authenticationEntryPoint)
 //                .authenticationManagerResolver(null)
@@ -616,7 +616,7 @@ class SecurityConfig {
 //                .opaqueToken(null)
 //                // 通过删除 AbstractHttpConfigurer 来禁用它。执行此操作后，可以应用新版本的配置。
 //                .disable()
-//        );
+//        };
 
         // 配置通道安全性。为了使此配置有用，必须至少提供一个到所需通道的映射。
 //        http.requiresChannel(channelRequestMatcherRegistry -> channelRequestMatcherRegistry

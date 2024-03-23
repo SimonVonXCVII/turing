@@ -1,12 +1,7 @@
 package com.shiminfxcvii.turing.service;
 
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.service.IService;
-import com.shiminfxcvii.turing.entity.User;
-import com.shiminfxcvii.turing.model.dto.*;
-import com.shiminfxcvii.turing.model.query.UserPageQuery;
-
-import java.util.List;
+import com.shiminfxcvii.turing.model.dto.UserDTO;
+import org.springframework.data.domain.Page;
 
 /**
  * <p>
@@ -16,34 +11,25 @@ import java.util.List;
  * @author ShiminFXCVII
  * @since 2022-12-19 15:58:28
  */
-public interface IUserService extends IService<User> {
+public interface IUserService {
 
-    OrgManagerDTO getOrgManager(String orgId);
+    /**
+     * 单个新增或修改
+     */
+    void insertOrUpdate(UserDTO dto);
 
-    IPage<UserDTO> getUserPage(UserPageQuery query);
+    /**
+     * 分页查询
+     */
+    Page<UserDTO> selectPage(UserDTO dto);
 
-    UserDetailDTO getUserDetail(String id);
+    /**
+     * 根据用户 id 逻辑删除用户
+     *
+     * @param id 用户 id
+     * @author ShiminFXCVII
+     * @since 2023/9/6 18:12
+     */
+    void deleteById(String id);
 
-    void updateUser(UserDTO dto);
-
-    void addUser(User user);
-
-    void setOrgManager(OrgManagerDTO dto);
-
-    List<UserDTO> getUserListByOrgId(String orgId);
-
-    void addPlatformUser(PlatFormUserDTO dto);
-
-    void maintainPlatformUser(PlatFormUserDTO dto);
-
-    void resetPassword(String userId);
-
-    void deletePlatformUser(String userId);
-
-    void addTechOrgUser(TechOrgUserDTO dto);
-
-
-    void updateTechOrgUser(TechOrgUserDTO dto);
-
-    void deleteTechOrgUser(String userId);
 }

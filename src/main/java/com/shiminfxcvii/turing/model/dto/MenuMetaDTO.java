@@ -13,18 +13,18 @@ public class MenuMetaDTO {
      * 菜单名称
      */
     @Schema(description = "菜单名称")
-    private String title;
+    public String title;
 
     /**
      * 菜单图标
      */
     @Schema(description = "菜单图标")
-    private String icon;
+    public String icon;
 
     /**
      * 是否隐藏菜单
      */
     @Schema(description = "是否隐藏菜单")
-    private Boolean hideMenu;
+    public boolean hideMenu;
 
 }

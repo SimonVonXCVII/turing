@@ -1,7 +1,5 @@
 package com.shiminfxcvii.turing.properties
 
-import lombok.Getter
-import lombok.Setter
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.context.annotation.Configuration
 
@@ -13,8 +11,6 @@ import org.springframework.context.annotation.Configuration
  */
 @Configuration
 @ConfigurationProperties(prefix = "security")
-@Getter
-@Setter
 class SecurityProperties {
     /**
      * 服务器网络地址

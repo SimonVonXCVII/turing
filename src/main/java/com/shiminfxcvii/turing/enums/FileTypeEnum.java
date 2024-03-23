@@ -1,6 +1,5 @@
 package com.shiminfxcvii.turing.enums;
 
-import com.baomidou.mybatisplus.annotation.IEnum;
 import lombok.Getter;
 
 import java.util.Objects;
@@ -12,7 +11,7 @@ import java.util.Objects;
  * @since 2023/4/3 11:05
  */
 @Getter
-public enum FileTypeEnum implements IEnum<Integer> {
+public enum FileTypeEnum {
 
     /**
      * 信息采集
@@ -56,14 +55,6 @@ public enum FileTypeEnum implements IEnum<Integer> {
                 return anEnum;
 
         return null;
-    }
-
-    /**
-     * 枚举数据库存储值
-     */
-    @Override
-    public Integer getValue() {
-        return this.ordinal();
     }
 
 }

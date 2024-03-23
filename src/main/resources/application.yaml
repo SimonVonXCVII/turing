@@ -16,22 +16,6 @@ management:
         # 应包含的端点 ID 或全部为 '*'。
         include: '*'
 
-mybatis-plus:
-  # 全局配置
-  global-config:
-    # 数据库配置
-    db-config:
-      # 表名前缀（这是全局配置，这样无需在表实体类名上添加 @TableName("soil_*")）
-      table-prefix: turing_
-      # 使用的数据库架构
-      schema: public
-      # 逻辑删除字段
-      logic-delete-field: deleted
-      # 更新策略：忽略
-      update-strategy: ignored
-  # 实体类包别名
-  type-aliases-package: com.shiminfxcvii.turing.entity
-
 security:
   # 放行白名单配置
   whitelist:
@@ -47,13 +31,11 @@ security:
   # jwt 有效期时长，单位秒，默认一周
   expires: 604800
 
+# TODO 日志分割
 spring:
   application:
     # 应用程序名称
     name: turing-backend
-  datasource:
-    # JDBC 驱动程序的完全限定名称。默认情况下根据 URL 自动检测。
-    driver-class-name: com.kingbase8.Driver
   jackson:
     # 时区
     time-zone: GMT+8
@@ -65,14 +47,34 @@ spring:
   servlet:
     multipart:
       # 支持的每次请求中最大的单个文件的大小
-      max-file-size: 512MB
+      max-file-size: 1GB
       # 支持的每次请求中最大的多个文件的大小
-      max-request-size: 1024MB
+      max-request-size: 10GB
+  ssl:
+    bundle:
+      # PEM 编码的 SSL 信任材料。
+      pem:
+        turing:
+          # 是否重新加载 SSL 捆绑包。
+          #          reload-on-update: true
+          keystore:
+            # PEM 格式的证书或证书链的位置或内容。
+            certificate: "classpath:certs/turing.crt"
+            # PEM 格式的私钥的位置或内容。
+            private-key: "classpath:certs/turing.key"
+            # 是否验证私钥与公钥是否匹配。
+            verify-keys: true
+  threads:
+    virtual:
+      # 是否使用虚拟线程。
+      enabled: true
 
 springdoc:
   cache:
     # 是否禁用 springdoc-openapi 缓存
     disabled: true
+  # 是否显示 spring-boot-actuator 端点
+  show-actuator: true
   # 是否显示 Spring 安全登录端点
   show-login-endpoint: true
   swagger-ui:

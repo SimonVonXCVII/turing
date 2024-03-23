@@ -1,6 +1,5 @@
 package com.shiminfxcvii.turing.enums;
 
-import com.baomidou.mybatisplus.annotation.IEnum;
 import lombok.Getter;
 
 import java.util.Objects;
@@ -12,7 +11,7 @@ import java.util.Objects;
  * @since 1/4/2023 5:26 PM
  */
 @Getter
-public enum OrganizationBusinessStateEnum implements IEnum<Integer> {
+public enum OrganizationBusinessStateEnum {
 
     AWAITING_CHECK("待审核"),
     PASSES("已通过"),
@@ -34,14 +33,6 @@ public enum OrganizationBusinessStateEnum implements IEnum<Integer> {
                 return anEnum.getDesc();
 
         return "";
-    }
-
-    /**
-     * 枚举数据库存储值
-     */
-    @Override
-    public Integer getValue() {
-        return this.ordinal();
     }
 
 }

@@ -1,13 +1,16 @@
 package com.shiminfxcvii.turing.entity;
 
-import com.baomidou.mybatisplus.annotation.TableName;
 import com.shiminfxcvii.turing.enums.OrganizationBusinessBusinessLinksEnum;
 import com.shiminfxcvii.turing.enums.OrganizationBusinessLevelEnum;
 import com.shiminfxcvii.turing.enums.OrganizationBusinessQualityControlTypeEnum;
-import com.shiting.soil.entity.BaseEntity;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import lombok.experimental.Accessors;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 /**
  * <p>
@@ -20,18 +23,36 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 @Getter
 @Setter
-@TableName("soil_organization_business")
-public class OrganizationBusiness extends BaseEntity {
+@ToString
+@Entity
+@Table(schema = "public", name = "turing_organization_business")
+// @SQLDelete 只支持 delete(T entity) 和 deleteById(ID id)
+@SQLDelete(sql = "UPDATE turing_organization_business SET deleted = TRUE WHERE id = ? AND version = ? AND deleted = FALSE")
+@Where(clause = "deleted = FALSE")
+public class OrganizationBusiness extends AbstractAuditable {
 
     /**
      * ES 索引名称
      */
-    public static final String INDEX = "soil_organization_business";
+    public static final String INDEX = "turing_organization_business";
 
     /**
      * Redis key 前缀
      */
     public static final String REDIS_KEY_PREFIX = INDEX + ":";
+
+    public static final String ORG_ID = "orgId";
+    public static final String ORG_NAME = "orgName";
+    public static final String LINK = "link";
+    public static final String TYPE = "type";
+    public static final String PROVINCE_CODE = "provinceCode";
+    public static final String CITY_CODE = "cityCode";
+    public static final String DISTRICT_CODE = "districtCode";
+    public static final String PROVINCE_NAME = "provinceName";
+    public static final String CITY_NAME = "cityName";
+    public static final String DISTRICT_NAME = "districtName";
+    public static final String STATE = "state";
+    public static final String BUSINESS_LEVEL = "businessLevel";
 
     /**
      * 单位 id

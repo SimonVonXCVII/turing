@@ -1,6 +1,7 @@
 package com.shiminfxcvii.turing.component
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.shiminfxcvii.turing.common.result.Result
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.http.HttpStatus
@@ -9,7 +10,6 @@ import org.springframework.security.core.Authentication
 import org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler
 import org.springframework.stereotype.Component
-import java.io.IOException
 import java.nio.charset.StandardCharsets
 
 /**
@@ -31,7 +31,6 @@ class AuthenticationSuccessHandlerImpl(private val objectMapper: ObjectMapper) :
      * @param authentication the <tt>Authentication</tt> object which was created during
      * the authentication process.
      */
-    @Throws(IOException::class)
     override fun onAuthenticationSuccess(
         request: HttpServletRequest, response: HttpServletResponse,
         authentication: Authentication
@@ -42,14 +41,7 @@ class AuthenticationSuccessHandlerImpl(private val objectMapper: ObjectMapper) :
         response.writer
             .write(
                 objectMapper.writeValueAsString(
-                    Result.success(
-                        mapOf(
-                            Pair(
-                                OAuth2ParameterNames.TOKEN,
-                                request.getAttribute(OAuth2ParameterNames.TOKEN)
-                            )
-                        )
-                    )
+                    Result.ok(mapOf(OAuth2ParameterNames.TOKEN to request.getAttribute(OAuth2ParameterNames.TOKEN)))
                 )
             )
         request.removeAttribute(OAuth2ParameterNames.TOKEN)

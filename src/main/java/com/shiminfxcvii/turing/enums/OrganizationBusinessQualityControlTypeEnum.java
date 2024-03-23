@@ -1,6 +1,5 @@
 package com.shiminfxcvii.turing.enums;
 
-import com.baomidou.mybatisplus.annotation.IEnum;
 import lombok.Getter;
 
 import java.util.Objects;
@@ -13,7 +12,7 @@ import java.util.Optional;
  * @since 1/4/2023 5:26 PM
  */
 @Getter
-public enum OrganizationBusinessQualityControlTypeEnum implements IEnum<Integer> {
+public enum OrganizationBusinessQualityControlTypeEnum {
 
     INFORMATION_COLLECTION_QC("信息采集质控"),
     DISTRIBUTE_QC("布点质控"),
@@ -45,14 +44,6 @@ public enum OrganizationBusinessQualityControlTypeEnum implements IEnum<Integer>
                 return Optional.of(anEnum);
 
         return Optional.empty();
-    }
-
-    /**
-     * 枚举数据库存储值
-     */
-    @Override
-    public Integer getValue() {
-        return this.ordinal();
     }
 
 }

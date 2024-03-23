@@ -1,7 +1,7 @@
-package com.shiminfxcvii.turing.service;
+package com.shiminfxcvii.turing.service
 
-import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.security.oauth2.jwt.Jwt;
+import jakarta.servlet.http.HttpServletRequest
+import org.springframework.security.oauth2.jwt.Jwt
 
 /**
  * NimbusJwt 服务接口
@@ -9,8 +9,7 @@ import org.springframework.security.oauth2.jwt.Jwt;
  * @author ShiminFXCVII
  * @since 2/20/2023 11:19 PM
  */
-public interface NimbusJwtService {
-
+interface NimbusJwtService {
     /**
      * 根据用户 id 和用户名进行编码并返回生成的 JWT
      *
@@ -20,7 +19,7 @@ public interface NimbusJwtService {
      * @author ShiminFXCVII
      * @since 2/21/2023 12:06 PM
      */
-    Jwt encode(String userId, String username);
+    fun encode(userId: String, username: String): Jwt
 
     /**
      * 从其紧凑的声明表示格式解码和验证 JWT
@@ -30,7 +29,7 @@ public interface NimbusJwtService {
      * @author ShiminFXCVII
      * @since 2/21/2023 12:54 PM
      */
-    Jwt decode(String token);
+    fun decode(token: String): Jwt
 
     /**
      * 从请求中解析 JWT
@@ -40,6 +39,5 @@ public interface NimbusJwtService {
      * @author ShiminFXCVII
      * @since 2023/6/17 20:23
      */
-    Jwt resolve(HttpServletRequest request);
-
+    fun resolve(request: HttpServletRequest): Jwt
 }

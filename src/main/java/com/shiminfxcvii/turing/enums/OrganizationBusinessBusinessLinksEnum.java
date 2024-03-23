@@ -1,6 +1,5 @@
 package com.shiminfxcvii.turing.enums;
 
-import com.baomidou.mybatisplus.annotation.IEnum;
 import lombok.Getter;
 
 import java.util.Objects;
@@ -13,7 +12,7 @@ import java.util.Optional;
  * @since 1/4/2023 5:26 PM
  */
 @Getter
-public enum OrganizationBusinessBusinessLinksEnum implements IEnum<Integer> {
+public enum OrganizationBusinessBusinessLinksEnum {
 
     MINE_INFORMATION_COLLECTION("矿山信息采集"),
     REGIONAL_SURVEY_LOCATIONS("区域调查布点"),
@@ -50,14 +49,6 @@ public enum OrganizationBusinessBusinessLinksEnum implements IEnum<Integer> {
                 return Optional.of(anEnum);
 
         return Optional.empty();
-    }
-
-    /**
-     * 枚举数据库存储值
-     */
-    @Override
-    public Integer getValue() {
-        return this.ordinal();
     }
 
 }

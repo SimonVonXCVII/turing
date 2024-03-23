@@ -1,15 +1,11 @@
 package com.shiminfxcvii.turing.component
 
 import co.elastic.clients.elasticsearch.ElasticsearchClient
-import co.elastic.clients.elasticsearch.core.BulkRequest
-import co.elastic.clients.elasticsearch.core.bulk.BulkOperation
-import co.elastic.clients.elasticsearch.core.bulk.CreateOperation
 import com.shiminfxcvii.turing.entity.OrganizationBusiness
-import com.shiminfxcvii.turing.mapper.OrganizationBusinessMapper
+import com.shiminfxcvii.turing.repository.OrganizationBusinessRepository
 import org.springframework.boot.ApplicationArguments
 import org.springframework.boot.ApplicationRunner
 import org.springframework.stereotype.Component
-import java.util.function.Consumer
 
 /**
  * Elasticsearch 数据初始化
@@ -22,29 +18,28 @@ import java.util.function.Consumer
 @Component
 class ElasticsearchApplicationRunner(
     private val elasticsearchClient: ElasticsearchClient,
-    private val organizationBusinessMapper: OrganizationBusinessMapper
+    private val organizationBusinessRepository: OrganizationBusinessRepository,
 ) : ApplicationRunner {
     /**
      * Callback used to run the bean.
      *
      * @param args incoming application arguments
-     * @throws Exception on error
      */
-    @Throws(Exception::class)
     override fun run(args: ApplicationArguments) {
-        elasticsearchClient.bulk { bulkRequest: BulkRequest.Builder ->
-            organizationBusinessMapper.selectList(null)
-                .forEach(
-                    Consumer { organizationBusiness: OrganizationBusiness ->
-                        bulkRequest.operations { bulkOperation: BulkOperation.Builder ->
-                            bulkOperation.create { createOperation: CreateOperation.Builder<Any?> ->
-                                createOperation.index(OrganizationBusiness.INDEX)
-                                    .id(organizationBusiness.id)
-                                    .document(organizationBusiness)
-                            }
-                        }
+        val organizationBusinessList = organizationBusinessRepository.findAll()
+        if (organizationBusinessList.isEmpty()) {
+            return
+        }
+        elasticsearchClient.bulk { bulkRequest ->
+            organizationBusinessList.forEach { organizationBusiness ->
+                bulkRequest.operations { bulkOperation ->
+                    bulkOperation.create { createOperation ->
+                        createOperation.index(OrganizationBusiness.INDEX)
+                            .id(organizationBusiness.id)
+                            .document(organizationBusiness)
                     }
-                )
+                }
+            }
             bulkRequest
         }
     }

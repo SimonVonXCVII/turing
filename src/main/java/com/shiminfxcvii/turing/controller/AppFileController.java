@@ -2,7 +2,6 @@ package com.shiminfxcvii.turing.controller;
 
 import com.shiminfxcvii.turing.common.exception.BizRuntimeException;
 import com.shiminfxcvii.turing.common.result.Result;
-import com.shiminfxcvii.turing.common.result.ResultCode;
 import com.shiminfxcvii.turing.enums.FileTypeEnum;
 import com.shiminfxcvii.turing.model.dto.UploadFileDTO;
 import com.shiminfxcvii.turing.service.IAppFileService;
@@ -10,15 +9,13 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
 import org.springframework.http.MediaType;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.Map;
 import java.util.regex.Pattern;
 
 /**
@@ -51,7 +48,7 @@ public class AppFileController {
         if (!Pattern.matches("^\\.(?i)pdf$", multipartFile.suffix()) &&
                 !Pattern.matches("^\\.(?i)docx?$", multipartFile.suffix()) &&
                 !Pattern.matches("^\\.(?i)xlsx?$", multipartFile.suffix())) {
-            throw BizRuntimeException.from(ResultCode.ERROR, "暂时只支持上传 .pdf、.doc、.docx、.xls 和 .xlsx 格式的文件");
+            throw BizRuntimeException.from("暂时只支持上传 .pdf、.doc、.docx、.xls 和 .xlsx 格式的文件");
         }
         return Result.ok(service.uploadFile(file, multipartFile.originalFilename(), multipartFile.suffix(), FileTypeEnum.getByOrdinal(bizType), remark, false, false));
     }
@@ -68,7 +65,7 @@ public class AppFileController {
         if (!Pattern.matches("^\\.(?i)jpe?g$", multipartFile.suffix()) &&
                 !Pattern.matches("^\\.(?i)png$", multipartFile.suffix()) &&
                 !Pattern.matches("^\\.(?i)webp$", multipartFile.suffix())) {
-            throw BizRuntimeException.from(ResultCode.ERROR, "暂时只支持上传 .jpg、.jpeg、.png 和 .webp 格式的图片");
+            throw BizRuntimeException.from("暂时只支持上传 .jpg、.jpeg、.png 和 .webp 格式的图片");
         }
         return Result.ok(service.uploadFile(file, multipartFile.originalFilename(), multipartFile.suffix(), FileTypeEnum.getByOrdinal(bizType), remark, isCompress, false));
     }
@@ -84,7 +81,7 @@ public class AppFileController {
         if (!Pattern.matches("^\\.(?i)pdf$", multipartFile.suffix()) &&
                 !Pattern.matches("^\\.(?i)docx?$", multipartFile.suffix()) &&
                 !Pattern.matches("^\\.(?i)xlsx?$", multipartFile.suffix())) {
-            throw BizRuntimeException.from(ResultCode.ERROR, "暂时只支持上传 .pdf、.doc、.docx、.xls 和 .xlsx 格式的文件");
+            throw BizRuntimeException.from("暂时只支持上传 .pdf、.doc、.docx、.xls 和 .xlsx 格式的文件");
         }
         return Result.ok(service.uploadFile(file, multipartFile.originalFilename(), multipartFile.suffix(), FileTypeEnum.getByOrdinal(bizType), remark, false, true));
     }
@@ -101,7 +98,7 @@ public class AppFileController {
         if (!Pattern.matches("^\\.(?i)jpe?g$", multipartFile.suffix()) &&
                 !Pattern.matches("^\\.(?i)png$", multipartFile.suffix()) &&
                 !Pattern.matches("^\\.(?i)webp$", multipartFile.suffix())) {
-            throw BizRuntimeException.from(ResultCode.ERROR, "暂时只支持上传 .jpg、.jpeg、.png 和 .webp 格式的图片");
+            throw BizRuntimeException.from("暂时只支持上传 .jpg、.jpeg、.png 和 .webp 格式的图片");
         }
         return Result.ok(service.uploadFile(file, multipartFile.originalFilename(), multipartFile.suffix(), FileTypeEnum.getByOrdinal(bizType), remark, isCompress, true));
     }
@@ -109,22 +106,22 @@ public class AppFileController {
     @Parameter(name = "id", description = "文件 id")
     @Operation(summary = "根据文件 id 获取文件")
     @GetMapping(value = "/getFileById", produces = {MediaType.APPLICATION_PDF_VALUE, "application/msword", "application/vnd.ms-excel"})
-    public void getFileById(String id, HttpServletResponse response) throws IOException {
+    public void getFileById(@NotBlank(message = "id 不能为空") String id, HttpServletResponse response) throws IOException {
         service.getFileById(id, response);
     }
 
     @Parameter(name = "id", description = "文件 id")
     @Operation(summary = "根据图片文件 id 获取原始图片")
     @GetMapping(value = "/getOriginalImageById", produces = {MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE, "application/webp"})
-    public void getOriginalImageById(@NotNull(message = "id 不能为空") String id, HttpServletResponse response) throws IOException {
+    public void getOriginalImageById(@NotBlank(message = "id 不能为空") String id, HttpServletResponse response) throws IOException {
         service.getOriginalImageById(id, response);
     }
 
     @Parameter(name = "map", description = "Map 键值对形式的文件 id")
     @Operation(summary = "根据文件 id 删除文件")
-    @DeleteMapping("/deleteById")
-    public Result<Object> deleteById(@NotEmpty(message = "文件 id 不能为空") Map<String, String> map) {
-        service.deleteById(map.get("id"));
+    @DeleteMapping("/deleteById/{id}")
+    public Result<Object> deleteById(@PathVariable String id) {
+        service.deleteById(id);
         return Result.ok();
     }
 
@@ -138,20 +135,20 @@ public class AppFileController {
      */
     private CheckMultipartFile getCheckMultipartFile(MultipartFile file) {
         if (file == null) {
-            throw BizRuntimeException.from(ResultCode.ERROR, "文件不可为空，请选择文件");
+            throw BizRuntimeException.from("文件不可为空，请选择文件");
         }
         if (file.isEmpty()) {
-            throw BizRuntimeException.from(ResultCode.ERROR, "没有选择文件或者选择的文件没有内容");
+            throw BizRuntimeException.from("没有选择文件或者选择的文件没有内容");
         }
         // 原文件名
         String originalFilename = file.getOriginalFilename();
         if (!StringUtils.hasText(originalFilename)) {
-            throw BizRuntimeException.from(ResultCode.ERROR, "原文件名不能为空");
+            throw BizRuntimeException.from("原文件名不能为空");
         }
         // 文件后缀
         String suffix = originalFilename.substring(originalFilename.lastIndexOf("."));
         if (!StringUtils.hasText(suffix)) {
-            throw BizRuntimeException.from(ResultCode.ERROR, "文件后缀不能为空");
+            throw BizRuntimeException.from("文件后缀不能为空");
         }
         return new CheckMultipartFile(originalFilename, suffix);
     }

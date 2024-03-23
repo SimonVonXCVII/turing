@@ -1,12 +1,10 @@
-package com.shiminfxcvii.turing.service;
+package com.shiminfxcvii.turing.service
 
-import com.shiminfxcvii.turing.model.dto.MenuDTO;
-import com.shiminfxcvii.turing.model.dto.UserInfoDTO;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-
-import java.io.IOException;
-import java.util.List;
+import com.shiminfxcvii.turing.model.dto.MenuDTO
+import com.shiminfxcvii.turing.model.dto.UserDTO
+import jakarta.servlet.http.HttpServletRequest
+import jakarta.servlet.http.HttpServletResponse
+import java.io.IOException
 
 /**
  * 登录 服务类
@@ -14,15 +12,15 @@ import java.util.List;
  * @author ShiminFXCVII
  * @since 12/16/2022 4:07 PM
  */
-public interface LoginService {
-
+interface LoginService {
     /**
      * 获取登录验证码
      *
      * @author ShiminFXCVII
      * @since 12/16/2022 4:09 PM
      */
-    void getCaptcha(HttpServletRequest request, HttpServletResponse response) throws IOException;
+    @Throws(IOException::class)
+    fun getCaptcha(request: HttpServletRequest, response: HttpServletResponse)
 
     /**
      * 获取用户登录成功后所需要的信息
@@ -30,7 +28,7 @@ public interface LoginService {
      * @author ShiminFXCVII
      * @since 12/17/2022 8:19 PM
      */
-    UserInfoDTO getUserInfo();
+    fun getUserInfo(): UserDTO
 
     /**
      * 获取用户登录成功后的菜单集合
@@ -38,6 +36,5 @@ public interface LoginService {
      * @author ShiminFXCVII
      * @since 12/17/2022 8:19 PM
      */
-    List<MenuDTO> getMenuList();
-
+    fun getMenuList(): List<MenuDTO>
 }

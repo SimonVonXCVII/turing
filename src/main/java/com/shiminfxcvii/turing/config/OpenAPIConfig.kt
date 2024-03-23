@@ -42,10 +42,10 @@ import org.springframework.http.HttpHeaders
     // 返回值：这个 API 的服务器
     // 请求服务地址配置，可以按不同的环境配置
     servers = [Server(
-        url = "http://localhost:9699",
+        url = "http://localhost:8080",
         description = "开发环境地址"
-    ), Server(url = "http://localhost:9699", description = "测试环境地址"), Server(
-        url = "http://localhost:9699",
+    ), Server(url = "http://localhost:8080", description = "测试环境地址"), Server(
+        url = "http://localhost:8080",
         description = "生产环境地址"
     )],
     // 可以在 API 中使用哪些安全机制的声明。

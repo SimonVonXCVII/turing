@@ -1,10 +1,6 @@
 package com.shiminfxcvii.turing.service;
 
-import com.baomidou.mybatisplus.extension.service.IService;
-import com.shiminfxcvii.turing.entity.Menu;
-import com.shiminfxcvii.turing.model.cmd.MenuCmd;
 import com.shiminfxcvii.turing.model.dto.MenuDTO;
-import com.shiminfxcvii.turing.model.query.MenuQuery;
 
 import java.util.List;
 
@@ -16,25 +12,20 @@ import java.util.List;
  * @author ShiminFXCVII
  * @since 2022-12-26 18:25:51
  */
-public interface IMenuService extends IService<Menu> {
+public interface IMenuService {
+
+    /**
+     * 单个新增或修改
+     */
+    void insertOrUpdate(MenuDTO dto);
 
     /**
      * 获取菜单集合
      */
-    List<MenuDTO> selectList(MenuQuery query);
+    List<MenuDTO> selectList(MenuDTO dto);
 
     /**
-     * 添加
-     */
-    void insert(MenuCmd cmd);
-
-    /**
-     * 更新
-     */
-    void update(MenuCmd cmd);
-
-    /**
-     * 删除
+     * 根据主键 id 逻辑删除
      */
     void deleteById(String id);
 

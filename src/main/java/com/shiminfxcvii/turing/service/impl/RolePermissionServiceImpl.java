@@ -1,8 +1,5 @@
 package com.shiminfxcvii.turing.service.impl;
 
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.shiminfxcvii.turing.entity.RolePermission;
-import com.shiminfxcvii.turing.mapper.RolePermissionMapper;
 import com.shiminfxcvii.turing.service.IRolePermissionService;
 import org.springframework.stereotype.Service;
 
@@ -15,5 +12,5 @@ import org.springframework.stereotype.Service;
  * @since 2022-12-22 16:22:50
  */
 @Service
-public class RolePermissionServiceImpl extends ServiceImpl<RolePermissionMapper, RolePermission> implements IRolePermissionService {
+public class RolePermissionServiceImpl implements IRolePermissionService {
 }

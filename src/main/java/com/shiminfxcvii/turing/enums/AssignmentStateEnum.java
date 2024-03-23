@@ -1,6 +1,5 @@
 package com.shiminfxcvii.turing.enums;
 
-import com.baomidou.mybatisplus.annotation.IEnum;
 import lombok.Getter;
 
 import java.util.Objects;
@@ -12,7 +11,7 @@ import java.util.Objects;
  * @since 2023/4/1 18:11
  */
 @Getter
-public enum AssignmentStateEnum implements IEnum<Integer> {
+public enum AssignmentStateEnum {
 
     UNASSIGNED("未分配"),
     ASSIGNED("已分配"),
@@ -34,14 +33,6 @@ public enum AssignmentStateEnum implements IEnum<Integer> {
                 return anEnum.getDesc();
 
         return "";
-    }
-
-    /**
-     * 枚举数据库存储值
-     */
-    @Override
-    public Integer getValue() {
-        return this.ordinal();
     }
 
 }

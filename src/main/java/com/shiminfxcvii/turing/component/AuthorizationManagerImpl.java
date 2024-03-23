@@ -1,6 +1,6 @@
-package com.shiminfxcvii.turing.component;//package com.soil.component;
-//
-//import com.shiting.utils.soil.UserUtils;
+package com.shiminfxcvii.turing.component;
+
+//import com.shiminfxcvii.turing.utils.UserUtils;
 //import org.springframework.security.authorization.AuthorizationDecision;
 //import org.springframework.security.authorization.AuthorizationManager;
 //import org.springframework.security.core.Authentication;

@@ -1,7 +1,7 @@
 package com.shiminfxcvii.turing.controller;
 
 import com.shiminfxcvii.turing.common.result.Result;
-import com.shiminfxcvii.turing.model.cmd.RegisterCmd;
+import com.shiminfxcvii.turing.model.dto.RegisterDTO;
 import com.shiminfxcvii.turing.service.RegisterService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -30,8 +30,8 @@ public class RegisterController {
 
     @Operation(summary = "注册")
     @PostMapping
-    public Result<Object> register(@RequestBody @Valid RegisterCmd cmd) {
-        service.register(cmd);
+    public Result<Object> register(@RequestBody @Valid RegisterDTO dto) {
+        service.register(dto);
         return Result.ok();
     }
 

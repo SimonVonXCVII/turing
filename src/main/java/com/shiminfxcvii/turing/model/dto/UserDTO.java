@@ -1,43 +1,92 @@
 package com.shiminfxcvii.turing.model.dto;
 
-import com.shiminfxcvii.turing.enums.GenderEnum;
-import lombok.Data;
+import com.shiminfxcvii.turing.model.query.PageQuery;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.List;
 
-@Data
-public class UserDTO {
-
-    List<String> roleList;
+@Accessors(chain = true)
+@Getter
+@Setter
+public class UserDTO extends PageQuery {
     /**
-     * 用户id
+     * 用户姓名
      */
-    private String userId;
-    /**
-     * 用户登录账号
-     */
-    private String username;
-    /**
-     * 用户真实姓名
-     */
-    private String nickName;
+    @NotBlank(message = "用户姓名不能为空")
+    public String name;
     /**
      * 用户手机号
      */
-    private String mobile;
-    /**
-     * 用户所在单位名称
-     */
-    private String orgName;
+    @NotBlank(message = "用户手机号不能为空")
+    public String mobile;
     /**
      * 用户性别
      */
-    private GenderEnum gender;
+    @NotBlank(message = "用户性别不能为空")
+    public String gender;
     /**
-     * 是否为单位管理员
+     * 单位 id
      */
-    private Boolean manager;
-    private String orgId;
-    private LocalDateTime birthday;
+    @NotBlank(message = "单位 id 不能为空")
+    public String orgId;
+    /**
+     * 单位名称
+     */
+    public String orgName;
+    /**
+     * 部门
+     */
+    public String department;
+    /**
+     * 登录账号
+     */
+    @NotBlank(message = "登录账号不能为空")
+    public String username;
+    /**
+     * 是否已过期
+     */
+    public Boolean accountNonExpired;
+    /**
+     * 是否已锁定
+     */
+    public Boolean accountNonLocked;
+    /**
+     * 是否凭证已过期
+     */
+    public Boolean credentialsNonExpired;
+    /**
+     * 是否启用
+     */
+    public Boolean enabled;
+    /**
+     * 是否单位管理员
+     */
+    public Boolean manager;
+    /**
+     * 是否需要重新设置密码
+     */
+    public Boolean needSetPassword;
+    /**
+     * 用户角色
+     */
+    public Collection<RoleDTO> authorities;
+    /**
+     * 用户 id
+     */
+    private String id;
+    /**
+     * 创建日期
+     */
+    private LocalDateTime createdDate;
+    /**
+     * 角色集合
+     */
+    @NotEmpty(message = "角色集合不能为空")
+    private List<String> roleList;
 }

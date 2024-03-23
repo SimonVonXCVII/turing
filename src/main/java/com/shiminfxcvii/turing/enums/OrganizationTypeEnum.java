@@ -1,6 +1,5 @@
 package com.shiminfxcvii.turing.enums;
 
-import com.baomidou.mybatisplus.annotation.IEnum;
 import lombok.Getter;
 
 import java.util.Objects;
@@ -12,8 +11,9 @@ import java.util.Objects;
  * @since 12/30/2022 6:46 PM
  */
 @Getter
-public enum OrganizationTypeEnum implements IEnum<Integer> {
+public enum OrganizationTypeEnum {
 
+    PLATFORM("平台管理单位"),
     ADMINISTRATION("行政管理单位"),
     TECHNOLOGY_LEAD("技术牵头单位"),
     BUSINESS_TECHNOLOGY("业务技术单位"),
@@ -35,15 +35,6 @@ public enum OrganizationTypeEnum implements IEnum<Integer> {
                 return anEnum.getDesc();
 
         return "";
-    }
-
-
-    /**
-     * 枚举数据库存储值
-     */
-    @Override
-    public Integer getValue() {
-        return this.ordinal();
     }
 
 }

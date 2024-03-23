@@ -1,46 +1,44 @@
 package com.shiminfxcvii.turing.model.dto;
 
-import io.swagger.v3.oas.annotations.media.Schema;
+import com.shiminfxcvii.turing.model.query.PageQuery;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 
 import java.util.LinkedList;
 import java.util.List;
 
-@Schema(name = "PermissionDTO")
+@Accessors(chain = true)
 @Getter
 @Setter
-public class PermissionDTO {
-
+public class PermissionDTO extends PageQuery {
     /**
      * 权限 id
      */
-    @Schema(description = "权限 id")
     private String id;
+    /**
+     * 上级权限 id
+     */
+    private String pid;
     /**
      * 权限名称
      */
-    @Schema(description = "权限名称")
+    @NotBlank(message = "权限名称不能为空")
     private String name;
     /**
      * 权限编码
      */
-    @Schema(description = "权限编码")
+    @NotBlank(message = "权限名称不能为空")
     private String code;
     /**
-     * 权限排序
+     * 排序编号
      */
-    @Schema(description = "权限排序")
+    @NotNull(message = "排序编号不能为空")
     private Integer sort;
-    /**
-     * 上级权限 id
-     */
-    @Schema(description = "上级权限 id")
-    private String pid;
     /**
      * 子级权限集合
      */
-    @Schema(description = "子级权限集合")
     private List<PermissionDTO> children = new LinkedList<>();
-
 }

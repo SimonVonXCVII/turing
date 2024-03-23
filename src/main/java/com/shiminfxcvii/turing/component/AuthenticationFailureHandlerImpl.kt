@@ -9,7 +9,6 @@ import org.springframework.http.MediaType
 import org.springframework.security.core.AuthenticationException
 import org.springframework.security.web.authentication.AuthenticationFailureHandler
 import org.springframework.stereotype.Component
-import java.io.IOException
 import java.nio.charset.StandardCharsets
 
 /**
@@ -29,7 +28,6 @@ class AuthenticationFailureHandlerImpl(private val objectMapper: ObjectMapper) :
      * @param response  the response.
      * @param exception 为拒绝身份验证请求而引发的异常
      */
-    @Throws(IOException::class)
     override fun onAuthenticationFailure(
         request: HttpServletRequest, response: HttpServletResponse,
         exception: AuthenticationException
@@ -37,6 +35,6 @@ class AuthenticationFailureHandlerImpl(private val objectMapper: ObjectMapper) :
         response.characterEncoding = StandardCharsets.UTF_8.name()
         response.contentType = MediaType.APPLICATION_JSON_VALUE
         response.status = HttpStatus.OK.value()
-        response.writer.write(objectMapper.writeValueAsString(BizRuntimeException(exception.message)))
+        response.writer.write(objectMapper.writeValueAsString(BizRuntimeException(exception.localizedMessage)))
     }
 }
