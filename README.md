@@ -2,7 +2,7 @@
 
 ## 使用 Docker 进行容器化部署，Redis 7.2.4、Elastic stack 8.10.4、Nginx 1.25.4
 
-## JDK 21 + Kotlin 1.9 + Gradle 8 + Spring Boot 3 + Spring Security + Mybatis Plus + Kingbase + SpringDoc + Thymeleaf + JWT + Lombok
+## JDK 21 + Kotlin 1.9 + Gradle 8 + Spring Boot 3 + Spring Security + SpringDoc + Thymeleaf + JWT + Lombok
 
 ## 开发规范
 
