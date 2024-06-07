@@ -33,7 +33,7 @@ services:
     # 声明用于服务容器的自定义主机名。
     hostname: turing-redis
     # 指定启动容器的图像。
-    image: redis:7.2.4
+    image: redis:7.2.5
     # 定义服务容器附加到的网络，引用顶级网络键下的条目。
     networks:
       - turing
@@ -214,7 +214,7 @@ services:
     # 声明用于服务容器的自定义主机名。
     hostname: turing-nginx
     # 指定启动容器的图像。
-    image: nginx:1.25.4
+    image: nginx:1.27.0
     # 定义服务容器附加到的网络，引用顶级网络键下的条目。
     networks:
       - turing
@@ -233,7 +233,7 @@ services:
     # 声明用于服务容器的自定义主机名。
     hostname: turing-portainer
     # 指定启动容器的图像。
-    image: portainer/portainer-ce:2.19.4
+    image: portainer/portainer-ce:2.19.5
     # 定义服务容器附加到的网络，引用顶级网络键下的条目。
     networks:
       - turing
