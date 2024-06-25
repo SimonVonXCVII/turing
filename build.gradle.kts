@@ -1,5 +1,3 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
 /**
  * 配置该项目的插件依赖项。
  */
@@ -11,7 +9,7 @@ plugins {
     /**
      * 添加对具有给定 id 的插件的依赖关系。
      */
-    id("org.springframework.boot") version "3.3.0"
+    id("org.springframework.boot") version "3.3.1"
     id("io.spring.dependency-management") version "1.1.5"
     id("org.graalvm.buildtools.native") version "0.10.2"
     /**
@@ -39,15 +37,15 @@ description = "turing-backend 项目后端脚手架-单体应用"
  */
 java {
     /**
-     * 设置用于编译 Java 源的源兼容性。
-     * 如果已配置工具链，则无法设置此属性。
+     * 配置需要工具链中的工具的任务的项目范围工具链要求（例如 org.gradle.api.tasks.compile.JavaCompile）。
+     * 配置工具链不能与此扩展上的 sourceCompatibility 或 targetCompatibility 一起使用。这两个值都将来自工具链。
      */
-    sourceCompatibility = JavaVersion.VERSION_21
-    /**
-     * 设置用于编译 Java 源的目标兼容性。
-     * 如果已配置工具链，则无法设置此属性。
-     */
-    targetCompatibility = JavaVersion.VERSION_21
+    toolchain {
+        /**
+         * 工具链需要支持的 Java 语言的确切版本。
+         */
+        languageVersion = JavaLanguageVersion.of(22)
+    }
 }
 
 /**
@@ -117,12 +115,18 @@ extra["flyingSaucerPdfVersion"] = "9.7.1"
  * 针对该项目的 DependencyHandlerScope 执行给定的配置块。
  */
 dependencies {
+    annotationProcessor("com.github.therapi:therapi-runtime-javadoc-scribe:${property("therapiRuntimeJavadocVersion")}")
+    annotationProcessor("org.projectlombok:lombok")
+    annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
+
+    // lombok
+    compileOnly("org.projectlombok:lombok")
+
     // easyexcel TODO 尝试换成 apache 的
     // https://mvnrepository.com/artifact/com.alibaba/easyexcel
     implementation("com.alibaba:easyexcel:${property("easyexcelVersion")}")
     // therapi
     implementation("com.github.therapi:therapi-runtime-javadoc:${property("therapiRuntimeJavadocVersion")}")
-    annotationProcessor("com.github.therapi:therapi-runtime-javadoc-scribe:${property("therapiRuntimeJavadocVersion")}")
     // google
     // https://mvnrepository.com/artifact/com.google
     implementation("com.google.guava:guava:${property("googleGuavaVersion")}")
@@ -135,18 +139,12 @@ dependencies {
     implementation("org.apache.velocity:velocity-engine-core:${property("apacheVelocityVersion")}")
     // kotlin 非必需
     implementation("org.jetbrains.kotlin:kotlin-reflect")
-    // postgresql
-    runtimeOnly("org.postgresql:postgresql")
-    // lombok
-    compileOnly("org.projectlombok:lombok")
-    annotationProcessor("org.projectlombok:lombok")
     // springdoc
     // https://mvnrepository.com/artifact/org.springdoc
     implementation("org.springdoc:springdoc-openapi-starter-common:${property("springdocVersion")}")
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-api:${property("springdocVersion")}")
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:${property("springdocVersion")}")
     // springframework
-    annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 //    developmentOnly("org.springframework.boot:spring-boot-docker-compose")
     implementation("org.springframework.boot:spring-boot-starter")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
@@ -157,36 +155,30 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
     implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
     implementation("org.springframework.boot:spring-boot-starter-security")
-    testImplementation("org.springframework.boot:spring-boot-starter-test")
     implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.springframework.boot:spring-boot-starter-web")
+    // PDF TODO 尝试换成 apache 的，或者试试 itext
+    // https://mvnrepository.com/artifact/org.xhtmlrenderer/flying-saucer-pdf
+    implementation("org.xhtmlrenderer:flying-saucer-pdf:${property("flyingSaucerPdfVersion")}")
+
+    // postgresql
+    runtimeOnly("org.postgresql:postgresql")
+
+    testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
     // testcontainers
     testImplementation("org.springframework.boot:spring-boot-testcontainers")
     testImplementation("org.testcontainers:junit-jupiter")
     testImplementation("org.testcontainers:postgresql")
-    // PDF TODO 尝试换成 apache 的，或者试试 itext
-    // https://mvnrepository.com/artifact/org.xhtmlrenderer/flying-saucer-pdf
-    implementation("org.xhtmlrenderer:flying-saucer-pdf:${property("flyingSaucerPdfVersion")}")
 //    implementation("org.apache.pdfbox:pdfbox:3.0.1")
+
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
-/**
- * 非必需
- */
-tasks.withType<KotlinCompile> {
-    kotlinOptions {
-        /**
-         * 附加编译器参数的列表，默认值：emptyList()
-         * 这个配置对于 Kotlin 代码来说非常重要，因为它有助于减少 null 引用的错误和运行时的 NullPointerExceptions
-         */
-        freeCompilerArgs += "-Xjsr305=strict"
-        /**
-         * 生成的 JVM 字节码的目标版本（1.8、9、10、...、21），默认为 1.8
-         * 可能的值：“1.8”、“9”、“10”、“11”、“12”、“13”、“14”、“15”、“16”、“17”、“18”、“19” 、“20”、“21”
-         * 默认值：JvmTarget.DEFAULT
-         */
-        jvmTarget = "21"
+kotlin {
+    compilerOptions {
+        freeCompilerArgs.addAll("-Xjsr305=strict")
     }
 }
 

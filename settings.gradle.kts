@@ -1,1 +1,1 @@
-rootProject.name = "Turing"
+rootProject.name = "turing-backend"
