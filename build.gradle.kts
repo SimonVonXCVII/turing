@@ -22,7 +22,7 @@ plugins {
 /**
  * 设置该项目的组。
  */
-group = "com.shiminfxcvii.turing"
+group = "com.simonvonxcvii.turing"
 /**
  * 设置此项目的版本。
  */
