@@ -6,6 +6,7 @@ import org.apache.http.ssl.SSLContexts
 import org.springframework.boot.autoconfigure.elasticsearch.ElasticsearchProperties
 import org.springframework.context.annotation.Configuration
 import org.springframework.data.elasticsearch.client.ClientConfiguration
+import org.springframework.data.elasticsearch.client.elc.ElasticsearchConfiguration
 
 /**
  * 用于使用 Elasticsearch 客户端设置 Elasticsearch 连接
@@ -14,7 +15,7 @@ import org.springframework.data.elasticsearch.client.ClientConfiguration
  * @since 2023/6/30 23:33
  */
 @Configuration
-class ElasticsearchConfig(private val elasticsearchProperties: ElasticsearchProperties) : org.springframework.data.elasticsearch.client.elc.ElasticsearchConfiguration() {
+class ElasticsearchConfig(private val elasticsearchProperties: ElasticsearchProperties) : ElasticsearchConfiguration() {
     /**
      * 重写以提供客户端配置
      *
