@@ -1,6 +1,3 @@
-# 指定撰写格式。 支持的版本有：2.x、3.x
-version: "3.9"
-
 # 允许服务相互通信的层。
 networks:
   # 自定义的网络名称
@@ -33,7 +30,7 @@ services:
     # 声明用于服务容器的自定义主机名。
     hostname: turing-redis
     # 指定启动容器的图像。
-    image: redis:7.2.5
+    image: redis:7.4.0
     # 定义服务容器附加到的网络，引用顶级网络键下的条目。
     networks:
       - turing
@@ -214,7 +211,7 @@ services:
     # 声明用于服务容器的自定义主机名。
     hostname: turing-nginx
     # 指定启动容器的图像。
-    image: nginx:1.27.0
+    image: nginx:1.27.1
     # 定义服务容器附加到的网络，引用顶级网络键下的条目。
     networks:
       - turing
@@ -230,10 +227,22 @@ services:
   turing-portainer:
     # 指定自定义容器名称，而不是生成的默认名称。
     container_name: turing-portainer
+    # 声明运行以确定该服务的容器是否“健康”的检查。
+    #    healthcheck:
+    #      #      test: [ "CMD-SHELL", "curl --fail http://localhost:9000/api/status || exit 1" ]
+    #      test: [ "CMD", "wget", "-qO-", "http://localhost:9000/api/status" ]
+    #      # 运行状况检查将在容器启动后首先运行间隔秒，然后在之前的每个检查完成后再次运行间隔秒。
+    #      interval: 10s
+    #      # 如果单次运行检查花费的时间超过超时秒数，则检查被视为失败。
+    #      timeout: 10s
+    #      # 需要重试健康检查连续失败才能将容器视为不健康。
+    #      retries: 3
+    #      # 为需要时间引导的容器提供初始化时间。
+    #      start_period: 40s
     # 声明用于服务容器的自定义主机名。
     hostname: turing-portainer
     # 指定启动容器的图像。
-    image: portainer/portainer-ce:2.19.5
+    image: portainer/portainer-ce:2.21.1
     # 定义服务容器附加到的网络，引用顶级网络键下的条目。
     networks:
       - turing

@@ -58,7 +58,7 @@ class UserDetailsServiceImpl(
         // 获取用户数据
         val user = userRepository.findOne { root, query, criteriaBuilder ->
             val usernamePath: Path<String> = root.get("username")
-            query.where(criteriaBuilder.equal(usernamePath, username)).restriction
+            query?.where(criteriaBuilder.equal(usernamePath, username))?.restriction
         }.orElseThrow { throw UsernameNotFoundException("该用户账号不存在：$username") }
         if (!user.isAccountNonExpired) {
             throw AccountExpiredException("账号已过期")
@@ -81,7 +81,7 @@ class UserDetailsServiceImpl(
             // 获取用户角色与用户关联记录表
             val userRoleList = userRoleRepository.findAll { root, query, criteriaBuilder ->
                 val userId: Path<String> = root.get("user_id")
-                query.where(criteriaBuilder.equal(userId, user.id)).restriction
+                query?.where(criteriaBuilder.equal(userId, user.id))?.restriction
             }
             if (userRoleList.isEmpty()) {
                 throw BadCredentialsException("非法账号，该账号没有角色：$username")

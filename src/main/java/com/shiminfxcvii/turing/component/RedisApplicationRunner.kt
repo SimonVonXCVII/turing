@@ -30,7 +30,7 @@ class RedisApplicationRunner(
     override fun run(args: ApplicationArguments) {
         val dictList = dictRepository.findAll { root, query, criteriaBuilder ->
             val type: Path<String> = root.get("type")
-            query.where(criteriaBuilder.equal(type, "area")).restriction
+            query?.where(criteriaBuilder.equal(type, "area"))?.restriction
         }
         if (dictList.isEmpty()) {
             return

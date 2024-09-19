@@ -3,7 +3,7 @@
 #FROM ghcr.io/graalvm/graalvm-ce:22.3.3
 #FROM ghcr.io/graalvm/graalvm-ce:ol9-java17-22.3.3
 #FROM ghcr.io/graalvm/graalvm-community:17.0.8
-FROM amazoncorretto:21.0.2
+FROM amazoncorretto:22
 
 # 将元数据添加到图像。 LABEL 是键值对。
 LABEL MAINTAINER="g1672943850@gmail.com"
