@@ -9,14 +9,14 @@ plugins {
     /**
      * 添加对具有给定 id 的插件的依赖关系。
      */
-    id("org.springframework.boot") version "3.3.4"
+    id("org.springframework.boot") version "3.3.5"
     id("io.spring.dependency-management") version "1.1.6"
-    id("org.graalvm.buildtools.native") version "0.10.2"
+    id("org.graalvm.buildtools.native") version "0.10.3"
     /**
      * 应用给定的 Kotlin 插件模块。
      */
-    kotlin("jvm") version "2.0.20"
-    kotlin("plugin.spring") version "2.0.20"
+    kotlin("jvm") version "2.0.21"
+    kotlin("plugin.spring") version "2.0.21"
 }
 
 /**
@@ -44,7 +44,7 @@ java {
         /**
          * 工具链需要支持的 Java 语言的确切版本。
          */
-        languageVersion = JavaLanguageVersion.of(22)
+        languageVersion = JavaLanguageVersion.of(23)
     }
 }
 
@@ -101,14 +101,14 @@ repositories {
 /**
  * 该对象的扩展容器中的额外属性扩展。
  */
-extra["easyexcelVersion"] = "3.3.4"
+extra["easyexcelVersion"] = "4.0.3"
 extra["therapiRuntimeJavadocVersion"] = "0.15.0"
-extra["googleGuavaVersion"] = "33.1.0-jre"
+extra["googleGuavaVersion"] = "33.3.1-jre"
 extra["googleZxingVersion"] = "3.5.3"
 extra["thumbnailatorVersion"] = "0.4.20"
-extra["apacheVelocityVersion"] = "2.3"
-extra["springdocVersion"] = "2.4.0"
-extra["flyingSaucerPdfVersion"] = "9.7.1"
+extra["apacheVelocityVersion"] = "2.4.1"
+extra["springdocVersion"] = "2.6.0"
+extra["flyingSaucerPdfVersion"] = "9.10.1"
 
 /**
  * 配置此项目的依赖项。
