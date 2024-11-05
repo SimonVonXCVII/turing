@@ -41,27 +41,32 @@ public class RegisterServiceImpl implements RegisterService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void register(RegisterDTO dto) {
-        boolean exists = organizationRepository.exists((root, query, criteriaBuilder) -> root.get(Organization.NAME).in(dto.getName()));
+        boolean exists = organizationRepository.exists((root, _, _) ->
+                root.get(Organization.NAME).in(dto.getName()));
         if (exists) {
             throw new BizRuntimeException("该单位名称已经注册，请重新输入");
         }
 
-        exists = organizationRepository.exists((root, query, criteriaBuilder) -> root.get(Organization.CODE).in(dto.getCode()));
+        exists = organizationRepository.exists((root, _, _) ->
+                root.get(Organization.CODE).in(dto.getCode()));
         if (exists) {
             throw new BizRuntimeException("该信用代码已经注册，请重新输入");
         }
 
-        exists = organizationRepository.exists((root, query, criteriaBuilder) -> root.get(Organization.PHONE).in(dto.getPhone()));
+        exists = organizationRepository.exists((root, _, _) ->
+                root.get(Organization.PHONE).in(dto.getPhone()));
         if (exists) {
             throw new BizRuntimeException("该联系电话已被使用，请重新输入");
         }
 
-        exists = userRepository.exists((root, query, criteriaBuilder) -> root.get(User.MOBILE).in(dto.getMobile()));
+        exists = userRepository.exists((root, _, _) ->
+                root.get(User.MOBILE).in(dto.getMobile()));
         if (exists) {
             throw new BizRuntimeException("该手机号码已被使用，请重新输入");
         }
 
-        exists = userRepository.exists((root, query, criteriaBuilder) -> root.get(User.USERNAME).in(dto.getUsername()));
+        exists = userRepository.exists((root, _, _) ->
+                root.get(User.USERNAME).in(dto.getUsername()));
         if (exists) {
             throw new BizRuntimeException("该登录账号已被使用，请重新输入");
         }

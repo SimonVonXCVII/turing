@@ -108,7 +108,7 @@ public class DatabaseApplicationRunner implements ApplicationRunner {
             }
         });
         List<Dict> dictList = new ArrayList<>();
-        provinceMap.forEach((s, area) -> saveArea(null, area, dictList));
+        provinceMap.forEach((_, area) -> saveArea(null, area, dictList));
         dictRepository.saveAll(dictList);
         log.info("初始化区域完成");
     }

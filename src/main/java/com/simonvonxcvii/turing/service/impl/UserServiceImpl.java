@@ -67,7 +67,7 @@ public class UserServiceImpl implements IUserService {
         userRepository.save(user);
         // 更新用户角色表
         // TODO 可以优化成只添加需要添加的，只删除需要删除的
-        userRoleRepository.delete((root, query, criteriaBuilder) -> root.get(UserRole.USER_ID).in(dto.getId()));
+        userRoleRepository.delete((root, _, _) -> root.get(UserRole.USER_ID).in(dto.getId()));
         List<UserRole> userRoleList = new LinkedList<>();
         dto.getRoleList()
                 .forEach(id -> {
@@ -109,7 +109,7 @@ public class UserServiceImpl implements IUserService {
                                     "%" + dto.getUsername() + "%", '/'));
                         }
                         if (!CollectionUtils.isEmpty(dto.getRoleList())) {
-                            List<UserRole> userRoleList = userRoleRepository.findAll((root1, query1, criteriaBuilder1) ->
+                            List<UserRole> userRoleList = userRoleRepository.findAll((root1, _, _) ->
                                     root1.get(UserRole.ROLE_ID).in(dto.getRoleList()));
                             if (userRoleList.isEmpty()) {
                                 throw new RuntimeException();
@@ -134,6 +134,7 @@ public class UserServiceImpl implements IUserService {
                         if (dto.getNeedSetPassword() != null) {
                             predicateList.add(criteriaBuilder.equal(root.get(User.NEED_SET_PASSWORD), dto.getNeedSetPassword()));
                         }
+                        assert query != null;
                         return query.where(predicateList.toArray(Predicate[]::new)).getRestriction();
                     },
                     // TODO: 2023/8/29 设置前端 number 默认从 0 开始，或许就不需要减一了
@@ -144,7 +145,7 @@ public class UserServiceImpl implements IUserService {
         return userPage.map(user -> {
             UserDTO userDTO = new UserDTO();
             BeanUtils.copyProperties(user, userDTO);
-            List<UserRole> userRoleList = userRoleRepository.findAll((root, query, criteriaBuilder) ->
+            List<UserRole> userRoleList = userRoleRepository.findAll((root, _, _) ->
                     root.get(UserRole.USER_ID).in(user.getId()));
             if (userRoleList.isEmpty()) {
                 throw BizRuntimeException.from("数据异常，该用户没有角色：" + user.getUsername());
@@ -169,7 +170,7 @@ public class UserServiceImpl implements IUserService {
     @Transactional(rollbackFor = Exception.class)
     public void deleteById(String id) {
         // 逻辑删除用户-角色关联数据
-        userRoleRepository.delete((root, query, criteriaBuilder) -> root.get(UserRole.USER_ID).in(id));
+        userRoleRepository.delete((root, _, _) -> root.get(UserRole.USER_ID).in(id));
         // 逻辑删除用户数据
         userRepository.deleteById(id);
     }

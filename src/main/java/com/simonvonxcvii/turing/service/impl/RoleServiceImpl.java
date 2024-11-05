@@ -63,7 +63,8 @@ public class RoleServiceImpl implements IRoleService {
 
         // 更新角色权限表
         // TODO 可以优化成只添加需要添加的，只删除需要删除的
-        rolePermissionRepository.delete((root, query, criteriaBuilder) -> root.get(RolePermission.ROLE_ID).in(dto.getId()));
+        rolePermissionRepository.delete((root, _, _) ->
+                root.get(RolePermission.ROLE_ID).in(dto.getId()));
         List<RolePermission> rolePermissionList = new LinkedList<>();
         dto.getPermissionIdList()
                 .forEach(permissionId -> {
@@ -94,6 +95,7 @@ public class RoleServiceImpl implements IRoleService {
                                         "%" + dto.getDescription() + "%", '/');
                                 predicateList.add(description);
                             }
+                            assert query != null;
                             return query.where(predicateList.toArray(Predicate[]::new)).getRestriction();
                         },
                         // TODO: 2023/8/29 设置前端 number 默认从 0 开始，或许就不需要减一了
@@ -124,6 +126,7 @@ public class RoleServiceImpl implements IRoleService {
                                 "%" + dto.getDescription() + "%", '/');
                         predicateList.add(description);
                     }
+                    assert query != null;
                     return query.where(predicateList.toArray(Predicate[]::new)).getRestriction();
                 })
                 .stream()
@@ -142,7 +145,8 @@ public class RoleServiceImpl implements IRoleService {
         BeanUtils.copyProperties(role, roleDTO);
         // 查询该角色具有的权限
         List<String> permissionIdList = rolePermissionRepository
-                .findAll((root, query, criteriaBuilder) -> root.get(RolePermission.ROLE_ID).in(role.getId()))
+                .findAll((root, _, _) ->
+                        root.get(RolePermission.ROLE_ID).in(role.getId()))
                 .stream()
                 .map(RolePermission::getPermissionId)
                 .toList();
@@ -153,12 +157,14 @@ public class RoleServiceImpl implements IRoleService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void deleteById(String id) {
-        boolean exists = userRoleRepository.exists((root, query, criteriaBuilder) -> root.get(UserRole.ROLE_ID).in(id));
+        boolean exists = userRoleRepository.exists((root, _, _) ->
+                root.get(UserRole.ROLE_ID).in(id));
         if (exists) {
             throw BizRuntimeException.from("该角色已关联用户");
         }
         // 删除角色-权限关联数据
-        rolePermissionRepository.delete((root, query, criteriaBuilder) -> root.get(RolePermission.ROLE_ID).in(id));
+        rolePermissionRepository.delete((root, _, _) ->
+                root.get(RolePermission.ROLE_ID).in(id));
         roleRepository.deleteById(id);
     }
 
@@ -169,9 +175,10 @@ public class RoleServiceImpl implements IRoleService {
      */
     public List<RoleDTO> selectListForBusinessOrg() {
         // 获取所有已通过的业务申请
-        List<OrganizationBusiness> organizationBusinessList = organizationBusinessRepository.findAll((root, query, criteriaBuilder) ->
-                criteriaBuilder.and(root.get(OrganizationBusiness.ORG_ID).in(UserUtils.getOrgId()),
-                        root.get(OrganizationBusiness.STATE).in(OrganizationBusinessStateEnum.PASSES.getDesc())));
+        List<OrganizationBusiness> organizationBusinessList = organizationBusinessRepository.findAll(
+                (root, _, criteriaBuilder) ->
+                        criteriaBuilder.and(root.get(OrganizationBusiness.ORG_ID).in(UserUtils.getOrgId()),
+                                root.get(OrganizationBusiness.STATE).in(OrganizationBusinessStateEnum.PASSES.getDesc())));
         if (organizationBusinessList.isEmpty()) {
             return List.of();
         }
@@ -182,7 +189,8 @@ public class RoleServiceImpl implements IRoleService {
                 String[] links = StringUtils.commaDelimitedListToStringArray(organizationBusiness.getLink());
                 for (String link : links) {
                     OrganizationBusinessBusinessLinksEnum.getEnumByDesc(link).ifPresent(anEnum ->
-                            roleRepository.findAll((root, query, criteriaBuilder) -> root.get(Role.AUTHORITY).in("STAFF_" + anEnum.name()))
+                            roleRepository.findAll((root, _, _) ->
+                                            root.get(Role.AUTHORITY).in("STAFF_" + anEnum.name()))
                                     .forEach(role -> {
                                         RoleDTO roleDTO = new RoleDTO();
                                         roleDTO.setId(role.getId());
@@ -190,7 +198,8 @@ public class RoleServiceImpl implements IRoleService {
                                         roleDTOList.add(roleDTO);
                                     }));
                     OrganizationBusinessBusinessLinksEnum.getEnumByDesc(link).ifPresent(anEnum ->
-                            roleRepository.findAll((root, query, criteriaBuilder) -> root.get(Role.AUTHORITY).in("STAFF_" + anEnum.name()))
+                            roleRepository.findAll((root, _, _) ->
+                                            root.get(Role.AUTHORITY).in("STAFF_" + anEnum.name()))
                                     .forEach(role -> {
                                         RoleDTO roleDTO = new RoleDTO();
                                         roleDTO.setId(role.getId());
@@ -203,7 +212,8 @@ public class RoleServiceImpl implements IRoleService {
                 String[] types = StringUtils.commaDelimitedListToStringArray(organizationBusiness.getType());
                 for (String type : types) {
                     OrganizationBusinessBusinessLinksEnum.getEnumByDesc(type).ifPresent(anEnum ->
-                            roleRepository.findAll((root, query, criteriaBuilder) -> root.get(Role.AUTHORITY).in("STAFF_" + anEnum.name()))
+                            roleRepository.findAll((root, _, _) ->
+                                            root.get(Role.AUTHORITY).in("STAFF_" + anEnum.name()))
                                     .forEach(role -> {
                                         RoleDTO roleDTO = new RoleDTO();
                                         roleDTO.setId(role.getId());
@@ -224,18 +234,22 @@ public class RoleServiceImpl implements IRoleService {
     @Override
     public List<RoleDTO> selectListForAdministrativeOrg() {
         Collection<? extends GrantedAuthority> authorities = UserUtils.getAuthorities();
+        assert authorities != null;
         if (authorities.contains(new SimpleGrantedAuthority("ROLE_ADMIN_PROVINCE_GOV"))) {
-            return roleRepository.findAll((root, query, criteriaBuilder) -> root.get(Role.AUTHORITY).in("STAFF_PROVINCE_GOV"))
+            return roleRepository.findAll((root, _, _) ->
+                            root.get(Role.AUTHORITY).in("STAFF_PROVINCE_GOV"))
                     .stream()
                     .map(role -> new RoleDTO().setId(role.getId()).setName(role.getName()))
                     .toList();
         } else if (authorities.contains(new SimpleGrantedAuthority("ROLE_ADMIN_CITY_GOV"))) {
-            return roleRepository.findAll((root, query, criteriaBuilder) -> root.get(Role.AUTHORITY).in("STAFF_CITY_GOV"))
+            return roleRepository.findAll((root, _, _) ->
+                            root.get(Role.AUTHORITY).in("STAFF_CITY_GOV"))
                     .stream()
                     .map(role -> new RoleDTO().setId(role.getId()).setName(role.getName()))
                     .toList();
         } else if (authorities.contains(new SimpleGrantedAuthority("ROLE_ADMIN_DISTRICT_GOV"))) {
-            return roleRepository.findAll((root, query, criteriaBuilder) -> root.get(Role.AUTHORITY).in("STAFF_DISTRICT_GOV"))
+            return roleRepository.findAll((root, _, _) ->
+                            root.get(Role.AUTHORITY).in("STAFF_DISTRICT_GOV"))
                     .stream()
                     .map(role -> new RoleDTO().setId(role.getId()).setName(role.getName()))
                     .toList();

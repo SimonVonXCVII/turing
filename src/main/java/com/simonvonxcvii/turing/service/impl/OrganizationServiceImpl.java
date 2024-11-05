@@ -98,6 +98,7 @@ public class OrganizationServiceImpl implements IOrganizationService {
                                         "%" + dto.getLegalPerson() + "%", '/');
                                 predicateList.add(legalPerson);
                             }
+                            assert query != null;
                             return query.where(predicateList.toArray(Predicate[]::new)).getRestriction();
                         },
                         // TODO: 2023/8/29 设置前端 number 默认从 0 开始，或许就不需要减一了
@@ -143,6 +144,7 @@ public class OrganizationServiceImpl implements IOrganizationService {
                     Predicate namePredicate = criteriaBuilder.like(root.get(OrganizationBusiness.ORG_NAME),
                             "%" + name + "%", '/');
                     predicateList.add(namePredicate);
+                    assert query != null;
                     return query.where(predicateList.toArray(Predicate[]::new)).getRestriction();
                 })
                 .stream()
@@ -161,11 +163,11 @@ public class OrganizationServiceImpl implements IOrganizationService {
     public void deleteById(String id) {
         // 逻辑删除用户-角色关联数据
         // TODO: 2023/9/7 是否能实现查询指定列
-        List<User> userList = userRepository.findAll((root, query, criteriaBuilder) -> root.get(User.ORG_ID).in(id));
+        List<User> userList = userRepository.findAll((root, _, _) -> root.get(User.ORG_ID).in(id));
         List<String> userIdList = userList.stream().map(AbstractAuditable::getId).toList();
-        userRoleRepository.delete((root, query, criteriaBuilder) -> root.get(UserRole.USER_ID).in(userIdList));
+        userRoleRepository.delete((root, _, _) -> root.get(UserRole.USER_ID).in(userIdList));
         // 删除单位下的所有用户
-        userRepository.delete((root, query, criteriaBuilder) -> root.get(User.ORG_ID).in(id));
+        userRepository.delete((root, _, _) -> root.get(User.ORG_ID).in(id));
         // 删除单位
         organizationRepository.deleteById(id);
     }

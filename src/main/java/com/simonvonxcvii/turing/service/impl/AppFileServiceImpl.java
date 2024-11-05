@@ -96,8 +96,11 @@ public class AppFileServiceImpl implements IAppFileService {
         // 生成 md5
         String md5 = DigestUtils.md5DigestAsHex(bytes);
         // 通过 md5 查询文件
-        Optional<AppFile> appFileOptional = appFileRepository.findOne((root, query, criteriaBuilder) ->
-                query.where(root.get(AppFile.MD5).in(md5), root.get(Dict.TYPE).in("area")).getRestriction());
+        Optional<AppFile> appFileOptional = appFileRepository.findOne((root, query, _) ->
+        {
+            assert query != null;
+            return query.where(root.get(AppFile.MD5).in(md5), root.get(Dict.TYPE).in("area")).getRestriction();
+        });
         UploadFileDTO dto = new UploadFileDTO();
         // 如果文件存在则直接返回文件信息
         if (appFileOptional.isPresent()) {

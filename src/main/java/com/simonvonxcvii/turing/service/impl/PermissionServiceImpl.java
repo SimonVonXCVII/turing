@@ -84,8 +84,10 @@ public class PermissionServiceImpl implements IPermissionService {
             return new ArrayList<>();
         }
         // 收集 id
-        List<String> parentIdList = permissionList1.stream().filter(permission -> permission.getPid() == null).map(Permission::getId).toList();
-        List<String> childIdList = permissionList1.stream().filter(permission -> permission.getPid() != null).map(Permission::getId).toList();
+        List<String> parentIdList = permissionList1.stream().filter(permission -> permission.getPid() == null)
+                .map(Permission::getId).toList();
+        List<String> childIdList = permissionList1.stream().filter(permission -> permission.getPid() != null)
+                .map(Permission::getId).toList();
         List<String> childPidList = permissionList1.stream().map(Permission::getPid).filter(Objects::nonNull).toList();
         permissionList1 = permissionList.stream()
                 .filter(permission -> {
@@ -125,11 +127,12 @@ public class PermissionServiceImpl implements IPermissionService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void deleteById(String id) {
-        boolean exists = rolePermissionRepository.exists((root, query, criteriaBuilder) -> root.get(RolePermission.PERMISSION_ID).in(id));
+        boolean exists = rolePermissionRepository.exists((root, _, _) ->
+                root.get(RolePermission.PERMISSION_ID).in(id));
         if (exists) {
             throw BizRuntimeException.from("该权限已关联角色");
         }
-        exists = menuRepository.exists((root, query, criteriaBuilder) -> root.get(Menu.PERMISSION_ID).in(id));
+        exists = menuRepository.exists((root, _, _) -> root.get(Menu.PERMISSION_ID).in(id));
         if (exists) {
             throw BizRuntimeException.from("该权限已关联菜单");
         }

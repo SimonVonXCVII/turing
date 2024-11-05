@@ -49,27 +49,27 @@ public class Result<T> implements Serializable {
     }
 
     public static <T> Result<T> ok(T result) {
-        return new Result<T>(ResultCode.SUCCESS, result);
+        return new Result<>(ResultCode.SUCCESS, result);
     }
 
     public static <T> Result<T> ok() {
-        return new Result<T>(ResultCode.SUCCESS, (T) null);
+        return new Result<>(ResultCode.SUCCESS, (T) null);
     }
 
     public static <T> Result<T> error() {
-        return new Result<T>(ResultCode.ERROR.code(), "操作失败", null);
+        return new Result<>(ResultCode.ERROR.code(), "操作失败", null);
     }
 
     public static <T> Result<T> error(String message) {
-        return new Result<T>(ResultCode.ERROR, message);
+        return new Result<>(ResultCode.ERROR, message);
     }
 
     public static <T> Result<T> error(String code, String message, T result) {
-        return new Result<T>(code, message, result);
+        return new Result<>(code, message, result);
     }
 
     public static <T> Result<T> error(String code, String message) {
-        return new Result<T>(code, message, null);
+        return new Result<>(code, message, null);
     }
 
     public Object getData() {

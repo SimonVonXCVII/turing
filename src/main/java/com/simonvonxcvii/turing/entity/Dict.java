@@ -7,7 +7,7 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.Where;
+import org.hibernate.annotations.SQLRestriction;
 
 /**
  * <p>
@@ -25,7 +25,7 @@ import org.hibernate.annotations.Where;
 @Table(schema = "public", name = "turing_dict")
 // @SQLDelete 只支持 delete(T entity) 和 deleteById(ID id)
 @SQLDelete(sql = "UPDATE turing_dict SET deleted = TRUE WHERE id = ? AND version = ? AND deleted = FALSE")
-@Where(clause = "deleted = FALSE")
+@SQLRestriction("deleted = FALSE")
 public class Dict extends AbstractAuditable {
 
     /**

@@ -71,6 +71,7 @@ public class DictServiceImpl implements IDictService {
                                         "%" + dto.getValue().toLowerCase() + "%", '/');
                                 predicateList.add(code);
                             }
+                            assert query != null;
                             return query.where(predicateList.toArray(Predicate[]::new)).getRestriction();
                         },
                         // TODO: 2023/8/29 设置前端 number 默认从 0 开始，或许就不需要减一了
@@ -96,23 +97,32 @@ public class DictServiceImpl implements IDictService {
         if (code == null) {
             DictDTO dictDTO = new DictDTO();
             List<Dict> children = dictRepository.findAll((root, query, criteriaBuilder) ->
-                    query.where(root.get(Dict.PID).isNull(), root.get(Dict.TYPE).in("area"))
-                            .orderBy(criteriaBuilder.asc(root.get(Dict.SORT)))
-                            .getRestriction()
+                    {
+                        assert query != null;
+                        return query.where(root.get(Dict.PID).isNull(), root.get(Dict.TYPE).in("area"))
+                                .orderBy(criteriaBuilder.asc(root.get(Dict.SORT)))
+                                .getRestriction();
+                    }
             );
             if (!children.isEmpty()) {
                 dictDTO.setChildren(children.stream().map(this::convertToDictDTO).toList());
             }
             return dictDTO;
         }
-        Dict dict = dictRepository.findOne((root, query, criteriaBuilder) ->
-                        query.where(root.get(Dict.VALUE).in(code.toString()), root.get(Dict.TYPE).in("area")).getRestriction())
+        Dict dict = dictRepository.findOne((root, query, _) ->
+                {
+                    assert query != null;
+                    return query.where(root.get(Dict.VALUE).in(code.toString()), root.get(Dict.TYPE).in("area")).getRestriction();
+                })
                 .orElseThrow(() -> BizRuntimeException.from("没有找到区域编号：" + code));
         DictDTO dictDTO = convertToDictDTO(dict);
         List<Dict> children = dictRepository.findAll((root, query, criteriaBuilder) ->
-                query.where(root.get(Dict.PID).in(code), root.get(Dict.TYPE).in("area"))
-                        .orderBy(criteriaBuilder.asc(root.get(Dict.SORT)))
-                        .getRestriction()
+                {
+                    assert query != null;
+                    return query.where(root.get(Dict.PID).in(code), root.get(Dict.TYPE).in("area"))
+                            .orderBy(criteriaBuilder.asc(root.get(Dict.SORT)))
+                            .getRestriction();
+                }
         );
         if (!children.isEmpty()) {
             dictDTO.setChildren(children.stream().map(this::convertToDictDTO).toList());

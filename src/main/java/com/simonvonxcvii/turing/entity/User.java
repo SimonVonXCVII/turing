@@ -7,7 +7,7 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.Where;
+import org.hibernate.annotations.SQLRestriction;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
@@ -29,7 +29,7 @@ import java.util.Collection;
 // @SQLDelete 只支持 delete(T entity) 和 deleteById(ID id)
 @SQLDelete(sql = "UPDATE turing_user SET deleted = TRUE WHERE id = ? AND version = ? AND deleted = FALSE")
 //@SQLDeleteAll()
-@Where(clause = "deleted = FALSE")
+@SQLRestriction("deleted = FALSE")
 //@RedisHash
 //@Document(indexName = "turing_user")
 public class User extends AbstractAuditable implements UserDetails {

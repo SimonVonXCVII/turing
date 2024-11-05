@@ -7,7 +7,7 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.Where;
+import org.hibernate.annotations.SQLRestriction;
 import org.springframework.security.core.GrantedAuthority;
 
 /**
@@ -26,7 +26,7 @@ import org.springframework.security.core.GrantedAuthority;
 @Table(schema = "public", name = "turing_role")
 // @SQLDelete 只支持 delete(T entity) 和 deleteById(ID id)
 @SQLDelete(sql = "UPDATE turing_role SET deleted = TRUE WHERE id = ? AND version = ? AND deleted = FALSE")
-@Where(clause = "deleted = FALSE")
+@SQLRestriction("deleted = FALSE")
 public class Role extends AbstractAuditable implements GrantedAuthority {
 
     /**

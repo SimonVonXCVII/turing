@@ -20,14 +20,14 @@ public interface ResultCode {
     /**
      * 资源未找到
      */
-    ResultCode NOT_FOUND = new DefaultResultCode("NOT_FOUND", "请求数据未找到", false);
+//    ResultCode NOT_FOUND = new DefaultResultCode("NOT_FOUND", "请求数据未找到", false);
 
     /**
      * 生成一个 {@link ResultCode} 实例
      */
-    static DefaultResultCode error(String code, String message) {
-        return new DefaultResultCode(code, message, false);
-    }
+//    static DefaultResultCode error(String code, String message) {
+//        return new DefaultResultCode(code, message, false);
+//    }
 
     /**
      * 生成一个 {@link ResultCode} 实例
@@ -49,5 +49,5 @@ public interface ResultCode {
     /**
      * 是否成功
      */
-    Boolean isSuccess();
+//    Boolean isSuccess();
 }

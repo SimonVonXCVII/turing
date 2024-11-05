@@ -18,13 +18,7 @@ public class TreeListUtils {
     public static final String SEP = ",";
 
     /**
-     * 树形化list
-     *
-     * @param list
-     * @param id
-     * @param pid
-     * @param <T>
-     * @return
+     * 树形化 list
      */
     public static <T> void tree(List<T> list, Function<T, String> id, Function<T, String> pid, BiConsumer<T, T> consumer) {
         Map<String, T> detailVoMap = list
@@ -43,10 +37,7 @@ public class TreeListUtils {
     }
 
     /**
-     * 获取父节点id
-     *
-     * @param pid
-     * @return
+     * 获取父节点 id
      */
     public static String getParentId(String pid) {
         if (!StringUtils.hasText(pid)) {

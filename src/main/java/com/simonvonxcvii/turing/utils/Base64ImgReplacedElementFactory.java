@@ -2,6 +2,7 @@ package com.simonvonxcvii.turing.utils;
 
 import com.lowagie.text.BadElementException;
 import com.lowagie.text.Image;
+import org.jetbrains.annotations.NotNull;
 import org.w3c.dom.Element;
 import org.xhtmlrenderer.extend.FSImage;
 import org.xhtmlrenderer.extend.ReplacedElement;
@@ -35,7 +36,7 @@ public class Base64ImgReplacedElementFactory implements ReplacedElementFactory {
      * @return ReplacedElement
      */
     @Override
-    public ReplacedElement createReplacedElement(LayoutContext c, BlockBox box, UserAgentCallback uac, int cssWidth, int cssHeight) {
+    public ReplacedElement createReplacedElement(@NotNull LayoutContext c, BlockBox box, @NotNull UserAgentCallback uac, int cssWidth, int cssHeight) {
         Element e = box.getElement();
         if (e == null) {
             return null;
@@ -84,11 +85,11 @@ public class Base64ImgReplacedElementFactory implements ReplacedElementFactory {
     }
 
     @Override
-    public void remove(Element arg0) {
+    public void remove(@NotNull Element arg0) {
     }
 
     @Override
-    public void setFormSubmissionListener(FormSubmissionListener arg0) {
+    public void setFormSubmissionListener(@NotNull FormSubmissionListener arg0) {
     }
 
 }
