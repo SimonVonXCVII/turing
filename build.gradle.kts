@@ -101,14 +101,13 @@ repositories {
 /**
  * 该对象的扩展容器中的额外属性扩展。
  */
-extra["easyexcelVersion"] = "4.0.3"
 extra["therapiRuntimeJavadocVersion"] = "0.15.0"
 extra["googleGuavaVersion"] = "33.3.1-jre"
 extra["googleZxingVersion"] = "3.5.3"
-extra["thumbnailatorVersion"] = "0.4.20"
+extra["apachePoiVersion"] = "5.3.0"
 extra["apacheVelocityVersion"] = "2.4.1"
-extra["springdocVersion"] = "2.6.0"
-extra["flyingSaucerPdfVersion"] = "9.10.1"
+extra["springdocVersion"] = "2.7.0-RC1"
+extra["flyingSaucerPdfVersion"] = "9.10.2"
 
 /**
  * 配置此项目的依赖项。
@@ -122,25 +121,23 @@ dependencies {
     // lombok
     compileOnly("org.projectlombok:lombok")
 
-    // easyexcel TODO 尝试换成 apache 的
-    // https://mvnrepository.com/artifact/com.alibaba/easyexcel
-    implementation("com.alibaba:easyexcel:${property("easyexcelVersion")}")
     // therapi
+    // https://central.sonatype.com/artifact/com.github.therapi/therapi-runtime-javadoc
     implementation("com.github.therapi:therapi-runtime-javadoc:${property("therapiRuntimeJavadocVersion")}")
     // google
-    // https://mvnrepository.com/artifact/com.google
+    // https://central.sonatype.com/artifact/com.google.guava/guava
     implementation("com.google.guava:guava:${property("googleGuavaVersion")}")
+    // https://central.sonatype.com/artifact/com.google.zxing/javase
     implementation("com.google.zxing:javase:${property("googleZxingVersion")}")
-    // thumbnailator
-    // https://mvnrepository.com/artifact/net.coobird/thumbnailator
-    implementation("net.coobird:thumbnailator:${property("thumbnailatorVersion")}")
-    // velocity
-    // https://mvnrepository.com/artifact/org.apache.velocity/velocity-engine-core
+    // apache
+    // https://central.sonatype.com/artifact/org.apache.poi/poi
+    implementation("org.apache.poi:poi:${property("apachePoiVersion")}")
+    // https://central.sonatype.com/artifact/org.apache.velocity/velocity-engine-core
     implementation("org.apache.velocity:velocity-engine-core:${property("apacheVelocityVersion")}")
     // kotlin 非必需
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     // springdoc
-    // https://mvnrepository.com/artifact/org.springdoc
+    // https://central.sonatype.com/namespace/org.springdoc
     implementation("org.springdoc:springdoc-openapi-starter-common:${property("springdocVersion")}")
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-api:${property("springdocVersion")}")
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:${property("springdocVersion")}")
@@ -159,7 +156,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.springframework.boot:spring-boot-starter-web")
     // PDF TODO 尝试换成 apache 的，或者试试 itext
-    // https://mvnrepository.com/artifact/org.xhtmlrenderer/flying-saucer-pdf
+    // https://central.sonatype.com/artifact/org.xhtmlrenderer/flying-saucer-pdf
     implementation("org.xhtmlrenderer:flying-saucer-pdf:${property("flyingSaucerPdfVersion")}")
 
     // postgresql
