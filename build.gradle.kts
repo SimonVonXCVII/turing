@@ -15,8 +15,8 @@ plugins {
     /**
      * 应用给定的 Kotlin 插件模块。
      */
-    kotlin("jvm") version "2.0.21"
-    kotlin("plugin.spring") version "2.0.21"
+    kotlin("jvm") version "2.1.0"
+    kotlin("plugin.spring") version "2.1.0"
 }
 
 /**
@@ -44,7 +44,7 @@ java {
         /**
          * 工具链需要支持的 Java 语言的确切版本。
          */
-        languageVersion = JavaLanguageVersion.of(22)
+        languageVersion = JavaLanguageVersion.of(23)
     }
 }
 
@@ -159,7 +159,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
-    implementation("org.springframework.boot:spring-boot-starter-validation")
+//    implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.springframework.boot:spring-boot-starter-web")
     // PDF TODO 尝试换成 apache 的，或者试试 itext
     // https://central.sonatype.com/artifact/org.xhtmlrenderer/flying-saucer-pdf

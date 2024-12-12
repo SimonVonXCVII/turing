@@ -3,9 +3,9 @@ package com.simonvonxcvii.turing.model.dto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.validator.constraints.Length;
 
 /**
  * 业务注册类
@@ -31,7 +31,7 @@ public class RegisterDTO {
      */
     @Schema(description = "信用代码")
     @NotBlank(message = "信用代码不能为空")
-    @Length(min = 18, max = 18, message = "请填写正确的信用代码")
+    @Size(min = 18, max = 18, message = "请填写正确的信用代码")
     private String code;
 
     /**
