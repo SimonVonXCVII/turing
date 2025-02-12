@@ -11,7 +11,7 @@ spring:
   data:
     redis:
       # redis 服务器主机
-      host: soil-redis
+      host: turing-redis
       # redis 密码
       password:
   datasource:
