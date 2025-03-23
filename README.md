@@ -1,1 +1,1 @@
-A simple Java backend project. test
+A simple Java backend project.
