@@ -9,14 +9,14 @@ plugins {
     /**
      * 添加对具有给定 id 的插件的依赖关系。
      */
-    id("org.springframework.boot") version "3.4.4"
+    id("org.springframework.boot") version "3.5.0"
     id("io.spring.dependency-management") version "1.1.7"
     id("org.graalvm.buildtools.native") version "0.10.6"
     /**
      * 应用给定的 Kotlin 插件模块。
      */
-    kotlin("jvm") version "2.1.20"
-    kotlin("plugin.spring") version "2.1.20"
+    kotlin("jvm") version "2.1.21"
+    kotlin("plugin.spring") version "2.1.21"
 }
 
 /**
