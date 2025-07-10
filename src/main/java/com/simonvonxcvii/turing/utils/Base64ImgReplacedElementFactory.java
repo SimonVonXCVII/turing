@@ -1,13 +1,9 @@
 package com.simonvonxcvii.turing.utils;
 
 import com.lowagie.text.BadElementException;
-import com.lowagie.text.Image;
 import org.jetbrains.annotations.NotNull;
 import org.w3c.dom.Element;
-import org.xhtmlrenderer.extend.FSImage;
-import org.xhtmlrenderer.extend.ReplacedElement;
-import org.xhtmlrenderer.extend.ReplacedElementFactory;
-import org.xhtmlrenderer.extend.UserAgentCallback;
+import org.xhtmlrenderer.extend.*;
 import org.xhtmlrenderer.layout.LayoutContext;
 import org.xhtmlrenderer.pdf.ITextFSImage;
 import org.xhtmlrenderer.pdf.ITextImageElement;
@@ -55,7 +51,8 @@ public class Base64ImgReplacedElementFactory implements ReplacedElementFactory {
             if (fsImage != null) {
                 // 对图像进行缩放
                 if (cssWidth != -1 || cssHeight != -1) {
-                    fsImage.scale(cssWidth, cssHeight);
+                    // TODO 这里如果不接收返回值会报警告，问题是这样写是否正确
+                    fsImage = fsImage.scale(cssWidth, cssHeight);
                 }
                 return new ITextImageElement(fsImage);
             }
@@ -73,7 +70,8 @@ public class Base64ImgReplacedElementFactory implements ReplacedElementFactory {
             String base64Code = srcAttr.substring(srcAttr.indexOf("base64,") + "base64,".length());
             // 解码
             byte[] decodedBytes = Base64.getDecoder().decode(base64Code);
-            fiImg = new ITextFSImage(Image.getInstance(decodedBytes));
+            // TODO 需要检测是否正确
+            fiImg = new ITextFSImage(decodedBytes, new Size(64, 64), srcAttr);
         } else {
             fiImg = uac.getImageResource(srcAttr).getImage();
         }
