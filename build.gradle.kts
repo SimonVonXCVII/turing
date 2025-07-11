@@ -9,14 +9,14 @@ plugins {
     /**
      * 添加对具有给定 id 的插件的依赖关系。
      */
-    id("org.springframework.boot") version "3.5.3"
-    id("io.spring.dependency-management") version "1.1.7"
-    id("org.graalvm.buildtools.native") version "0.10.6"
+    id("org.springframework.boot") version libs.versions.springBoot.get()
+    id("io.spring.dependency-management") version libs.versions.springDependencyManagement.get()
+    id("org.graalvm.buildtools.native") version libs.versions.graalvmBuildtoolsNative.get()
     /**
      * 应用给定的 Kotlin 插件模块。
      */
-    kotlin("jvm") version "2.2.0"
-    kotlin("plugin.spring") version "2.2.0"
+    kotlin("jvm") version libs.versions.kotlin.get()
+    kotlin("plugin.spring") version libs.versions.kotlin.get()
 }
 
 /**
@@ -44,7 +44,7 @@ java {
         /**
          * 工具链需要支持的 Java 语言的确切版本。
          */
-        languageVersion = JavaLanguageVersion.of(24)
+        languageVersion = JavaLanguageVersion.of(libs.versions.javaLanguage.get())
     }
 }
 
@@ -101,23 +101,11 @@ repositories {
 }
 
 /**
- * 该对象的扩展容器中的额外属性扩展。
- */
-extra["therapiRuntimeJavadocVersion"] = "0.15.0"
-extra["googleGuavaVersion"] = "33.4.8-jre"
-extra["googleZxingVersion"] = "3.5.3"
-extra["thumbnailatorVersion"] = "0.4.20"
-extra["apachePoiVersion"] = "5.4.1"
-extra["apacheVelocityVersion"] = "2.4.1"
-extra["springdocVersion"] = "2.8.9"
-extra["flyingSaucerPdfVersion"] = "9.13.0"
-
-/**
  * 配置此项目的依赖项。
  * 针对该项目的 DependencyHandlerScope 执行给定的配置块。
  */
 dependencies {
-    annotationProcessor("com.github.therapi:therapi-runtime-javadoc-scribe:${property("therapiRuntimeJavadocVersion")}")
+    annotationProcessor("com.github.therapi:therapi-runtime-javadoc-scribe:${libs.versions.therapiRuntimeJavadoc.get()}")
     annotationProcessor("org.projectlombok:lombok")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
@@ -126,27 +114,27 @@ dependencies {
 
     // therapi
     // https://central.sonatype.com/artifact/com.github.therapi/therapi-runtime-javadoc
-    implementation("com.github.therapi:therapi-runtime-javadoc:${property("therapiRuntimeJavadocVersion")}")
+    implementation("com.github.therapi:therapi-runtime-javadoc:${libs.versions.therapiRuntimeJavadoc.get()}")
     // google
     // https://central.sonatype.com/artifact/com.google.guava/guava
-    implementation("com.google.guava:guava:${property("googleGuavaVersion")}")
+    implementation("com.google.guava:guava:${libs.versions.googleGuava.get()}")
     // https://central.sonatype.com/artifact/com.google.zxing/javase
-    implementation("com.google.zxing:javase:${property("googleZxingVersion")}")
+    implementation("com.google.zxing:javase:${libs.versions.googleZxing.get()}")
     // thumbnailator
     // https://central.sonatype.com/artifact/net.coobird/thumbnailator
-    implementation("net.coobird:thumbnailator:${property("thumbnailatorVersion")}")
+    implementation("net.coobird:thumbnailator:${libs.versions.thumbnailator.get()}")
     // apache
     // https://central.sonatype.com/artifact/org.apache.poi/poi
-    implementation("org.apache.poi:poi:${property("apachePoiVersion")}")
+    implementation("org.apache.poi:poi:${libs.versions.apachePoi.get()}")
     // https://central.sonatype.com/artifact/org.apache.velocity/velocity-engine-core
-    implementation("org.apache.velocity:velocity-engine-core:${property("apacheVelocityVersion")}")
+    implementation("org.apache.velocity:velocity-engine-core:${libs.versions.apacheVelocity.get()}")
     // kotlin 非必需
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     // springdoc
     // https://central.sonatype.com/namespace/org.springdoc
-    implementation("org.springdoc:springdoc-openapi-starter-common:${property("springdocVersion")}")
-    implementation("org.springdoc:springdoc-openapi-starter-webmvc-api:${property("springdocVersion")}")
-    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:${property("springdocVersion")}")
+    implementation("org.springdoc:springdoc-openapi-starter-common:${libs.versions.springdoc.get()}")
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-api:${libs.versions.springdoc.get()}")
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:${libs.versions.springdoc.get()}")
     // springframework
 //    developmentOnly("org.springframework.boot:spring-boot-docker-compose")
     implementation("org.springframework.boot:spring-boot-starter")
@@ -163,7 +151,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
     // PDF TODO 尝试换成 apache 的，或者试试 itext
     // https://central.sonatype.com/artifact/org.xhtmlrenderer/flying-saucer-pdf
-    implementation("org.xhtmlrenderer:flying-saucer-pdf:${property("flyingSaucerPdfVersion")}")
+    implementation("org.xhtmlrenderer:flying-saucer-pdf:${libs.versions.flyingSaucerPdf.get()}")
 //    implementation("org.apache.pdfbox:pdfbox:3.0.1")
 
     // postgresql
