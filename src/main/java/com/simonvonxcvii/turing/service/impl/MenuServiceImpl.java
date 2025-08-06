@@ -23,7 +23,7 @@ import java.util.Objects;
  * 菜单表 服务实现类
  * </p>
  *
- * @author SimonVonXCVII
+ * @author Simon Von
  * @since 2022-12-26 18:25:51
  */
 @RequiredArgsConstructor

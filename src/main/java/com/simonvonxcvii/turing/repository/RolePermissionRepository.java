@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
  * 行政区划 Repository 接口
  * </p>
  *
- * @author SimonVonXCVII
+ * @author Simon Von
  * @since 2023-08-21 18:08:08
  */
 @Repository

@@ -36,7 +36,7 @@ import java.util.UUID;
  * 文件表 服务实现类
  * </p>
  *
- * @author SimonVonXCVII
+ * @author Simon Von
  * @since 2023-04-01 23:08:08
  */
 @RequiredArgsConstructor
@@ -58,7 +58,7 @@ public class AppFileServiceImpl implements IAppFileService {
      * @param isCompress       是否压缩
      * @param isApp            是否 app 端上传
      * @return 文件 id、文件名
-     * @author SimonVonXCVII
+     * @author Simon Von
      * @since 2023-04-01 23:08:08
      */
     @Override
@@ -153,7 +153,7 @@ public class AppFileServiceImpl implements IAppFileService {
      *
      * @param id       文件 id
      * @param response 响应
-     * @author SimonVonXCVII
+     * @author Simon Von
      * @since 2023-04-01 23:08:08
      */
     @Override
@@ -193,7 +193,7 @@ public class AppFileServiceImpl implements IAppFileService {
      *
      * @param id       文件 id
      * @param response 响应
-     * @author SimonVonXCVII
+     * @author Simon Von
      * @since 2023-04-01 23:08:08
      */
     @Override
@@ -232,7 +232,7 @@ public class AppFileServiceImpl implements IAppFileService {
      * 根据文件 id 删除文件
      *
      * @param id 文件 id
-     * @author SimonVonXCVII
+     * @author Simon Von
      * @since 2022/8/17 20:07
      */
     @Override

@@ -23,7 +23,7 @@ import java.util.regex.Pattern;
  * 文件表 前端控制器
  * </p>
  *
- * @author SimonVonXCVII
+ * @author Simon Von
  * @since 2023-04-01 23:08:08
  */
 @Tag(name = "AppFileController", description = "文件表 前端控制器")
@@ -130,7 +130,7 @@ public class AppFileController {
      *
      * @param file 上传的文件
      * @return 原文件名和文件后缀
-     * @author SimonVonXCVII
+     * @author Simon Von
      * @since 2023/4/10 10:19
      */
     private CheckMultipartFile getCheckMultipartFile(MultipartFile file) {
@@ -158,7 +158,7 @@ public class AppFileController {
      *
      * @param originalFilename 原文件名
      * @param suffix           文件后缀
-     * @author SimonVonXCVII
+     * @author Simon Von
      * @since 2023/4/10 10:21
      */
     private record CheckMultipartFile(String originalFilename, String suffix) {

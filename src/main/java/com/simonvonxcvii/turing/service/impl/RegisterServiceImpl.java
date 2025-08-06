@@ -19,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 /**
  * 注册 服务实现类
  *
- * @author SimonVonXCVII
+ * @author Simon Von
  * @since 2023/4/12 22:20
  */
 @RequiredArgsConstructor
@@ -35,7 +35,7 @@ public class RegisterServiceImpl implements RegisterService {
      * // TODO: 2023/8/31 测试
      * 注册
      *
-     * @author SimonVonXCVII
+     * @author Simon Von
      * @since 2023/4/12 22:20
      */
     @Override

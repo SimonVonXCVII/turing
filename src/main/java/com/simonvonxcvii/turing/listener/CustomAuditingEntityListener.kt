@@ -7,7 +7,7 @@ import org.apache.commons.logging.LogFactory
 /**
  * 自定义审计实体监听器
  *
- * @author SimonVonXCVII
+ * @author Simon Von
  * @see org.springframework.data.jpa.domain.support.AuditingEntityListener
  *
  * @since 2023/8/18 14:55

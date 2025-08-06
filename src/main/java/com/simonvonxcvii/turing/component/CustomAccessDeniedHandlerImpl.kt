@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component
  * 如果视图（或标记库或宏）希望访问 SecurityContextHolder，这是有益的。
  * 请求范围也将填充异常本身，可从密钥 WebAttributes.ACCESS_DENIED_403 获得。
  *
- * @author SimonVonXCVII
+ * @author Simon Von
  * @since 2023/3/9 16:21
  */
 @Component

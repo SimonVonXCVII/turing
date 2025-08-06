@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * 注册 前端控制器
  *
- * @author SimonVonXCVII
+ * @author Simon Von
  * @since 2023/4/12 22:22
  */
 @Tag(name = "RegisterController", description = "注册 前端控制器")

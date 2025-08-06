@@ -18,7 +18,7 @@ import org.springframework.http.HttpHeaders
 /**
  * Open API 配置类
  *
- * @author SimonVonXCVII
+ * @author Simon Von
  * @since 12/16/2022 17:47 PM
  */
 // @OpenAPIDefinition 配置的内容优先级高于 new OpenAPI()

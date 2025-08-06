@@ -10,7 +10,7 @@ import java.util.List;
  * 单位表 服务类
  * </p>
  *
- * @author SimonVonXCVII
+ * @author Simon Von
  * @since 2022-12-29 11:33:31
  */
 public interface IOrganizationService {
@@ -35,7 +35,7 @@ public interface IOrganizationService {
      *
      * @param name 实验室名称
      * @return 符合条件的实验室数据
-     * @author SimonVonXCVII
+     * @author Simon Von
      * @since 2023/4/4 14:52
      */
     List<OrganizationDTO> selectList(String name);

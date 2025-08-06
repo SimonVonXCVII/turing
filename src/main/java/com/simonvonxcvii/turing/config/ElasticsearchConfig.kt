@@ -11,7 +11,7 @@ import org.springframework.data.elasticsearch.client.elc.ElasticsearchConfigurat
 /**
  * 用于使用 Elasticsearch 客户端设置 Elasticsearch 连接
  *
- * @author SimonVonXCVII
+ * @author Simon Von
  * @since 2023/6/30 23:33
  */
 @Configuration

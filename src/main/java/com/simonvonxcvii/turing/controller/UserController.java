@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
  * 用户表 前端控制器
  * </p>
  *
- * @author SimonVonXCVII
+ * @author Simon Von
  * @since 2022-12-19 15:58:28
  */
 @RestController

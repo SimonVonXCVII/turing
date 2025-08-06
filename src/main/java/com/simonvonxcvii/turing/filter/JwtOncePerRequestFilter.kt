@@ -18,7 +18,7 @@ import org.springframework.web.filter.OncePerRequestFilter
 /**
  * Jwt 请求调度的一次执行认证过滤器
  *
- * @author SimonVonXCVII
+ * @author Simon Von
  * @since 11/22/2022 2:19 PM
  */
 @Component

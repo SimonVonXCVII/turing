@@ -16,7 +16,7 @@ import java.io.IOException
 /**
  * 登录 前端控制器
  *
- * @author SimonVonXCVII
+ * @author Simon Von
  * @since 12/16/2022 4:07 PM
  */
 @RequestMapping("/api/login")

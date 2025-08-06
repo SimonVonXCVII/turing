@@ -12,7 +12,7 @@ import java.util.Collection;
 /**
  * 用户工具类
  *
- * @author SimonVonXCVII
+ * @author Simon Von
  * @since 12/23/2022 3:52 PM
  */
 public class UserUtils {
@@ -24,7 +24,7 @@ public class UserUtils {
      * 获取当前用户信息或者抛出异常
      *
      * @return 当前用户信息
-     * @author SimonVonXCVII
+     * @author Simon Von
      * @since 12/24/2022 11:59 AM
      */
     public static User getUser() {
@@ -38,7 +38,7 @@ public class UserUtils {
      * 获取当前用户 id
      *
      * @return 当前用户 id
-     * @author SimonVonXCVII
+     * @author Simon Von
      * @since 12/23/2022 3:53 PM
      */
     public static String getId() {
@@ -49,7 +49,7 @@ public class UserUtils {
      * 获取当前用户的单位 id
      *
      * @return 当前用户的单位 id
-     * @author SimonVonXCVII
+     * @author Simon Von
      * @since 12/23/2022 3:53 PM
      */
     public static String getOrgId() {
@@ -60,7 +60,7 @@ public class UserUtils {
      * 当前用户是否是超级管理员
      *
      * @return 当前用户是否是超级管理员
-     * @author SimonVonXCVII
+     * @author Simon Von
      * @since 2023/8/25 16:06
      */
     public static boolean isAdmin() {
@@ -71,7 +71,7 @@ public class UserUtils {
      * 当前用户是否是单位管理员
      *
      * @return 当前用户是否是单位管理员
-     * @author SimonVonXCVII
+     * @author Simon Von
      * @since 2023/8/25 16:06
      */
     public static boolean isManager() {
@@ -83,7 +83,7 @@ public class UserUtils {
      * 实现应确保对返回的集合数组的修改不会影响 Authentication 对象的状态，或使用不可修改的实例。
      *
      * @return 授予主体的权限，如果令牌尚未经过身份验证，则为空集合。 永不为空。
-     * @author SimonVonXCVII
+     * @author Simon Von
      * @since 2023/8/31 14:46
      */
     public static Collection<? extends GrantedAuthority> getAuthorities() {
@@ -98,7 +98,7 @@ public class UserUtils {
      * 证明委托人正确的凭据。 这通常是密码，但也可以是与 AuthenticationManager 相关的任何内容。 调用者需要填写凭据。
      *
      * @return 证明委托人身份的凭证
-     * @author SimonVonXCVII
+     * @author Simon Von
      * @since 2023/8/31 14:47
      */
     public static Object getCredentials() {
@@ -113,7 +113,7 @@ public class UserUtils {
      * 存储有关身份验证请求的其他详细信息。 这些可能是 IP 地址、证书序列号等。
      *
      * @return 有关身份验证请求的其他详细信息，如果未使用则为 null
-     * @author SimonVonXCVII
+     * @author Simon Von
      * @since 2023/8/31 14:48
      */
     public static Object getDetails() {
@@ -129,7 +129,7 @@ public class UserUtils {
      * AuthenticationManager 实现通常会返回包含更丰富信息的身份验证，作为应用程序使用的主体。 许多身份验证提供程序将创建一个 UserDetails 对象作为主体。
      *
      * @return 正在认证的主体或认证后已认证的主体。
-     * @author SimonVonXCVII
+     * @author Simon Von
      * @since 2023/8/31 14:49
      */
     public static Object getPrincipal() {
@@ -147,7 +147,7 @@ public class UserUtils {
      * 出于安全原因，此接口的实现应该非常小心地从该方法返回 true，除非它们是不可变的，或者有某种方法确保属性自最初创建以来没有发生更改。
      *
      * @return true 如果令牌已通过身份验证并且 AbstractSecurityInterceptor 不需要再次将令牌提供给 AuthenticationManager 进行重新身份验证。
-     * @author SimonVonXCVII
+     * @author Simon Von
      * @since 2023/8/31 14:49
      */
     public static boolean isAuthenticated() {
@@ -162,7 +162,7 @@ public class UserUtils {
      * 判断当前是否是匿名用户（测试中...）
      *
      * @return true：如果是匿名用户，false：不是匿名用户
-     * @author SimonVonXCVII
+     * @author Simon Von
      * @since 1/9/2023 5:26 PM
      */
     public static boolean isAnonymous() {

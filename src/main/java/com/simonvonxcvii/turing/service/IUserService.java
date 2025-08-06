@@ -8,7 +8,7 @@ import org.springframework.data.domain.Page;
  * 用户表 服务类
  * </p>
  *
- * @author SimonVonXCVII
+ * @author Simon Von
  * @since 2022-12-19 15:58:28
  */
 public interface IUserService {
@@ -27,7 +27,7 @@ public interface IUserService {
      * 根据用户 id 逻辑删除用户
      *
      * @param id 用户 id
-     * @author SimonVonXCVII
+     * @author Simon Von
      * @since 2023/9/6 18:12
      */
     void deleteById(String id);

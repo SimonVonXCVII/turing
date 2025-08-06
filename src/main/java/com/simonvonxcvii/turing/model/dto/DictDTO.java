@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * 字典 DTO
  *
- * @author SimonVonXCVII
+ * @author Simon Von
  * @since 12/30/2022 4:03 PM
  */
 @Getter

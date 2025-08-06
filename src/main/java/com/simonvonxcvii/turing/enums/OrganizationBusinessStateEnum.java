@@ -7,7 +7,7 @@ import java.util.Objects;
 /**
  * 单位业务类型枚举类
  *
- * @author SimonVonXCVII
+ * @author Simon Von
  * @since 1/4/2023 5:26 PM
  */
 @Getter

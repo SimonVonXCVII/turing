@@ -9,7 +9,7 @@ import java.util.List;
  * 菜单表 服务类
  * </p>
  *
- * @author SimonVonXCVII
+ * @author Simon Von
  * @since 2022-12-26 18:25:51
  */
 public interface IMenuService {

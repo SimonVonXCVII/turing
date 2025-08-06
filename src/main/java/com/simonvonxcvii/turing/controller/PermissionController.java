@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
  * 权限表 前端控制器
  * </p>
  *
- * @author SimonVonXCVII
+ * @author Simon Von
  * @author JiangEEZzz
  * @since 2023-01-04 17:22:49
  */

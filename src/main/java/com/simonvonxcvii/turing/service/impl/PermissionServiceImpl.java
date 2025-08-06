@@ -25,7 +25,7 @@ import java.util.Objects;
  * 权限表 服务实现类
  * </p>
  *
- * @author SimonVonXCVII
+ * @author Simon Von
  * @since 2022-12-22 16:22:49
  */
 @RequiredArgsConstructor
@@ -39,7 +39,7 @@ public class PermissionServiceImpl implements IPermissionService {
     /**
      * 单个新增或修改
      *
-     * @author SimonVonXCVII
+     * @author Simon Von
      * @since 3/4/2023 9:28 PM
      */
     @Override
@@ -65,7 +65,7 @@ public class PermissionServiceImpl implements IPermissionService {
      * 查询所有父级子级权限集合
      *
      * @return 所有父级子级权限集合
-     * @author SimonVonXCVII
+     * @author Simon Von
      * @since 3/4/2023 9:28 PM
      */
     @Override
@@ -121,7 +121,7 @@ public class PermissionServiceImpl implements IPermissionService {
     /**
      * 根据主键 id 逻辑删除
      *
-     * @author SimonVonXCVII
+     * @author Simon Von
      * @since 3/4/2023 9:28 PM
      */
     @Override

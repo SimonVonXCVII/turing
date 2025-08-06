@@ -10,7 +10,7 @@ package com.simonvonxcvii.turing.component;
 //import java.util.function.Supplier;
 //
 /// **
-// * @author SimonVonXCVII
+// * @author Simon Von
 // * @since 3/10/2023 11:26 AM
 // */
 //@Component

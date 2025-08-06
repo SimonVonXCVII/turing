@@ -26,7 +26,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 /**
  * Spring Boot Security 用于用户操作验证
  *
- * @author SimonVonXCVII
+ * @author Simon Von
  * @since 2022/5/1 14:45
  */
 @Configuration
@@ -37,7 +37,7 @@ class SecurityConfig {
      * 密码明文加密方式配置
      *
      * @return 要使用的密码编码器
-     * @author SimonVonXCVII
+     * @author Simon Von
      * @since 2022/10/4 17:14
      */
     @Bean
@@ -51,7 +51,7 @@ class SecurityConfig {
      * 由基于提供的反应性请求提供 CorsConfiguration 实例的类（通常是 HTTP 请求处理程序）实现的接口。
      *
      * @return 接受过滤器使用的 CorsConfigurationSource 的构造函数，以查找要用于每个传入请求的 CorsConfiguration。
-     * @author SimonVonXCVII
+     * @author Simon Von
      * @since 2022/10/4 19:46
      */
     @Bean
@@ -116,7 +116,7 @@ class SecurityConfig {
      *
      * @param http HttpSecurity
      * @throws Exception 未知异常
-     * @author SimonVonXCVII
+     * @author Simon Von
      * @since 2022/5/1 14:50
      */
     @Bean

@@ -25,7 +25,7 @@ import java.time.Instant
 /**
  * NimbusJwt 服务实现
  *
- * @author SimonVonXCVII
+ * @author Simon Von
  * @since 2/20/2023 11:21 PM
  */
 @Service
@@ -72,7 +72,7 @@ class NimbusJwtServiceImpl(
      * @param userId   用户 id，不能为空
      * @param username 用户名，不能为空
      * @return 生成的 JWT
-     * @author SimonVonXCVII
+     * @author Simon Von
      * @since 2/21/2023 12:06 PM
      */
     override fun encode(userId: String, username: String): Jwt {
@@ -117,7 +117,7 @@ class NimbusJwtServiceImpl(
      *
      * @param token JWT 值，不能为空
      * @return 经过验证的 JWT
-     * @author SimonVonXCVII
+     * @author Simon Von
      * @since 2/21/2023 12:54 PM
      */
     override fun decode(token: String): Jwt {
@@ -130,7 +130,7 @@ class NimbusJwtServiceImpl(
      *
      * @param request the request
      * @return 解析后的 JWT
-     * @author SimonVonXCVII
+     * @author Simon Von
      * @since 2023/6/17 20:23
      */
     override fun resolve(request: HttpServletRequest): Jwt {

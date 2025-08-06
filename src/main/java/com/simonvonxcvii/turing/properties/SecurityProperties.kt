@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Configuration
 /**
  * 项目安全参数配置类
  *
- * @author SimonVonXCVII
+ * @author Simon Von
  * @since 3/4/2023 12:57 AM
  */
 @Configuration

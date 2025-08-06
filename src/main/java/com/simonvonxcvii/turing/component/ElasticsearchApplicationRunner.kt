@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component
  * 用于指示 bean 在包含在 SpringApplication 中时应运行的接口。
  * 可以在同一个应用程序上下文中定义多个 ApplicationRunner bean，并且可以使用 Ordered 接口或 @Order 注解进行排序。
  *
- * @author SimonVonXCVII
+ * @author Simon Von
  * @since 2023/7/16 14:32
  */
 @Component

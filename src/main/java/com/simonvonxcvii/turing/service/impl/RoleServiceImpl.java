@@ -34,7 +34,7 @@ import java.util.List;
  * 角色表 服务实现类
  * </p>
  *
- * @author SimonVonXCVII
+ * @author Simon Von
  * @since 2022-12-22 16:22:50
  */
 @RequiredArgsConstructor
@@ -171,7 +171,7 @@ public class RoleServiceImpl implements IRoleService {
     /**
      * 查询单个单位的申请业务审核已通过的对应的角色
      *
-     * @author SimonVonXCVII
+     * @author Simon Von
      */
     public List<RoleDTO> selectListForBusinessOrg() {
         // 获取所有已通过的业务申请
@@ -229,7 +229,7 @@ public class RoleServiceImpl implements IRoleService {
     /**
      * 根据当前登录用户查询行政单位工作人员角色
      *
-     * @author SimonVonXCVII
+     * @author Simon Von
      */
     @Override
     public List<RoleDTO> selectListForAdministrativeOrg() {

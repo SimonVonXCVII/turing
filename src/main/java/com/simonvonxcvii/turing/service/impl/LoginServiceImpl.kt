@@ -33,7 +33,7 @@ import java.util.function.Predicate
 /**
  * 登录 服务实现类
  *
- * @author SimonVonXCVII
+ * @author Simon Von
  * @since 12/16/2022 4:08 PM
  */
 @Service
@@ -46,7 +46,7 @@ class LoginServiceImpl(
     /**
      * 获取登录验证码
      *
-     * @author SimonVonXCVII
+     * @author Simon Von
      * @since 12/16/2022 4:09 PM
      */
     @Throws(IOException::class)
@@ -65,7 +65,7 @@ class LoginServiceImpl(
     /**
      * 获取用户登录成功后所需要的信息
      *
-     * @author SimonVonXCVII
+     * @author Simon Von
      * @since 12/17/2022 8:19 PM
      */
     override fun getUserInfo(): UserDTO {
@@ -78,7 +78,7 @@ class LoginServiceImpl(
     /**
      * 获取用户登录成功后的菜单集合
      *
-     * @author SimonVonXCVII
+     * @author Simon Von
      * @since 12/17/2022 8:19 PM
      */
     override fun getMenuList(): List<MenuDTO> {

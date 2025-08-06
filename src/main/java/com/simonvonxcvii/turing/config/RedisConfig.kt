@@ -14,7 +14,7 @@ import org.springframework.data.redis.serializer.StringRedisSerializer
 /**
  * redis 配置类，支持序列化与反序列化对象
  *
- * @author SimonVonXCVII
+ * @author Simon Von
  * @since 6/17/2023 5:20 PM
  */
 @Configuration

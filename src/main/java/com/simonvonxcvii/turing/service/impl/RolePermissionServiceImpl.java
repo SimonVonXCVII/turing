@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
  * 角色与权限关联记录表 服务实现类
  * </p>
  *
- * @author SimonVonXCVII
+ * @author Simon Von
  * @since 2022-12-22 16:22:50
  */
 @Service

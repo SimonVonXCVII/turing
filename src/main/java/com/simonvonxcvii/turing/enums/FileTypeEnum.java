@@ -7,7 +7,7 @@ import java.util.Objects;
 /**
  * 文件类型枚举
  *
- * @author SimonVonXCVII
+ * @author Simon Von
  * @since 2023/4/3 11:05
  */
 @Getter

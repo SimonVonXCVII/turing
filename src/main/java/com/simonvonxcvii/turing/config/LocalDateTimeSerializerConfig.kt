@@ -19,7 +19,7 @@ import java.time.format.DateTimeFormatter
 /**
  * 全局日期时间格式的序列化与反序列化配置类 (LocalDateTime、LocalDate 和 LocalTime 类型)
  *
- * @author SimonVonXCVII
+ * @author Simon Von
  * @since 2022/9/26 19:58 周一
  */
 @Configuration
@@ -27,7 +27,7 @@ class LocalDateTimeSerializerConfig {
     /**
      * 为给定类型配置自定义序列化器
      *
-     * @author SimonVonXCVII
+     * @author Simon Von
      * @since 2022/9/26 20:11
      */
     @Bean

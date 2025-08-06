@@ -18,7 +18,7 @@ import java.nio.charset.StandardCharsets
  * 例如，在用户通过提交登录表单登录后，应用程序需要决定之后应将其重定向到何处（请参阅 [org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter] 和子类）。
  * 如果需要，还可以包括其他逻辑。
  *
- * @author SimonVonXCVII
+ * @author Simon Von
  * @since 12/22/2022 8:41 PM
  */
 @Component

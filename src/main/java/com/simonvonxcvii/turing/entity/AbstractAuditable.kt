@@ -19,7 +19,7 @@ import java.time.LocalDateTime
 /**
  * 公共实体父类
  *
- * @author SimonVonXCVII
+ * @author Simon Von
  * @since 2023-04-01 23:08:08
  */
 @MappedSuperclass

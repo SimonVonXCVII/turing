@@ -3,7 +3,7 @@ package com.simonvonxcvii.turing.utils;
 /**
  * 常量接口
  *
- * @author SimonVonXCVII
+ * @author Simon Von
  * @since 2022/7/12 10:07 周二
  */
 public interface Constants {

@@ -10,7 +10,7 @@ import lombok.Setter;
 /**
  * 业务注册类
  *
- * @author SimonVonXCVII
+ * @author Simon Von
  * @since 12/29/2022 11:45 AM
  */
 @Schema(name = "业务注册类")

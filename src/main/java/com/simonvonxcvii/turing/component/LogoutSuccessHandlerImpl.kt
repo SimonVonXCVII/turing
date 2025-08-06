@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component
  * 在 LogoutFilter 成功注销后调用的策略，用于处理重定向或转发到相应目标。
  * 请注意，该接口与 LogoutHandler 几乎相同，但可能会引发异常。LogoutHandler 实现希望被调用以执行必要地清理，因此不应引发异常。
  *
- * @author SimonVonXCVII
+ * @author Simon Von
  * @since 12/27/2022 4:20 PM
  */
 @Component

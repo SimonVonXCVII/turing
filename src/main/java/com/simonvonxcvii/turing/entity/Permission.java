@@ -14,7 +14,7 @@ import org.hibernate.annotations.SQLRestriction;
  * 权限表
  * </p>
  *
- * @author SimonVonXCVII
+ * @author Simon Von
  * @since 2022-12-22 16:22:49
  */
 @Accessors(chain = true)

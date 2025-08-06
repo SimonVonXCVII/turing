@@ -10,7 +10,7 @@ import java.util.List;
  * 角色表 服务类
  * </p>
  *
- * @author SimonVonXCVII
+ * @author Simon Von
  * @since 2022-12-22 16:22:50
  */
 public interface IRoleService {
@@ -43,14 +43,14 @@ public interface IRoleService {
     /**
      * 查询业务单位管理员的能分配给本单位其他用户的角色
      *
-     * @author SimonVonXCVII
+     * @author Simon Von
      */
     List<RoleDTO> selectListForBusinessOrg();
 
     /**
      * 根据当前登录用户查询行政单位工作人员角色
      *
-     * @author SimonVonXCVII
+     * @author Simon Von
      */
     List<RoleDTO> selectListForAdministrativeOrg();
 

@@ -10,7 +10,7 @@ import lombok.Setter;
 /**
  * 单位申请业务实体类
  *
- * @author SimonVonXCVII
+ * @author Simon Von
  * @since 1/4/2023 4:59 PM
  */
 @Getter

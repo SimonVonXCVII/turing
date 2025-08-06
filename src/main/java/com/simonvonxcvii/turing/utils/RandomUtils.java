@@ -15,7 +15,7 @@ import java.util.Random;
 /**
  * 随机数值工具类
  *
- * @author SimonVonXCVII
+ * @author Simon Von
  * @since 2022/6/14 11:56 周二
  */
 @Component
@@ -56,7 +56,7 @@ public class RandomUtils {
      * @param response the response.
      * @return 验证码字符串
      * @throws IOException 将内存中的图片通过流动形式输出到客户端时可能会抛出该异常
-     * @author SimonVonXCVII
+     * @author Simon Von
      * @since 2022/6/14 11:56
      */
     public String getCaptcha(HttpServletResponse response) throws IOException {
@@ -112,7 +112,7 @@ public class RandomUtils {
      *
      * @param length 随机数长度
      * @return 生成的随机数
-     * @author SimonVonXCVII
+     * @author Simon Von
      * @since 10/12/2022 1:05 PM
      */
     public String getRandom(int length) {

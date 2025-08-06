@@ -24,7 +24,7 @@ import java.nio.charset.StandardCharsets
 /**
  * 由 ExceptionTranslationFilter 用于启动身份验证方案。
  *
- * @author SimonVonXCVII
+ * @author Simon Von
  * @since 3/9/2023 5:13 PM
  */
 @Component

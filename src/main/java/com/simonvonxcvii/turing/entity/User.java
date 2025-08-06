@@ -17,7 +17,7 @@ import java.util.Collection;
  * 用户表
  * </p>
  *
- * @author SimonVonXCVII
+ * @author Simon Von
  * @since 2022-12-19 15:58:28
  */
 @Accessors(chain = true)

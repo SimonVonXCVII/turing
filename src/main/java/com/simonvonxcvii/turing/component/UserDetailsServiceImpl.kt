@@ -27,7 +27,7 @@ import java.nio.charset.StandardCharsets
 /**
  * 该类用于验证在有账号登录时是否与数据库账号匹配
  *
- * @author SimonVonXCVII
+ * @author Simon Von
  * @since 2022/12/19 15:31
  */
 @Component

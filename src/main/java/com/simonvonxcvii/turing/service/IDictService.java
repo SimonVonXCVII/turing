@@ -8,7 +8,7 @@ import org.springframework.data.domain.Page;
  * 字典表 服务类
  * </p>
  *
- * @author SimonVonXCVII
+ * @author Simon Von
  * @since 2022-12-30 12:49:40
  */
 public interface IDictService {
@@ -16,7 +16,7 @@ public interface IDictService {
     /**
      * 单个新增或修改
      *
-     * @author SimonVonXCVII
+     * @author Simon Von
      * @since 2023/9/7 16:25
      */
     void insertOrUpdate(DictDTO dto);
@@ -24,7 +24,7 @@ public interface IDictService {
     /**
      * 分页查询
      *
-     * @author SimonVonXCVII
+     * @author Simon Von
      * @since 2023/9/7 15:48
      */
     Page<DictDTO> selectPage(DictDTO dto);
@@ -34,7 +34,7 @@ public interface IDictService {
      *
      * @param code 区域行政编码
      * @return 区域数据
-     * @author SimonVonXCVII
+     * @author Simon Von
      * @since 12/30/2022 2:42 PM
      */
     DictDTO getAreaByCode(Integer code);
@@ -43,7 +43,7 @@ public interface IDictService {
      * 根据主键 id 逻辑删除
      *
      * @param id 字典主键 id
-     * @author SimonVonXCVII
+     * @author Simon Von
      * @since 2023/9/7 16:49
      */
     void deleteById(String id);

@@ -12,7 +12,7 @@ import java.io.IOException;
  * 文件表 服务类
  * </p>
  *
- * @author SimonVonXCVII
+ * @author Simon Von
  * @since 2023-04-01 23:08:08
  */
 public interface IAppFileService {
@@ -28,7 +28,7 @@ public interface IAppFileService {
      * @param isCompress       是否压缩
      * @param isApp            是否 app 端上传
      * @return 文件 id、文件名
-     * @author SimonVonXCVII
+     * @author Simon Von
      * @since 2023-04-01 23:08:08
      */
     UploadFileDTO uploadFile(MultipartFile multipartFile, String originalFilename, String suffix,
@@ -39,7 +39,7 @@ public interface IAppFileService {
      *
      * @param id       文件 id
      * @param response 响应
-     * @author SimonVonXCVII
+     * @author Simon Von
      * @since 2023-04-01 23:08:08
      */
     void getFileById(String id, HttpServletResponse response) throws IOException;
@@ -49,7 +49,7 @@ public interface IAppFileService {
      *
      * @param id       文件 id
      * @param response 响应
-     * @author SimonVonXCVII
+     * @author Simon Von
      * @since 2023-04-01 23:08:08
      */
     void getOriginalImageById(String id, HttpServletResponse response) throws IOException;
@@ -58,7 +58,7 @@ public interface IAppFileService {
      * 根据文件 id 删除文件
      *
      * @param id 文件 id
-     * @author SimonVonXCVII
+     * @author Simon Von
      * @since 2023-04-01 23:08:08
      */
     void deleteById(String id);

@@ -13,7 +13,7 @@ import java.util.zip.ZipOutputStream;
 /**
  * 文件工具类
  *
- * @author SimonVonXCVII
+ * @author Simon Von
  * @since 11/24/2022 11:35 PM
  */
 public class FileUtils {
@@ -40,7 +40,7 @@ public class FileUtils {
      *
      * @param htmlString 模板转换成的字符串
      * @return PDF 字节流
-     * @author SimonVonXCVII
+     * @author Simon Von
      * @since 11/24/2022 11:39 PM
      */
     public static byte[] generatePDF(String htmlString) {
@@ -62,7 +62,7 @@ public class FileUtils {
      *
      * @param files       文件数组
      * @param zipFilename 需要生成的 zip 目标文件
-     * @author SimonVonXCVII
+     * @author Simon Von
      * @since 12/3/2022 8:06 PM
      */
     public void generateZip(File[] files, File zipFilename) {

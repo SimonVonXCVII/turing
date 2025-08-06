@@ -15,7 +15,7 @@ import org.springframework.security.core.GrantedAuthority;
  * 角色表
  * </p>
  *
- * @author SimonVonXCVII
+ * @author Simon Von
  * @since 2022-12-22 16:22:50
  */
 @Accessors(chain = true)

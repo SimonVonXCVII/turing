@@ -23,7 +23,7 @@ import java.util.List;
  * 字典表 服务实现类
  * </p>
  *
- * @author SimonVonXCVII
+ * @author Simon Von
  * @since 2022-12-30 12:49:40
  */
 @RequiredArgsConstructor
@@ -89,7 +89,7 @@ public class DictServiceImpl implements IDictService {
      *
      * @param code 区域行政编码
      * @return 区域数据
-     * @author SimonVonXCVII
+     * @author Simon Von
      * @since 12/30/2022 2:42 PM
      */
     @Override

@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
  * 字典表 前端控制器
  * </p>
  *
- * @author SimonVonXCVII
+ * @author Simon Von
  * @since 2022-12-30 12:49:40
  */
 @Tag(name = "DictController", description = "字典表 前端控制器")

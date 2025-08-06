@@ -7,7 +7,7 @@ import java.util.Objects;
 /**
  * 任务状态枚举
  *
- * @author SimonVonXCVII
+ * @author Simon Von
  * @since 2023/4/1 18:11
  */
 @Getter

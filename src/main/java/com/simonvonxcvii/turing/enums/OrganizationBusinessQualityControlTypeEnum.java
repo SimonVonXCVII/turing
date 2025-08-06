@@ -8,7 +8,7 @@ import java.util.Optional;
 /**
  * 质控类型枚举类
  *
- * @author SimonVonXCVII
+ * @author Simon Von
  * @since 1/4/2023 5:26 PM
  */
 @Getter

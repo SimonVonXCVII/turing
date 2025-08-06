@@ -16,7 +16,7 @@ import java.util.Base64;
 /**
  * Base64 工具类
  *
- * @author SimonVonXCVII
+ * @author Simon Von
  * @since 11/28/2022 3:27 PM
  */
 public class Base64ImgReplacedElementFactory implements ReplacedElementFactory {

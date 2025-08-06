@@ -10,7 +10,7 @@ import java.io.IOException;
  * 单位业务表 服务类
  * </p>
  *
- * @author SimonVonXCVII
+ * @author Simon Von
  * @since 2022-12-29 11:33:31
  */
 public interface IOrganizationBusinessService {
@@ -20,7 +20,7 @@ public interface IOrganizationBusinessService {
      *
      * @param dto 接收查询参数
      * @return 已申请业务
-     * @author SimonVonXCVII
+     * @author Simon Von
      * @since 1/5/2023 10:15 AM
      */
     Page<OrganizationBusinessDTO> selectPage(OrganizationBusinessDTO dto) throws IOException;
@@ -30,7 +30,7 @@ public interface IOrganizationBusinessService {
      *
      * @param id 主键 id
      * @return 需要查询的数据
-     * @author SimonVonXCVII
+     * @author Simon Von
      * @since 1/5/2023 10:15 AM
      */
     OrganizationBusinessDTO getOneById(String id) throws IOException;
@@ -39,7 +39,7 @@ public interface IOrganizationBusinessService {
      * 申请业务
      *
      * @param dto 接收新增业务参数
-     * @author SimonVonXCVII
+     * @author Simon Von
      * @since 1/4/2023 4:57 PM
      */
     void insert(OrganizationBusinessDTO dto) throws IOException;
@@ -48,7 +48,7 @@ public interface IOrganizationBusinessService {
      * 申请页面更新业务
      *
      * @param dto 接收修改业务参数
-     * @author SimonVonXCVII
+     * @author Simon Von
      * @since 1/4/2023 4:57 PM
      */
     void applyUpdate(OrganizationBusinessDTO dto) throws IOException;
@@ -57,7 +57,7 @@ public interface IOrganizationBusinessService {
      * 审核页面更新业务
      *
      * @param dto 接收修改业务参数
-     * @author SimonVonXCVII
+     * @author Simon Von
      * @since 2023/3/25 14:32
      */
     void checkUpdate(OrganizationBusinessDTO dto) throws IOException;

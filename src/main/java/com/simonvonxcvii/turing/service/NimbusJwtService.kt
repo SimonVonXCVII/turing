@@ -6,7 +6,7 @@ import org.springframework.security.oauth2.jwt.Jwt
 /**
  * NimbusJwt 服务接口
  *
- * @author SimonVonXCVII
+ * @author Simon Von
  * @since 2/20/2023 11:19 PM
  */
 interface NimbusJwtService {
@@ -16,7 +16,7 @@ interface NimbusJwtService {
      * @param userId   用户 id，不能为空
      * @param username 用户名，不能为空
      * @return 生成的 JWT
-     * @author SimonVonXCVII
+     * @author Simon Von
      * @since 2/21/2023 12:06 PM
      */
     fun encode(userId: String, username: String): Jwt
@@ -26,7 +26,7 @@ interface NimbusJwtService {
      *
      * @param token JWT 值，不能为空
      * @return 经过验证的 JWT
-     * @author SimonVonXCVII
+     * @author Simon Von
      * @since 2/21/2023 12:54 PM
      */
     fun decode(token: String): Jwt
@@ -36,7 +36,7 @@ interface NimbusJwtService {
      *
      * @param request the request
      * @return 解析后的 JWT
-     * @author SimonVonXCVII
+     * @author Simon Von
      * @since 2023/6/17 20:23
      */
     fun resolve(request: HttpServletRequest): Jwt

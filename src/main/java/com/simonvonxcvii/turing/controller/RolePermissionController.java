@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
  * 角色与权限关联记录表 前端控制器
  * </p>
  *
- * @author SimonVonXCVII
+ * @author Simon Von
  * @since 2022-12-22 16:22:50
  */
 @Tag(name = "RolePermissionController", description = "角色与权限关联记录表 前端控制器")

@@ -22,7 +22,7 @@ import java.util.*;
 /**
  * 数据库初始化 runner
  *
- * @author SimonVonXCVII
+ * @author Simon Von
  * @since 2023/8/25 21:24
  */
 @Component
@@ -116,7 +116,7 @@ public class DatabaseApplicationRunner implements ApplicationRunner {
     /**
      * 初始化后台数据管理、单位管理、用户管理、角色管理、权限管理、菜单管理、字典管理
      *
-     * @author SimonVonXCVII
+     * @author Simon Von
      * @since 2023/8/25 21:45
      */
     void init() {
