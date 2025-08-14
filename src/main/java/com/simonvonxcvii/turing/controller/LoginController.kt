@@ -23,6 +23,7 @@ import java.io.IOException
 @RestController
 @Tag(name = "LoginController", description = "登录 前端控制器")
 class LoginController(private val service: LoginService) {
+
     @Operation(summary = "获取登录验证码")
     @GetMapping("/getCaptcha")
     @Throws(IOException::class)
@@ -41,4 +42,5 @@ class LoginController(private val service: LoginService) {
     fun menuList(): Result<List<MenuDTO>> {
         return Result.ok(service.getMenuList())
     }
+
 }

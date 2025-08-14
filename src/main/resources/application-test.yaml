@@ -5,27 +5,30 @@ logging:
 
 security:
   # 服务器网络地址
-  address:
+  address: ${ADDRESS}
 
 spring:
+  config:
+    # 导入额外的配置数据。
+    import: optional:file:.env[.properties]
   data:
     redis:
       # redis 服务器主机
       host: turing-redis
       # redis 密码
-      password:
+      password: ${REDIS_PASSWORD}
   datasource:
     # 数据库的 JDBC URL。
-    url:
+    url: jdbc:postgresql://${ADDRESS}:54321/turing?characterEncoding=utf-8&clientEncoding=utf-8
     # 数据库的登录用户名。
-    username:
+    username: system
     # 数据库的登录密码。
-    password:
+    password: ${DATASOURCE_PASSWORD}
   elasticsearch:
     # 要使用的 Elasticsearch 实例的逗号分隔列表。
     uris:
       - soil-elasticsearch:9200
     # 用于 Elasticsearch 身份验证的用户名。
-    username:
+    username: elastic
     # Elasticsearch 身份验证的密码。
-    password:
+    password: ${ELASTIC_PASSWORD}

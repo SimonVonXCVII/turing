@@ -9,7 +9,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 // TODO: 2023/8/28 删除该工具类
-//@Deprecated(forRemoval = true)
+@Deprecated(forRemoval = true)
 public class TreeListUtils {
 
     /**

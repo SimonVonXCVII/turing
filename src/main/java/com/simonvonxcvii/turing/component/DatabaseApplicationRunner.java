@@ -21,6 +21,7 @@ import java.util.*;
 
 /**
  * 数据库初始化 runner
+ * TODO Convert to Kotlin file
  *
  * @author Simon Von
  * @since 2023/8/25 21:24
@@ -99,7 +100,7 @@ public class DatabaseApplicationRunner implements ApplicationRunner {
                 }
             }
         }
-        //按层级
+        // 按层级
         TreeListUtils.tree(areaList, a -> a.adCode, a -> a.parentAdCode, (parent, child) -> {
             if (parent == null) {
                 provinceMap.put(child.adCode, child);

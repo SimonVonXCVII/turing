@@ -19,6 +19,7 @@ class SecurityProperties {
 
     /**
      * jwt 有效期时长，单位秒
+     * TODO 改成 Int 如何
      */
     var expires: Long = 604800
 

@@ -211,7 +211,7 @@ services:
     # 声明用于服务容器的自定义主机名。
     hostname: turing-nginx
     # 指定启动容器的图像。
-    image: nginx:1.29.0
+    image: nginx:1.29.1
     # 定义服务容器附加到的网络，引用顶级网络键下的条目。
     networks:
       - turing
