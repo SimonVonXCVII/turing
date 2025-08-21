@@ -145,7 +145,7 @@ public class AppFileController {
         if (!StringUtils.hasText(originalFilename)) {
             throw BizRuntimeException.from("原文件名不能为空");
         }
-        // 文件后缀
+        // 文件后缀 todo 使用 apache 或者 spring 中的 FileNameUtils 替换，还有 AppFileServiceImpl 中
         String suffix = originalFilename.substring(originalFilename.lastIndexOf("."));
         if (!StringUtils.hasText(suffix)) {
             throw BizRuntimeException.from("文件后缀不能为空");
