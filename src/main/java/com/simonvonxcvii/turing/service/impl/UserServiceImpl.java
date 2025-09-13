@@ -45,7 +45,7 @@ public class UserServiceImpl implements IUserService {
     public void insertOrUpdate(UserDTO dto) {
         User user;
         // 新增
-        if (!StringUtils.hasText(dto.getId())) {
+        if (dto.getId() == null) {
             user = new User();
         }
         // 修改
@@ -168,7 +168,7 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void deleteById(String id) {
+    public void deleteById(Integer id) {
         // 逻辑删除用户-角色关联数据
         userRoleRepository.delete((root, _, _) -> root.get(UserRole.USER_ID).in(id));
         // 逻辑删除用户数据

@@ -14,6 +14,6 @@ import org.springframework.stereotype.Repository;
  * @since 2023-08-21 18:08:08
  */
 @Repository
-public interface UserRepository extends JpaRepositoryImplementation<User, String>, QueryByExampleExecutor<User>
+public interface UserRepository extends JpaRepositoryImplementation<User, Integer>, QueryByExampleExecutor<User>
         /*, JpaCriteriaQuery<User>*/ {
 }

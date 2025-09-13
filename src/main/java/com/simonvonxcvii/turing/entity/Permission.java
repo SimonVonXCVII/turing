@@ -46,7 +46,7 @@ public class Permission extends AbstractAuditable {
     /**
      * 上级权限 id
      */
-    private String pid;
+    private Integer pid;
     /**
      * 权限名称
      */

@@ -37,7 +37,7 @@ public class DictServiceImpl implements IDictService {
     public void insertOrUpdate(DictDTO dto) {
         Dict dict;
         // 新增
-        if (!StringUtils.hasText(dto.getId())) {
+        if (dto.getId() == null) {
             dict = new Dict();
         }
         // 修改
@@ -132,7 +132,7 @@ public class DictServiceImpl implements IDictService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void deleteById(String id) {
+    public void deleteById(Integer id) {
         dictRepository.deleteById(id);
     }
 

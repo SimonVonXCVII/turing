@@ -13,5 +13,5 @@ import org.springframework.stereotype.Repository;
  * @since 2023-08-21 18:08:08
  */
 @Repository
-public interface OrganizationBusinessRepository extends JpaRepositoryImplementation<OrganizationBusiness, String> {
+public interface OrganizationBusinessRepository extends JpaRepositoryImplementation<OrganizationBusiness, Integer> {
 }

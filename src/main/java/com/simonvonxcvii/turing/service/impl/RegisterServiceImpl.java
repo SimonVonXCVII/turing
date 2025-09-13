@@ -87,7 +87,7 @@ public class RegisterServiceImpl implements RegisterService {
         BeanUtils.copyProperties(dto, user);
         user.setNeedSetPassword(Boolean.TRUE);
         // 密码
-        user.setPassword(passwordEncoder.encode(user.getMobile().substring(3)));
+        user.setPassword(passwordEncoder.encode(user.getMobile().toString().substring(3)));
         user.setOrgId(organization.getId());
         user.setOrgName(organization.getName());
         user.setManager(Boolean.TRUE);
@@ -100,7 +100,7 @@ public class RegisterServiceImpl implements RegisterService {
         UserRole userRole = new UserRole()
                 .setUserId(user.getId())
                 // TODO: 2023/9/8
-                .setRoleId("40");
+                .setRoleId(40);
         userRoleRepository.save(userRole);
     }
 

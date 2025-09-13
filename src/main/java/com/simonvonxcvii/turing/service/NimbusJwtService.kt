@@ -19,7 +19,7 @@ interface NimbusJwtService {
      * @author Simon Von
      * @since 2/21/2023 12:06 PM
      */
-    fun encode(userId: String, username: String): Jwt
+    fun encode(userId: Int, username: String): Jwt
 
     /**
      * 从其紧凑的声明表示格式解码和验证 JWT

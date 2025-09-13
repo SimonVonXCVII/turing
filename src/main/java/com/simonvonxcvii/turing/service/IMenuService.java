@@ -27,6 +27,6 @@ public interface IMenuService {
     /**
      * 根据主键 id 逻辑删除
      */
-    void deleteById(String id);
+    void deleteById(Integer id);
 
 }

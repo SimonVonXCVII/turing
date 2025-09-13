@@ -51,7 +51,7 @@ public class RoleServiceImpl implements IRoleService {
     public void insertOrUpdate(RoleDTO dto) {
         Role role;
         // 新增
-        if (!StringUtils.hasText(dto.getId())) {
+        if (dto.getId() == null) {
             role = new Role();
         }
         // 修改
@@ -139,12 +139,12 @@ public class RoleServiceImpl implements IRoleService {
     }
 
     @Override
-    public RoleDTO selectById(String id) {
+    public RoleDTO selectById(Integer id) {
         Role role = roleRepository.findById(id).orElseThrow(() -> BizRuntimeException.from("没有查询到该角色"));
         RoleDTO roleDTO = new RoleDTO();
         BeanUtils.copyProperties(role, roleDTO);
         // 查询该角色具有的权限
-        List<String> permissionIdList = rolePermissionRepository
+        List<Integer> permissionIdList = rolePermissionRepository
                 .findAll((root, _, _) ->
                         root.get(RolePermission.ROLE_ID).in(role.getId()))
                 .stream()
@@ -156,7 +156,7 @@ public class RoleServiceImpl implements IRoleService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void deleteById(String id) {
+    public void deleteById(Integer id) {
         boolean exists = userRoleRepository.exists((root, _, _) ->
                 root.get(UserRole.ROLE_ID).in(id));
         if (exists) {

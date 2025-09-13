@@ -75,8 +75,8 @@ class NimbusJwtServiceImpl(
      * @author Simon Von
      * @since 2/21/2023 12:06 PM
      */
-    override fun encode(userId: String, username: String): Jwt {
-        Assert.hasText(userId, "userId cannot be blank")
+    override fun encode(userId: Int, username: String): Jwt {
+        Assert.notNull(userId, "userId cannot be bull")
         Assert.hasText(username, "username cannot be blank")
         // 重要：虽然 Instant.now() 获取的时间比我们本地时间少了八个小时，但是这不影响后续的解码操作。
         // 反而，如果是 .plus(8L, ChronoUnit.HOURS) 则会报错，提示使用的 JWT 在 notBefore 之前
@@ -105,7 +105,7 @@ class NimbusJwtServiceImpl(
                     .issuedAt(now)
                     // 设置 JWT ID （jti） 声明，该声明为 JWT 提供唯一标识符。
                     // 形参: JTI – JWT 的唯一标识符
-                    .id(userId)
+                    .id(userId.toString())
                     .claim(OAuth2ParameterNames.USERNAME, username)
                     .build()
             )

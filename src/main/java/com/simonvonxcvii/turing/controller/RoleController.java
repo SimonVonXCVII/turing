@@ -52,13 +52,13 @@ public class RoleController {
 
     @Operation(summary = "根据角色 id 获取单个角色")
     @GetMapping("/selectById")
-    public Result<RoleDTO> selectById(String id) {
+    public Result<RoleDTO> selectById(Integer id) {
         return Result.ok(service.selectById(id));
     }
 
     @Operation(summary = "删除")
     @DeleteMapping("/deleteById/{id}")
-    public Result<Object> deleteById(@PathVariable String id) {
+    public Result<Object> deleteById(@PathVariable Integer id) {
         service.deleteById(id);
         return Result.ok();
     }

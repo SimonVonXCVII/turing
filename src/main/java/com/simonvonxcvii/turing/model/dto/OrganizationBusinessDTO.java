@@ -20,7 +20,7 @@ public class OrganizationBusinessDTO extends PageQuery {
      * 业务 id
      */
     @NotNull(message = "业务 id 不能为空", groups = Update.class)
-    private String id;
+    private Integer id;
     /**
      * 单位名称
      */

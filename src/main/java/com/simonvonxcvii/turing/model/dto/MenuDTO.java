@@ -17,11 +17,11 @@ public class MenuDTO extends PageQuery {
     /**
      * 菜单 id
      */
-    public String id;
+    public Integer id;
     /**
      * 上级菜单 id
      */
-    public String pid;
+    public Integer pid;
     /**
      * 菜单元数据
      */
@@ -34,7 +34,7 @@ public class MenuDTO extends PageQuery {
      * 系统权限 id
      */
     @NotBlank(message = "系统权限 id 不能为空")
-    private String permissionId;
+    private Integer permissionId;
     /**
      * 菜单名称
      */

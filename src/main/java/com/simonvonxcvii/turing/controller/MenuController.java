@@ -44,7 +44,7 @@ public class MenuController {
 
     @Operation(summary = "根据主键 id 逻辑删除")
     @DeleteMapping("/deleteById/{id}")
-    public Result<Object> deleteById(@PathVariable String id) {
+    public Result<Object> deleteById(@PathVariable Integer id) {
         service.deleteById(id);
         return Result.ok();
     }

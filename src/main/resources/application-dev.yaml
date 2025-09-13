@@ -1,7 +1,7 @@
-logging:
-  level:
-    # root：根记录器，用于分配默认日志记录级别。
-    root: debug
+#logging:
+#  level:
+#    # root：根记录器，用于分配默认日志记录级别。
+#    root: debug
 
 security:
   # 服务器网络地址
@@ -14,24 +14,23 @@ spring:
   data:
     redis:
       # redis 服务器主机
-      host: ${ADDRESS}
+      host: ${security.address}:6379
       # redis 密码
       password: ${REDIS_PASSWORD}
   datasource:
     # 数据库的 JDBC URL。
-    url: jdbc:postgresql://${ADDRESS}:54321/turing?characterEncoding=utf-8&clientEncoding=utf-8
+    url: jdbc:postgresql://${security.address}:5432/${POSTGRES_DB}?characterEncoding=utf-8&clientEncoding=utf-8
     # 数据库的登录用户名。
-    username: system
+    username: ${POSTGRES_USER}
     # 数据库的登录密码。
-    password: ${DATASOURCE_PASSWORD}
+    password: ${POSTGRES_PASSWORD}
     hikari:
       # 连接最大生命时间。用于防止远程数据库连接关闭。
       max-lifetime: 30000
-  elasticsearch:
-    # 要使用的 Elasticsearch 实例的逗号分隔列表。
-    uris:
-      - ${spring.data.redis.host}:9200
-    # 用于 Elasticsearch 身份验证的用户名。
-    username: elastic
-    # Elasticsearch 身份验证的密码。
-    password: ${ELASTIC_PASSWORD}
+#  elasticsearch:
+#    # 要使用的 Elasticsearch 实例的逗号分隔列表。
+#    uris: ${spring.data.redis.host}:9200
+#    # 用于 Elasticsearch 身份验证的用户名。
+#    username: elastic
+#    # Elasticsearch 身份验证的密码。
+#    password: ${ELASTIC_PASSWORD}

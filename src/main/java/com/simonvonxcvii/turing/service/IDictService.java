@@ -46,6 +46,6 @@ public interface IDictService {
      * @author Simon Von
      * @since 2023/9/7 16:49
      */
-    void deleteById(String id);
+    void deleteById(Integer id);
 
 }

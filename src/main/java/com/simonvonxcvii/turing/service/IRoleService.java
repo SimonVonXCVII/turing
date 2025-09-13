@@ -33,12 +33,12 @@ public interface IRoleService {
     /**
      * 根据角色 id 获取单个角色
      */
-    RoleDTO selectById(String id);
+    RoleDTO selectById(Integer id);
 
     /**
      * 删除
      */
-    void deleteById(String roleId);
+    void deleteById(Integer roleId);
 
     /**
      * 查询业务单位管理员的能分配给本单位其他用户的角色

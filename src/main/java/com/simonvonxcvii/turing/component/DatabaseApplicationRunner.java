@@ -10,13 +10,16 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.jdbc.datasource.init.ScriptUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
+import javax.sql.DataSource;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.sql.Connection;
 import java.util.*;
 
 /**
@@ -37,6 +40,7 @@ public class DatabaseApplicationRunner implements ApplicationRunner {
      */
     private static int areaSort;
 
+    private final DataSource dataSource;
     private final OrganizationRepository organizationRepository;
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
@@ -54,21 +58,35 @@ public class DatabaseApplicationRunner implements ApplicationRunner {
      */
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        long count = organizationRepository.count();
-        if (count > 0) {
+        // 判断是否需要初始化，如果表存在说明不需要
+        Connection connection = dataSource.getConnection();
+        boolean next = connection.getMetaData()
+                .getTables(null, null, "turing_dict", null)
+                .next();
+        if (next) return;
+
+        // 创建数据库表
+        ClassPathResource classPathResourceTableSql = new ClassPathResource("/sql/table.sql");
+        if (!classPathResourceTableSql.exists()) {
+            log.warn("数据库表文件不存在，无法初始化");
             return;
         }
+        ScriptUtils.executeSqlScript(connection, classPathResourceTableSql);
+
+        // 创建基础数据
         init();
+
+        // 创建地区数据
         log.info("开始初始化区域字典");
-        ClassPathResource classPathResource = new ClassPathResource("/dict/area.csv");
-        if (!classPathResource.exists()) {
+        ClassPathResource classPathResourceAreaCsv = new ClassPathResource("/dict/area.csv");
+        if (!classPathResourceAreaCsv.exists()) {
             log.warn("区域文件不存在，无法初始化");
             return;
         }
 
         List<Area> areaList;
         Map<String, Area> provinceMap;
-        try (InputStream inputStream = classPathResource.getInputStream();
+        try (InputStream inputStream = classPathResourceAreaCsv.getInputStream();
              InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
              BufferedReader in = new BufferedReader(inputStreamReader)) {
             String line;
@@ -139,7 +157,7 @@ public class DatabaseApplicationRunner implements ApplicationRunner {
 
         User user = new User();
         user.setName("admin")
-                .setMobile("18888888888")
+                .setMobile(18888888888L)
                 .setGender("男")
                 .setOrgId(organization.getId())
                 .setOrgName(organization.getName())
@@ -2027,7 +2045,6 @@ public class DatabaseApplicationRunner implements ApplicationRunner {
         menu908.setCached(Boolean.TRUE);
         menu908.setExternal(Boolean.FALSE);
         menuRepository.save(menu908);
-        menuRepository.save(menu804);
 
         Menu menu1000 = new Menu();
         menu1000.setPermissionId(permission1000.getId());
@@ -2491,7 +2508,7 @@ public class DatabaseApplicationRunner implements ApplicationRunner {
      */
     private void saveArea(Dict parent, Area child, List<Dict> dictList) {
         Dict dict = new Dict();
-        dict.setValue(child.adCode);
+        dict.setValue(Integer.valueOf(child.adCode));
         dict.setName(child.name);
         dict.setType("area");
         dict.setSort(areaSort++);

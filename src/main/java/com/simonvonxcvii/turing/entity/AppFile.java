@@ -53,7 +53,7 @@ public class AppFile extends AbstractAuditable {
     /**
      * 所有者 id
      */
-    private String ownerId;
+    private Integer ownerId;
 
     /**
      * 文件名

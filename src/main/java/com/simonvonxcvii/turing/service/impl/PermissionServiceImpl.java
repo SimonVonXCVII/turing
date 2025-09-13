@@ -45,12 +45,12 @@ public class PermissionServiceImpl implements IPermissionService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void insertOrUpdate(PermissionDTO dto) {
-        if (!StringUtils.hasText(dto.getPid()) && dto.getSort() % 100 != 0) {
+        if (dto.getPid() == null && dto.getSort() % 100 != 0) {
             throw BizRuntimeException.from("父级权限的排序编号必须是一百的整数倍");
         }
         Permission permission;
         // 新增
-        if (!StringUtils.hasText(dto.getId())) {
+        if (dto.getId() == null) {
             permission = new Permission();
         }
         // 修改
@@ -84,11 +84,11 @@ public class PermissionServiceImpl implements IPermissionService {
             return new ArrayList<>();
         }
         // 收集 id
-        List<String> parentIdList = permissionList1.stream().filter(permission -> permission.getPid() == null)
+        List<Integer> parentIdList = permissionList1.stream().filter(permission -> permission.getPid() == null)
                 .map(Permission::getId).toList();
-        List<String> childIdList = permissionList1.stream().filter(permission -> permission.getPid() != null)
+        List<Integer> childIdList = permissionList1.stream().filter(permission -> permission.getPid() != null)
                 .map(Permission::getId).toList();
-        List<String> childPidList = permissionList1.stream().map(Permission::getPid).filter(Objects::nonNull).toList();
+        List<Integer> childPidList = permissionList1.stream().map(Permission::getPid).filter(Objects::nonNull).toList();
         permissionList1 = permissionList.stream()
                 .filter(permission -> {
                     if (!parentIdList.isEmpty() && parentIdList.contains(permission.getId())) {
@@ -126,7 +126,7 @@ public class PermissionServiceImpl implements IPermissionService {
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void deleteById(String id) {
+    public void deleteById(Integer id) {
         boolean exists = rolePermissionRepository.exists((root, _, _) ->
                 root.get(RolePermission.PERMISSION_ID).in(id));
         if (exists) {

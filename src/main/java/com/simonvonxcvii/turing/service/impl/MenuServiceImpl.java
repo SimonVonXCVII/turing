@@ -36,12 +36,12 @@ public class MenuServiceImpl implements IMenuService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void insertOrUpdate(MenuDTO dto) {
-        if (!StringUtils.hasText(dto.getPid()) && dto.getSort() % 100 != 0) {
+        if (dto.getPid() == null && dto.getSort() % 100 != 0) {
             throw BizRuntimeException.from("父级权限的排序编号必须是一百的整数倍");
         }
         Menu menu;
         // 新增
-        if (!StringUtils.hasText(dto.getId())) {
+        if (dto.getId() == null) {
             menu = new Menu();
         }
         // 修改
@@ -75,9 +75,9 @@ public class MenuServiceImpl implements IMenuService {
             return new ArrayList<>();
         }
         // 收集 id
-        List<String> parentIdList = menuList1.stream().filter(menu -> menu.getPid() == null).map(Menu::getId).toList();
-        List<String> childIdList = menuList1.stream().filter(menu -> menu.getPid() != null).map(Menu::getId).toList();
-        List<String> childPidList = menuList1.stream().map(Menu::getPid).filter(Objects::nonNull).toList();
+        List<Integer> parentIdList = menuList1.stream().filter(menu -> menu.getPid() == null).map(Menu::getId).toList();
+        List<Integer> childIdList = menuList1.stream().filter(menu -> menu.getPid() != null).map(Menu::getId).toList();
+        List<Integer> childPidList = menuList1.stream().map(Menu::getPid).filter(Objects::nonNull).toList();
         menuList1 = menuList.stream()
                 .filter(menu -> {
                     if (!parentIdList.isEmpty() && parentIdList.contains(menu.getId())) {
@@ -113,7 +113,7 @@ public class MenuServiceImpl implements IMenuService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void deleteById(String id) {
+    public void deleteById(Integer id) {
         menuRepository.deleteById(id);
     }
 

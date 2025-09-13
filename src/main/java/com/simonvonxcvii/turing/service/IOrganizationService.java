@@ -45,6 +45,6 @@ public interface IOrganizationService {
      *
      * @param id 主键 id
      */
-    void deleteById(String id);
+    void deleteById(Integer id);
 
 }

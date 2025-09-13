@@ -30,13 +30,13 @@ abstract class AbstractAuditable : Serializable {
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    open var id: String? = null
+    open var id: Int? = null
 
     /**
      * 创建主体
      */
     @CreatedBy
-    open var createdBy: String? = null
+    open var createdBy: Int? = null
 
     /**
      * 创建日期
@@ -51,7 +51,7 @@ abstract class AbstractAuditable : Serializable {
      * 最后修改主体
      */
     @LastModifiedBy
-    open var lastModifiedBy: String? = null
+    open var lastModifiedBy: Int? = null
 
     /**
      * 最后修改日期

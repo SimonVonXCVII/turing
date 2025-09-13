@@ -19,7 +19,7 @@ public class DictDTO extends PageQuery {
     /**
      * 字典 id
      */
-    private String id;
+    private Integer id;
     /**
      * 字典类型
      */
@@ -28,7 +28,7 @@ public class DictDTO extends PageQuery {
     /**
      * 上级字典 id
      */
-    private String pid;
+    private Integer pid;
     /**
      * 字典名称
      */

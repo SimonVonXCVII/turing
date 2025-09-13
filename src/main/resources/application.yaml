@@ -1,9 +1,9 @@
-logging:
-  level:
-    # sql：SQL 日志记录组，包括 Hibernate SQL 记录器。
-    sql: debug
-    # web：Web 日志记录组，包括编解码器。
-    web: debug
+#logging:
+#  level:
+#    # sql：SQL 日志记录组，包括 Hibernate SQL 记录器。
+#    sql: debug
+#    # web：Web 日志记录组，包括编解码器。
+#    web: debug
 
 management:
   endpoint:
@@ -43,7 +43,7 @@ spring:
     date-format: yyyy-MM-dd HH:mm:ss
   profiles:
     # 指定起作用的配置文件
-    active: dev
+    active: test
   servlet:
     multipart:
       # 支持的每次请求中最大的单个文件的大小

@@ -38,6 +38,6 @@ public interface IPermissionService {
      * @author Simon Von
      * @since 3/4/2023 9:28 PM
      */
-    void deleteById(String id);
+    void deleteById(Integer id);
 
 }

@@ -34,7 +34,7 @@ public class UserDTO extends PageQuery {
      * 单位 id
      */
     @NotBlank(message = "单位 id 不能为空")
-    public String orgId;
+    public Integer orgId;
     /**
      * 单位名称
      */
@@ -79,7 +79,7 @@ public class UserDTO extends PageQuery {
     /**
      * 用户 id
      */
-    private String id;
+    private Integer id;
     /**
      * 创建日期
      */
@@ -88,5 +88,5 @@ public class UserDTO extends PageQuery {
      * 角色集合
      */
     @NotEmpty(message = "角色集合不能为空")
-    private List<String> roleList;
+    private List<Integer> roleList;
 }

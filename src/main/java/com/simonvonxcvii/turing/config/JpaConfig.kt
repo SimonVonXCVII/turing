@@ -24,7 +24,7 @@ class JpaConfig {
      * @since 2023/8/18 14:49
      */
     @Bean
-    fun auditorProvider(): AuditorAware<String> {
+    fun auditorProvider(): AuditorAware<Int> {
         return AuditorAware { Optional.ofNullable(UserUtils.getId()) }
     }
 }

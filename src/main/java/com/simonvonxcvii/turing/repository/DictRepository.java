@@ -13,5 +13,5 @@ import org.springframework.stereotype.Repository;
  * @since 2023-08-21 18:08:08
  */
 @Repository
-public interface DictRepository extends JpaRepositoryImplementation<Dict, String> {
+public interface DictRepository extends JpaRepositoryImplementation<Dict, Integer> {
 }

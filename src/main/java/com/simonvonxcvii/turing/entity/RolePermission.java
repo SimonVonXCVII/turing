@@ -44,10 +44,10 @@ public class RolePermission extends AbstractAuditable {
     /**
      * 角色 id
      */
-    public String roleId;
+    public Integer roleId;
 
     /**
      * 权限 id
      */
-    public String permissionId;
+    public Integer permissionId;
 }

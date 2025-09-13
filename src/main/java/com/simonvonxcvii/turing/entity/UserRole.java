@@ -44,10 +44,10 @@ public class UserRole extends AbstractAuditable {
     /**
      * 用户 id
      */
-    public String userId;
+    public Integer userId;
 
     /**
      * 角色 id
      */
-    public String roleId;
+    public Integer roleId;
 }

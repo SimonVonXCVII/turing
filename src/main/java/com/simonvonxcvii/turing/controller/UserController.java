@@ -41,7 +41,7 @@ public class UserController {
 
     @Operation(summary = "根据用户 id 逻辑删除用户")
     @DeleteMapping("/deleteById/{id}")
-    public Result<Object> deleteById(@PathVariable String id) {
+    public Result<Object> deleteById(@PathVariable Integer id) {
         service.deleteById(id);
         return Result.ok();
     }

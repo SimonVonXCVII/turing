@@ -87,7 +87,7 @@ public class Organization extends AbstractAuditable {
     /**
      * 上级单位 id
      */
-    private String pid;
+    private Integer pid;
     /**
      * 单位名称
      */

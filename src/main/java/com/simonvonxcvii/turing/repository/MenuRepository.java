@@ -13,5 +13,5 @@ import org.springframework.stereotype.Repository;
  * @since 2023-08-19 18:08:08
  */
 @Repository
-public interface MenuRepository extends JpaRepositoryImplementation<Menu, String> {
+public interface MenuRepository extends JpaRepositoryImplementation<Menu, Integer> {
 }

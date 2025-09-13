@@ -30,6 +30,6 @@ public interface IUserService {
      * @author Simon Von
      * @since 2023/9/6 18:12
      */
-    void deleteById(String id);
+    void deleteById(Integer id);
 
 }

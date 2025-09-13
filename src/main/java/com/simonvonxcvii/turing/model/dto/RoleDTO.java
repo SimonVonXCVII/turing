@@ -16,7 +16,7 @@ public class RoleDTO extends PageQuery {
     /**
      * 角色 id
      */
-    private String id;
+    private Integer id;
     /**
      * 角色名称
      */
@@ -36,5 +36,5 @@ public class RoleDTO extends PageQuery {
      * 权限 id 集合
      */
     @NotEmpty(message = "权限 id 集合不能为空")
-    private List<String> permissionIdList;
+    private List<Integer> permissionIdList;
 }

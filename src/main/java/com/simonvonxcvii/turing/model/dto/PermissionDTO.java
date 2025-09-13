@@ -17,11 +17,11 @@ public class PermissionDTO extends PageQuery {
     /**
      * 权限 id
      */
-    private String id;
+    private Integer id;
     /**
      * 上级权限 id
      */
-    private String pid;
+    private Integer pid;
     /**
      * 权限名称
      */

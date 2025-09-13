@@ -41,7 +41,7 @@ public class UserUtils {
      * @author Simon Von
      * @since 12/23/2022 3:53 PM
      */
-    public static String getId() {
+    public static Integer getId() {
         return getUser().getId();
     }
 
@@ -52,7 +52,7 @@ public class UserUtils {
      * @author Simon Von
      * @since 12/23/2022 3:53 PM
      */
-    public static String getOrgId() {
+    public static Integer getOrgId() {
         return getUser().getOrgId();
     }
 

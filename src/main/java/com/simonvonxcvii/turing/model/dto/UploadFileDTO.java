@@ -18,7 +18,7 @@ public class UploadFileDTO {
      * 文件 id
      */
     @Schema(description = "文件 id")
-    private String id;
+    private Integer id;
 
     /**
      * 文件名

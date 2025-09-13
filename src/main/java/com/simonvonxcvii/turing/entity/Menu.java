@@ -54,11 +54,11 @@ public class Menu extends AbstractAuditable {
     /**
      * 上级菜单 id
      */
-    public String pid;
+    public Integer pid;
     /**
      * 系统权限 id
      */
-    public String permissionId;
+    public Integer permissionId;
     /**
      * 菜单名称
      */

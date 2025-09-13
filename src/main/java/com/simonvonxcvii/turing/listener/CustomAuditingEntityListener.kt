@@ -26,7 +26,7 @@ class CustomAuditingEntityListener {
      */
     @PrePersist
     fun prePersist(entity: AbstractAuditable) {
-        log.info("插入前：$entity")
+//        log.info("插入前：$entity")
         entity.deleted = false
     }
 
@@ -35,7 +35,7 @@ class CustomAuditingEntityListener {
      */
     @PostPersist
     fun postPersist(entity: AbstractAuditable) {
-        log.info("插入后：$entity")
+//        log.info("插入后：$entity")
     }
 
     /**

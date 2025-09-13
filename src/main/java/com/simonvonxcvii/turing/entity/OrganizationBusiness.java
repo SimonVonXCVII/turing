@@ -57,7 +57,7 @@ public class OrganizationBusiness extends AbstractAuditable {
     /**
      * 单位 id
      */
-    private String orgId;
+    private Integer orgId;
 
     /**
      * 单位名称

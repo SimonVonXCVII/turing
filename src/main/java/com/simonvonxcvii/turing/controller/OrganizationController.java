@@ -57,7 +57,7 @@ public class OrganizationController {
 
     @Operation(summary = "根据 id 逻辑删除单位及其关联的用户和用户的角色")
     @DeleteMapping("/deleteById/{id}")
-    public Result<String> deleteById(@PathVariable String id) {
+    public Result<String> deleteById(@PathVariable Integer id) {
         service.deleteById(id);
         return Result.ok();
     }

@@ -53,7 +53,7 @@ public class Dict extends AbstractAuditable {
     /**
      * 上级 id
      */
-    public String pid;
+    public Integer pid;
     /**
      * 字典名称
      */
@@ -61,7 +61,7 @@ public class Dict extends AbstractAuditable {
     /**
      * 字典值
      */
-    public String value;
+    public Integer value;
     /**
      * 说明
      */

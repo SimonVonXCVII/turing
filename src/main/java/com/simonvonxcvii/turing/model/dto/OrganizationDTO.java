@@ -29,7 +29,7 @@ public class OrganizationDTO extends PageQuery {
     /**
      * 主键 id
      */
-    private String id;
+    private Integer id;
     /**
      * 单位名称
      */

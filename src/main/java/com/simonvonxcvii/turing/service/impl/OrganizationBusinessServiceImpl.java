@@ -1,10 +1,11 @@
 package com.simonvonxcvii.turing.service.impl;
 
-import co.elastic.clients.elasticsearch.ElasticsearchClient;
-import co.elastic.clients.elasticsearch.core.CreateRequest;
-import co.elastic.clients.elasticsearch.core.GetRequest;
-import co.elastic.clients.elasticsearch.core.GetResponse;
-import co.elastic.clients.elasticsearch.core.SearchResponse;
+//import co.elastic.clients.elasticsearch.ElasticsearchClient;
+//import co.elastic.clients.elasticsearch.core.CreateRequest;
+//import co.elastic.clients.elasticsearch.core.GetRequest;
+//import co.elastic.clients.elasticsearch.core.GetResponse;
+//import co.elastic.clients.elasticsearch.core.SearchResponse;
+
 import com.simonvonxcvii.turing.common.exception.BizRuntimeException;
 import com.simonvonxcvii.turing.entity.*;
 import com.simonvonxcvii.turing.enums.OrganizationBusinessBusinessLinksEnum;
@@ -18,8 +19,6 @@ import jakarta.persistence.criteria.Predicate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,7 +27,6 @@ import org.springframework.util.StringUtils;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * <p>
@@ -48,7 +46,7 @@ public class OrganizationBusinessServiceImpl implements IOrganizationBusinessSer
     private final RoleRepository roleRepository;
     private final UserRepository userRepository;
     private final RedisTemplate<String, Object> redisTemplate;
-    private final ElasticsearchClient elasticsearchClient;
+//    private final ElasticsearchClient elasticsearchClient;
 
     /**
      * 单位管理员查询本单位已申请业务或者审核人员查询
@@ -60,67 +58,68 @@ public class OrganizationBusinessServiceImpl implements IOrganizationBusinessSer
      */
     @Override
     public Page<OrganizationBusinessDTO> selectPage(OrganizationBusinessDTO dto) throws IOException {
-        SearchResponse<OrganizationBusiness> searchResponse = elasticsearchClient.search(searchRequest -> {
-                    searchRequest.index(OrganizationBusiness.INDEX)
-                            // 首页默认从 0 开始
-                            .from(dto.getNumber() - 1)
-                            .size(dto.getSize());
-                    if (StringUtils.hasText(dto.getOrgName())) {
-                        searchRequest.query(query1 -> query1.match(matchQuery -> matchQuery.field("orgName").query(dto.getOrgName())))
-                                // 高亮
-                                .highlight(highlight -> highlight.fields("orgName", function1 -> function1)
-                                        .preTags("<span style='color:red'>")
-                                        .postTags("</span>"));
-                    }
-                    if (dto.getProvinceCode() != null) {
-                        searchRequest.query(query1 -> query1.match(matchQuery -> matchQuery.field("provinceCode").query(dto.getProvinceCode())));
-                    }
-                    if (dto.getCityCode() != null) {
-                        searchRequest.query(query1 -> query1.match(matchQuery -> matchQuery.field("cityCode").query(dto.getCityCode())));
-                    }
-                    if (dto.getDistrictCode() != null) {
-                        searchRequest.query(query1 -> query1.match(matchQuery -> matchQuery.field("districtCode").query(dto.getDistrictCode())));
-                    }
-                    if (dto.getLink() != null) {
-                        searchRequest.query(query1 -> query1.match(matchQuery -> matchQuery.field("link").query(dto.getLink()[0])));
-                    }
-                    if (dto.getType() != null) {
-                        searchRequest.query(query1 -> query1.match(matchQuery -> matchQuery.field("type").query(dto.getType()[0])));
-                    }
-                    if (dto.getState() != null) {
-                        searchRequest.query(query1 -> query1.match(matchQuery -> matchQuery.field("state").query(dto.getState())));
-                    }
-                    return searchRequest;
-                },
-                OrganizationBusiness.class);
-
-        if (searchResponse.hits().total() == null) {
-            throw BizRuntimeException.from("数据异常");
-        }
-
-        return new PageImpl<>(searchResponse.hits()
-                .hits()
-                .stream()
-                .map(hit -> {
-                    OrganizationBusiness organizationBusiness = hit.source();
-                    if (organizationBusiness == null) {
-                        throw BizRuntimeException.from("数据异常");
-                    }
-                    Map<String, List<String>> highlight = hit.highlight();
-                    OrganizationBusinessDTO dto1 = new OrganizationBusinessDTO();
-                    BeanUtils.copyProperties(organizationBusiness, dto1);
-                    if (!highlight.isEmpty()) {
-                        dto1.setOrgName(highlight.get("orgName").getFirst());
-                    }
-                    // 业务环节
-                    dto1.setLink(StringUtils.commaDelimitedListToStringArray(organizationBusiness.getLink()));
-                    // 质控类型
-                    dto1.setType(StringUtils.commaDelimitedListToStringArray(organizationBusiness.getType()));
-                    return dto1;
-                })
-                .toList(),
-                PageRequest.of(dto.getNumber(), dto.getSize()),
-                searchResponse.hits().total().value());
+//        SearchResponse<OrganizationBusiness> searchResponse = elasticsearchClient.search(searchRequest -> {
+//                    searchRequest.index(OrganizationBusiness.INDEX)
+//                            // 首页默认从 0 开始
+//                            .from(dto.getNumber() - 1)
+//                            .size(dto.getSize());
+//                    if (StringUtils.hasText(dto.getOrgName())) {
+//                        searchRequest.query(query1 -> query1.match(matchQuery -> matchQuery.field("orgName").query(dto.getOrgName())))
+//                                // 高亮
+//                                .highlight(highlight -> highlight.fields("orgName", function1 -> function1)
+//                                        .preTags("<span style='color:red'>")
+//                                        .postTags("</span>"));
+//                    }
+//                    if (dto.getProvinceCode() != null) {
+//                        searchRequest.query(query1 -> query1.match(matchQuery -> matchQuery.field("provinceCode").query(dto.getProvinceCode())));
+//                    }
+//                    if (dto.getCityCode() != null) {
+//                        searchRequest.query(query1 -> query1.match(matchQuery -> matchQuery.field("cityCode").query(dto.getCityCode())));
+//                    }
+//                    if (dto.getDistrictCode() != null) {
+//                        searchRequest.query(query1 -> query1.match(matchQuery -> matchQuery.field("districtCode").query(dto.getDistrictCode())));
+//                    }
+//                    if (dto.getLink() != null) {
+//                        searchRequest.query(query1 -> query1.match(matchQuery -> matchQuery.field("link").query(dto.getLink()[0])));
+//                    }
+//                    if (dto.getType() != null) {
+//                        searchRequest.query(query1 -> query1.match(matchQuery -> matchQuery.field("type").query(dto.getType()[0])));
+//                    }
+//                    if (dto.getState() != null) {
+//                        searchRequest.query(query1 -> query1.match(matchQuery -> matchQuery.field("state").query(dto.getState())));
+//                    }
+//                    return searchRequest;
+//                },
+//                OrganizationBusiness.class);
+//
+//        if (searchResponse.hits().total() == null) {
+//            throw BizRuntimeException.from("数据异常");
+//        }
+//
+//        return new PageImpl<>(searchResponse.hits()
+//                .hits()
+//                .stream()
+//                .map(hit -> {
+//                    OrganizationBusiness organizationBusiness = hit.source();
+//                    if (organizationBusiness == null) {
+//                        throw BizRuntimeException.from("数据异常");
+//                    }
+//                    Map<String, List<String>> highlight = hit.highlight();
+//                    OrganizationBusinessDTO dto1 = new OrganizationBusinessDTO();
+//                    BeanUtils.copyProperties(organizationBusiness, dto1);
+//                    if (!highlight.isEmpty()) {
+//                        dto1.setOrgName(highlight.get("orgName").getFirst());
+//                    }
+//                    // 业务环节
+//                    dto1.setLink(StringUtils.commaDelimitedListToStringArray(organizationBusiness.getLink()));
+//                    // 质控类型
+//                    dto1.setType(StringUtils.commaDelimitedListToStringArray(organizationBusiness.getType()));
+//                    return dto1;
+//                })
+//                .toList(),
+//                PageRequest.of(dto.getNumber(), dto.getSize()),
+//                searchResponse.hits().total().value());
+        return null;
     }
 
     /**
@@ -133,16 +132,17 @@ public class OrganizationBusinessServiceImpl implements IOrganizationBusinessSer
      */
     @Override
     public OrganizationBusinessDTO getOneById(String id) throws IOException {
-        GetResponse<OrganizationBusiness> organizationBusinessGetResponse = elasticsearchClient.get(GetRequest.of(
-                builder -> builder.index(OrganizationBusiness.INDEX)
-                        .id(id)), OrganizationBusiness.class);
-        OrganizationBusiness organizationBusiness = organizationBusinessGetResponse.source();
-        if (organizationBusiness == null) {
-            throw BizRuntimeException.from("没有找到该业务记录");
-        }
-        OrganizationBusinessDTO dto = new OrganizationBusinessDTO();
-        BeanUtils.copyProperties(organizationBusiness, dto);
-        return dto;
+//        GetResponse<OrganizationBusiness> organizationBusinessGetResponse = elasticsearchClient.get(GetRequest.of(
+//                builder -> builder.index(OrganizationBusiness.INDEX)
+//                        .id(id)), OrganizationBusiness.class);
+//        OrganizationBusiness organizationBusiness = organizationBusinessGetResponse.source();
+//        if (organizationBusiness == null) {
+//            throw BizRuntimeException.from("没有找到该业务记录");
+//        }
+//        OrganizationBusinessDTO dto = new OrganizationBusinessDTO();
+//        BeanUtils.copyProperties(organizationBusiness, dto);
+//        return dto;
+        return null;
     }
 
     /**
@@ -207,9 +207,9 @@ public class OrganizationBusinessServiceImpl implements IOrganizationBusinessSer
         organizationBusinessRepository.save(organizationBusiness);
 
         // 同步到 ES
-        elasticsearchClient.create(CreateRequest.of(builder -> builder.index(OrganizationBusiness.INDEX)
-                .id(organizationBusiness.getId())
-                .document(organizationBusiness)));
+//        elasticsearchClient.create(CreateRequest.of(builder -> builder.index(OrganizationBusiness.INDEX)
+//                .id(organizationBusiness.getId())
+//                .document(organizationBusiness)));
     }
 
     /**
@@ -230,10 +230,10 @@ public class OrganizationBusinessServiceImpl implements IOrganizationBusinessSer
         organizationBusinessRepository.save(organizationBusiness);
 
         // 同步到 ES
-        elasticsearchClient.update(builder -> builder.index(OrganizationBusiness.INDEX)
-                        .id(organizationBusiness.getId())
-                        .doc(organizationBusiness),
-                OrganizationBusiness.class);
+//        elasticsearchClient.update(builder -> builder.index(OrganizationBusiness.INDEX)
+//                        .id(organizationBusiness.getId())
+//                        .doc(organizationBusiness),
+//                OrganizationBusiness.class);
 
         for (String link : StringUtils.commaDelimitedListToStringArray(organizationBusiness.getLink())) {
             OrganizationBusinessBusinessLinksEnum.getEnumByDesc(link).ifPresent(anEnum -> {
@@ -295,10 +295,10 @@ public class OrganizationBusinessServiceImpl implements IOrganizationBusinessSer
         organizationBusinessRepository.save(organizationBusiness);
 
         // 同步到 ES
-        elasticsearchClient.update(builder -> builder.index(OrganizationBusiness.INDEX)
-                        .id(organizationBusiness.getId())
-                        .doc(organizationBusiness),
-                OrganizationBusiness.class);
+//        elasticsearchClient.update(builder -> builder.index(OrganizationBusiness.INDEX)
+//                        .id(organizationBusiness.getId())
+//                        .doc(organizationBusiness),
+//                OrganizationBusiness.class);
 
         User user = userRepository.findOne((root, _, criteriaBuilder) ->
                         criteriaBuilder.and(root.get(User.ORG_ID).in(organizationBusiness.getOrgId()),

@@ -42,7 +42,7 @@ public interface IAppFileService {
      * @author Simon Von
      * @since 2023-04-01 23:08:08
      */
-    void getFileById(String id, HttpServletResponse response) throws IOException;
+    void getFileById(Integer id, HttpServletResponse response) throws IOException;
 
     /**
      * 根据图片文件 id 获取原始图片
@@ -52,7 +52,7 @@ public interface IAppFileService {
      * @author Simon Von
      * @since 2023-04-01 23:08:08
      */
-    void getOriginalImageById(String id, HttpServletResponse response) throws IOException;
+    void getOriginalImageById(Integer id, HttpServletResponse response) throws IOException;
 
     /**
      * 根据文件 id 删除文件
@@ -61,6 +61,6 @@ public interface IAppFileService {
      * @author Simon Von
      * @since 2023-04-01 23:08:08
      */
-    void deleteById(String id);
+    void deleteById(Integer id);
 
 }

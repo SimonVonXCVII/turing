@@ -157,7 +157,7 @@ public class AppFileServiceImpl implements IAppFileService {
      * @since 2023-04-01 23:08:08
      */
     @Override
-    public void getFileById(String id, HttpServletResponse response) throws IOException {
+    public void getFileById(Integer id, HttpServletResponse response) throws IOException {
         AppFile appFile = appFileRepository.findById(id).orElseThrow(() -> BizRuntimeException.from("没有找到该文件"));
         String appFilePath = appFile.getPath();
         if (appFilePath == null) {
@@ -197,7 +197,7 @@ public class AppFileServiceImpl implements IAppFileService {
      * @since 2023-04-01 23:08:08
      */
     @Override
-    public void getOriginalImageById(String id, HttpServletResponse response) throws IOException {
+    public void getOriginalImageById(Integer id, HttpServletResponse response) throws IOException {
         AppFile appFile = appFileRepository.findById(id).orElseThrow(() -> BizRuntimeException.from("没有找到该图片"));
         String appFilePath = appFile.getPath();
         if (!StringUtils.hasText(appFilePath)) {
@@ -237,7 +237,7 @@ public class AppFileServiceImpl implements IAppFileService {
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void deleteById(String id) {
+    public void deleteById(Integer id) {
         appFileRepository.deleteById(id);
     }
 

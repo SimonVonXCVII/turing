@@ -106,21 +106,21 @@ public class AppFileController {
     @Parameter(name = "id", description = "文件 id")
     @Operation(summary = "根据文件 id 获取文件")
     @GetMapping(value = "/getFileById", produces = {MediaType.APPLICATION_PDF_VALUE, "application/msword", "application/vnd.ms-excel"})
-    public void getFileById(@NotBlank(message = "id 不能为空") String id, HttpServletResponse response) throws IOException {
+    public void getFileById(@NotBlank(message = "id 不能为空") Integer id, HttpServletResponse response) throws IOException {
         service.getFileById(id, response);
     }
 
     @Parameter(name = "id", description = "文件 id")
     @Operation(summary = "根据图片文件 id 获取原始图片")
     @GetMapping(value = "/getOriginalImageById", produces = {MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE, "application/webp"})
-    public void getOriginalImageById(@NotBlank(message = "id 不能为空") String id, HttpServletResponse response) throws IOException {
+    public void getOriginalImageById(@NotBlank(message = "id 不能为空") Integer id, HttpServletResponse response) throws IOException {
         service.getOriginalImageById(id, response);
     }
 
     @Parameter(name = "map", description = "Map 键值对形式的文件 id")
     @Operation(summary = "根据文件 id 删除文件")
     @DeleteMapping("/deleteById/{id}")
-    public Result<Object> deleteById(@PathVariable String id) {
+    public Result<Object> deleteById(@PathVariable Integer id) {
         service.deleteById(id);
         return Result.ok();
     }

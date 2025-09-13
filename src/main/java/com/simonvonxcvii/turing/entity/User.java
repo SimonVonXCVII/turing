@@ -66,7 +66,7 @@ public class User extends AbstractAuditable implements UserDetails {
     /**
      * 用户手机号
      */
-    public String mobile;
+    public Long mobile;
     /**
      * 用户性别
      */
@@ -74,7 +74,7 @@ public class User extends AbstractAuditable implements UserDetails {
     /**
      * 组织机构 id
      */
-    public String orgId;
+    public Integer orgId;
     /**
      * 单位名称
      */

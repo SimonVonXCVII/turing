@@ -139,7 +139,8 @@ dependencies {
 //    developmentOnly("org.springframework.boot:spring-boot-docker-compose")
     implementation("org.springframework.boot:spring-boot-starter")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
-    implementation("org.springframework.boot:spring-boot-starter-data-elasticsearch")
+    // TODO 是否可以用 postgresql 替代 elasticsearch
+//    implementation("org.springframework.boot:spring-boot-starter-data-elasticsearch")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-data-redis")
     implementation("org.springframework.boot:spring-boot-starter-oauth2-authorization-server")

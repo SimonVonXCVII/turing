@@ -45,7 +45,7 @@ public class OrganizationServiceImpl implements IOrganizationService {
     public void insertOrUpdate(OrganizationDTO dto) {
         Organization organization;
         // 新增
-        if (!StringUtils.hasText(dto.getId())) {
+        if (dto.getId() == null) {
             organization = new Organization();
         }
         // 修改
@@ -160,11 +160,11 @@ public class OrganizationServiceImpl implements IOrganizationService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void deleteById(String id) {
+    public void deleteById(Integer id) {
         // 逻辑删除用户-角色关联数据
         // TODO: 2023/9/7 是否能实现查询指定列
         List<User> userList = userRepository.findAll((root, _, _) -> root.get(User.ORG_ID).in(id));
-        List<String> userIdList = userList.stream().map(AbstractAuditable::getId).toList();
+        List<Integer> userIdList = userList.stream().map(AbstractAuditable::getId).toList();
         userRoleRepository.delete((root, _, _) -> root.get(UserRole.USER_ID).in(userIdList));
         // 删除单位下的所有用户
         userRepository.delete((root, _, _) -> root.get(User.ORG_ID).in(id));
