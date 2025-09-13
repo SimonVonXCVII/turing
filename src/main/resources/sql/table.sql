@@ -3,17 +3,17 @@ create table if not exists public.turing_app_file
     id                 bigserial
         constraint con_public_turing_app_file_constraint_1
             primary key,
-    owner_id           bigint             not null,
-    filename           varchar(64 char)   not null,
-    origin_filename    varchar(64 char)   not null,
-    suffix             varchar(8 char)    not null,
-    content_type       varchar(128 char)  not null,
-    content_length     bigint             not null,
-    md5                varchar(64 char)   not null
+    owner_id           bigint        not null,
+    filename           varchar(64)   not null,
+    origin_filename    varchar(64)   not null,
+    suffix             varchar(8)    not null,
+    content_type       varchar(128)  not null,
+    content_length     bigint        not null,
+    md5                varchar(64)   not null
         unique,
-    path               varchar(1024 char) not null,
-    biz_type           smallint           not null,
-    remark             varchar(1024 char),
+    path               varchar(1024) not null,
+    biz_type           smallint      not null,
+    remark             varchar(1024),
     created_by         bigint,
     created_time       timestamp,
     last_modified_by   bigint,
@@ -59,18 +59,18 @@ comment on column public.turing_app_file.version is '乐观锁字段';
 comment on column public.turing_app_file.deleted is '逻辑删除';
 
 alter table public.turing_app_file
-    owner to system;
+    owner to postgres;
 
 create table if not exists public.turing_dict
 (
     id                 bigserial
         constraint con_public_turing_dict_constraint_1
             primary key,
-    type               varchar(32 char),
+    type               varchar(32),
     pid                bigint,
-    name               varchar(32 char)                    not null,
-    value              varchar(32 char)                    not null,
-    description        varchar(128 char),
+    name               varchar(32)                         not null,
+    value              integer                             not null,
+    description        varchar(128),
     sort               integer,
     created_by         bigint,
     created_date       timestamp                           not null,
@@ -109,7 +109,7 @@ comment on column public.turing_dict.version is '乐观锁字段';
 comment on column public.turing_dict.deleted is '逻辑删除';
 
 alter table public.turing_dict
-    owner to system;
+    owner to postgres;
 
 create table if not exists public.turing_menu
 (
@@ -119,15 +119,15 @@ create table if not exists public.turing_menu
     pid                bigint,
     permission_id      bigint                              not null
         unique,
-    name               varchar(64 char)                    not null
+    name               varchar(64)                         not null
         unique,
-    title              varchar(128 char)                   not null
+    title              varchar(128)                        not null
         unique,
-    type               varchar(32 char),
-    path               varchar(128 char)                   not null
+    type               varchar(32),
+    path               varchar(128)                        not null
         unique,
-    component          varchar(256 char)                   not null,
-    icon               varchar(256 char),
+    component          varchar(256)                        not null,
+    icon               varchar(256),
     sort               integer                             not null
         unique,
     showed             boolean                             not null,
@@ -182,7 +182,7 @@ comment on column public.turing_menu.version is '乐观锁字段';
 comment on column public.turing_menu.deleted is '逻辑删除';
 
 alter table public.turing_menu
-    owner to system;
+    owner to postgres;
 
 create table if not exists public.turing_organization
 (
@@ -190,20 +190,20 @@ create table if not exists public.turing_organization
         constraint con_public_turing_organization_constraint_1
             primary key,
     pid                bigint,
-    name               varchar(64 char)                    not null
+    name               varchar(64)                         not null
         unique,
-    code               varchar(18 char)                    not null
+    code               varchar(18)                         not null
         unique,
-    type               varchar(6 char)                     not null,
+    type               varchar(6)                          not null,
     province_code      integer                             not null,
     city_code          integer                             not null,
     district_code      integer                             not null,
-    province_name      varchar(16 char)                    not null,
-    city_name          varchar(16 char)                    not null,
-    district_name      varchar(16 char)                    not null,
-    address            varchar(128 char)                   not null,
-    legal_person       varchar(32 char)                    not null,
-    phone              varchar(32 char)                    not null
+    province_name      varchar(16)                         not null,
+    city_name          varchar(16)                         not null,
+    district_name      varchar(16)                         not null,
+    address            varchar(128)                        not null,
+    legal_person       varchar(32)                         not null,
+    phone              varchar(32)                         not null
         unique,
     created_by         bigint,
     created_date       timestamp                           not null,
@@ -256,7 +256,7 @@ comment on column public.turing_organization.version is '乐观锁字段';
 comment on column public.turing_organization.deleted is '逻辑删除';
 
 alter table public.turing_organization
-    owner to system;
+    owner to postgres;
 
 create table if not exists public.turing_organization_business
 (
@@ -264,17 +264,17 @@ create table if not exists public.turing_organization_business
         constraint con_public_mine_organization_business_constraint_1
             primary key,
     org_id             bigint,
-    org_name           varchar(128 char),
-    link               varchar(128 char),
-    type               varchar(128 char),
+    org_name           varchar(128),
+    link               varchar(128),
+    type               varchar(128),
     province_code      integer,
     city_code          integer,
     district_code      integer,
-    province_name      varchar(16 char),
-    city_name          varchar(16 char),
-    district_name      varchar(16 char),
-    state              varchar(3 char),
-    business_level     varchar(16 char),
+    province_name      varchar(16),
+    city_name          varchar(16),
+    district_name      varchar(16),
+    state              varchar(3),
+    business_level     varchar(16),
     created_by         bigint,
     created_date       timestamp,
     last_modified_by   bigint,
@@ -324,7 +324,7 @@ comment on column public.turing_organization_business.version is '乐观锁字�
 comment on column public.turing_organization_business.deleted is '逻辑删除';
 
 alter table public.turing_organization_business
-    owner to system;
+    owner to postgres;
 
 create table if not exists public.turing_permission
 (
@@ -332,9 +332,9 @@ create table if not exists public.turing_permission
         constraint con_public_turing_permission_constraint_1
             primary key,
     pid                bigint,
-    name               varchar(32 char)                    not null
+    name               varchar(32)                         not null
         unique,
-    code               varchar(32 char)
+    code               varchar(32)
         unique,
     sort               integer                             not null
         unique,
@@ -371,18 +371,18 @@ comment on column public.turing_permission.version is '乐观锁字段';
 comment on column public.turing_permission.deleted is '逻辑删除';
 
 alter table public.turing_permission
-    owner to system;
+    owner to postgres;
 
 create table if not exists public.turing_role
 (
     id                 bigserial
         constraint con_public_turing_role_constraint_1
             primary key,
-    name               varchar(64 char)                    not null
+    name               varchar(64)                         not null
         unique,
-    authority          varchar(64 char)                    not null
+    authority          varchar(64)                         not null
         unique,
-    description        varchar(128 char)                   not null,
+    description        varchar(128)                        not null,
     created_by         bigint,
     created_date       timestamp                           not null,
     last_modified_by   bigint,
@@ -414,7 +414,7 @@ comment on column public.turing_role.version is '乐观锁字段';
 comment on column public.turing_role.deleted is '逻辑删除';
 
 alter table public.turing_role
-    owner to system;
+    owner to postgres;
 
 create table if not exists public.turing_role_permission
 (
@@ -452,23 +452,23 @@ comment on column public.turing_role_permission.version is '乐观锁字段';
 comment on column public.turing_role_permission.deleted is '逻辑删除';
 
 alter table public.turing_role_permission
-    owner to system;
+    owner to postgres;
 
 create table if not exists public.turing_user
 (
     id                      bigserial
         constraint con_public_turing_user_constraint_1
             primary key,
-    name                    varchar(64 char)                    not null,
+    name                    varchar(64)                         not null,
     mobile                  bigint                              not null
         unique,
-    gender                  varchar(1 char)                     not null,
+    gender                  varchar(1)                          not null,
     org_id                  bigint                              not null,
-    org_name                varchar(128 char)                   not null,
-    department              varchar(128 char),
-    username                varchar(64 char)                    not null
+    org_name                varchar(128)                        not null,
+    department              varchar(128),
+    username                varchar(64)                         not null
         unique,
-    password                varchar(128 char)                   not null,
+    password                varchar(128)                        not null,
     account_non_expired     boolean   default true              not null,
     account_non_locked      boolean   default true              not null,
     credentials_non_expired boolean   default true              not null,
@@ -528,7 +528,7 @@ comment on column public.turing_user.version is '乐观锁字段';
 comment on column public.turing_user.deleted is '逻辑删除';
 
 alter table public.turing_user
-    owner to system;
+    owner to postgres;
 
 create table if not exists public.turing_user_role
 (
@@ -566,4 +566,4 @@ comment on column public.turing_user_role.version is '乐观锁字段';
 comment on column public.turing_user_role.deleted is '逻辑删除';
 
 alter table public.turing_user_role
-    owner to system;
+    owner to postgres;
