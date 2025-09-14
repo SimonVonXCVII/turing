@@ -59,40 +59,33 @@ class UserDetailsServiceImpl(
         val user = userRepository.findOne { root, query, criteriaBuilder ->
             val usernamePath: Path<String> = root.get("username")
             query?.where(criteriaBuilder.equal(usernamePath, username))?.restriction
-        }.orElseThrow { throw UsernameNotFoundException("该用户账号不存在：$username") }
-        if (!user.isAccountNonExpired) {
-            throw AccountExpiredException("账号已过期")
-        }
-        if (!user.isAccountNonLocked) {
-            throw LockedException("账号已锁定")
-        }
-        if (!user.isCredentialsNonExpired) {
-            throw CredentialsExpiredException("凭证已过期")
-        }
-        if (!user.isEnabled) {
-            throw DisabledException("账号已禁用")
-        }
+        }.orElse(null) ?: throw UsernameNotFoundException("该用户账号不存在：$username")
+
+        if (!user.isAccountNonExpired) throw AccountExpiredException("账号已过期")
+        if (!user.isAccountNonLocked) throw LockedException("账号已锁定")
+        if (!user.isCredentialsNonExpired) throw CredentialsExpiredException("凭证已过期")
+        if (!user.isEnabled) throw DisabledException("账号已禁用")
+
         user.admin = "admin" == user.username
-        val roleList: List<Role>
         // 超级管理员拥有所有角色和权限
-        if (user.admin) {
-            roleList = roleRepository.findAll()
+        val roleList: List<Role> = if (user.admin) {
+            roleRepository.findAll().filterNotNull()
         } else {
             // 获取用户角色与用户关联记录表
             val userRoleList = userRoleRepository.findAll { root, query, criteriaBuilder ->
                 val userId: Path<String> = root.get("user_id")
                 query?.where(criteriaBuilder.equal(userId, user.id))?.restriction
-            }
-            if (userRoleList.isEmpty()) {
-                throw BadCredentialsException("非法账号，该账号没有角色：$username")
-            }
+            }.filterNotNull()
+                .apply {
+                    if (this.isEmpty()) throw BadCredentialsException("非法账号，该账号没有角色：$username")
+                }
 
             // 获取用户角色
-            roleList =
-                roleRepository.findAllById(userRoleList.stream().map { userRole: UserRole -> userRole.roleId }.toList())
-            if (roleList.isEmpty()) {
-                throw BadCredentialsException("非法账号，该账号没有角色：$username")
-            }
+            roleRepository.findAllById(userRoleList.stream().map { userRole: UserRole -> userRole.roleId }.toList())
+                .filterNotNull()
+                .apply {
+                    if (this.isEmpty()) throw BadCredentialsException("非法账号，该账号没有角色：$username")
+                }
         }
 
         // 校验验证码
@@ -104,18 +97,14 @@ class UserDetailsServiceImpl(
         val serverCaptcha = redisTemplate.opsForValue()[Constants.REDIS_CAPTCHA + md5DigestAsHex] as String?
         // 客户端验证码
         val clientCaptcha = httpServletRequest.getParameter("captcha")
+
         // TODO: 验证码有时候会出现过期提示，但实则并没有过期
         println("serverCaptcha: $serverCaptcha")
         println("clientCaptcha: $clientCaptcha")
-        if (!StringUtils.hasText(serverCaptcha)) {
-            throw BadCredentialsException("验证码已过期")
-        }
-        if (!StringUtils.hasText(clientCaptcha)) {
-            throw BadCredentialsException("请输入验证码")
-        }
-        if (!serverCaptcha.equals(clientCaptcha, true)) {
-            throw BadCredentialsException("验证码错误，请重新输入")
-        }
+        if (!StringUtils.hasText(serverCaptcha)) throw BadCredentialsException("验证码已过期")
+        if (!StringUtils.hasText(clientCaptcha)) throw BadCredentialsException("请输入验证码")
+        if (!serverCaptcha.equals(clientCaptcha, true)) throw BadCredentialsException("验证码错误，请重新输入")
+
         // 如果验证成功，则删除 Redis 中的验证码
         redisTemplate.opsForValue().getAndDelete(Constants.REDIS_CAPTCHA + md5DigestAsHex)
 
@@ -127,19 +116,17 @@ class UserDetailsServiceImpl(
         // 将 token 保存到 request 中，便于在 AuthenticationSuccessHandlerImpl#onAuthenticationSuccess 方法中获取
         httpServletRequest.setAttribute(OAuth2ParameterNames.TOKEN, user.token)
         val organization = organizationRepository.findById(user.orgId)
-            .orElseThrow { throw BadCredentialsException("无法找到当前用户的单位信息") }
-        if (organization != null) {
-            // 用户所处的单位级别
-//            user.orgLevel = organization.orgLevel
-            // 区域编码
-            user.provinceCode = organization.provinceCode
-            user.cityCode = organization.cityCode
-            user.districtCode = organization.districtCode
-            // 区域名称
-            user.provinceName = organization.provinceName
-            user.cityName = organization.cityName
-            user.districtName = organization.districtName
-        }
+            .orElse(null) ?: throw BadCredentialsException("无法找到当前用户的单位信息")
+        // 用户所处的单位级别
+//         user.orgLevel = organization.orgLevel
+        // 区域编码
+        user.provinceCode = organization.provinceCode
+        user.cityCode = organization.cityCode
+        user.districtCode = organization.districtCode
+        // 区域名称
+        user.provinceName = organization.provinceName
+        user.cityName = organization.cityName
+        user.districtName = organization.districtName
 
         // 缓存用户信息
         redisTemplate.opsForValue()[User.REDIS_KEY_PREFIX + username] = user

@@ -1,4 +1,4 @@
-package com.simonvonxcvii.turing.utils;
+package com.simonvonxcvii.turing.utils
 
 /**
  * 用于分组校验属性值，建议用于修改操作
@@ -8,5 +8,4 @@ package com.simonvonxcvii.turing.utils;
  * @see Insert
  * @since 1/18/2023 3:51 PM
  */
-public interface Update {
-}
+interface Update 

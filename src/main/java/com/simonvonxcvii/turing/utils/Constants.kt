@@ -1,4 +1,4 @@
-package com.simonvonxcvii.turing.utils;
+package com.simonvonxcvii.turing.utils
 
 /**
  * 常量接口
@@ -6,14 +6,14 @@ package com.simonvonxcvii.turing.utils;
  * @author Simon Von
  * @since 2022/7/12 10:07 周二
  */
-public interface Constants {
+interface Constants {
+    companion object {
+        const val AREA: String = "area"
 
-    String AREA = "area";
+        const val REDIS_CAPTCHA: String = "captcha:"
 
-    String REDIS_CAPTCHA = "captcha:";
+        const val PATTERN: String = "%"
 
-    String PATTERN = "%";
-
-    char ESCAPE_CHAR = '/';
-
+        const val ESCAPE_CHAR: Char = '/'
+    }
 }

@@ -1,9 +1,7 @@
-package com.simonvonxcvii.turing.enums;
+package com.simonvonxcvii.turing.enums
 
-import lombok.Getter;
-
-import java.util.Objects;
-import java.util.Optional;
+import lombok.Getter
+import java.util.*
 
 /**
  * 业务环节枚举类
@@ -12,8 +10,7 @@ import java.util.Optional;
  * @since 1/4/2023 5:26 PM
  */
 @Getter
-public enum OrganizationBusinessBusinessLinksEnum {
-
+enum class OrganizationBusinessBusinessLinksEnum(val desc: String) {
     MINE_INFORMATION_COLLECTION("矿山信息采集"),
     REGIONAL_SURVEY_LOCATIONS("区域调查布点"),
     AREA_SAMPLING_SURVEYS("区域采样调查"),
@@ -25,30 +22,24 @@ public enum OrganizationBusinessBusinessLinksEnum {
     CONTAMINATION_RISK_ASSESSMENT("污染风险评估"),
     ;
 
-    private static final OrganizationBusinessBusinessLinksEnum[] VALUES = values();
+    companion object {
+        private val VALUES = entries.toTypedArray()
 
-    private final String desc;
+        fun getValueByOrdinal(ordinal: Int?): String? {
+            // Use cached VALUES instead of values() to prevent array allocation.
+            for (anEnum in VALUES) if (anEnum.ordinal == ordinal) return anEnum.desc
 
-    OrganizationBusinessBusinessLinksEnum(String desc) {
-        this.desc = desc;
+            return null
+        }
+
+        @JvmStatic
+        fun getEnumByDesc(desc: String?): Optional<OrganizationBusinessBusinessLinksEnum> {
+            // Use cached VALUES instead of values() to prevent array allocation.
+            for (anEnum in VALUES) if (anEnum.desc == desc) return Optional.of<OrganizationBusinessBusinessLinksEnum>(
+                anEnum
+            )
+
+            return Optional.empty<OrganizationBusinessBusinessLinksEnum>()
+        }
     }
-
-    public static String getValueByOrdinal(Integer ordinal) {
-        // Use cached VALUES instead of values() to prevent array allocation.
-        for (OrganizationBusinessBusinessLinksEnum anEnum : VALUES)
-            if (Objects.equals(anEnum.ordinal(), ordinal))
-                return anEnum.getDesc();
-
-        return null;
-    }
-
-    public static Optional<OrganizationBusinessBusinessLinksEnum> getEnumByDesc(String desc) {
-        // Use cached VALUES instead of values() to prevent array allocation.
-        for (OrganizationBusinessBusinessLinksEnum anEnum : VALUES)
-            if (Objects.equals(anEnum.getDesc(), desc))
-                return Optional.of(anEnum);
-
-        return Optional.empty();
-    }
-
 }

@@ -1,8 +1,6 @@
-package com.simonvonxcvii.turing.enums;
+package com.simonvonxcvii.turing.enums
 
-import lombok.Getter;
-
-import java.util.Objects;
+import lombok.Getter
 
 /**
  * 单位类型枚举类
@@ -11,8 +9,7 @@ import java.util.Objects;
  * @since 12/30/2022 6:46 PM
  */
 @Getter
-public enum OrganizationTypeEnum {
-
+enum class OrganizationTypeEnum(val desc: String) {
     PLATFORM("平台管理单位"),
     ADMINISTRATION("行政管理单位"),
     TECHNOLOGY_LEAD("技术牵头单位"),
@@ -20,21 +17,14 @@ public enum OrganizationTypeEnum {
     EXPERT_CONSULTATION("专家咨询单位"),
     ;
 
-    private static final OrganizationTypeEnum[] VALUES = values();
+    companion object {
+        private val VALUES = entries.toTypedArray()
 
-    private final String desc;
+        fun getValueByOrdinal(ordinal: Int?): String {
+            // Use cached VALUES instead of values() to prevent array allocation.
+            for (anEnum in VALUES) if (anEnum.ordinal == ordinal) return anEnum.desc
 
-    OrganizationTypeEnum(String desc) {
-        this.desc = desc;
+            return ""
+        }
     }
-
-    public static String getValueByOrdinal(Integer ordinal) {
-        // Use cached VALUES instead of values() to prevent array allocation.
-        for (OrganizationTypeEnum anEnum : VALUES)
-            if (Objects.equals(anEnum.ordinal(), ordinal))
-                return anEnum.getDesc();
-
-        return "";
-    }
-
 }

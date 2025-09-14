@@ -1,8 +1,6 @@
-package com.simonvonxcvii.turing.enums;
+package com.simonvonxcvii.turing.enums
 
-import lombok.Getter;
-
-import java.util.Objects;
+import lombok.Getter
 
 /**
  * 任务状态枚举
@@ -11,28 +9,20 @@ import java.util.Objects;
  * @since 2023/4/1 18:11
  */
 @Getter
-public enum AssignmentStateEnum {
-
+enum class AssignmentStateEnum(val desc: String) {
     UNASSIGNED("未分配"),
     ASSIGNED("已分配"),
     WITHDRAWN("已撤回"),
     ;
 
-    private static final AssignmentStateEnum[] VALUES = values();
+    companion object {
+        private val VALUES = entries.toTypedArray()
 
-    private final String desc;
+        fun getValueByOrdinal(ordinal: Int?): String {
+            // Use cached VALUES instead of values() to prevent array allocation.
+            for (anEnum in VALUES) if (anEnum.ordinal == ordinal) return anEnum.desc
 
-    AssignmentStateEnum(String desc) {
-        this.desc = desc;
+            return ""
+        }
     }
-
-    public static String getValueByOrdinal(Integer ordinal) {
-        // Use cached VALUES instead of values() to prevent array allocation.
-        for (AssignmentStateEnum anEnum : VALUES)
-            if (Objects.equals(anEnum.ordinal(), ordinal))
-                return anEnum.getDesc();
-
-        return "";
-    }
-
 }

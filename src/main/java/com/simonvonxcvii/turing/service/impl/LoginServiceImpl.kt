@@ -84,7 +84,7 @@ class LoginServiceImpl(
     override fun getMenuList(): List<MenuDTO> {
         var menuDTOList = mutableListOf<MenuDTO>()
         // 预先查询所有菜单
-        val menuList = menuRepository.findAll(Sort.by(Menu.SORT))
+        val menuList = menuRepository.findAll(Sort.by(Menu.SORT)).filterNotNull()
         // 超级管理员可查看所有菜单
         val user = UserUtils.getUser()
         if (user.admin) {
@@ -113,7 +113,7 @@ class LoginServiceImpl(
                         AbstractAuditable::id
                     ).toList()
                 )
-            }
+            }.filterNotNull()
         if (rolePermissionList.isEmpty()) {
             throw BizRuntimeException("无法获取菜单，因为当前用户的角色没有任何权限")
         }
