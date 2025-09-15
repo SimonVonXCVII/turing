@@ -6,8 +6,8 @@ import com.simonvonxcvii.turing.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.boot.ApplicationArguments;
-import org.springframework.boot.ApplicationRunner;
+import org.springframework.beans.factory.BeanFactoryAware;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.datasource.init.ScriptUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -26,6 +26,7 @@ import java.util.stream.Collectors;
 
 /**
  * 数据库初始化 runner
+ * 需要保证在 RedisApplicationRunner 之前注册组件，所有改为了实现 InitializingBean
  * TODO Convert to Kotlin file
  *
  * @author Simon Von
@@ -33,9 +34,9 @@ import java.util.stream.Collectors;
  */
 @Component
 @RequiredArgsConstructor
-public class DatabaseApplicationRunner implements ApplicationRunner {
+public class DatabaseInitializingBean implements InitializingBean {
 
-    private static final Log log = LogFactory.getLog(DatabaseApplicationRunner.class);
+    private static final Log log = LogFactory.getLog(DatabaseInitializingBean.class);
 
     /**
      * 字典排序
@@ -53,13 +54,16 @@ public class DatabaseApplicationRunner implements ApplicationRunner {
     private final DictRepository dictRepository;
 
     /**
-     * Callback used to run the bean.
+     * Invoked by the containing {@code BeanFactory} after it has set all bean properties
+     * and satisfied {@link BeanFactoryAware}, {@code ApplicationContextAware} etc.
+     * <p>This method allows the bean instance to perform validation of its overall
+     * configuration and final initialization when all bean properties have been set.
      *
-     * @param args incoming application arguments
-     * @throws Exception on error
+     * @throws Exception in the event of misconfiguration (such as failure to set an
+     *                   essential property) or if initialization fails for any other reason
      */
     @Override
-    public void run(ApplicationArguments args) throws Exception {
+    public void afterPropertiesSet() throws Exception {
         // 判断是否需要初始化，如果表存在说明不需要
         Connection connection = dataSource.getConnection();
         boolean next = connection.getMetaData()
