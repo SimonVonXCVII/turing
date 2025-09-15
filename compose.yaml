@@ -36,19 +36,9 @@ services:
       - "5432:5432"
     # 定义平台在容器终止时应用的策略。
     restart: always
-    # set shared memory limit when using docker compose
-    #    shm_size: 128mb
-    # or set shared memory limit when deploy via swarm stack
-    #volumes:
-    #  - type: tmpfs
-    #    target: /dev/shm
-    #    tmpfs:
-    #      size: 134217728 # 128*2^20 bytes = 128Mb
-  #    adminer:
-  #      image: adminer
-  #      restart: always
-  #      ports:
-  #        - 8080:8080
+    # 定义服务容器必须可以访问的挂载主机路径或命名卷。
+    volumes:
+      - ./docker/postgresql/data:/var/lib/postgresql/data
   turing-redis:
     # 覆盖容器映像声明的默认命令（即通过 Dockerfile 的 CMD）。
     command: >

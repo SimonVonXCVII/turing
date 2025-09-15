@@ -6,7 +6,6 @@ import com.simonvonxcvii.turing.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.datasource.init.ScriptUtils;
@@ -53,15 +52,6 @@ public class DatabaseInitializingBean implements InitializingBean {
     private final MenuRepository menuRepository;
     private final DictRepository dictRepository;
 
-    /**
-     * Invoked by the containing {@code BeanFactory} after it has set all bean properties
-     * and satisfied {@link BeanFactoryAware}, {@code ApplicationContextAware} etc.
-     * <p>This method allows the bean instance to perform validation of its overall
-     * configuration and final initialization when all bean properties have been set.
-     *
-     * @throws Exception in the event of misconfiguration (such as failure to set an
-     *                   essential property) or if initialization fails for any other reason
-     */
     @Override
     public void afterPropertiesSet() throws Exception {
         // 判断是否需要初始化，如果表存在说明不需要
