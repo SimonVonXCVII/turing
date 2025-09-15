@@ -15,7 +15,8 @@ import java.nio.charset.StandardCharsets
 /**
  * 用于处理成功的用户身份验证的策略。
  * 实现可以做任何他们想做的事情，但典型的行为是控制到后续目的地的导航（使用重定向或转发）。
- * 例如，在用户通过提交登录表单登录后，应用程序需要决定之后应将其重定向到何处（请参阅 [org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter] 和子类）。
+ * 例如，在用户通过提交登录表单登录后，应用程序需要决定之后应将其重定向到何处
+ * （请参阅 [org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter] 和子类）。
  * 如果需要，还可以包括其他逻辑。
  *
  * @author Simon Von
@@ -24,26 +25,26 @@ import java.nio.charset.StandardCharsets
 @Component
 class AuthenticationSuccessHandlerImpl(private val objectMapper: ObjectMapper) : AuthenticationSuccessHandler {
     /**
-     * Called when a user has been successfully authenticated.
+     * 当用户成功身份验证时调用。
      *
-     * @param request        the request which caused the successful authentication
+     * @param request        导致成功身份验证的请求
      * @param response       the response
      * @param authentication the <tt>Authentication</tt> object which was created during
      * the authentication process.
      */
     override fun onAuthenticationSuccess(
-        request: HttpServletRequest, response: HttpServletResponse,
+        request: HttpServletRequest,
+        response: HttpServletResponse,
         authentication: Authentication
     ) {
         response.characterEncoding = StandardCharsets.UTF_8.name()
         response.contentType = MediaType.APPLICATION_JSON_VALUE
         response.status = HttpStatus.OK.value()
-        response.writer
-            .write(
-                objectMapper.writeValueAsString(
-                    Result.ok(mapOf(OAuth2ParameterNames.TOKEN to request.getAttribute(OAuth2ParameterNames.TOKEN)))
-                )
+        response.writer.write(
+            objectMapper.writeValueAsString(
+                Result.ok(mapOf(OAuth2ParameterNames.TOKEN to request.getAttribute(OAuth2ParameterNames.TOKEN)))
             )
+        )
         request.removeAttribute(OAuth2ParameterNames.TOKEN)
     }
 }

@@ -35,23 +35,9 @@ class RedisApplicationRunner(
         if (dictList.isEmpty()) {
             return
         }
-//        try {
-//            val exposeConnection = redisTemplate.isExposeConnection
-//            val requiredConnectionFactory = redisTemplate.requiredConnectionFactory
-//            val connection1 = requiredConnectionFactory.connection
-//            val connection = redisTemplate.connectionFactory?.connection
-//            val pong = connection?.ping()
-//            println("Redis 连接测试成功: $pong")
-//            connection?.close()
-//        } catch (e: Exception) {
-//            println("Redis 连接测试失败: $e")
-//            throw e
-//        }
         redisTemplate.opsForValue().multiSet(
             dictList.stream().collect(
-                Collectors.toMap(
-                    { dict -> Dict.REDIS_KEY_PREFIX + dict.value }, Dict::name
-                )
+                Collectors.toMap({ dict -> Dict.REDIS_KEY_PREFIX + dict.value }, Dict::name)
             )
         )
     }

@@ -29,7 +29,8 @@ class AuthenticationFailureHandlerImpl(private val objectMapper: ObjectMapper) :
      * @param exception 为拒绝身份验证请求而引发的异常
      */
     override fun onAuthenticationFailure(
-        request: HttpServletRequest, response: HttpServletResponse,
+        request: HttpServletRequest,
+        response: HttpServletResponse,
         exception: AuthenticationException
     ) {
         response.characterEncoding = StandardCharsets.UTF_8.name()

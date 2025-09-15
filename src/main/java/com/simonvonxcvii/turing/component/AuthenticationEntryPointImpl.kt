@@ -7,9 +7,13 @@ import jakarta.servlet.http.HttpServletResponse
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.security.authentication.*
+import org.springframework.security.authentication.ott.InvalidOneTimeTokenException
+import org.springframework.security.authentication.password.CompromisedPasswordException
 import org.springframework.security.core.AuthenticationException
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException
+import org.springframework.security.oauth2.server.authorization.authentication.OAuth2AuthorizationCodeRequestAuthenticationException
+import org.springframework.security.oauth2.server.resource.InvalidBearerTokenException
 import org.springframework.security.web.AuthenticationEntryPoint
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedCredentialsNotFoundException
 import org.springframework.security.web.authentication.rememberme.CookieTheftException
@@ -18,7 +22,6 @@ import org.springframework.security.web.authentication.rememberme.RememberMeAuth
 import org.springframework.security.web.authentication.session.SessionAuthenticationException
 import org.springframework.security.web.authentication.www.NonceExpiredException
 import org.springframework.stereotype.Component
-import org.springframework.util.StringUtils
 import java.nio.charset.StandardCharsets
 
 /**
@@ -44,47 +47,31 @@ class AuthenticationEntryPointImpl(private val objectMapper: ObjectMapper) : Aut
         response: HttpServletResponse,
         authException: AuthenticationException
     ) {
-        var massage: String? = null
-        if (StringUtils.hasText(authException.message)) {
-            massage = authException.message
-        } else if (authException is AccountExpiredException) {
-            massage = "账户已过期"
-        } else if (authException is CredentialsExpiredException) {
-            massage = "凭据已过期"
-        } else if (authException is DisabledException) {
-            massage = "账户已禁用"
-        } else if (authException is LockedException) {
-            massage = "账户已锁定"
-        } else if (authException is AccountStatusException) {
-            massage = "账号状态身份验证异常"
-        } else if (authException is AuthenticationCredentialsNotFoundException) {
-            massage = "未找到身份验证凭据"
-        } else if (authException is InternalAuthenticationServiceException) {
-            massage = "内部身份验证服务异常"
-        } else if (authException is AuthenticationServiceException) {
-            massage = "身份验证服务异常"
-        } else if (authException is BadCredentialsException) {
-            massage = "凭据无效，用户名或密码有误"
-        } else if (authException is CookieTheftException) {
-            massage = "Cookie 盗窃异常"
-        } else if (authException is InvalidCookieException) {
-            massage = "无效的 Cookie 异常"
-        } else if (authException is RememberMeAuthenticationException) {
-            massage = "记住我身份验证异常"
-        } else if (authException is InsufficientAuthenticationException) {
-            massage = "凭据不够可信"
-        } else if (authException is OAuth2AuthenticationException) {
-            massage = "OAuth 2.0 相关的身份验证错误"
-        } else if (authException is NonceExpiredException) {
-            massage = "摘要随机数已过期"
-        } else if (authException is PreAuthenticatedCredentialsNotFoundException) {
-            massage = "未找到预验证凭据异常"
-        } else if (authException is ProviderNotFoundException) {
-            massage = "未找到身份验证提供者"
-        } else if (authException is SessionAuthenticationException) {
-            massage = "未找到身份验证提供者"
-        } else if (authException is UsernameNotFoundException) {
-            massage = "无法通过用户名找到用户"
+        val massage = when (authException) {
+            is AccountExpiredException -> "账户已过期"
+            is CredentialsExpiredException -> "凭据已过期"
+            is DisabledException -> "帐户被禁用"
+            is LockedException -> "帐户被锁定"
+            is AccountStatusException -> "帐户状态锁定或禁用"
+            is AuthenticationCredentialsNotFoundException -> "未找到身份验证凭据"
+            is InternalAuthenticationServiceException -> "内部身份验证服务异常"
+            is AuthenticationServiceException -> "身份验证服务异常"
+            is BadCredentialsException -> "凭据无效，用户名或密码有误"
+            is CompromisedPasswordException -> "提供的密码已受损"
+            is CookieTheftException -> "Cookie 盗窃异常"
+            is InsufficientAuthenticationException -> "凭据不够可信"
+            is InvalidBearerTokenException -> "无效的承载令牌"
+            is InvalidCookieException -> "无效的 Cookie 异常"
+            is InvalidOneTimeTokenException -> "一次性令牌无效"
+            is NonceExpiredException -> "摘要随机数已过期"
+            is OAuth2AuthorizationCodeRequestAuthenticationException -> "尝试对 OAuth 2.0 授权请求（或同意）失败"
+            is OAuth2AuthenticationException -> "OAuth 2.0 相关的身份验证错误"
+            is PreAuthenticatedCredentialsNotFoundException -> "未找到预验证凭据异常"
+            is ProviderNotFoundException -> "未找到身份验证提供者"
+            is RememberMeAuthenticationException -> "记住我身份验证异常"
+            is SessionAuthenticationException -> "未找到身份验证提供者"
+            is UsernameNotFoundException -> "无法通过用户名找到用户"
+            else -> authException.message
         }
         response.characterEncoding = StandardCharsets.UTF_8.name()
         response.contentType = MediaType.APPLICATION_JSON_VALUE

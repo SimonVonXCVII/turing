@@ -25,7 +25,8 @@ class CustomAccessDeniedHandlerImpl : AccessDeniedHandler {
      * 处理拒绝访问失败。
      */
     override fun handle(
-        request: HttpServletRequest, response: HttpServletResponse,
+        request: HttpServletRequest,
+        response: HttpServletResponse,
         accessDeniedException: AccessDeniedException
     ) {
         logger.debug("Responding with 403 status code")

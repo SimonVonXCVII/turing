@@ -197,245 +197,247 @@ public class DatabaseApplicationRunner implements ApplicationRunner {
         userRepository.save(user);
 
 
+        List<Role> roleList = new ArrayList<>();
         Role role = new Role();
         role.setAuthority("SUPER_ADMIN");
         role.setName("超级管理员");
         role.setDescription("超级管理员");
-        roleRepository.save(role);
+        roleList.add(role);
 
         Role role1 = new Role();
         role1.setAuthority("GOV_COUNTRY_ADMIN");
         role1.setName("国家级行政单位管理员");
         role1.setDescription("国家级行政单位管理员");
-        roleRepository.save(role1);
+        roleList.add(role1);
 
         Role role2 = new Role();
         role2.setAuthority("GOV_COUNTRY_STAFF");
         role2.setName("国家级行政单位工作人员");
         role2.setDescription("国家级行政单位工作人员");
-        roleRepository.save(role2);
+        roleList.add(role2);
 
         Role role3 = new Role();
         role3.setAuthority("GOV_PROVINCE_ADMIN");
         role3.setName("省级行政单位管理员");
         role3.setDescription("省级行政单位管理员");
-        roleRepository.save(role3);
+        roleList.add(role3);
 
         Role role4 = new Role();
         role4.setAuthority("GOV_PROVINCE_STAFF");
         role4.setName("省级行政单位工作人员");
         role4.setDescription("省级行政单位工作人员");
-        roleRepository.save(role4);
+        roleList.add(role4);
 
         Role role5 = new Role();
         role5.setAuthority("GOV_CITY_ADMIN");
         role5.setName("市级行政单位管理员");
         role5.setDescription("市级行政单位管理员");
-        roleRepository.save(role5);
+        roleList.add(role5);
 
         Role role6 = new Role();
         role6.setAuthority("GOV_CITY_STAFF");
         role6.setName("市级行政单位工作人员");
         role6.setDescription("市级行政单位工作人员");
-        roleRepository.save(role6);
+        roleList.add(role6);
 
         Role role7 = new Role();
         role7.setAuthority("GOV_DISTRICT_ADMIN");
         role7.setName("县级行政单位管理员");
         role7.setDescription("县级行政单位管理员");
-        roleRepository.save(role7);
+        roleList.add(role7);
 
         Role role8 = new Role();
         role8.setAuthority("GOV_DISTRICT_STAFF");
         role8.setName("县级行政单位工作人员");
         role8.setDescription("县级行政单位工作人员");
-        roleRepository.save(role8);
+        roleList.add(role8);
 
         Role role9 = new Role();
         role9.setAuthority("BUSINESS_MINE_INFORMATION_COLLECTION_ADMIN");
         role9.setName("矿山信息采集单位管理员");
         role9.setDescription("矿山信息采集单位管理员");
-        roleRepository.save(role9);
+        roleList.add(role9);
 
         Role role10 = new Role();
         role10.setAuthority("BUSINESS_MINE_INFORMATION_COLLECTION_STAFF");
         role10.setName("矿山信息采集单位工作人员");
         role10.setDescription("矿山信息采集单位工作人员");
-        roleRepository.save(role10);
+        roleList.add(role10);
 
         Role role11 = new Role();
         role11.setAuthority("BUSINESS_REGIONAL_SURVEY_LOCATIONS_ADMIN");
         role11.setName("区域调查布点单位管理员");
         role11.setDescription("区域调查布点单位管理员");
-        roleRepository.save(role11);
+        roleList.add(role11);
 
         Role role12 = new Role();
         role12.setAuthority("BUSINESS_REGIONAL_SURVEY_LOCATIONS_STAFF");
         role12.setName("区域调查布点单位工作人员");
         role12.setDescription("区域调查布点单位工作人员");
-        roleRepository.save(role12);
+        roleList.add(role12);
 
         Role role13 = new Role();
         role13.setAuthority("BUSINESS_AREA_SAMPLING_SURVEYS_ADMIN");
         role13.setName("区域采样调查单位管理员");
         role13.setDescription("区域采样调查单位管理员");
-        roleRepository.save(role13);
+        roleList.add(role13);
 
         Role role14 = new Role();
         role14.setAuthority("BUSINESS_AREA_SAMPLING_SURVEYS_STAFF");
         role14.setName("区域采样调查单位工作人员");
         role14.setDescription("区域采样调查单位工作人员");
-        roleRepository.save(role14);
+        roleList.add(role14);
 
         Role role15 = new Role();
         role15.setAuthority("BUSINESS_LAND_PARCEL_INFORMATION_COLLECTION_ADMIN");
         role15.setName("地块信息采集单位管理员");
         role15.setDescription("地块信息采集单位管理员");
-        roleRepository.save(role15);
+        roleList.add(role15);
 
         Role role16 = new Role();
         role16.setAuthority("BUSINESS_LAND_PARCEL_INFORMATION_COLLECTION_STAFF");
         role16.setName("地块信息采集单位工作人员");
         role16.setDescription("地块信息采集单位工作人员");
-        roleRepository.save(role16);
+        roleList.add(role16);
 
         Role role17 = new Role();
         role17.setAuthority("BUSINESS_PLOT_SURVEY_LAYOUT_ADMIN");
         role17.setName("地块调查布点单位管理员");
         role17.setDescription("地块调查布点单位管理员");
-        roleRepository.save(role17);
+        roleList.add(role17);
 
         Role role18 = new Role();
         role18.setAuthority("BUSINESS_PLOT_SURVEY_LAYOUT_STAFF");
         role18.setName("地块调查布点单位工作人员");
         role18.setDescription("地块调查布点单位工作人员");
-        roleRepository.save(role18);
+        roleList.add(role18);
 
         Role role19 = new Role();
         role19.setAuthority("BUSINESS_PLOT_SAMPLING_SURVEY_ADMIN");
         role19.setName("地块采样调查单位管理员");
         role19.setDescription("地块采样调查单位管理员");
-        roleRepository.save(role19);
+        roleList.add(role19);
 
         Role role20 = new Role();
         role20.setAuthority("BUSINESS_PLOT_SAMPLING_SURVEY_STAFF");
         role20.setName("地块采样调查单位工作人员");
         role20.setDescription("地块采样调查单位工作人员");
-        roleRepository.save(role20);
+        roleList.add(role20);
 
         Role role21 = new Role();
         role21.setAuthority("BUSINESS_SAMPLE_TESTING_ADMIN");
         role21.setName("样品检测单位管理员");
         role21.setDescription("样品检测单位管理员");
-        roleRepository.save(role21);
+        roleList.add(role21);
 
         Role role22 = new Role();
         role22.setAuthority("BUSINESS_SAMPLE_TESTING_STAFF");
         role22.setName("样品检测单位工作人员");
         role22.setDescription("样品检测单位工作人员");
-        roleRepository.save(role22);
+        roleList.add(role22);
 
         Role role23 = new Role();
         role23.setAuthority("BUSINESS_DATA_ANALYSIS_EVALUATION_ADMIN");
         role23.setName("数据分析评价单位管理员");
         role23.setDescription("数据分析评价单位管理员");
-        roleRepository.save(role23);
+        roleList.add(role23);
 
         Role role24 = new Role();
         role24.setAuthority("BUSINESS_DATA_ANALYSIS_EVALUATION_STAFF");
         role24.setName("数据分析评价单位工作人员");
         role24.setDescription("数据分析评价单位工作人员");
-        roleRepository.save(role24);
+        roleList.add(role24);
 
         Role role25 = new Role();
         role25.setAuthority("BUSINESS_CONTAMINATION_RISK_ASSESSMENT_ADMIN");
         role25.setName("污染风险评估单位管理员");
         role25.setDescription("污染风险评估单位管理员");
-        roleRepository.save(role25);
+        roleList.add(role25);
 
         Role role26 = new Role();
         role26.setAuthority("BUSINESS_CONTAMINATION_RISK_ASSESSMENT_STAFF");
         role26.setName("污染风险评估单位工作人员");
         role26.setDescription("污染风险评估单位工作人员");
-        roleRepository.save(role26);
+        roleList.add(role26);
 
         Role role27 = new Role();
         role27.setAuthority("QC_INFORMATION_COLLECTION_ADMIN");
         role27.setName("信息采集质控单位管理员");
         role27.setDescription("信息采集质控单位管理员");
-        roleRepository.save(role27);
+        roleList.add(role27);
 
         Role role28 = new Role();
         role28.setAuthority("QC_INFORMATION_COLLECTION_STAFF");
         role28.setName("信息采集质控单位工作人员");
         role28.setDescription("信息采集质控单位工作人员");
-        roleRepository.save(role28);
+        roleList.add(role28);
 
         Role role29 = new Role();
         role29.setAuthority("QC_DISTRIBUTE_ADMIN");
         role29.setName("布点质控单位管理员");
         role29.setDescription("布点质控单位管理员");
-        roleRepository.save(role29);
+        roleList.add(role29);
 
         Role role30 = new Role();
         role30.setAuthority("QC_DISTRIBUTE_STAFF");
         role30.setName("布点质控单位工作人员");
         role30.setDescription("布点质控单位工作人员");
-        roleRepository.save(role30);
+        roleList.add(role30);
 
         Role role31 = new Role();
         role31.setAuthority("QC_SAMPLING_ADMIN");
         role31.setName("采样质控单位管理员");
         role31.setDescription("采样质控单位管理员");
-        roleRepository.save(role31);
+        roleList.add(role31);
 
         Role role32 = new Role();
         role32.setAuthority("QC_SAMPLING_STAFF");
         role32.setName("采样质控单位工作人员");
         role32.setDescription("采样质控单位工作人员");
-        roleRepository.save(role32);
+        roleList.add(role32);
 
         Role role33 = new Role();
         role33.setAuthority("QC_SAMPLE_TESTING_ADMIN");
         role33.setName("样品检测质控单位管理员");
         role33.setDescription("样品检测质控单位管理员");
-        roleRepository.save(role33);
+        roleList.add(role33);
 
         Role role34 = new Role();
         role34.setAuthority("QC_SAMPLE_TESTING_STAFF");
         role34.setName("样品检测质控单位工作人员");
         role34.setDescription("样品检测质控单位工作人员");
-        roleRepository.save(role34);
+        roleList.add(role34);
 
         Role role35 = new Role();
         role35.setAuthority("LEADER");
         role35.setName("信息采集和取样调查小组组长");
         role35.setDescription("信息采集和取样调查小组组长");
-        roleRepository.save(role35);
+        roleList.add(role35);
 
         Role role36 = new Role();
         role36.setAuthority("MEMBER");
         role36.setName("信息采集和取样调查小组组员");
         role36.setDescription("信息采集和取样调查小组组员");
-        roleRepository.save(role36);
+        roleList.add(role36);
 
         Role role37 = new Role();
         role37.setAuthority("INFORMATION_COLLECTION_INTERNAL_AUDITOR");
         role37.setName("信息采集单位内审人员");
         role37.setDescription("信息采集单位内审人员");
-        roleRepository.save(role37);
+        roleList.add(role37);
 
         Role role38 = new Role();
         role38.setAuthority("PLOT_SAMPLING_SURVEY_INTERNAL_AUDITOR");
         role38.setName("取样调查单位内审人员");
         role38.setDescription("取样调查单位内审人员");
-        roleRepository.save(role38);
+        roleList.add(role38);
 
         Role role39 = new Role();
         role39.setAuthority("DEFAULT_TECHNICAL");
         role39.setName("技术单位管理员的默认角色");
         role39.setDescription("注册技术单位时赋予管理员的默认角色，仅有【技术单位业务申请】权限");
-        roleRepository.save(role39);
+        roleList.add(role39);
+        roleRepository.saveAll(roleList);
 
 
         UserRole userRole = new UserRole();
@@ -444,634 +446,637 @@ public class DatabaseApplicationRunner implements ApplicationRunner {
         userRoleRepository.save(userRole);
 
 
+        List<Permission> permissionList = new ArrayList<>();
         Permission permission100 = new Permission();
         permission100.setName("基础数据管理");
         permission100.setSort(100);
-        permissionRepository.save(permission100);
+        permissionList.add(permission100);
 
         Permission permission101 = new Permission();
         permission101.setPid(permission100.getId());
         permission101.setName("业务管理账号开通");
         permission101.setSort(101);
-        permissionRepository.save(permission101);
+        permissionList.add(permission101);
 
         Permission permission102 = new Permission();
         permission102.setPid(permission100.getId());
         permission102.setName("业务管理单位授权");
         permission102.setSort(102);
-        permissionRepository.save(permission102);
+        permissionList.add(permission102);
 
         Permission permission103 = new Permission();
         permission103.setPid(permission100.getId());
         permission103.setName("技术单位信息管理");
         permission103.setSort(103);
-        permissionRepository.save(permission103);
+        permissionList.add(permission103);
 
         Permission permission104 = new Permission();
         permission104.setPid(permission100.getId());
         permission104.setName("技术专家信息维护");
         permission104.setSort(104);
-        permissionRepository.save(permission104);
+        permissionList.add(permission104);
 
         Permission permission105 = new Permission();
         permission105.setPid(permission100.getId());
         permission105.setName("数据字典管理");
         permission105.setSort(105);
-        permissionRepository.save(permission105);
+        permissionList.add(permission105);
 
         Permission permission106 = new Permission();
         permission106.setPid(permission100.getId());
         permission106.setName("设备终端授权管理");
         permission106.setSort(106);
-        permissionRepository.save(permission106);
+        permissionList.add(permission106);
 
         Permission permission107 = new Permission();
         permission107.setPid(permission100.getId());
         permission107.setName("平台用户新增维护");
         permission107.setSort(107);
-        permissionRepository.save(permission107);
+        permissionList.add(permission107);
 
         Permission permission200 = new Permission();
         permission200.setName("用户单位管理");
         permission200.setSort(200);
-        permissionRepository.save(permission200);
+        permissionList.add(permission200);
 
         Permission permission201 = new Permission();
         permission201.setPid(permission200.getId());
         permission201.setName("管理单位用户维护");
         permission201.setSort(201);
-        permissionRepository.save(permission201);
+        permissionList.add(permission201);
 
         Permission permission202 = new Permission();
         permission202.setPid(permission200.getId());
         permission202.setName("技术单位业务申请");
         permission202.setSort(202);
-        permissionRepository.save(permission202);
+        permissionList.add(permission202);
 
         Permission permission203 = new Permission();
         permission203.setPid(permission200.getId());
         permission203.setName("技术单位业务审核");
         permission203.setSort(203);
-        permissionRepository.save(permission203);
+        permissionList.add(permission203);
 
         Permission permission204 = new Permission();
         permission204.setPid(permission200.getId());
         permission204.setName("技术单位用户维护");
         permission204.setSort(204);
-        permissionRepository.save(permission204);
+        permissionList.add(permission204);
 
         Permission permission205 = new Permission();
         permission205.setPid(permission200.getId());
         permission205.setName("技术专家业务申请");
         permission205.setSort(205);
-        permissionRepository.save(permission205);
+        permissionList.add(permission205);
 
         Permission permission206 = new Permission();
         permission206.setPid(permission200.getId());
         permission206.setName("技术专家业务审核");
         permission206.setSort(206);
-        permissionRepository.save(permission206);
+        permissionList.add(permission206);
 
         Permission permission207 = new Permission();
         permission207.setPid(permission200.getId());
         permission207.setName("调查小组新建维护");
         permission207.setSort(207);
-        permissionRepository.save(permission207);
+        permissionList.add(permission207);
 
         Permission permission208 = new Permission();
         permission208.setPid(permission200.getId());
         permission208.setName("调查单位信息查询");
         permission208.setSort(208);
-        permissionRepository.save(permission208);
+        permissionList.add(permission208);
 
         Permission permission209 = new Permission();
         permission209.setPid(permission200.getId());
         permission209.setName("调查用户信息查询");
         permission209.setSort(209);
-        permissionRepository.save(permission209);
+        permissionList.add(permission209);
 
         Permission permission300 = new Permission();
         permission300.setName("项目任务管理");
         permission300.setSort(300);
-        permissionRepository.save(permission300);
+        permissionList.add(permission300);
 
         Permission permission301 = new Permission();
         permission301.setPid(permission300.getId());
         permission301.setName("项目新增维护");
         permission301.setSort(301);
-        permissionRepository.save(permission301);
+        permissionList.add(permission301);
 
         Permission permission302 = new Permission();
         permission302.setPid(permission300.getId());
         permission302.setName("监管对象维护");
         permission302.setSort(302);
-        permissionRepository.save(permission302);
+        permissionList.add(permission302);
 
         Permission permission303 = new Permission();
         permission303.setPid(permission300.getId());
         permission303.setName("任务下发管理");
         permission303.setSort(303);
-        permissionRepository.save(permission303);
+        permissionList.add(permission303);
 
         Permission permission304 = new Permission();
         permission304.setPid(permission300.getId());
         permission304.setName("牵头单位实施");
         permission304.setSort(304);
-        permissionRepository.save(permission304);
+        permissionList.add(permission304);
 
         Permission permission305 = new Permission();
         permission305.setPid(permission300.getId());
         permission305.setName("监管对象信息查询");
         permission305.setSort(305);
-        permissionRepository.save(permission305);
+        permissionList.add(permission305);
 
         Permission permission306 = new Permission();
         permission306.setPid(permission300.getId());
         permission306.setName("技术单位任务执行");
         permission306.setSort(306);
-        permissionRepository.save(permission306);
+        permissionList.add(permission306);
 
         Permission permission400 = new Permission();
         permission400.setName("点位布设管理");
         permission400.setSort(400);
-        permissionRepository.save(permission400);
+        permissionList.add(permission400);
 
         Permission permission401 = new Permission();
         permission401.setPid(permission400.getId());
         permission401.setName("测试项目新增维护");
         permission401.setSort(401);
-        permissionRepository.save(permission401);
+        permissionList.add(permission401);
 
         Permission permission402 = new Permission();
         permission402.setPid(permission400.getId());
         permission402.setName("测试项目分类管理");
         permission402.setSort(402);
-        permissionRepository.save(permission402);
+        permissionList.add(permission402);
 
         Permission permission403 = new Permission();
         permission403.setPid(permission400.getId());
         permission403.setName("布点人员任务分配");
         permission403.setSort(403);
-        permissionRepository.save(permission403);
+        permissionList.add(permission403);
 
         Permission permission404 = new Permission();
         permission404.setPid(permission400.getId());
         permission404.setName("布点数据成果录入");
         permission404.setSort(404);
-        permissionRepository.save(permission404);
+        permissionList.add(permission404);
 
         Permission permission405 = new Permission();
         permission405.setPid(permission400.getId());
         permission405.setName("布点方案数据退回");
         permission405.setSort(405);
-        permissionRepository.save(permission405);
+        permissionList.add(permission405);
 
         Permission permission406 = new Permission();
         permission406.setPid(permission400.getId());
         permission406.setName("布点方案数据查询");
         permission406.setSort(406);
-        permissionRepository.save(permission406);
+        permissionList.add(permission406);
 
         Permission permission407 = new Permission();
         permission407.setPid(permission400.getId());
         permission407.setName("新增测试项目审核");
         permission407.setSort(407);
-        permissionRepository.save(permission407);
+        permissionList.add(permission407);
 
         Permission permission500 = new Permission();
         permission500.setName("点位布设");
         permission500.setSort(500);
-        permissionRepository.save(permission500);
+        permissionList.add(permission500);
 
         Permission permission501 = new Permission();
         permission501.setPid(permission500.getId());
         permission501.setName("布点方案问题整改");
         permission501.setSort(501);
-        permissionRepository.save(permission501);
+        permissionList.add(permission501);
 
         Permission permission502 = new Permission();
         permission502.setPid(permission500.getId());
         permission502.setName("布点方案数据维护");
         permission502.setSort(502);
-        permissionRepository.save(permission502);
+        permissionList.add(permission502);
 
         Permission permission503 = new Permission();
         permission503.setPid(permission500.getId());
         permission503.setName("布点方案信息查询");
         permission503.setSort(503);
-        permissionRepository.save(permission503);
+        permissionList.add(permission503);
 
         Permission permission600 = new Permission();
         permission600.setName("布点质控管理");
         permission600.setSort(600);
-        permissionRepository.save(permission600);
+        permissionList.add(permission600);
 
         Permission permission601 = new Permission();
         permission601.setPid(permission600.getId());
         permission601.setName("布点质控专家组维护");
         permission601.setSort(601);
-        permissionRepository.save(permission601);
+        permissionList.add(permission601);
 
         Permission permission602 = new Permission();
         permission602.setPid(permission600.getId());
         permission602.setName("一级质控(县)任务分配");
         permission602.setSort(602);
-        permissionRepository.save(permission602);
+        permissionList.add(permission602);
 
         Permission permission603 = new Permission();
         permission603.setPid(permission600.getId());
         permission603.setName("二级质控(市)任务分配");
         permission603.setSort(603);
-        permissionRepository.save(permission603);
+        permissionList.add(permission603);
 
         Permission permission604 = new Permission();
         permission604.setPid(permission600.getId());
         permission604.setName("三级质控(省)任务分配");
         permission604.setSort(604);
-        permissionRepository.save(permission604);
+        permissionList.add(permission604);
 
         Permission permission605 = new Permission();
         permission605.setPid(permission600.getId());
         permission605.setName("布点质控专家组任务");
         permission605.setSort(605);
-        permissionRepository.save(permission605);
+        permissionList.add(permission605);
 
         Permission permission606 = new Permission();
         permission606.setPid(permission600.getId());
         permission606.setName("布点质控意见反馈");
         permission606.setSort(606);
-        permissionRepository.save(permission606);
+        permissionList.add(permission606);
 
         Permission permission607 = new Permission();
         permission607.setPid(permission600.getId());
         permission607.setName("布点质控专家查询");
         permission607.setSort(607);
-        permissionRepository.save(permission607);
+        permissionList.add(permission607);
 
         Permission permission608 = new Permission();
         permission608.setPid(permission600.getId());
         permission608.setName("布点质控意见退回");
         permission608.setSort(608);
-        permissionRepository.save(permission608);
+        permissionList.add(permission608);
 
         Permission permission700 = new Permission();
         permission700.setName("采样调查管理");
         permission700.setSort(700);
-        permissionRepository.save(permission700);
+        permissionList.add(permission700);
 
         Permission permission701 = new Permission();
         permission701.setPid(permission700.getId());
         permission701.setName("牵头单位组织实施");
         permission701.setSort(701);
-        permissionRepository.save(permission701);
+        permissionList.add(permission701);
 
         Permission permission702 = new Permission();
         permission702.setPid(permission700.getId());
         permission702.setName("采样小组任务分配");
         permission702.setSort(702);
-        permissionRepository.save(permission702);
+        permissionList.add(permission702);
 
         Permission permission703 = new Permission();
         permission703.setPid(permission700.getId());
         permission703.setName("采样调查信息查询");
         permission703.setSort(703);
-        permissionRepository.save(permission703);
+        permissionList.add(permission703);
 
         Permission permission704 = new Permission();
         permission704.setPid(permission700.getId());
         permission704.setName("检测子样进度查询");
         permission704.setSort(704);
-        permissionRepository.save(permission704);
+        permissionList.add(permission704);
 
         Permission permission705 = new Permission();
         permission705.setPid(permission700.getId());
         permission705.setName("取样调查表单下载");
         permission705.setSort(705);
-        permissionRepository.save(permission705);
+        permissionList.add(permission705);
 
         Permission permission706 = new Permission();
         permission706.setPid(permission700.getId());
         permission706.setName("采样资料单位内审");
         permission706.setSort(706);
-        permissionRepository.save(permission706);
+        permissionList.add(permission706);
 
         Permission permission707 = new Permission();
         permission707.setPid(permission700.getId());
         permission707.setName("质控退回样点查询");
         permission707.setSort(707);
-        permissionRepository.save(permission707);
+        permissionList.add(permission707);
 
         Permission permission708 = new Permission();
         permission708.setPid(permission700.getId());
         permission708.setName("批次样品运送表单");
         permission708.setSort(708);
-        permissionRepository.save(permission708);
+        permissionList.add(permission708);
 
         Permission permission709 = new Permission();
         permission709.setPid(permission700.getId());
         permission709.setName("单位取样进展统计");
         permission709.setSort(709);
-        permissionRepository.save(permission709);
+        permissionList.add(permission709);
 
         Permission permission710 = new Permission();
         permission710.setPid(permission700.getId());
         permission710.setName("资料内审状态查询");
         permission710.setSort(710);
-        permissionRepository.save(permission710);
+        permissionList.add(permission710);
 
         Permission permission711 = new Permission();
         permission711.setPid(permission700.getId());
         permission711.setName("资料内审进展统计");
         permission711.setSort(711);
-        permissionRepository.save(permission711);
+        permissionList.add(permission711);
 
         Permission permission712 = new Permission();
         permission712.setPid(permission700.getId());
         permission712.setName("重采样品信息查询");
         permission712.setSort(712);
-        permissionRepository.save(permission712);
+        permissionList.add(permission712);
 
         Permission permission713 = new Permission();
         permission713.setPid(permission700.getId());
         permission713.setName("严重质量问题申诉");
         permission713.setSort(713);
-        permissionRepository.save(permission713);
+        permissionList.add(permission713);
 
         Permission permission800 = new Permission();
         permission800.setName("取样调查");
         permission800.setSort(800);
-        permissionRepository.save(permission800);
+        permissionList.add(permission800);
 
         Permission permission801 = new Permission();
         permission801.setPid(permission800.getId());
         permission801.setName("取样调查表单明细");
         permission801.setSort(801);
-        permissionRepository.save(permission801);
+        permissionList.add(permission801);
 
         Permission permission802 = new Permission();
         permission802.setPid(permission800.getId());
         permission802.setName("质控退回样点明细");
         permission802.setSort(802);
-        permissionRepository.save(permission802);
+        permissionList.add(permission802);
 
         Permission permission803 = new Permission();
         permission803.setPid(permission800.getId());
         permission803.setName("严重问题申诉记录");
         permission803.setSort(803);
-        permissionRepository.save(permission803);
+        permissionList.add(permission803);
 
         Permission permission804 = new Permission();
         permission804.setPid(permission800.getId());
         permission804.setName("重采样品信息明细");
         permission804.setSort(804);
-        permissionRepository.save(permission804);
+        permissionList.add(permission804);
 
         Permission permission900 = new Permission();
         permission900.setName("采样质控管理");
         permission900.setSort(900);
-        permissionRepository.save(permission900);
+        permissionList.add(permission900);
 
         Permission permission901 = new Permission();
         permission901.setPid(permission900.getId());
         permission901.setName("采样一级质控(县)任务");
         permission901.setSort(901);
-        permissionRepository.save(permission901);
+        permissionList.add(permission901);
 
         Permission permission902 = new Permission();
         permission902.setPid(permission900.getId());
         permission902.setName("采样二级质控(市)任务");
         permission902.setSort(902);
-        permissionRepository.save(permission902);
+        permissionList.add(permission902);
 
         Permission permission903 = new Permission();
         permission903.setPid(permission900.getId());
         permission903.setName("采样三级质控(省)任务");
         permission903.setSort(903);
-        permissionRepository.save(permission903);
+        permissionList.add(permission903);
 
         Permission permission904 = new Permission();
         permission904.setPid(permission900.getId());
         permission904.setName("采样质控专家任务");
         permission904.setSort(904);
-        permissionRepository.save(permission904);
+        permissionList.add(permission904);
 
         Permission permission905 = new Permission();
         permission905.setPid(permission900.getId());
         permission905.setName("采样质控意见反馈");
         permission905.setSort(905);
-        permissionRepository.save(permission905);
+        permissionList.add(permission905);
 
         Permission permission906 = new Permission();
         permission906.setPid(permission900.getId());
         permission906.setName("取样资料质控进度");
         permission906.setSort(906);
-        permissionRepository.save(permission906);
+        permissionList.add(permission906);
 
         Permission permission907 = new Permission();
         permission907.setPid(permission900.getId());
         permission907.setName("采样质控专家查询");
         permission907.setSort(907);
-        permissionRepository.save(permission907);
+        permissionList.add(permission907);
 
         Permission permission908 = new Permission();
         permission908.setPid(permission900.getId());
         permission908.setName("采样质控意见退回");
         permission908.setSort(908);
-        permissionRepository.save(permission908);
+        permissionList.add(permission908);
 
         Permission permission1000 = new Permission();
         permission1000.setName("样品检测管理");
         permission1000.setSort(1000);
-        permissionRepository.save(permission1000);
+        permissionList.add(permission1000);
 
         Permission permission1001 = new Permission();
         permission1001.setPid(permission1000.getId());
         permission1001.setName("批次送检样交接单");
         permission1001.setSort(1001);
-        permissionRepository.save(permission1001);
+        permissionList.add(permission1001);
 
         Permission permission1002 = new Permission();
         permission1002.setPid(permission1000.getId());
         permission1002.setName("检测子样信息查询");
         permission1002.setSort(1002);
-        permissionRepository.save(permission1002);
+        permissionList.add(permission1002);
 
         Permission permission1003 = new Permission();
         permission1003.setPid(permission1000.getId());
         permission1003.setName("检测资质文件报送");
         permission1003.setSort(1003);
-        permissionRepository.save(permission1003);
+        permissionList.add(permission1003);
 
         Permission permission1004 = new Permission();
         permission1004.setPid(permission1000.getId());
         permission1004.setName("检测资质能力审核");
         permission1004.setSort(1004);
-        permissionRepository.save(permission1004);
+        permissionList.add(permission1004);
 
         Permission permission1005 = new Permission();
         permission1005.setPid(permission1000.getId());
         permission1005.setName("基本检测方法标准");
         permission1005.setSort(1005);
-        permissionRepository.save(permission1005);
+        permissionList.add(permission1005);
 
         Permission permission1006 = new Permission();
         permission1006.setPid(permission1000.getId());
         permission1006.setName("地方新增检测方法");
         permission1006.setSort(1006);
-        permissionRepository.save(permission1006);
+        permissionList.add(permission1006);
 
         Permission permission1007 = new Permission();
         permission1007.setPid(permission1000.getId());
         permission1007.setName("方法验证材料上传");
         permission1007.setSort(1007);
-        permissionRepository.save(permission1007);
+        permissionList.add(permission1007);
 
         Permission permission1008 = new Permission();
         permission1008.setPid(permission1000.getId());
         permission1008.setName("方法验证材料审核");
         permission1008.setSort(1008);
-        permissionRepository.save(permission1008);
+        permissionList.add(permission1008);
 
         Permission permission1009 = new Permission();
         permission1009.setPid(permission1000.getId());
         permission1009.setName("统一监控样品管理");
         permission1009.setSort(1009);
-        permissionRepository.save(permission1009);
+        permissionList.add(permission1009);
 
         Permission permission1010 = new Permission();
         permission1010.setPid(permission1000.getId());
         permission1010.setName("统一监控样品查询");
         permission1010.setSort(1010);
-        permissionRepository.save(permission1010);
+        permissionList.add(permission1010);
 
         Permission permission1011 = new Permission();
         permission1011.setPid(permission1000.getId());
         permission1011.setName("严重问题样品查询");
         permission1011.setSort(1011);
-        permissionRepository.save(permission1011);
+        permissionList.add(permission1011);
 
         Permission permission1012 = new Permission();
         permission1012.setPid(permission1000.getId());
         permission1012.setName("批次检测数据报送");
         permission1012.setSort(1012);
-        permissionRepository.save(permission1012);
+        permissionList.add(permission1012);
 
         Permission permission1013 = new Permission();
         permission1013.setPid(permission1000.getId());
         permission1013.setName("批次检测数据整改");
         permission1013.setSort(1013);
-        permissionRepository.save(permission1013);
+        permissionList.add(permission1013);
 
         Permission permission1014 = new Permission();
         permission1014.setPid(permission1000.getId());
         permission1014.setName("样品检测数据查询");
         permission1014.setSort(1014);
-        permissionRepository.save(permission1014);
+        permissionList.add(permission1014);
 
         Permission permission1100 = new Permission();
         permission1100.setName("数据质量审核");
         permission1100.setSort(1100);
-        permissionRepository.save(permission1100);
+        permissionList.add(permission1100);
 
         Permission permission1101 = new Permission();
         permission1101.setPid(permission1100.getId());
         permission1101.setName("检测一级质控(县)任务");
         permission1101.setSort(1101);
-        permissionRepository.save(permission1101);
+        permissionList.add(permission1101);
 
         Permission permission1102 = new Permission();
         permission1102.setPid(permission1100.getId());
         permission1102.setName("检测二级质控(市)任务");
         permission1102.setSort(1102);
-        permissionRepository.save(permission1102);
+        permissionList.add(permission1102);
 
         Permission permission1103 = new Permission();
         permission1103.setPid(permission1100.getId());
         permission1103.setName("检测三级质控(省)任务");
         permission1103.setSort(1103);
-        permissionRepository.save(permission1103);
+        permissionList.add(permission1103);
 
         Permission permission1104 = new Permission();
         permission1104.setPid(permission1100.getId());
         permission1104.setName("检测质控专家任务");
         permission1104.setSort(1104);
-        permissionRepository.save(permission1104);
+        permissionList.add(permission1104);
 
         Permission permission1105 = new Permission();
         permission1105.setPid(permission1100.getId());
         permission1105.setName("检测质控意见反馈");
         permission1105.setSort(1105);
-        permissionRepository.save(permission1105);
+        permissionList.add(permission1105);
 
         Permission permission1106 = new Permission();
         permission1106.setPid(permission1100.getId());
         permission1106.setName("质控退改批次查询");
         permission1106.setSort(1106);
-        permissionRepository.save(permission1106);
+        permissionList.add(permission1106);
 
         Permission permission1200 = new Permission();
         permission1200.setName("数据统计分析");
         permission1200.setSort(1200);
-        permissionRepository.save(permission1200);
+        permissionList.add(permission1200);
 
         Permission permission1300 = new Permission();
         permission1300.setName("数据对标评价");
         permission1300.setSort(1300);
-        permissionRepository.save(permission1300);
+        permissionList.add(permission1300);
 
         Permission permission1400 = new Permission();
         permission1400.setName("工作文件管理");
         permission1400.setSort(1400);
-        permissionRepository.save(permission1400);
+        permissionList.add(permission1400);
 
         Permission permission1401 = new Permission();
         permission1401.setPid(permission1400.getId());
         permission1401.setName("工作文件下载");
         permission1401.setSort(1401);
-        permissionRepository.save(permission1401);
+        permissionList.add(permission1401);
 
         Permission permission1500 = new Permission();
         permission1500.setName("后台数据管理");
         permission1500.setSort(1500);
-        permissionRepository.save(permission1500);
+        permissionList.add(permission1500);
 
         Permission permission1501 = new Permission();
         permission1501.setPid(permission1500.getId());
         permission1501.setName("单位管理");
         permission1501.setSort(1501);
-        permissionRepository.save(permission1501);
+        permissionList.add(permission1501);
 
         Permission permission1502 = new Permission();
         permission1502.setPid(permission1500.getId());
         permission1502.setName("用户管理");
         permission1502.setSort(1502);
-        permissionRepository.save(permission1502);
+        permissionList.add(permission1502);
 
         Permission permission1503 = new Permission();
         permission1503.setPid(permission1500.getId());
         permission1503.setName("角色管理");
         permission1503.setSort(1503);
-        permissionRepository.save(permission1503);
+        permissionList.add(permission1503);
 
         Permission permission1504 = new Permission();
         permission1504.setPid(permission1500.getId());
         permission1504.setName("权限管理");
         permission1504.setSort(1504);
-        permissionRepository.save(permission1504);
+        permissionList.add(permission1504);
 
         Permission permission1505 = new Permission();
         permission1505.setPid(permission1500.getId());
         permission1505.setName("菜单管理");
         permission1505.setSort(1505);
-        permissionRepository.save(permission1505);
+        permissionList.add(permission1505);
 
         Permission permission1506 = new Permission();
         permission1506.setPid(permission1500.getId());
         permission1506.setName("字典管理");
         permission1506.setSort(1506);
-        permissionRepository.save(permission1506);
+        permissionList.add(permission1506);
+        permissionRepository.saveAll(permissionList);
 
 
+        List<Menu> menuList = new ArrayList<>();
         Menu menu100 = new Menu();
         menu100.setPermissionId(permission100.getId());
         menu100.setName("基础数据管理");
@@ -1083,7 +1088,7 @@ public class DatabaseApplicationRunner implements ApplicationRunner {
         menu100.setShowed(Boolean.TRUE);
         menu100.setCached(Boolean.TRUE);
         menu100.setExternal(Boolean.FALSE);
-        menuRepository.save(menu100);
+        menuList.add(menu100);
 
         Menu menu101 = new Menu();
         menu101.setPid(menu100.getId());
@@ -1097,7 +1102,7 @@ public class DatabaseApplicationRunner implements ApplicationRunner {
         menu101.setShowed(Boolean.TRUE);
         menu101.setCached(Boolean.TRUE);
         menu101.setExternal(Boolean.FALSE);
-        menuRepository.save(menu101);
+        menuList.add(menu101);
 
         Menu menu102 = new Menu();
         menu102.setPid(menu100.getId());
@@ -1111,7 +1116,7 @@ public class DatabaseApplicationRunner implements ApplicationRunner {
         menu102.setShowed(Boolean.TRUE);
         menu102.setCached(Boolean.TRUE);
         menu102.setExternal(Boolean.FALSE);
-        menuRepository.save(menu102);
+        menuList.add(menu102);
 
         Menu menu103 = new Menu();
         menu103.setPid(menu100.getId());
@@ -1125,7 +1130,7 @@ public class DatabaseApplicationRunner implements ApplicationRunner {
         menu103.setShowed(Boolean.TRUE);
         menu103.setCached(Boolean.TRUE);
         menu103.setExternal(Boolean.FALSE);
-        menuRepository.save(menu103);
+        menuList.add(menu103);
 
         Menu menu104 = new Menu();
         menu104.setPid(menu100.getId());
@@ -1139,7 +1144,7 @@ public class DatabaseApplicationRunner implements ApplicationRunner {
         menu104.setShowed(Boolean.TRUE);
         menu104.setCached(Boolean.TRUE);
         menu104.setExternal(Boolean.FALSE);
-        menuRepository.save(menu104);
+        menuList.add(menu104);
 
         Menu menu105 = new Menu();
         menu105.setPid(menu100.getId());
@@ -1153,7 +1158,7 @@ public class DatabaseApplicationRunner implements ApplicationRunner {
         menu105.setShowed(Boolean.TRUE);
         menu105.setCached(Boolean.TRUE);
         menu105.setExternal(Boolean.FALSE);
-        menuRepository.save(menu105);
+        menuList.add(menu105);
 
         Menu menu106 = new Menu();
         menu106.setPid(menu100.getId());
@@ -1167,7 +1172,7 @@ public class DatabaseApplicationRunner implements ApplicationRunner {
         menu106.setShowed(Boolean.TRUE);
         menu106.setCached(Boolean.TRUE);
         menu106.setExternal(Boolean.FALSE);
-        menuRepository.save(menu106);
+        menuList.add(menu106);
 
         Menu menu200 = new Menu();
         menu200.setPermissionId(permission200.getId());
@@ -1180,7 +1185,7 @@ public class DatabaseApplicationRunner implements ApplicationRunner {
         menu200.setShowed(Boolean.TRUE);
         menu200.setCached(Boolean.TRUE);
         menu200.setExternal(Boolean.FALSE);
-        menuRepository.save(menu200);
+        menuList.add(menu200);
 
         Menu menu201 = new Menu();
         menu201.setPid(menu200.getId());
@@ -1194,7 +1199,7 @@ public class DatabaseApplicationRunner implements ApplicationRunner {
         menu201.setShowed(Boolean.TRUE);
         menu201.setCached(Boolean.TRUE);
         menu201.setExternal(Boolean.FALSE);
-        menuRepository.save(menu201);
+        menuList.add(menu201);
 
         Menu menu202 = new Menu();
         menu202.setPid(menu200.getId());
@@ -1208,7 +1213,7 @@ public class DatabaseApplicationRunner implements ApplicationRunner {
         menu202.setShowed(Boolean.TRUE);
         menu202.setCached(Boolean.TRUE);
         menu202.setExternal(Boolean.FALSE);
-        menuRepository.save(menu202);
+        menuList.add(menu202);
 
         Menu menu203 = new Menu();
         menu203.setPid(menu200.getId());
@@ -1222,7 +1227,7 @@ public class DatabaseApplicationRunner implements ApplicationRunner {
         menu203.setShowed(Boolean.TRUE);
         menu203.setCached(Boolean.TRUE);
         menu203.setExternal(Boolean.FALSE);
-        menuRepository.save(menu203);
+        menuList.add(menu203);
 
         Menu menu204 = new Menu();
         menu204.setPid(menu200.getId());
@@ -1236,7 +1241,7 @@ public class DatabaseApplicationRunner implements ApplicationRunner {
         menu204.setShowed(Boolean.TRUE);
         menu204.setCached(Boolean.TRUE);
         menu204.setExternal(Boolean.FALSE);
-        menuRepository.save(menu204);
+        menuList.add(menu204);
 
         Menu menu205 = new Menu();
         menu205.setPid(menu200.getId());
@@ -1250,7 +1255,7 @@ public class DatabaseApplicationRunner implements ApplicationRunner {
         menu205.setShowed(Boolean.TRUE);
         menu205.setCached(Boolean.TRUE);
         menu205.setExternal(Boolean.FALSE);
-        menuRepository.save(menu205);
+        menuList.add(menu205);
 
         Menu menu206 = new Menu();
         menu206.setPid(menu200.getId());
@@ -1264,7 +1269,7 @@ public class DatabaseApplicationRunner implements ApplicationRunner {
         menu206.setShowed(Boolean.TRUE);
         menu206.setCached(Boolean.TRUE);
         menu206.setExternal(Boolean.FALSE);
-        menuRepository.save(menu206);
+        menuList.add(menu206);
 
         Menu menu207 = new Menu();
         menu207.setPid(menu200.getId());
@@ -1278,7 +1283,7 @@ public class DatabaseApplicationRunner implements ApplicationRunner {
         menu207.setShowed(Boolean.TRUE);
         menu207.setCached(Boolean.TRUE);
         menu207.setExternal(Boolean.FALSE);
-        menuRepository.save(menu207);
+        menuList.add(menu207);
 
         Menu menu208 = new Menu();
         menu208.setPid(menu200.getId());
@@ -1292,7 +1297,7 @@ public class DatabaseApplicationRunner implements ApplicationRunner {
         menu208.setShowed(Boolean.TRUE);
         menu208.setCached(Boolean.TRUE);
         menu208.setExternal(Boolean.FALSE);
-        menuRepository.save(menu208);
+        menuList.add(menu208);
 
         Menu menu209 = new Menu();
         menu209.setPid(menu200.getId());
@@ -1306,7 +1311,7 @@ public class DatabaseApplicationRunner implements ApplicationRunner {
         menu209.setShowed(Boolean.TRUE);
         menu209.setCached(Boolean.TRUE);
         menu209.setExternal(Boolean.FALSE);
-        menuRepository.save(menu209);
+        menuList.add(menu209);
 
         Menu menu300 = new Menu();
         menu300.setPermissionId(permission300.getId());
@@ -1319,7 +1324,7 @@ public class DatabaseApplicationRunner implements ApplicationRunner {
         menu300.setShowed(Boolean.TRUE);
         menu300.setCached(Boolean.TRUE);
         menu300.setExternal(Boolean.FALSE);
-        menuRepository.save(menu300);
+        menuList.add(menu300);
 
         Menu menu301 = new Menu();
         menu301.setPid(menu300.getId());
@@ -1333,7 +1338,7 @@ public class DatabaseApplicationRunner implements ApplicationRunner {
         menu301.setShowed(Boolean.TRUE);
         menu301.setCached(Boolean.TRUE);
         menu301.setExternal(Boolean.FALSE);
-        menuRepository.save(menu301);
+        menuList.add(menu301);
 
         Menu menu302 = new Menu();
         menu302.setPid(menu300.getId());
@@ -1347,7 +1352,7 @@ public class DatabaseApplicationRunner implements ApplicationRunner {
         menu302.setShowed(Boolean.TRUE);
         menu302.setCached(Boolean.TRUE);
         menu302.setExternal(Boolean.FALSE);
-        menuRepository.save(menu302);
+        menuList.add(menu302);
 
         Menu menu303 = new Menu();
         menu303.setPid(menu300.getId());
@@ -1361,7 +1366,7 @@ public class DatabaseApplicationRunner implements ApplicationRunner {
         menu303.setShowed(Boolean.TRUE);
         menu303.setCached(Boolean.TRUE);
         menu303.setExternal(Boolean.FALSE);
-        menuRepository.save(menu303);
+        menuList.add(menu303);
 
         Menu menu304 = new Menu();
         menu304.setPid(menu300.getId());
@@ -1375,7 +1380,7 @@ public class DatabaseApplicationRunner implements ApplicationRunner {
         menu304.setShowed(Boolean.TRUE);
         menu304.setCached(Boolean.TRUE);
         menu304.setExternal(Boolean.FALSE);
-        menuRepository.save(menu304);
+        menuList.add(menu304);
 
         Menu menu305 = new Menu();
         menu305.setPid(menu300.getId());
@@ -1389,7 +1394,7 @@ public class DatabaseApplicationRunner implements ApplicationRunner {
         menu305.setShowed(Boolean.TRUE);
         menu305.setCached(Boolean.TRUE);
         menu305.setExternal(Boolean.FALSE);
-        menuRepository.save(menu305);
+        menuList.add(menu305);
 
         Menu menu306 = new Menu();
         menu306.setPid(menu300.getId());
@@ -1403,7 +1408,7 @@ public class DatabaseApplicationRunner implements ApplicationRunner {
         menu306.setShowed(Boolean.TRUE);
         menu306.setCached(Boolean.TRUE);
         menu306.setExternal(Boolean.FALSE);
-        menuRepository.save(menu306);
+        menuList.add(menu306);
 
         Menu menu400 = new Menu();
         menu400.setPermissionId(permission400.getId());
@@ -1416,7 +1421,7 @@ public class DatabaseApplicationRunner implements ApplicationRunner {
         menu400.setShowed(Boolean.TRUE);
         menu400.setCached(Boolean.TRUE);
         menu400.setExternal(Boolean.FALSE);
-        menuRepository.save(menu400);
+        menuList.add(menu400);
 
         Menu menu401 = new Menu();
         menu401.setPid(menu400.getId());
@@ -1430,7 +1435,7 @@ public class DatabaseApplicationRunner implements ApplicationRunner {
         menu401.setShowed(Boolean.TRUE);
         menu401.setCached(Boolean.TRUE);
         menu401.setExternal(Boolean.FALSE);
-        menuRepository.save(menu401);
+        menuList.add(menu401);
 
         Menu menu402 = new Menu();
         menu402.setPid(menu400.getId());
@@ -1444,7 +1449,7 @@ public class DatabaseApplicationRunner implements ApplicationRunner {
         menu402.setShowed(Boolean.TRUE);
         menu402.setCached(Boolean.TRUE);
         menu402.setExternal(Boolean.FALSE);
-        menuRepository.save(menu402);
+        menuList.add(menu402);
 
         Menu menu403 = new Menu();
         menu403.setPid(menu400.getId());
@@ -1458,7 +1463,7 @@ public class DatabaseApplicationRunner implements ApplicationRunner {
         menu403.setShowed(Boolean.TRUE);
         menu403.setCached(Boolean.TRUE);
         menu403.setExternal(Boolean.FALSE);
-        menuRepository.save(menu403);
+        menuList.add(menu403);
 
         Menu menu404 = new Menu();
         menu404.setPid(menu400.getId());
@@ -1472,7 +1477,7 @@ public class DatabaseApplicationRunner implements ApplicationRunner {
         menu404.setShowed(Boolean.TRUE);
         menu404.setCached(Boolean.TRUE);
         menu404.setExternal(Boolean.FALSE);
-        menuRepository.save(menu404);
+        menuList.add(menu404);
 
         Menu menu405 = new Menu();
         menu405.setPid(menu400.getId());
@@ -1486,7 +1491,7 @@ public class DatabaseApplicationRunner implements ApplicationRunner {
         menu405.setShowed(Boolean.TRUE);
         menu405.setCached(Boolean.TRUE);
         menu405.setExternal(Boolean.FALSE);
-        menuRepository.save(menu405);
+        menuList.add(menu405);
 
         Menu menu406 = new Menu();
         menu406.setPid(menu400.getId());
@@ -1500,7 +1505,7 @@ public class DatabaseApplicationRunner implements ApplicationRunner {
         menu406.setShowed(Boolean.TRUE);
         menu406.setCached(Boolean.TRUE);
         menu406.setExternal(Boolean.FALSE);
-        menuRepository.save(menu406);
+        menuList.add(menu406);
 
         Menu menu407 = new Menu();
         menu407.setPid(menu400.getId());
@@ -1514,7 +1519,7 @@ public class DatabaseApplicationRunner implements ApplicationRunner {
         menu407.setShowed(Boolean.TRUE);
         menu407.setCached(Boolean.TRUE);
         menu407.setExternal(Boolean.FALSE);
-        menuRepository.save(menu407);
+        menuList.add(menu407);
 
         Menu menu500 = new Menu();
         menu500.setPermissionId(permission500.getId());
@@ -1527,7 +1532,7 @@ public class DatabaseApplicationRunner implements ApplicationRunner {
         menu500.setShowed(Boolean.TRUE);
         menu500.setCached(Boolean.TRUE);
         menu500.setExternal(Boolean.FALSE);
-        menuRepository.save(menu500);
+        menuList.add(menu500);
 
         Menu menu501 = new Menu();
         menu501.setPid(menu500.getId());
@@ -1541,7 +1546,7 @@ public class DatabaseApplicationRunner implements ApplicationRunner {
         menu501.setShowed(Boolean.TRUE);
         menu501.setCached(Boolean.TRUE);
         menu501.setExternal(Boolean.FALSE);
-        menuRepository.save(menu501);
+        menuList.add(menu501);
 
         Menu menu502 = new Menu();
         menu502.setPid(menu500.getId());
@@ -1555,7 +1560,7 @@ public class DatabaseApplicationRunner implements ApplicationRunner {
         menu502.setShowed(Boolean.TRUE);
         menu502.setCached(Boolean.TRUE);
         menu502.setExternal(Boolean.FALSE);
-        menuRepository.save(menu502);
+        menuList.add(menu502);
 
         Menu menu503 = new Menu();
         menu503.setPid(menu500.getId());
@@ -1569,7 +1574,7 @@ public class DatabaseApplicationRunner implements ApplicationRunner {
         menu503.setShowed(Boolean.TRUE);
         menu503.setCached(Boolean.TRUE);
         menu503.setExternal(Boolean.FALSE);
-        menuRepository.save(menu503);
+        menuList.add(menu503);
 
         Menu menu600 = new Menu();
         menu600.setPermissionId(permission600.getId());
@@ -1582,7 +1587,7 @@ public class DatabaseApplicationRunner implements ApplicationRunner {
         menu600.setShowed(Boolean.TRUE);
         menu600.setCached(Boolean.TRUE);
         menu600.setExternal(Boolean.FALSE);
-        menuRepository.save(menu600);
+        menuList.add(menu600);
 
         Menu menu601 = new Menu();
         menu601.setPid(menu600.getId());
@@ -1596,7 +1601,7 @@ public class DatabaseApplicationRunner implements ApplicationRunner {
         menu601.setShowed(Boolean.TRUE);
         menu601.setCached(Boolean.TRUE);
         menu601.setExternal(Boolean.FALSE);
-        menuRepository.save(menu601);
+        menuList.add(menu601);
 
         Menu menu602 = new Menu();
         menu602.setPid(menu600.getId());
@@ -1610,7 +1615,7 @@ public class DatabaseApplicationRunner implements ApplicationRunner {
         menu602.setShowed(Boolean.TRUE);
         menu602.setCached(Boolean.TRUE);
         menu602.setExternal(Boolean.FALSE);
-        menuRepository.save(menu602);
+        menuList.add(menu602);
 
         Menu menu603 = new Menu();
         menu603.setPid(menu600.getId());
@@ -1624,7 +1629,7 @@ public class DatabaseApplicationRunner implements ApplicationRunner {
         menu603.setShowed(Boolean.TRUE);
         menu603.setCached(Boolean.TRUE);
         menu603.setExternal(Boolean.FALSE);
-        menuRepository.save(menu603);
+        menuList.add(menu603);
 
         Menu menu604 = new Menu();
         menu604.setPid(menu600.getId());
@@ -1638,7 +1643,7 @@ public class DatabaseApplicationRunner implements ApplicationRunner {
         menu604.setShowed(Boolean.TRUE);
         menu604.setCached(Boolean.TRUE);
         menu604.setExternal(Boolean.FALSE);
-        menuRepository.save(menu604);
+        menuList.add(menu604);
 
         Menu menu605 = new Menu();
         menu605.setPid(menu600.getId());
@@ -1652,7 +1657,7 @@ public class DatabaseApplicationRunner implements ApplicationRunner {
         menu605.setShowed(Boolean.TRUE);
         menu605.setCached(Boolean.TRUE);
         menu605.setExternal(Boolean.FALSE);
-        menuRepository.save(menu605);
+        menuList.add(menu605);
 
         Menu menu606 = new Menu();
         menu606.setPid(menu600.getId());
@@ -1666,7 +1671,7 @@ public class DatabaseApplicationRunner implements ApplicationRunner {
         menu606.setShowed(Boolean.TRUE);
         menu606.setCached(Boolean.TRUE);
         menu606.setExternal(Boolean.FALSE);
-        menuRepository.save(menu606);
+        menuList.add(menu606);
 
         Menu menu607 = new Menu();
         menu607.setPid(menu600.getId());
@@ -1680,7 +1685,7 @@ public class DatabaseApplicationRunner implements ApplicationRunner {
         menu607.setShowed(Boolean.TRUE);
         menu607.setCached(Boolean.TRUE);
         menu607.setExternal(Boolean.FALSE);
-        menuRepository.save(menu607);
+        menuList.add(menu607);
 
         Menu menu608 = new Menu();
         menu608.setPid(menu600.getId());
@@ -1694,7 +1699,7 @@ public class DatabaseApplicationRunner implements ApplicationRunner {
         menu608.setShowed(Boolean.TRUE);
         menu608.setCached(Boolean.TRUE);
         menu608.setExternal(Boolean.FALSE);
-        menuRepository.save(menu608);
+        menuList.add(menu608);
 
         Menu menu700 = new Menu();
         menu700.setPermissionId(permission700.getId());
@@ -1707,7 +1712,7 @@ public class DatabaseApplicationRunner implements ApplicationRunner {
         menu700.setShowed(Boolean.TRUE);
         menu700.setCached(Boolean.TRUE);
         menu700.setExternal(Boolean.FALSE);
-        menuRepository.save(menu700);
+        menuList.add(menu700);
 
         Menu menu701 = new Menu();
         menu701.setPid(menu700.getId());
@@ -1721,7 +1726,7 @@ public class DatabaseApplicationRunner implements ApplicationRunner {
         menu701.setShowed(Boolean.TRUE);
         menu701.setCached(Boolean.TRUE);
         menu701.setExternal(Boolean.FALSE);
-        menuRepository.save(menu701);
+        menuList.add(menu701);
 
         Menu menu702 = new Menu();
         menu702.setPid(menu700.getId());
@@ -1735,7 +1740,7 @@ public class DatabaseApplicationRunner implements ApplicationRunner {
         menu702.setShowed(Boolean.TRUE);
         menu702.setCached(Boolean.TRUE);
         menu702.setExternal(Boolean.FALSE);
-        menuRepository.save(menu702);
+        menuList.add(menu702);
 
         Menu menu703 = new Menu();
         menu703.setPid(menu700.getId());
@@ -1749,7 +1754,7 @@ public class DatabaseApplicationRunner implements ApplicationRunner {
         menu703.setShowed(Boolean.TRUE);
         menu703.setCached(Boolean.TRUE);
         menu703.setExternal(Boolean.FALSE);
-        menuRepository.save(menu703);
+        menuList.add(menu703);
 
         Menu menu704 = new Menu();
         menu704.setPid(menu700.getId());
@@ -1763,7 +1768,7 @@ public class DatabaseApplicationRunner implements ApplicationRunner {
         menu704.setShowed(Boolean.TRUE);
         menu704.setCached(Boolean.TRUE);
         menu704.setExternal(Boolean.FALSE);
-        menuRepository.save(menu704);
+        menuList.add(menu704);
 
         Menu menu705 = new Menu();
         menu705.setPid(menu700.getId());
@@ -1777,7 +1782,7 @@ public class DatabaseApplicationRunner implements ApplicationRunner {
         menu705.setShowed(Boolean.TRUE);
         menu705.setCached(Boolean.TRUE);
         menu705.setExternal(Boolean.FALSE);
-        menuRepository.save(menu705);
+        menuList.add(menu705);
 
         Menu menu706 = new Menu();
         menu706.setPid(menu700.getId());
@@ -1791,7 +1796,7 @@ public class DatabaseApplicationRunner implements ApplicationRunner {
         menu706.setShowed(Boolean.TRUE);
         menu706.setCached(Boolean.TRUE);
         menu706.setExternal(Boolean.FALSE);
-        menuRepository.save(menu706);
+        menuList.add(menu706);
 
         Menu menu707 = new Menu();
         menu707.setPid(menu700.getId());
@@ -1805,7 +1810,7 @@ public class DatabaseApplicationRunner implements ApplicationRunner {
         menu707.setShowed(Boolean.TRUE);
         menu707.setCached(Boolean.TRUE);
         menu707.setExternal(Boolean.FALSE);
-        menuRepository.save(menu707);
+        menuList.add(menu707);
 
         Menu menu708 = new Menu();
         menu708.setPid(menu700.getId());
@@ -1819,7 +1824,7 @@ public class DatabaseApplicationRunner implements ApplicationRunner {
         menu708.setShowed(Boolean.TRUE);
         menu708.setCached(Boolean.TRUE);
         menu708.setExternal(Boolean.FALSE);
-        menuRepository.save(menu708);
+        menuList.add(menu708);
 
         Menu menu709 = new Menu();
         menu709.setPid(menu700.getId());
@@ -1833,7 +1838,7 @@ public class DatabaseApplicationRunner implements ApplicationRunner {
         menu709.setShowed(Boolean.TRUE);
         menu709.setCached(Boolean.TRUE);
         menu709.setExternal(Boolean.FALSE);
-        menuRepository.save(menu709);
+        menuList.add(menu709);
 
         Menu menu710 = new Menu();
         menu710.setPid(menu700.getId());
@@ -1847,7 +1852,7 @@ public class DatabaseApplicationRunner implements ApplicationRunner {
         menu710.setShowed(Boolean.TRUE);
         menu710.setCached(Boolean.TRUE);
         menu710.setExternal(Boolean.FALSE);
-        menuRepository.save(menu710);
+        menuList.add(menu710);
 
         Menu menu711 = new Menu();
         menu711.setPid(menu700.getId());
@@ -1861,7 +1866,7 @@ public class DatabaseApplicationRunner implements ApplicationRunner {
         menu711.setShowed(Boolean.TRUE);
         menu711.setCached(Boolean.TRUE);
         menu711.setExternal(Boolean.FALSE);
-        menuRepository.save(menu711);
+        menuList.add(menu711);
 
         Menu menu712 = new Menu();
         menu712.setPid(menu700.getId());
@@ -1875,7 +1880,7 @@ public class DatabaseApplicationRunner implements ApplicationRunner {
         menu712.setShowed(Boolean.TRUE);
         menu712.setCached(Boolean.TRUE);
         menu712.setExternal(Boolean.FALSE);
-        menuRepository.save(menu712);
+        menuList.add(menu712);
 
         Menu menu800 = new Menu();
         menu800.setPermissionId(permission800.getId());
@@ -1888,7 +1893,7 @@ public class DatabaseApplicationRunner implements ApplicationRunner {
         menu800.setShowed(Boolean.TRUE);
         menu800.setCached(Boolean.TRUE);
         menu800.setExternal(Boolean.FALSE);
-        menuRepository.save(menu800);
+        menuList.add(menu800);
 
         Menu menu801 = new Menu();
         menu801.setPid(menu800.getId());
@@ -1902,7 +1907,7 @@ public class DatabaseApplicationRunner implements ApplicationRunner {
         menu801.setShowed(Boolean.TRUE);
         menu801.setCached(Boolean.TRUE);
         menu801.setExternal(Boolean.FALSE);
-        menuRepository.save(menu801);
+        menuList.add(menu801);
 
         Menu menu802 = new Menu();
         menu802.setPid(menu800.getId());
@@ -1916,7 +1921,7 @@ public class DatabaseApplicationRunner implements ApplicationRunner {
         menu802.setShowed(Boolean.TRUE);
         menu802.setCached(Boolean.TRUE);
         menu802.setExternal(Boolean.FALSE);
-        menuRepository.save(menu802);
+        menuList.add(menu802);
 
         Menu menu803 = new Menu();
         menu803.setPid(menu800.getId());
@@ -1930,7 +1935,7 @@ public class DatabaseApplicationRunner implements ApplicationRunner {
         menu803.setShowed(Boolean.TRUE);
         menu803.setCached(Boolean.TRUE);
         menu803.setExternal(Boolean.FALSE);
-        menuRepository.save(menu803);
+        menuList.add(menu803);
 
         Menu menu804 = new Menu();
         menu804.setPid(menu800.getId());
@@ -1944,7 +1949,7 @@ public class DatabaseApplicationRunner implements ApplicationRunner {
         menu804.setShowed(Boolean.TRUE);
         menu804.setCached(Boolean.TRUE);
         menu804.setExternal(Boolean.FALSE);
-        menuRepository.save(menu804);
+        menuList.add(menu804);
 
         Menu menu900 = new Menu();
         menu900.setPermissionId(permission900.getId());
@@ -1957,7 +1962,7 @@ public class DatabaseApplicationRunner implements ApplicationRunner {
         menu900.setShowed(Boolean.TRUE);
         menu900.setCached(Boolean.TRUE);
         menu900.setExternal(Boolean.FALSE);
-        menuRepository.save(menu900);
+        menuList.add(menu900);
 
         Menu menu901 = new Menu();
         menu901.setPid(menu900.getId());
@@ -1971,7 +1976,7 @@ public class DatabaseApplicationRunner implements ApplicationRunner {
         menu901.setShowed(Boolean.TRUE);
         menu901.setCached(Boolean.TRUE);
         menu901.setExternal(Boolean.FALSE);
-        menuRepository.save(menu901);
+        menuList.add(menu901);
 
         Menu menu902 = new Menu();
         menu902.setPid(menu900.getId());
@@ -1985,7 +1990,7 @@ public class DatabaseApplicationRunner implements ApplicationRunner {
         menu902.setShowed(Boolean.TRUE);
         menu902.setCached(Boolean.TRUE);
         menu902.setExternal(Boolean.FALSE);
-        menuRepository.save(menu902);
+        menuList.add(menu902);
 
         Menu menu903 = new Menu();
         menu903.setPid(menu900.getId());
@@ -1999,7 +2004,7 @@ public class DatabaseApplicationRunner implements ApplicationRunner {
         menu903.setShowed(Boolean.TRUE);
         menu903.setCached(Boolean.TRUE);
         menu903.setExternal(Boolean.FALSE);
-        menuRepository.save(menu903);
+        menuList.add(menu903);
 
         Menu menu904 = new Menu();
         menu904.setPid(menu900.getId());
@@ -2013,7 +2018,7 @@ public class DatabaseApplicationRunner implements ApplicationRunner {
         menu904.setShowed(Boolean.TRUE);
         menu904.setCached(Boolean.TRUE);
         menu904.setExternal(Boolean.FALSE);
-        menuRepository.save(menu904);
+        menuList.add(menu904);
 
         Menu menu905 = new Menu();
         menu905.setPid(menu900.getId());
@@ -2027,7 +2032,7 @@ public class DatabaseApplicationRunner implements ApplicationRunner {
         menu905.setShowed(Boolean.TRUE);
         menu905.setCached(Boolean.TRUE);
         menu905.setExternal(Boolean.FALSE);
-        menuRepository.save(menu905);
+        menuList.add(menu905);
 
         Menu menu906 = new Menu();
         menu906.setPid(menu900.getId());
@@ -2041,7 +2046,7 @@ public class DatabaseApplicationRunner implements ApplicationRunner {
         menu906.setShowed(Boolean.TRUE);
         menu906.setCached(Boolean.TRUE);
         menu906.setExternal(Boolean.FALSE);
-        menuRepository.save(menu906);
+        menuList.add(menu906);
 
         Menu menu907 = new Menu();
         menu907.setPid(menu900.getId());
@@ -2055,7 +2060,7 @@ public class DatabaseApplicationRunner implements ApplicationRunner {
         menu907.setShowed(Boolean.TRUE);
         menu907.setCached(Boolean.TRUE);
         menu907.setExternal(Boolean.FALSE);
-        menuRepository.save(menu907);
+        menuList.add(menu907);
 
         Menu menu908 = new Menu();
         menu908.setPid(menu900.getId());
@@ -2069,7 +2074,7 @@ public class DatabaseApplicationRunner implements ApplicationRunner {
         menu908.setShowed(Boolean.TRUE);
         menu908.setCached(Boolean.TRUE);
         menu908.setExternal(Boolean.FALSE);
-        menuRepository.save(menu908);
+        menuList.add(menu908);
 
         Menu menu1000 = new Menu();
         menu1000.setPermissionId(permission1000.getId());
@@ -2082,7 +2087,7 @@ public class DatabaseApplicationRunner implements ApplicationRunner {
         menu1000.setShowed(Boolean.TRUE);
         menu1000.setCached(Boolean.TRUE);
         menu1000.setExternal(Boolean.FALSE);
-        menuRepository.save(menu1000);
+        menuList.add(menu1000);
 
         Menu menu1001 = new Menu();
         menu1001.setPid(menu1000.getId());
@@ -2096,7 +2101,7 @@ public class DatabaseApplicationRunner implements ApplicationRunner {
         menu1001.setShowed(Boolean.TRUE);
         menu1001.setCached(Boolean.TRUE);
         menu1001.setExternal(Boolean.FALSE);
-        menuRepository.save(menu1001);
+        menuList.add(menu1001);
 
         Menu menu1002 = new Menu();
         menu1002.setPid(menu1000.getId());
@@ -2110,7 +2115,7 @@ public class DatabaseApplicationRunner implements ApplicationRunner {
         menu1002.setShowed(Boolean.TRUE);
         menu1002.setCached(Boolean.TRUE);
         menu1002.setExternal(Boolean.FALSE);
-        menuRepository.save(menu1002);
+        menuList.add(menu1002);
 
         Menu menu1003 = new Menu();
         menu1003.setPid(menu1000.getId());
@@ -2124,7 +2129,7 @@ public class DatabaseApplicationRunner implements ApplicationRunner {
         menu1003.setShowed(Boolean.TRUE);
         menu1003.setCached(Boolean.TRUE);
         menu1003.setExternal(Boolean.FALSE);
-        menuRepository.save(menu1003);
+        menuList.add(menu1003);
 
         Menu menu1004 = new Menu();
         menu1004.setPid(menu1000.getId());
@@ -2138,7 +2143,7 @@ public class DatabaseApplicationRunner implements ApplicationRunner {
         menu1004.setShowed(Boolean.TRUE);
         menu1004.setCached(Boolean.TRUE);
         menu1004.setExternal(Boolean.FALSE);
-        menuRepository.save(menu1004);
+        menuList.add(menu1004);
 
         Menu menu1005 = new Menu();
         menu1005.setPid(menu1000.getId());
@@ -2152,7 +2157,7 @@ public class DatabaseApplicationRunner implements ApplicationRunner {
         menu1005.setShowed(Boolean.TRUE);
         menu1005.setCached(Boolean.TRUE);
         menu1005.setExternal(Boolean.FALSE);
-        menuRepository.save(menu1005);
+        menuList.add(menu1005);
 
         Menu menu1006 = new Menu();
         menu1006.setPid(menu1000.getId());
@@ -2166,7 +2171,7 @@ public class DatabaseApplicationRunner implements ApplicationRunner {
         menu1006.setShowed(Boolean.TRUE);
         menu1006.setCached(Boolean.TRUE);
         menu1006.setExternal(Boolean.FALSE);
-        menuRepository.save(menu1006);
+        menuList.add(menu1006);
 
         Menu menu1007 = new Menu();
         menu1007.setPid(menu1000.getId());
@@ -2180,7 +2185,7 @@ public class DatabaseApplicationRunner implements ApplicationRunner {
         menu1007.setShowed(Boolean.TRUE);
         menu1007.setCached(Boolean.TRUE);
         menu1007.setExternal(Boolean.FALSE);
-        menuRepository.save(menu1007);
+        menuList.add(menu1007);
 
         Menu menu1008 = new Menu();
         menu1008.setPid(menu1000.getId());
@@ -2194,7 +2199,7 @@ public class DatabaseApplicationRunner implements ApplicationRunner {
         menu1008.setShowed(Boolean.TRUE);
         menu1008.setCached(Boolean.TRUE);
         menu1008.setExternal(Boolean.FALSE);
-        menuRepository.save(menu1008);
+        menuList.add(menu1008);
 
         Menu menu1009 = new Menu();
         menu1009.setPid(menu1000.getId());
@@ -2208,7 +2213,7 @@ public class DatabaseApplicationRunner implements ApplicationRunner {
         menu1009.setShowed(Boolean.TRUE);
         menu1009.setCached(Boolean.TRUE);
         menu1009.setExternal(Boolean.FALSE);
-        menuRepository.save(menu1009);
+        menuList.add(menu1009);
 
         Menu menu1010 = new Menu();
         menu1010.setPid(menu1000.getId());
@@ -2222,7 +2227,7 @@ public class DatabaseApplicationRunner implements ApplicationRunner {
         menu1010.setShowed(Boolean.TRUE);
         menu1010.setCached(Boolean.TRUE);
         menu1010.setExternal(Boolean.FALSE);
-        menuRepository.save(menu1010);
+        menuList.add(menu1010);
 
         Menu menu1011 = new Menu();
         menu1011.setPid(menu1000.getId());
@@ -2236,7 +2241,7 @@ public class DatabaseApplicationRunner implements ApplicationRunner {
         menu1011.setShowed(Boolean.TRUE);
         menu1011.setCached(Boolean.TRUE);
         menu1011.setExternal(Boolean.FALSE);
-        menuRepository.save(menu1011);
+        menuList.add(menu1011);
 
         Menu menu1012 = new Menu();
         menu1012.setPid(menu1000.getId());
@@ -2250,7 +2255,7 @@ public class DatabaseApplicationRunner implements ApplicationRunner {
         menu1012.setShowed(Boolean.TRUE);
         menu1012.setCached(Boolean.TRUE);
         menu1012.setExternal(Boolean.FALSE);
-        menuRepository.save(menu1012);
+        menuList.add(menu1012);
 
         Menu menu1013 = new Menu();
         menu1013.setPid(menu1000.getId());
@@ -2264,7 +2269,7 @@ public class DatabaseApplicationRunner implements ApplicationRunner {
         menu1013.setShowed(Boolean.TRUE);
         menu1013.setCached(Boolean.TRUE);
         menu1013.setExternal(Boolean.FALSE);
-        menuRepository.save(menu1013);
+        menuList.add(menu1013);
 
         Menu menu1014 = new Menu();
         menu1014.setPid(menu1000.getId());
@@ -2278,7 +2283,7 @@ public class DatabaseApplicationRunner implements ApplicationRunner {
         menu1014.setShowed(Boolean.TRUE);
         menu1014.setCached(Boolean.TRUE);
         menu1014.setExternal(Boolean.FALSE);
-        menuRepository.save(menu1014);
+        menuList.add(menu1014);
 
         Menu menu1100 = new Menu();
         menu1100.setPermissionId(permission1100.getId());
@@ -2291,7 +2296,7 @@ public class DatabaseApplicationRunner implements ApplicationRunner {
         menu1100.setShowed(Boolean.TRUE);
         menu1100.setCached(Boolean.TRUE);
         menu1100.setExternal(Boolean.FALSE);
-        menuRepository.save(menu1100);
+        menuList.add(menu1100);
 
         Menu menu1101 = new Menu();
         menu1101.setPid(menu1100.getId());
@@ -2305,7 +2310,7 @@ public class DatabaseApplicationRunner implements ApplicationRunner {
         menu1101.setShowed(Boolean.TRUE);
         menu1101.setCached(Boolean.TRUE);
         menu1101.setExternal(Boolean.FALSE);
-        menuRepository.save(menu1101);
+        menuList.add(menu1101);
 
         Menu menu1102 = new Menu();
         menu1102.setPid(menu1100.getId());
@@ -2319,7 +2324,7 @@ public class DatabaseApplicationRunner implements ApplicationRunner {
         menu1102.setShowed(Boolean.TRUE);
         menu1102.setCached(Boolean.TRUE);
         menu1102.setExternal(Boolean.FALSE);
-        menuRepository.save(menu1102);
+        menuList.add(menu1102);
 
         Menu menu1103 = new Menu();
         menu1103.setPid(menu1100.getId());
@@ -2333,7 +2338,7 @@ public class DatabaseApplicationRunner implements ApplicationRunner {
         menu1103.setShowed(Boolean.TRUE);
         menu1103.setCached(Boolean.TRUE);
         menu1103.setExternal(Boolean.FALSE);
-        menuRepository.save(menu1103);
+        menuList.add(menu1103);
 
         Menu menu1104 = new Menu();
         menu1104.setPid(menu1100.getId());
@@ -2347,7 +2352,7 @@ public class DatabaseApplicationRunner implements ApplicationRunner {
         menu1104.setShowed(Boolean.TRUE);
         menu1104.setCached(Boolean.TRUE);
         menu1104.setExternal(Boolean.FALSE);
-        menuRepository.save(menu1104);
+        menuList.add(menu1104);
 
         Menu menu1105 = new Menu();
         menu1105.setPid(menu1100.getId());
@@ -2361,7 +2366,7 @@ public class DatabaseApplicationRunner implements ApplicationRunner {
         menu1105.setShowed(Boolean.TRUE);
         menu1105.setCached(Boolean.TRUE);
         menu1105.setExternal(Boolean.FALSE);
-        menuRepository.save(menu1105);
+        menuList.add(menu1105);
 
         Menu menu1106 = new Menu();
         menu1106.setPid(menu1100.getId());
@@ -2375,7 +2380,7 @@ public class DatabaseApplicationRunner implements ApplicationRunner {
         menu1106.setShowed(Boolean.TRUE);
         menu1106.setCached(Boolean.TRUE);
         menu1106.setExternal(Boolean.FALSE);
-        menuRepository.save(menu1106);
+        menuList.add(menu1106);
 
         Menu menu1200 = new Menu();
         menu1200.setPermissionId(permission1200.getId());
@@ -2388,7 +2393,7 @@ public class DatabaseApplicationRunner implements ApplicationRunner {
         menu1200.setShowed(Boolean.TRUE);
         menu1200.setCached(Boolean.TRUE);
         menu1200.setExternal(Boolean.FALSE);
-        menuRepository.save(menu1200);
+        menuList.add(menu1200);
 
         Menu menu1300 = new Menu();
         menu1300.setPermissionId(permission1300.getId());
@@ -2401,7 +2406,7 @@ public class DatabaseApplicationRunner implements ApplicationRunner {
         menu1300.setShowed(Boolean.TRUE);
         menu1300.setCached(Boolean.TRUE);
         menu1300.setExternal(Boolean.FALSE);
-        menuRepository.save(menu1300);
+        menuList.add(menu1300);
 
         Menu menu1400 = new Menu();
         menu1400.setPermissionId(permission1400.getId());
@@ -2414,7 +2419,7 @@ public class DatabaseApplicationRunner implements ApplicationRunner {
         menu1400.setShowed(Boolean.TRUE);
         menu1400.setCached(Boolean.TRUE);
         menu1400.setExternal(Boolean.FALSE);
-        menuRepository.save(menu1400);
+        menuList.add(menu1400);
 
         Menu menu1401 = new Menu();
         menu1401.setPid(menu1400.getId());
@@ -2428,7 +2433,7 @@ public class DatabaseApplicationRunner implements ApplicationRunner {
         menu1401.setShowed(Boolean.TRUE);
         menu1401.setCached(Boolean.TRUE);
         menu1401.setExternal(Boolean.FALSE);
-        menuRepository.save(menu1401);
+        menuList.add(menu1401);
 
         Menu menu1500 = new Menu();
         menu1500.setPermissionId(permission1500.getId());
@@ -2441,7 +2446,7 @@ public class DatabaseApplicationRunner implements ApplicationRunner {
         menu1500.setShowed(Boolean.TRUE);
         menu1500.setCached(Boolean.TRUE);
         menu1500.setExternal(Boolean.FALSE);
-        menuRepository.save(menu1500);
+        menuList.add(menu1500);
 
         Menu menu1501 = new Menu();
         menu1501.setPid(menu1500.getId());
@@ -2455,7 +2460,7 @@ public class DatabaseApplicationRunner implements ApplicationRunner {
         menu1501.setShowed(Boolean.TRUE);
         menu1501.setCached(Boolean.TRUE);
         menu1501.setExternal(Boolean.FALSE);
-        menuRepository.save(menu1501);
+        menuList.add(menu1501);
 
         Menu menu1502 = new Menu();
         menu1502.setPid(menu1500.getId());
@@ -2469,7 +2474,7 @@ public class DatabaseApplicationRunner implements ApplicationRunner {
         menu1502.setShowed(Boolean.TRUE);
         menu1502.setCached(Boolean.TRUE);
         menu1502.setExternal(Boolean.FALSE);
-        menuRepository.save(menu1502);
+        menuList.add(menu1502);
 
         Menu menu1503 = new Menu();
         menu1503.setPid(menu1500.getId());
@@ -2483,7 +2488,7 @@ public class DatabaseApplicationRunner implements ApplicationRunner {
         menu1503.setShowed(Boolean.TRUE);
         menu1503.setCached(Boolean.TRUE);
         menu1503.setExternal(Boolean.FALSE);
-        menuRepository.save(menu1503);
+        menuList.add(menu1503);
 
         Menu menu1504 = new Menu();
         menu1504.setPid(menu1500.getId());
@@ -2497,7 +2502,7 @@ public class DatabaseApplicationRunner implements ApplicationRunner {
         menu1504.setShowed(Boolean.TRUE);
         menu1504.setCached(Boolean.TRUE);
         menu1504.setExternal(Boolean.FALSE);
-        menuRepository.save(menu1504);
+        menuList.add(menu1504);
 
         Menu menu1505 = new Menu();
         menu1505.setPid(menu1500.getId());
@@ -2511,7 +2516,7 @@ public class DatabaseApplicationRunner implements ApplicationRunner {
         menu1505.setShowed(Boolean.TRUE);
         menu1505.setCached(Boolean.TRUE);
         menu1505.setExternal(Boolean.FALSE);
-        menuRepository.save(menu1505);
+        menuList.add(menu1505);
 
         Menu menu1506 = new Menu();
         menu1506.setPid(menu1500.getId());
@@ -2525,7 +2530,8 @@ public class DatabaseApplicationRunner implements ApplicationRunner {
         menu1506.setShowed(Boolean.TRUE);
         menu1506.setCached(Boolean.TRUE);
         menu1506.setExternal(Boolean.FALSE);
-        menuRepository.save(menu1506);
+        menuList.add(menu1506);
+        menuRepository.saveAll(menuList);
     }
 
     /**

@@ -25,7 +25,9 @@ class RedisConfig {
         redisTemplate.connectionFactory = redisConnectionFactory
         val objectMapper = ObjectMapper()
         objectMapper.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY)
-        objectMapper.activateDefaultTyping(objectMapper.polymorphicTypeValidator, ObjectMapper.DefaultTyping.NON_FINAL)
+        objectMapper.activateDefaultTyping(
+            objectMapper.polymorphicTypeValidator, ObjectMapper.DefaultTyping.NON_FINAL
+        )
         objectMapper.registerModule(JavaTimeModule())
         // 使用 Jackson2JsonRedisSerialize 替换默认序列化
         val jackson2JsonRedisSerializer = Jackson2JsonRedisSerializer(objectMapper, Any::class.java)
