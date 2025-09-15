@@ -24,9 +24,9 @@ spring:
     username: ${POSTGRES_USER}
     # 数据库的登录密码。
     password: ${POSTGRES_PASSWORD}
-    hikari:
-      # 连接最大生命时间。用于防止远程数据库连接关闭。
-      max-lifetime: 30000
+#    hikari:
+#      # 连接最大生命时间。用于防止远程数据库连接关闭。
+#      max-lifetime: 30000
 #  elasticsearch:
 #    # 要使用的 Elasticsearch 实例的逗号分隔列表。
 #    uris: ${spring.data.redis.host}:9200

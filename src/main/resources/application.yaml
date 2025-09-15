@@ -43,7 +43,7 @@ spring:
     date-format: yyyy-MM-dd HH:mm:ss
   profiles:
     # 指定起作用的配置文件
-    active: test
+    active: dev
   servlet:
     multipart:
       # 支持的每次请求中最大的单个文件的大小

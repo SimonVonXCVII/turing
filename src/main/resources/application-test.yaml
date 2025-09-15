@@ -23,7 +23,7 @@ spring:
     password: password
 #  elasticsearch:
 #    # 要使用的 Elasticsearch 实例的逗号分隔列表。
-#    uris: soil-elasticsearch:9200
+#    uris: turing-elasticsearch:9200
 #    # 用于 Elasticsearch 身份验证的用户名。
 #    username: elastic
 #    # Elasticsearch 身份验证的密码。

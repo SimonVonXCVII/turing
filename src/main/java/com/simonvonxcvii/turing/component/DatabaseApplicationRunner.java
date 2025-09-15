@@ -3,7 +3,6 @@ package com.simonvonxcvii.turing.component;
 import com.simonvonxcvii.turing.entity.*;
 import com.simonvonxcvii.turing.enums.OrganizationTypeEnum;
 import com.simonvonxcvii.turing.repository.*;
-import com.simonvonxcvii.turing.utils.TreeListUtils;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -21,6 +20,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.util.*;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * 数据库初始化 runner
@@ -119,11 +121,34 @@ public class DatabaseApplicationRunner implements ApplicationRunner {
             }
         }
         // 按层级
-        TreeListUtils.tree(areaList, a -> a.adCode, a -> a.parentAdCode, (parent, child) -> {
+        Map<String, Area> detailVoMap = areaList.stream().collect(Collectors.toMap(a -> a.adCode, Function.identity()));
+        Function<Area, String> pid = a -> a.parentAdCode;
+        BiConsumer<Area, Area> consumer = (parent, child) -> {
             if (parent == null) {
                 provinceMap.put(child.adCode, child);
             } else {
                 parent.children.add(child);
+            }
+        };
+        Function<Area, String> pidWrapper = t -> {
+            String pid2 = pid.apply(t);
+            if (!StringUtils.hasText(pid2)) {
+                return pid2;
+            }
+            if (!pid2.contains(",")) {
+                return pid2;
+            }
+
+            String[] ids = StringUtils.commaDelimitedListToStringArray(pid2);
+            return ids[ids.length - 1];
+        };
+        areaList.forEach(node -> {
+            String parentId = pidWrapper.apply(node);
+            if (StringUtils.hasText(parentId)) {
+                Area parent = detailVoMap.get(parentId);
+                consumer.accept(parent, node);
+            } else {
+                consumer.accept(null, node);
             }
         });
         List<Dict> dictList = new ArrayList<>();
