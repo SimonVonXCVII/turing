@@ -151,7 +151,7 @@ class NimbusJwtServiceImpl(
         // 目前认为没有必要实现 token 刷新的功能，因为有效期设置的一周，一周后重新登录就好，中间不需要做刷新，因为一直都是有效的，每次请求都会携带 token
         try {
             return decode(split[1])
-        } catch (e: JwtException) {
+        } catch (_: JwtException) {
             throw AuthenticationServiceException("令牌已过期或验证不正确")
         }
     }

@@ -30,7 +30,7 @@ abstract class AbstractAuditable : Serializable {
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    open var id: Int? = null
+    open var id: Int = 0
 
     /**
      * 创建主体
@@ -45,7 +45,7 @@ abstract class AbstractAuditable : Serializable {
     @JsonDeserialize(using = LocalDateTimeDeserializer::class)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @JsonSerialize(using = LocalDateTimeSerializer::class)
-    open var createdDate: LocalDateTime? = null
+    open var createdDate: LocalDateTime = LocalDateTime.now()
 
     /**
      * 最后修改主体
@@ -60,18 +60,18 @@ abstract class AbstractAuditable : Serializable {
     @JsonDeserialize(using = LocalDateTimeDeserializer::class)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @JsonSerialize(using = LocalDateTimeSerializer::class)
-    open var lastModifiedDate: LocalDateTime? = null
+    open var lastModifiedDate: LocalDateTime = LocalDateTime.now()
 
     /**
      * 乐观锁字段
      */
     @Version
-    open var version: Int? = null
+    open var version: Int = 0
 
     /**
      * 逻辑删除标记
      */
-    open var deleted: Boolean? = null
+    open var deleted: Boolean = false
 
     companion object {
         const val ID = "id"

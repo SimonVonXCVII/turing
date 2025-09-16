@@ -20,7 +20,7 @@ import org.springframework.stereotype.Component
  * @since 2023/3/9 16:21
  */
 @Component
-class CustomAccessDeniedHandlerImpl : AccessDeniedHandler {
+class AccessDeniedHandlerImplCustom : AccessDeniedHandler {
     /**
      * 处理拒绝访问失败。
      */
@@ -35,7 +35,7 @@ class CustomAccessDeniedHandlerImpl : AccessDeniedHandler {
 
     companion object {
         private val logger = LogFactory.getLog(
-            CustomAccessDeniedHandlerImpl::class.java
+            AccessDeniedHandlerImplCustom::class.java
         )
     }
 }

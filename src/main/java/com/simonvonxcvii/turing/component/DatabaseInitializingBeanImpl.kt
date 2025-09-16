@@ -34,7 +34,7 @@ import kotlin.run
  * @since 2023/8/25 21:24
  */
 @Component
-class DatabaseInitializingBean(
+class DatabaseInitializingBeanImpl(
     private val dataSource: DataSource,
     private val organizationRepository: OrganizationRepository,
     private val passwordEncoder: PasswordEncoder,
@@ -2573,7 +2573,7 @@ class DatabaseInitializingBean(
     }
 
     companion object {
-        private val log: Log = LogFactory.getLog(DatabaseInitializingBean::class.java)
+        private val log: Log = LogFactory.getLog(DatabaseInitializingBeanImpl::class.java)
 
         /**
          * 字典排序

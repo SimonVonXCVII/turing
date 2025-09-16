@@ -112,7 +112,7 @@ class UserDetailsServiceImpl(
         // 缓存当前用户的角色集合
         user.authorities = roleList
         // 缓存当前用户的 token
-        user.token = nimbusJwtService.encode(user.id!!, username).tokenValue
+        user.token = nimbusJwtService.encode(user.id, username).tokenValue
         // 将 token 保存到 request 中，便于在 AuthenticationSuccessHandlerImpl#onAuthenticationSuccess 方法中获取
         httpServletRequest.setAttribute(OAuth2ParameterNames.TOKEN, user.token)
         val organization = organizationRepository.findById(user.orgId)
