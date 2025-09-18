@@ -326,7 +326,7 @@ class SecurityConfig {
                 // 如果 HandlerMappingIntrospector 在类路径中可用，则映射到不关心使用哪个 HttpMethod 的 MvcRequestMatcher。
                 // 这个匹配器将使用 Spring MVC 用于匹配的相同规则。 例如，路径“/path”的映射通常会匹配“/path”、“/path/”、“/path.html”等。
                 // 如果 HandlerMappingIntrospector 不可用，则映射到 AntPathRequestMatcher。
-                .requestMatchers(*securityProperties.whitelist)
+                .requestMatchers(*securityProperties.whitelist.toTypedArray())
                 // 指定任何人都允许使用 URL。
                 .permitAll()
                 // 如果 HandlerMappingIntrospector 在类路径中可用，则映射到与特定 HttpMethod 匹配的 MvcRequestMatcher。

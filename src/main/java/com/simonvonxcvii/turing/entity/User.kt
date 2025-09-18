@@ -1,176 +1,279 @@
-package com.simonvonxcvii.turing.entity;
+package com.simonvonxcvii.turing.entity
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
-import lombok.experimental.Accessors;
-import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.SQLRestriction;
-import org.springframework.security.core.userdetails.UserDetails;
-
-import java.util.Collection;
+import jakarta.persistence.Column
+import jakarta.persistence.Entity
+import jakarta.persistence.Table
+import jakarta.persistence.UniqueConstraint
+import org.hibernate.annotations.Comment
+import org.hibernate.annotations.SQLDelete
+import org.hibernate.annotations.SQLRestriction
+import org.springframework.security.core.GrantedAuthority
+import org.springframework.security.core.userdetails.UserDetails
 
 /**
- * <p>
  * 用户表
- * </p>
  *
  * @author Simon Von
  * @since 2022-12-19 15:58:28
  */
-@Accessors(chain = true)
-@Getter
-@Setter
-@ToString
 @Entity
-@Table(schema = "public", name = "turing_user")
+@Table(
+    schema = "public",
+    name = "turing_user",
+    uniqueConstraints = [
+        UniqueConstraint(name = "con_public_turing_user_constraint_1", columnNames = arrayOf("id")),
+        UniqueConstraint(columnNames = arrayOf("username"))
+    ]
+)
 // @SQLDelete 只支持 delete(T entity) 和 deleteById(ID id)
 @SQLDelete(sql = "UPDATE turing_user SET deleted = TRUE WHERE id = ? AND version = ? AND deleted = FALSE")
 //@SQLDeleteAll()
 @SQLRestriction("deleted = FALSE")
 //@RedisHash
 //@Document(indexName = "turing_user")
-public class User extends AbstractAuditable implements UserDetails {
-
-    /**
-     * ES 索引名称
-     */
-    public static final String ES_INDEX = "turing_user";
-
-    /**
-     * Redis key 前缀
-     */
-    public static final String REDIS_KEY_PREFIX = ES_INDEX + ":";
-
-    public static final String NAME = "name";
-    public static final String MOBILE = "mobile";
-    public static final String GENDER = "gender";
-    public static final String ORG_ID = "orgId";
-    public static final String ORG_NAME = "orgName";
-    public static final String DEPARTMENT = "department";
-    public static final String USERNAME = "username";
-    public static final String PASSWORD = "password";
-    public static final String ACCOUNT_NON_EXPIRED = "accountNonExpired";
-    public static final String ACCOUNT_NON_LOCKED = "accountNonLocked";
-    public static final String CREDENTIALS_NON_EXPIRED = "credentialsNonExpired";
-    public static final String ENABLED = "enabled";
-    public static final String MANAGER = "manager";
-    public static final String NEED_SET_PASSWORD = "needSetPassword";
-
+data class User(
     /**
      * 用户姓名
      */
-    public String name;
+    @Column(name = "name", nullable = false, columnDefinition = "VARCHAR", length = 64)
+    @Comment("用户姓名")
+    var name: String = "",
+
     /**
-     * 用户手机号
+     * 用户电话
      */
-    public Long mobile;
+    @Column(name = "mobile", nullable = false, columnDefinition = "BIGINT")
+    @Comment("用户电话")
+    var mobile: Long = 0,
+
     /**
      * 用户性别
      */
-    public String gender;
+    @Column(name = "gender", nullable = false, columnDefinition = "VARCHAR", length = 1)
+    @Comment("用户性别")
+    var gender: String = "",
+
     /**
      * 组织机构 id
      */
-    public Integer orgId;
+    @Column(name = "org_id", nullable = false, columnDefinition = "INTEGER")
+    @Comment("组织机构 id")
+    var orgId: Int = 0,
+
     /**
-     * 单位名称
+     * 组织机构名称
      */
-    public String orgName;
+    @Column(name = "org_name", nullable = false, columnDefinition = "VARCHAR", length = 128)
+    @Comment("组织机构名称")
+    var orgName: String = "",
+
     /**
      * 部门
      */
-    public String department;
+    @Column(name = "department", columnDefinition = "VARCHAR", length = 128)
+    @Comment("部门")
+    var department: String? = null,
+
     /**
      * 登录账号
      */
-    public String username;
+    @Column(name = "username", nullable = false, columnDefinition = "VARCHAR", length = 64)
+    @Comment("登录账号")
+    @get:JvmName("getUsernameValue")
+    var username: String = "",
+
     /**
      * 用户密码
      */
-    public String password;
+    @Column(name = "password", nullable = false, columnDefinition = "VARCHAR", length = 128)
+    @Comment("用户密码")
+    @get:JvmName("getPasswordValue")
+    var password: String = "",
+
     /**
      * 是否账号没有过期
      */
-    public boolean accountNonExpired;
+    @Column(name = "account_non_expired", nullable = false, columnDefinition = "BOOLEAN")
+    @Comment("是否账号没有过期")
+    var accountNonExpired: Boolean = true,
+
     /**
      * 是否账号没有锁定
      */
-    public boolean accountNonLocked;
+    @Column(name = "account_non_locked", nullable = false, columnDefinition = "BOOLEAN")
+    @Comment("是否账号没有锁定")
+    var accountNonLocked: Boolean = true,
+
     /**
      * 是否凭证没有过期
      */
-    public boolean credentialsNonExpired;
+    @Column(name = "credentials_non_expired", nullable = false, columnDefinition = "BOOLEAN")
+    @Comment("是否凭证没有过期")
+    var credentialsNonExpired: Boolean = true,
+
     /**
      * 是否启用
      */
-    public boolean enabled;
+    @Column(name = "enabled", nullable = false, columnDefinition = "BOOLEAN")
+    @Comment("是否启用")
+    var enabled: Boolean = true,
+
     /**
      * 是否单位管理员
      */
-    public boolean manager;
+    @Column(name = "manager", nullable = false, columnDefinition = "BOOLEAN")
+    @Comment("是否单位管理员")
+    @get:JvmName("isManager")
+    var manager: Boolean = false,
+
     /**
      * 是否需要重置密码
      */
-    public boolean needSetPassword;
+    @Column(name = "need_reset_password", nullable = false, columnDefinition = "BOOLEAN")
+    @Comment("是否需要重置密码")
+    @get:JvmName("isNeedResetPassword")
+    var needResetPassword: Boolean = true,
 
     /**
      * 用户角色
      */
-//    @Transient
-    public transient Collection<Role> authorities;
+    @Transient
+    @jakarta.persistence.Transient
+    @get:JvmName("getAuthoritiesValue")
+    var authorities: Collection<Role> = mutableListOf(),
+
     /**
      * 是否是超级管理员
      */
-    public transient boolean admin;
+    @Transient
+    @jakarta.persistence.Transient
+    @get:JvmName("isAdmin")
+    var admin: Boolean = false,
+
     /**
      * 当前用户的 token
      *
      * @since 2023/4/11 18:07
      */
-    public transient String token;
+    @Transient
+    @jakarta.persistence.Transient
+    var token: String? = null,
+
     /**
      * 用户所处的单位级别
      *
      * @since 2023/7/1 18:53
      */
-    public transient String orgLevel;
+    @Transient
+    @jakarta.persistence.Transient
+    var orgLevel: String? = null,
+
     /**
      * 省（市、区）编码
      *
      * @since 2023/4/11 18:07
      */
-    public transient Integer provinceCode;
+    @Transient
+    @jakarta.persistence.Transient
+    var provinceCode: Int? = null,
+
     /**
      * 市（州、盟）编码
      *
      * @since 2023/7/1 18:53
      */
-    public transient Integer cityCode;
+    @Transient
+    @jakarta.persistence.Transient
+    var cityCode: Int? = null,
+
     /**
      * 县（市、旗）编码
      *
      * @since 2023/7/1 18:53
      */
-    public transient Integer districtCode;
+    @Transient
+    @jakarta.persistence.Transient
+    var districtCode: Int? = null,
+
     /**
      * 省（市、区）名称
      *
      * @since 2023/7/1 18:53
      */
-    public transient String provinceName;
+    @Transient
+    @jakarta.persistence.Transient
+    var provinceName: String? = null,
+
     /**
      * 市（州、盟）名称
      *
      * @since 2023/7/1 18:53
      */
-    public transient String cityName;
+    @Transient
+    @jakarta.persistence.Transient
+    var cityName: String? = null,
+
     /**
      * 县（市、旗）名称
      *
      * @since 2023/7/1 18:53
      */
-    public transient String districtName;
+    @Transient
+    @jakarta.persistence.Transient
+    var districtName: String? = null
+) : AbstractAuditable(), UserDetails {
+    override fun getAuthorities(): Collection<GrantedAuthority> {
+        return authorities
+    }
+
+    override fun getPassword(): String {
+        return password
+    }
+
+    override fun getUsername(): String {
+        return username
+    }
+
+    override fun isAccountNonExpired(): Boolean {
+        return accountNonExpired
+    }
+
+    override fun isAccountNonLocked(): Boolean {
+        return accountNonLocked
+    }
+
+    override fun isCredentialsNonExpired(): Boolean {
+        return credentialsNonExpired
+    }
+
+    override fun isEnabled(): Boolean {
+        return enabled
+    }
+
+    companion object {
+        /**
+         * ES 索引名称
+         */
+        const val ES_INDEX = "turing_user"
+
+        /**
+         * Redis key 前缀
+         */
+        const val REDIS_KEY_PREFIX = "$ES_INDEX:"
+
+        const val NAME = "name"
+        const val MOBILE = "mobile"
+        const val GENDER = "gender"
+        const val ORG_ID = "orgId"
+        const val ORG_NAME = "orgName"
+        const val DEPARTMENT = "department"
+        const val USERNAME = "username"
+        const val PASSWORD = "password"
+        const val ACCOUNT_NON_EXPIRED = "accountNonExpired"
+        const val ACCOUNT_NON_LOCKED = "accountNonLocked"
+        const val CREDENTIALS_NON_EXPIRED = "credentialsNonExpired"
+        const val ENABLED = "enabled"
+        const val MANAGER = "manager"
+        const val NEED_SET_PASSWORD = "needSetPassword"
+    }
 }

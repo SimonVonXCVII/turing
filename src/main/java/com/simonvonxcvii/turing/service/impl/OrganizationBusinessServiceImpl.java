@@ -201,9 +201,10 @@ public class OrganizationBusinessServiceImpl implements IOrganizationBusinessSer
         // 业务申请状态
         organizationBusiness.setState("待审核");
         // 业务级别
-        organizationBusiness.setBusinessLevel(organizationBusiness.getDistrictCode() != null
-                ? OrganizationBusinessLevelEnum.DISTRICT
-                : organizationBusiness.getCityCode() != null ? OrganizationBusinessLevelEnum.CITY : OrganizationBusinessLevelEnum.PROVINCE);
+        OrganizationBusinessLevelEnum businessLevel = organizationBusiness.getDistrictCode() != null
+                ? OrganizationBusinessLevelEnum.DISTRICT : organizationBusiness.getCityCode() != null
+                ? OrganizationBusinessLevelEnum.CITY : OrganizationBusinessLevelEnum.PROVINCE;
+        organizationBusiness.setBusinessLevel(businessLevel);
         organizationBusinessRepository.save(organizationBusiness);
 
         // 同步到 ES
@@ -316,7 +317,10 @@ public class OrganizationBusinessServiceImpl implements IOrganizationBusinessSer
                             criteriaBuilder.and(root.get(UserRole.USER_ID).in(user.getId()),
                                     root.get(UserRole.ROLE_ID).in(role.getId())));
                     if (!exists) {
-                        userRoleRepository.save(new UserRole().setUserId(user.getId()).setRoleId(role.getId()));
+                        UserRole userRole = new UserRole();
+                        userRole.setUserId(user.getId());
+                        userRole.setRoleId(role.getId());
+                        userRoleRepository.save(userRole);
                     }
                 } else {
                     // 如果该单位对应的通过的业务类型为空才进行删除操作
@@ -346,7 +350,10 @@ public class OrganizationBusinessServiceImpl implements IOrganizationBusinessSer
                             criteriaBuilder.and(root.get(UserRole.USER_ID).in(user.getId()),
                                     root.get(UserRole.ROLE_ID).in(role.getId())));
                     if (!exists) {
-                        userRoleRepository.save(new UserRole().setUserId(user.getId()).setRoleId(role.getId()));
+                        UserRole userRole = new UserRole();
+                        userRole.setUserId(user.getId());
+                        userRole.setRoleId(role.getId());
+                        userRoleRepository.save(userRole);
                     }
                 } else {
                     // 如果该单位对应的通过的业务类型为空才进行删除操作

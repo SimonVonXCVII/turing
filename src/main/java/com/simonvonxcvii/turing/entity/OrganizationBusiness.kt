@@ -1,121 +1,142 @@
-package com.simonvonxcvii.turing.entity;
+package com.simonvonxcvii.turing.entity
 
-import com.simonvonxcvii.turing.enums.OrganizationBusinessBusinessLinksEnum;
-import com.simonvonxcvii.turing.enums.OrganizationBusinessLevelEnum;
-import com.simonvonxcvii.turing.enums.OrganizationBusinessQualityControlTypeEnum;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
-import lombok.experimental.Accessors;
-import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.SQLRestriction;
+import com.simonvonxcvii.turing.enums.OrganizationBusinessLevelEnum
+import jakarta.persistence.Column
+import jakarta.persistence.Entity
+import jakarta.persistence.Table
+import jakarta.persistence.UniqueConstraint
+import org.hibernate.annotations.Comment
+import org.hibernate.annotations.SQLDelete
+import org.hibernate.annotations.SQLRestriction
 
 /**
- * <p>
  * 单位业务表
- * </p>
  *
  * @author Simon Von
  * @since 2022-12-29 11:33:31
  */
-@Accessors(chain = true)
-@Getter
-@Setter
-@ToString
 @Entity
-@Table(schema = "public", name = "turing_organization_business")
+@Table(
+    schema = "public",
+    name = "turing_organization_business",
+    uniqueConstraints = [
+        UniqueConstraint(name = "con_public_turing_organization_business_constraint_1", columnNames = arrayOf("id"))
+    ]
+)
 // @SQLDelete 只支持 delete(T entity) 和 deleteById(ID id)
 @SQLDelete(sql = "UPDATE turing_organization_business SET deleted = TRUE WHERE id = ? AND version = ? AND deleted = FALSE")
 @SQLRestriction("deleted = FALSE")
-public class OrganizationBusiness extends AbstractAuditable {
-
-    /**
-     * ES 索引名称
-     */
-    public static final String INDEX = "turing_organization_business";
-
-    /**
-     * Redis key 前缀
-     */
-    public static final String REDIS_KEY_PREFIX = INDEX + ":";
-
-    public static final String ORG_ID = "orgId";
-    public static final String ORG_NAME = "orgName";
-    public static final String LINK = "link";
-    public static final String TYPE = "type";
-    public static final String PROVINCE_CODE = "provinceCode";
-    public static final String CITY_CODE = "cityCode";
-    public static final String DISTRICT_CODE = "districtCode";
-    public static final String PROVINCE_NAME = "provinceName";
-    public static final String CITY_NAME = "cityName";
-    public static final String DISTRICT_NAME = "districtName";
-    public static final String STATE = "state";
-    public static final String BUSINESS_LEVEL = "businessLevel";
-
+data class OrganizationBusiness(
     /**
      * 单位 id
      */
-    private Integer orgId;
+    @Column(name = "org_id", nullable = false, columnDefinition = "INTEGER")
+    @Comment("单位 id")
+    var orgId: Int = 0,
 
     /**
      * 单位名称
      */
-    private String orgName;
+    @Column(name = "org_name", nullable = false, columnDefinition = "VARCHAR", length = 128)
+    @Comment("单位名称")
+    var orgName: String = "",
 
     /**
      * 业务环节
      *
-     * @see OrganizationBusinessBusinessLinksEnum
+     * @see com.simonvonxcvii.turing.enums.OrganizationBusinessBusinessLinksEnum
      */
-    private String link;
+    @Column(name = "link", columnDefinition = "VARCHAR", length = 128)
+    @Comment("业务环节")
+    var link: String? = null,
 
     /**
      * 质控类型
      *
-     * @see OrganizationBusinessQualityControlTypeEnum
+     * @see com.simonvonxcvii.turing.enums.OrganizationBusinessQualityControlTypeEnum
      */
-    private String type;
+    @Column(name = "type", columnDefinition = "VARCHAR", length = 128)
+    @Comment("质控类型")
+    var type: String? = null,
 
     /**
-     * 业务申请所在省区号
+     * 业务申请所在省（市、区）编码
      */
-    private Integer provinceCode;
+    @Column(name = "province_code", nullable = false, columnDefinition = "INTEGER")
+    @Comment("业务申请所在省（市、区）编码")
+    var provinceCode: Int = 0,
 
     /**
-     * 业务申请所在市区号
+     * 业务申请所在市（州、盟）编码
      */
-    private Integer cityCode;
+    @Column(name = "city_code", columnDefinition = "INTEGER")
+    @Comment("业务申请所在市（州、盟）编码")
+    var cityCode: Int? = null,
 
     /**
-     * 业务申请所在区县区号
+     * 业务申请所在县（市、旗）编码
      */
-    private Integer districtCode;
+    @Column(name = "district_code", columnDefinition = "INTEGER")
+    @Comment("业务申请所在区县（市、旗）编码")
+    var districtCode: Int? = null,
 
     /**
-     * 业务申请所在省名称
+     * 业务申请所在省（市、区）名称
      */
-    private String provinceName;
+    @Column(name = "province_name", nullable = false, columnDefinition = "VARCHAR", length = 16)
+    @Comment("业务申请所在省（市、区）名称")
+    var provinceName: String = "",
 
     /**
-     * 业务申请所在市名称
+     * 业务申请所在市（州、盟）名称
      */
-    private String cityName;
+    @Column(name = "city_name", columnDefinition = "VARCHAR", length = 16)
+    @Comment("业务申请所在市（州、盟）名称")
+    var cityName: String? = null,
 
     /**
-     * 业务申请所在区县名称
+     * 业务申请所在县（市、旗）名称
      */
-    private String districtName;
+    @Column(name = "district_name", columnDefinition = "VARCHAR", length = 16)
+    @Comment("业务申请所在区县（市、旗）名称")
+    var districtName: String? = null,
 
     /**
      * 业务申请状态
      */
-    private String state;
+    @Column(name = "state", nullable = false, columnDefinition = "VARCHAR", length = 3)
+    @Comment("业务申请状态")
+    var state: String = "",
 
     /**
      * 申请业务级别
      */
-    private OrganizationBusinessLevelEnum businessLevel;
+    @Column(name = "business_level", columnDefinition = "VARCHAR", length = 16)
+    @Comment("申请业务级别")
+    var businessLevel: OrganizationBusinessLevelEnum? = null
+) : AbstractAuditable() {
+    companion object {
+        /**
+         * ES 索引名称
+         */
+        const val INDEX: String = "turing_organization_business"
 
+        /**
+         * Redis key 前缀
+         */
+        const val REDIS_KEY_PREFIX: String = "$INDEX:"
+
+        const val ORG_ID: String = "orgId"
+        const val ORG_NAME: String = "orgName"
+        const val LINK: String = "link"
+        const val TYPE: String = "type"
+        const val PROVINCE_CODE: String = "provinceCode"
+        const val CITY_CODE: String = "cityCode"
+        const val DISTRICT_CODE: String = "districtCode"
+        const val PROVINCE_NAME: String = "provinceName"
+        const val CITY_NAME: String = "cityName"
+        const val DISTRICT_NAME: String = "districtName"
+        const val STATE: String = "state"
+        const val BUSINESS_LEVEL: String = "businessLevel"
+    }
 }

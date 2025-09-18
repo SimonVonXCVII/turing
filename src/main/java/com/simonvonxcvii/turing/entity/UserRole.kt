@@ -1,53 +1,57 @@
-package com.simonvonxcvii.turing.entity;
+package com.simonvonxcvii.turing.entity
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
-import lombok.experimental.Accessors;
-import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.SQLRestriction;
+import jakarta.persistence.Column
+import jakarta.persistence.Entity
+import jakarta.persistence.Table
+import jakarta.persistence.UniqueConstraint
+import org.hibernate.annotations.Comment
+import org.hibernate.annotations.SQLDelete
+import org.hibernate.annotations.SQLRestriction
 
 /**
- * <p>
  * 角色与用户关联记录表
- * </p>
  *
  * @author Simon Von
  * @since 2022-12-22 16:22:50
  */
-@Accessors(chain = true)
-@Getter
-@Setter
-@ToString
 @Entity
-@Table(schema = "public", name = "turing_user_role")
+@Table(
+    schema = "public",
+    name = "turing_user_role",
+    uniqueConstraints = [
+        UniqueConstraint(name = "con_public_turing_user_role_constraint_1", columnNames = arrayOf("id"))
+    ]
+)
 // @SQLDelete 只支持 delete(T entity) 和 deleteById(ID id)
 @SQLDelete(sql = "UPDATE turing_user_role SET deleted = TRUE WHERE id = ? AND version = ? AND deleted = FALSE")
 @SQLRestriction("deleted = FALSE")
-public class UserRole extends AbstractAuditable {
-
-    /**
-     * ES 索引名称
-     */
-    public static final String ES_INDEX = "turing_user_role";
-
-    /**
-     * Redis key 前缀
-     */
-    public static final String REDIS_KEY_PREFIX = ES_INDEX + ":";
-
-    public static final String USER_ID = "userId";
-    public static final String ROLE_ID = "roleId";
-
+data class UserRole(
     /**
      * 用户 id
      */
-    public Integer userId;
+    @Column(name = "user_id", nullable = false, columnDefinition = "INTEGER")
+    @Comment("用户 id")
+    var userId: Int = 0,
 
     /**
      * 角色 id
      */
-    public Integer roleId;
+    @Column(name = "roleId", nullable = false, columnDefinition = "INTEGER")
+    @Comment("角色 id")
+    var roleId: Int = 0
+) : AbstractAuditable() {
+    companion object {
+        /**
+         * ES 索引名称
+         */
+        const val ES_INDEX: String = "turing_user_role"
+
+        /**
+         * Redis key 前缀
+         */
+        const val REDIS_KEY_PREFIX: String = "$ES_INDEX:"
+
+        const val USER_ID: String = "userId"
+        const val ROLE_ID: String = "roleId"
+    }
 }

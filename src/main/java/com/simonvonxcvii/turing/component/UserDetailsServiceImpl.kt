@@ -1,6 +1,5 @@
 package com.simonvonxcvii.turing.component
 
-import com.simonvonxcvii.turing.entity.Role
 import com.simonvonxcvii.turing.entity.User
 import com.simonvonxcvii.turing.entity.UserRole
 import com.simonvonxcvii.turing.repository.OrganizationRepository
@@ -68,7 +67,7 @@ class UserDetailsServiceImpl(
 
         user.admin = "admin" == user.username
         // 超级管理员拥有所有角色和权限
-        val roleList: List<Role> = if (user.admin) {
+        val roleList = if (user.admin) {
             roleRepository.findAll().filterNotNull()
         } else {
             // 获取用户角色与用户关联记录表

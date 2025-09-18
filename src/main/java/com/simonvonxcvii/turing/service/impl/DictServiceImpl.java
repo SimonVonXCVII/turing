@@ -114,7 +114,7 @@ public class DictServiceImpl implements IDictService {
                     assert query != null;
                     return query.where(root.get(Dict.VALUE).in(code.toString()), root.get(Dict.TYPE).in("area")).getRestriction();
                 })
-                .orElseThrow(() -> BizRuntimeException.from("没有找到区域编号：" + code));
+                .orElseThrow(() -> BizRuntimeException.from("没有找到区域编码：" + code));
         DictDTO dictDTO = convertToDictDTO(dict);
         List<Dict> children = dictRepository.findAll((root, query, criteriaBuilder) ->
                 {

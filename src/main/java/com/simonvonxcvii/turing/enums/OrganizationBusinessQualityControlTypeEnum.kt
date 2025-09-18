@@ -20,7 +20,7 @@ enum class OrganizationBusinessQualityControlTypeEnum(val desc: String) {
     companion object {
         private val VALUES = entries.toTypedArray()
 
-        fun getValueByOrdinal(ordinal: Int?): String? {
+        fun getValueByOrdinal(ordinal: Int): String? {
             // Use cached VALUES instead of values() to prevent array allocation.
             for (anEnum in VALUES) if (anEnum.ordinal == ordinal) return anEnum.desc
 

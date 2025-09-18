@@ -34,7 +34,7 @@ enum class FileTypeEnum(val desc: String) {
     companion object {
         private val VALUES = entries.toTypedArray()
 
-        fun getValueByOrdinal(ordinal: Int?): String {
+        fun getValueByOrdinal(ordinal: Int): String {
             // Use cached VALUES instead of values() to prevent array allocation.
             for (anEnum in VALUES) if (anEnum.ordinal == ordinal) return anEnum.desc
 
@@ -42,7 +42,7 @@ enum class FileTypeEnum(val desc: String) {
         }
 
         @JvmStatic
-        fun getByOrdinal(ordinal: Int?): FileTypeEnum? {
+        fun getByOrdinal(ordinal: Int): FileTypeEnum? {
             // Use cached VALUES instead of values() to prevent array allocation.
             for (anEnum in VALUES) if (anEnum.ordinal == ordinal) return anEnum
 

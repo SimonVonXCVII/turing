@@ -13,18 +13,12 @@ import org.springframework.stereotype.Component
 import org.springframework.util.StringUtils
 import java.io.BufferedReader
 import java.io.InputStreamReader
-import java.lang.Boolean
 import java.util.*
 import java.util.function.BiConsumer
 import java.util.function.Consumer
 import java.util.function.Function
 import java.util.stream.Collectors
 import javax.sql.DataSource
-import kotlin.Exception
-import kotlin.String
-import kotlin.Throws
-import kotlin.also
-import kotlin.run
 
 /**
  * 数据库初始化 runner
@@ -54,8 +48,8 @@ class DatabaseInitializingBeanImpl(
             .next()
             .run { if (this) return }
 
-        // 创建数据库表
-        val classPathResourceTableSql = ClassPathResource("/sql/table.sql")
+        // 创建数据库表 TODO 移除该方式，实现在服务启动时自动检测是否存在实体类对应的 table，不存在则根据实体类相关注解自动生成对应的 table
+        val classPathResourceTableSql = ClassPathResource("/db/table.sql")
         classPathResourceTableSql.exists()
             .run {
                 if (!this) {
@@ -83,11 +77,11 @@ class DatabaseInitializingBeanImpl(
         val provinceMap = TreeMap<String, Area>()
         classPathResourceAreaCsv.getInputStream().use { inputStream ->
             InputStreamReader(inputStream).use { inputStreamReader ->
-                BufferedReader(inputStreamReader).use { `in` ->
-                    var line: String
+                BufferedReader(inputStreamReader).use { bufferedReader ->
+                    var line: String?
                     // 解析区域文件
                     val aresCodeSet = HashSet<String>()
-                    while ((`in`.readLine().also { line = it }) != null) {
+                    while ((bufferedReader.readLine().also { line = it }) != null) {
                         val oneArea = listOf(*StringUtils.commaDelimitedListToStringArray(line))
                         val area = Area()
                         area.name = oneArea[0]
@@ -158,2386 +152,1857 @@ class DatabaseInitializingBeanImpl(
      * @since 2023/8/25 21:45
      */
     fun init() {
-        val organization = Organization()
-        organization.setName("平台管理单位")
-            .setCode("000000000000000000")
-            .setType(OrganizationTypeEnum.PLATFORM.desc)
-            .setProvinceCode(310000)
-            .setCityCode(310100)
-            .setDistrictCode(310101)
-            .setProvinceName("上海市")
-            .setCityName("上海市市辖区")
-            .setDistrictName("黄浦区")
-            .setAddress("太平路一号")
-            .setLegalPerson("admin")
-            .setPhone("021-88888888")
+        val organization = Organization(
+            name = "平台管理单位",
+            code = "000000000000000000",
+            legalPerson = "admin",
+            phone = "021-88888888",
+            type = OrganizationTypeEnum.PLATFORM.desc,
+            provinceCode = 310000,
+            cityCode = 310100,
+            districtCode = 310101,
+            provinceName = "上海市",
+            cityName = "上海市市辖区",
+            districtName = "黄浦区",
+            address = "太平路一号"
+        )
         organizationRepository.save(organization)
+        // TODO 为什么保存后 created_by 和 last_modified_by 是 0，而不是 null？
 
 
-        val user = User()
-        user.setName("admin")
-            .setMobile(18888888888L)
-            .setGender("男")
-            .setOrgId(organization.id)
-            .setOrgName(organization.name)
-            .setUsername("admin")
-            .setPassword(passwordEncoder.encode("123456"))
-            .setAccountNonExpired(Boolean.TRUE)
-            .setAccountNonLocked(Boolean.TRUE)
-            .setCredentialsNonExpired(Boolean.TRUE)
-            .setEnabled(Boolean.TRUE)
-            .setManager(Boolean.TRUE)
-            .setNeedSetPassword(Boolean.FALSE)
+        val user = User(
+            name = "admin",
+            mobile = 18888888888,
+            gender = "男",
+            orgId = organization.id,
+            orgName = organization.name,
+            username = "admin",
+            password = passwordEncoder.encode("123456"),
+            accountNonExpired = true,
+            accountNonLocked = true,
+            credentialsNonExpired = true,
+            enabled = true,
+            manager = true,
+            needResetPassword = false
+        )
         userRepository.save(user)
 
 
-        val roleList: MutableList<Role?> = ArrayList<Role?>()
-        val role = Role()
-        role.setAuthority("SUPER_ADMIN")
-        role.setName("超级管理员")
-        role.setDescription("超级管理员")
-        roleList.add(role)
-
-        val role1 = Role()
-        role1.setAuthority("GOV_COUNTRY_ADMIN")
-        role1.setName("国家级行政单位管理员")
-        role1.setDescription("国家级行政单位管理员")
-        roleList.add(role1)
-
-        val role2 = Role()
-        role2.setAuthority("GOV_COUNTRY_STAFF")
-        role2.setName("国家级行政单位工作人员")
-        role2.setDescription("国家级行政单位工作人员")
-        roleList.add(role2)
-
-        val role3 = Role()
-        role3.setAuthority("GOV_PROVINCE_ADMIN")
-        role3.setName("省级行政单位管理员")
-        role3.setDescription("省级行政单位管理员")
-        roleList.add(role3)
-
-        val role4 = Role()
-        role4.setAuthority("GOV_PROVINCE_STAFF")
-        role4.setName("省级行政单位工作人员")
-        role4.setDescription("省级行政单位工作人员")
-        roleList.add(role4)
-
-        val role5 = Role()
-        role5.setAuthority("GOV_CITY_ADMIN")
-        role5.setName("市级行政单位管理员")
-        role5.setDescription("市级行政单位管理员")
-        roleList.add(role5)
-
-        val role6 = Role()
-        role6.setAuthority("GOV_CITY_STAFF")
-        role6.setName("市级行政单位工作人员")
-        role6.setDescription("市级行政单位工作人员")
-        roleList.add(role6)
-
-        val role7 = Role()
-        role7.setAuthority("GOV_DISTRICT_ADMIN")
-        role7.setName("县级行政单位管理员")
-        role7.setDescription("县级行政单位管理员")
-        roleList.add(role7)
-
-        val role8 = Role()
-        role8.setAuthority("GOV_DISTRICT_STAFF")
-        role8.setName("县级行政单位工作人员")
-        role8.setDescription("县级行政单位工作人员")
-        roleList.add(role8)
-
-        val role9 = Role()
-        role9.setAuthority("BUSINESS_MINE_INFORMATION_COLLECTION_ADMIN")
-        role9.setName("矿山信息采集单位管理员")
-        role9.setDescription("矿山信息采集单位管理员")
-        roleList.add(role9)
-
-        val role10 = Role()
-        role10.setAuthority("BUSINESS_MINE_INFORMATION_COLLECTION_STAFF")
-        role10.setName("矿山信息采集单位工作人员")
-        role10.setDescription("矿山信息采集单位工作人员")
-        roleList.add(role10)
-
-        val role11 = Role()
-        role11.setAuthority("BUSINESS_REGIONAL_SURVEY_LOCATIONS_ADMIN")
-        role11.setName("区域调查布点单位管理员")
-        role11.setDescription("区域调查布点单位管理员")
-        roleList.add(role11)
-
-        val role12 = Role()
-        role12.setAuthority("BUSINESS_REGIONAL_SURVEY_LOCATIONS_STAFF")
-        role12.setName("区域调查布点单位工作人员")
-        role12.setDescription("区域调查布点单位工作人员")
-        roleList.add(role12)
-
-        val role13 = Role()
-        role13.setAuthority("BUSINESS_AREA_SAMPLING_SURVEYS_ADMIN")
-        role13.setName("区域采样调查单位管理员")
-        role13.setDescription("区域采样调查单位管理员")
-        roleList.add(role13)
-
-        val role14 = Role()
-        role14.setAuthority("BUSINESS_AREA_SAMPLING_SURVEYS_STAFF")
-        role14.setName("区域采样调查单位工作人员")
-        role14.setDescription("区域采样调查单位工作人员")
-        roleList.add(role14)
-
-        val role15 = Role()
-        role15.setAuthority("BUSINESS_LAND_PARCEL_INFORMATION_COLLECTION_ADMIN")
-        role15.setName("地块信息采集单位管理员")
-        role15.setDescription("地块信息采集单位管理员")
-        roleList.add(role15)
-
-        val role16 = Role()
-        role16.setAuthority("BUSINESS_LAND_PARCEL_INFORMATION_COLLECTION_STAFF")
-        role16.setName("地块信息采集单位工作人员")
-        role16.setDescription("地块信息采集单位工作人员")
-        roleList.add(role16)
-
-        val role17 = Role()
-        role17.setAuthority("BUSINESS_PLOT_SURVEY_LAYOUT_ADMIN")
-        role17.setName("地块调查布点单位管理员")
-        role17.setDescription("地块调查布点单位管理员")
-        roleList.add(role17)
-
-        val role18 = Role()
-        role18.setAuthority("BUSINESS_PLOT_SURVEY_LAYOUT_STAFF")
-        role18.setName("地块调查布点单位工作人员")
-        role18.setDescription("地块调查布点单位工作人员")
-        roleList.add(role18)
-
-        val role19 = Role()
-        role19.setAuthority("BUSINESS_PLOT_SAMPLING_SURVEY_ADMIN")
-        role19.setName("地块采样调查单位管理员")
-        role19.setDescription("地块采样调查单位管理员")
-        roleList.add(role19)
-
-        val role20 = Role()
-        role20.setAuthority("BUSINESS_PLOT_SAMPLING_SURVEY_STAFF")
-        role20.setName("地块采样调查单位工作人员")
-        role20.setDescription("地块采样调查单位工作人员")
-        roleList.add(role20)
-
-        val role21 = Role()
-        role21.setAuthority("BUSINESS_SAMPLE_TESTING_ADMIN")
-        role21.setName("样品检测单位管理员")
-        role21.setDescription("样品检测单位管理员")
-        roleList.add(role21)
-
-        val role22 = Role()
-        role22.setAuthority("BUSINESS_SAMPLE_TESTING_STAFF")
-        role22.setName("样品检测单位工作人员")
-        role22.setDescription("样品检测单位工作人员")
-        roleList.add(role22)
-
-        val role23 = Role()
-        role23.setAuthority("BUSINESS_DATA_ANALYSIS_EVALUATION_ADMIN")
-        role23.setName("数据分析评价单位管理员")
-        role23.setDescription("数据分析评价单位管理员")
-        roleList.add(role23)
-
-        val role24 = Role()
-        role24.setAuthority("BUSINESS_DATA_ANALYSIS_EVALUATION_STAFF")
-        role24.setName("数据分析评价单位工作人员")
-        role24.setDescription("数据分析评价单位工作人员")
-        roleList.add(role24)
-
-        val role25 = Role()
-        role25.setAuthority("BUSINESS_CONTAMINATION_RISK_ASSESSMENT_ADMIN")
-        role25.setName("污染风险评估单位管理员")
-        role25.setDescription("污染风险评估单位管理员")
-        roleList.add(role25)
-
-        val role26 = Role()
-        role26.setAuthority("BUSINESS_CONTAMINATION_RISK_ASSESSMENT_STAFF")
-        role26.setName("污染风险评估单位工作人员")
-        role26.setDescription("污染风险评估单位工作人员")
-        roleList.add(role26)
-
-        val role27 = Role()
-        role27.setAuthority("QC_INFORMATION_COLLECTION_ADMIN")
-        role27.setName("信息采集质控单位管理员")
-        role27.setDescription("信息采集质控单位管理员")
-        roleList.add(role27)
-
-        val role28 = Role()
-        role28.setAuthority("QC_INFORMATION_COLLECTION_STAFF")
-        role28.setName("信息采集质控单位工作人员")
-        role28.setDescription("信息采集质控单位工作人员")
-        roleList.add(role28)
-
-        val role29 = Role()
-        role29.setAuthority("QC_DISTRIBUTE_ADMIN")
-        role29.setName("布点质控单位管理员")
-        role29.setDescription("布点质控单位管理员")
-        roleList.add(role29)
-
-        val role30 = Role()
-        role30.setAuthority("QC_DISTRIBUTE_STAFF")
-        role30.setName("布点质控单位工作人员")
-        role30.setDescription("布点质控单位工作人员")
-        roleList.add(role30)
-
-        val role31 = Role()
-        role31.setAuthority("QC_SAMPLING_ADMIN")
-        role31.setName("采样质控单位管理员")
-        role31.setDescription("采样质控单位管理员")
-        roleList.add(role31)
-
-        val role32 = Role()
-        role32.setAuthority("QC_SAMPLING_STAFF")
-        role32.setName("采样质控单位工作人员")
-        role32.setDescription("采样质控单位工作人员")
-        roleList.add(role32)
-
-        val role33 = Role()
-        role33.setAuthority("QC_SAMPLE_TESTING_ADMIN")
-        role33.setName("样品检测质控单位管理员")
-        role33.setDescription("样品检测质控单位管理员")
-        roleList.add(role33)
-
-        val role34 = Role()
-        role34.setAuthority("QC_SAMPLE_TESTING_STAFF")
-        role34.setName("样品检测质控单位工作人员")
-        role34.setDescription("样品检测质控单位工作人员")
-        roleList.add(role34)
-
-        val role35 = Role()
-        role35.setAuthority("LEADER")
-        role35.setName("信息采集和取样调查小组组长")
-        role35.setDescription("信息采集和取样调查小组组长")
-        roleList.add(role35)
-
-        val role36 = Role()
-        role36.setAuthority("MEMBER")
-        role36.setName("信息采集和取样调查小组组员")
-        role36.setDescription("信息采集和取样调查小组组员")
-        roleList.add(role36)
-
-        val role37 = Role()
-        role37.setAuthority("INFORMATION_COLLECTION_INTERNAL_AUDITOR")
-        role37.setName("信息采集单位内审人员")
-        role37.setDescription("信息采集单位内审人员")
-        roleList.add(role37)
-
-        val role38 = Role()
-        role38.setAuthority("PLOT_SAMPLING_SURVEY_INTERNAL_AUDITOR")
-        role38.setName("取样调查单位内审人员")
-        role38.setDescription("取样调查单位内审人员")
-        roleList.add(role38)
-
-        val role39 = Role()
-        role39.setAuthority("DEFAULT_TECHNICAL")
-        role39.setName("技术单位管理员的默认角色")
-        role39.setDescription("注册技术单位时赋予管理员的默认角色，仅有【技术单位业务申请】权限")
-        roleList.add(role39)
+        val role = Role(authority = "SUPER_ADMIN", name = "超级管理员")
+        val roleList = listOfNotNull(
+            role,
+            Role(authority = "GOV_COUNTRY_ADMIN", name = "国家级行政单位管理员"),
+            Role(authority = "GOV_COUNTRY_STAFF", name = "国家级行政单位工作人员"),
+            Role(authority = "GOV_PROVINCE_ADMIN", name = "省级行政单位管理员"),
+            Role(authority = "GOV_PROVINCE_STAFF", name = "省级行政单位工作人员"),
+            Role(authority = "GOV_CITY_ADMIN", name = "市级行政单位管理员"),
+            Role(authority = "GOV_CITY_STAFF", name = "市级行政单位工作人员"),
+            Role(authority = "GOV_DISTRICT_ADMIN", name = "县级行政单位管理员"),
+            Role(authority = "GOV_DISTRICT_STAFF", name = "县级行政单位工作人员"),
+            Role(authority = "BUSINESS_MINE_INFORMATION_COLLECTION_ADMIN", name = "矿山信息采集单位管理员"),
+            Role(authority = "BUSINESS_MINE_INFORMATION_COLLECTION_STAFF", name = "矿山信息采集单位工作人员"),
+            Role(authority = "BUSINESS_REGIONAL_SURVEY_LOCATIONS_ADMIN", name = "区域调查布点单位管理员"),
+            Role(authority = "BUSINESS_REGIONAL_SURVEY_LOCATIONS_STAFF", name = "区域调查布点单位工作人员"),
+            Role(authority = "BUSINESS_AREA_SAMPLING_SURVEYS_ADMIN", name = "区域采样调查单位管理员"),
+            Role(authority = "BUSINESS_AREA_SAMPLING_SURVEYS_STAFF", name = "区域采样调查单位工作人员"),
+            Role(authority = "BUSINESS_LAND_PARCEL_INFORMATION_COLLECTION_ADMIN", name = "地块信息采集单位管理员"),
+            Role(authority = "BUSINESS_LAND_PARCEL_INFORMATION_COLLECTION_STAFF", name = "地块信息采集单位工作人员"),
+            Role(authority = "BUSINESS_PLOT_SURVEY_LAYOUT_ADMIN", name = "地块调查布点单位管理员"),
+            Role(authority = "BUSINESS_PLOT_SURVEY_LAYOUT_STAFF", name = "地块调查布点单位工作人员"),
+            Role(authority = "BUSINESS_PLOT_SAMPLING_SURVEY_ADMIN", name = "地块采样调查单位管理员"),
+            Role(authority = "BUSINESS_PLOT_SAMPLING_SURVEY_STAFF", name = "地块采样调查单位工作人员"),
+            Role(authority = "BUSINESS_SAMPLE_TESTING_ADMIN", name = "样品检测单位管理员"),
+            Role(authority = "BUSINESS_SAMPLE_TESTING_STAFF", name = "样品检测单位工作人员"),
+            Role(authority = "BUSINESS_DATA_ANALYSIS_EVALUATION_ADMIN", name = "数据分析评价单位管理员"),
+            Role(authority = "BUSINESS_DATA_ANALYSIS_EVALUATION_STAFF", name = "数据分析评价单位工作人员"),
+            Role(authority = "BUSINESS_CONTAMINATION_RISK_ASSESSMENT_ADMIN", name = "污染风险评估单位管理员"),
+            Role(authority = "BUSINESS_CONTAMINATION_RISK_ASSESSMENT_STAFF", name = "污染风险评估单位工作人员"),
+            Role(authority = "QC_INFORMATION_COLLECTION_ADMIN", name = "信息采集质控单位管理员"),
+            Role(authority = "QC_INFORMATION_COLLECTION_STAFF", name = "信息采集质控单位工作人员"),
+            Role(authority = "QC_DISTRIBUTE_ADMIN", name = "布点质控单位管理员"),
+            Role(authority = "QC_DISTRIBUTE_STAFF", name = "布点质控单位工作人员"),
+            Role(authority = "QC_SAMPLING_ADMIN", name = "采样质控单位管理员"),
+            Role(authority = "QC_SAMPLING_STAFF", name = "采样质控单位工作人员"),
+            Role(authority = "QC_SAMPLE_TESTING_ADMIN", name = "样品检测质控单位管理员"),
+            Role(authority = "QC_SAMPLE_TESTING_STAFF", name = "样品检测质控单位工作人员"),
+            Role(authority = "LEADER", name = "信息采集和取样调查小组组长"),
+            Role(authority = "MEMBER", name = "信息采集和取样调查小组组员"),
+            Role(authority = "INFORMATION_COLLECTION_INTERNAL_AUDITOR", name = "信息采集单位内审人员"),
+            Role(authority = "PLOT_SAMPLING_SURVEY_INTERNAL_AUDITOR", name = "取样调查单位内审人员"),
+            Role(
+                authority = "DEFAULT_TECHNICAL",
+                name = "技术单位管理员的默认角色",
+                description = "注册技术单位时赋予管理员的默认角色，仅有【技术单位业务申请】权限"
+            )
+        )
         roleRepository.saveAll(roleList)
 
 
-        val userRole = UserRole()
-        userRole.setUserId(user.id)
-        userRole.setRoleId(role.id)
-        userRoleRepository.save<UserRole>(userRole)
-
-
-        val permissionList: MutableList<Permission?> = ArrayList<Permission?>()
-        val permission100 = Permission()
-        permission100.setName("基础数据管理")
-        permission100.setSort(100)
-        permissionList.add(permission100)
-
-        val permission101 = Permission()
-        permission101.setPid(permission100.id)
-        permission101.setName("业务管理账号开通")
-        permission101.setSort(101)
-        permissionList.add(permission101)
-
-        val permission102 = Permission()
-        permission102.setPid(permission100.id)
-        permission102.setName("业务管理单位授权")
-        permission102.setSort(102)
-        permissionList.add(permission102)
-
-        val permission103 = Permission()
-        permission103.setPid(permission100.id)
-        permission103.setName("技术单位信息管理")
-        permission103.setSort(103)
-        permissionList.add(permission103)
-
-        val permission104 = Permission()
-        permission104.setPid(permission100.id)
-        permission104.setName("技术专家信息维护")
-        permission104.setSort(104)
-        permissionList.add(permission104)
-
-        val permission105 = Permission()
-        permission105.setPid(permission100.id)
-        permission105.setName("数据字典管理")
-        permission105.setSort(105)
-        permissionList.add(permission105)
-
-        val permission106 = Permission()
-        permission106.setPid(permission100.id)
-        permission106.setName("设备终端授权管理")
-        permission106.setSort(106)
-        permissionList.add(permission106)
-
-        val permission107 = Permission()
-        permission107.setPid(permission100.id)
-        permission107.setName("平台用户新增维护")
-        permission107.setSort(107)
-        permissionList.add(permission107)
-
-        val permission200 = Permission()
-        permission200.setName("用户单位管理")
-        permission200.setSort(200)
-        permissionList.add(permission200)
-
-        val permission201 = Permission()
-        permission201.setPid(permission200.id)
-        permission201.setName("管理单位用户维护")
-        permission201.setSort(201)
-        permissionList.add(permission201)
-
-        val permission202 = Permission()
-        permission202.setPid(permission200.id)
-        permission202.setName("技术单位业务申请")
-        permission202.setSort(202)
-        permissionList.add(permission202)
-
-        val permission203 = Permission()
-        permission203.setPid(permission200.id)
-        permission203.setName("技术单位业务审核")
-        permission203.setSort(203)
-        permissionList.add(permission203)
-
-        val permission204 = Permission()
-        permission204.setPid(permission200.id)
-        permission204.setName("技术单位用户维护")
-        permission204.setSort(204)
-        permissionList.add(permission204)
-
-        val permission205 = Permission()
-        permission205.setPid(permission200.id)
-        permission205.setName("技术专家业务申请")
-        permission205.setSort(205)
-        permissionList.add(permission205)
-
-        val permission206 = Permission()
-        permission206.setPid(permission200.id)
-        permission206.setName("技术专家业务审核")
-        permission206.setSort(206)
-        permissionList.add(permission206)
-
-        val permission207 = Permission()
-        permission207.setPid(permission200.id)
-        permission207.setName("调查小组新建维护")
-        permission207.setSort(207)
-        permissionList.add(permission207)
-
-        val permission208 = Permission()
-        permission208.setPid(permission200.id)
-        permission208.setName("调查单位信息查询")
-        permission208.setSort(208)
-        permissionList.add(permission208)
-
-        val permission209 = Permission()
-        permission209.setPid(permission200.id)
-        permission209.setName("调查用户信息查询")
-        permission209.setSort(209)
-        permissionList.add(permission209)
-
-        val permission300 = Permission()
-        permission300.setName("项目任务管理")
-        permission300.setSort(300)
-        permissionList.add(permission300)
-
-        val permission301 = Permission()
-        permission301.setPid(permission300.id)
-        permission301.setName("项目新增维护")
-        permission301.setSort(301)
-        permissionList.add(permission301)
-
-        val permission302 = Permission()
-        permission302.setPid(permission300.id)
-        permission302.setName("监管对象维护")
-        permission302.setSort(302)
-        permissionList.add(permission302)
-
-        val permission303 = Permission()
-        permission303.setPid(permission300.id)
-        permission303.setName("任务下发管理")
-        permission303.setSort(303)
-        permissionList.add(permission303)
-
-        val permission304 = Permission()
-        permission304.setPid(permission300.id)
-        permission304.setName("牵头单位实施")
-        permission304.setSort(304)
-        permissionList.add(permission304)
-
-        val permission305 = Permission()
-        permission305.setPid(permission300.id)
-        permission305.setName("监管对象信息查询")
-        permission305.setSort(305)
-        permissionList.add(permission305)
-
-        val permission306 = Permission()
-        permission306.setPid(permission300.id)
-        permission306.setName("技术单位任务执行")
-        permission306.setSort(306)
-        permissionList.add(permission306)
-
-        val permission400 = Permission()
-        permission400.setName("点位布设管理")
-        permission400.setSort(400)
-        permissionList.add(permission400)
-
-        val permission401 = Permission()
-        permission401.setPid(permission400.id)
-        permission401.setName("测试项目新增维护")
-        permission401.setSort(401)
-        permissionList.add(permission401)
-
-        val permission402 = Permission()
-        permission402.setPid(permission400.id)
-        permission402.setName("测试项目分类管理")
-        permission402.setSort(402)
-        permissionList.add(permission402)
-
-        val permission403 = Permission()
-        permission403.setPid(permission400.id)
-        permission403.setName("布点人员任务分配")
-        permission403.setSort(403)
-        permissionList.add(permission403)
-
-        val permission404 = Permission()
-        permission404.setPid(permission400.id)
-        permission404.setName("布点数据成果录入")
-        permission404.setSort(404)
-        permissionList.add(permission404)
-
-        val permission405 = Permission()
-        permission405.setPid(permission400.id)
-        permission405.setName("布点方案数据退回")
-        permission405.setSort(405)
-        permissionList.add(permission405)
-
-        val permission406 = Permission()
-        permission406.setPid(permission400.id)
-        permission406.setName("布点方案数据查询")
-        permission406.setSort(406)
-        permissionList.add(permission406)
-
-        val permission407 = Permission()
-        permission407.setPid(permission400.id)
-        permission407.setName("新增测试项目审核")
-        permission407.setSort(407)
-        permissionList.add(permission407)
-
-        val permission500 = Permission()
-        permission500.setName("点位布设")
-        permission500.setSort(500)
-        permissionList.add(permission500)
-
-        val permission501 = Permission()
-        permission501.setPid(permission500.id)
-        permission501.setName("布点方案问题整改")
-        permission501.setSort(501)
-        permissionList.add(permission501)
-
-        val permission502 = Permission()
-        permission502.setPid(permission500.id)
-        permission502.setName("布点方案数据维护")
-        permission502.setSort(502)
-        permissionList.add(permission502)
-
-        val permission503 = Permission()
-        permission503.setPid(permission500.id)
-        permission503.setName("布点方案信息查询")
-        permission503.setSort(503)
-        permissionList.add(permission503)
-
-        val permission600 = Permission()
-        permission600.setName("布点质控管理")
-        permission600.setSort(600)
-        permissionList.add(permission600)
-
-        val permission601 = Permission()
-        permission601.setPid(permission600.id)
-        permission601.setName("布点质控专家组维护")
-        permission601.setSort(601)
-        permissionList.add(permission601)
-
-        val permission602 = Permission()
-        permission602.setPid(permission600.id)
-        permission602.setName("一级质控(县)任务分配")
-        permission602.setSort(602)
-        permissionList.add(permission602)
-
-        val permission603 = Permission()
-        permission603.setPid(permission600.id)
-        permission603.setName("二级质控(市)任务分配")
-        permission603.setSort(603)
-        permissionList.add(permission603)
-
-        val permission604 = Permission()
-        permission604.setPid(permission600.id)
-        permission604.setName("三级质控(省)任务分配")
-        permission604.setSort(604)
-        permissionList.add(permission604)
-
-        val permission605 = Permission()
-        permission605.setPid(permission600.id)
-        permission605.setName("布点质控专家组任务")
-        permission605.setSort(605)
-        permissionList.add(permission605)
-
-        val permission606 = Permission()
-        permission606.setPid(permission600.id)
-        permission606.setName("布点质控意见反馈")
-        permission606.setSort(606)
-        permissionList.add(permission606)
-
-        val permission607 = Permission()
-        permission607.setPid(permission600.id)
-        permission607.setName("布点质控专家查询")
-        permission607.setSort(607)
-        permissionList.add(permission607)
-
-        val permission608 = Permission()
-        permission608.setPid(permission600.id)
-        permission608.setName("布点质控意见退回")
-        permission608.setSort(608)
-        permissionList.add(permission608)
-
-        val permission700 = Permission()
-        permission700.setName("采样调查管理")
-        permission700.setSort(700)
-        permissionList.add(permission700)
-
-        val permission701 = Permission()
-        permission701.setPid(permission700.id)
-        permission701.setName("牵头单位组织实施")
-        permission701.setSort(701)
-        permissionList.add(permission701)
-
-        val permission702 = Permission()
-        permission702.setPid(permission700.id)
-        permission702.setName("采样小组任务分配")
-        permission702.setSort(702)
-        permissionList.add(permission702)
-
-        val permission703 = Permission()
-        permission703.setPid(permission700.id)
-        permission703.setName("采样调查信息查询")
-        permission703.setSort(703)
-        permissionList.add(permission703)
-
-        val permission704 = Permission()
-        permission704.setPid(permission700.id)
-        permission704.setName("检测子样进度查询")
-        permission704.setSort(704)
-        permissionList.add(permission704)
-
-        val permission705 = Permission()
-        permission705.setPid(permission700.id)
-        permission705.setName("取样调查表单下载")
-        permission705.setSort(705)
-        permissionList.add(permission705)
-
-        val permission706 = Permission()
-        permission706.setPid(permission700.id)
-        permission706.setName("采样资料单位内审")
-        permission706.setSort(706)
-        permissionList.add(permission706)
-
-        val permission707 = Permission()
-        permission707.setPid(permission700.id)
-        permission707.setName("质控退回样点查询")
-        permission707.setSort(707)
-        permissionList.add(permission707)
-
-        val permission708 = Permission()
-        permission708.setPid(permission700.id)
-        permission708.setName("批次样品运送表单")
-        permission708.setSort(708)
-        permissionList.add(permission708)
-
-        val permission709 = Permission()
-        permission709.setPid(permission700.id)
-        permission709.setName("单位取样进展统计")
-        permission709.setSort(709)
-        permissionList.add(permission709)
-
-        val permission710 = Permission()
-        permission710.setPid(permission700.id)
-        permission710.setName("资料内审状态查询")
-        permission710.setSort(710)
-        permissionList.add(permission710)
-
-        val permission711 = Permission()
-        permission711.setPid(permission700.id)
-        permission711.setName("资料内审进展统计")
-        permission711.setSort(711)
-        permissionList.add(permission711)
-
-        val permission712 = Permission()
-        permission712.setPid(permission700.id)
-        permission712.setName("重采样品信息查询")
-        permission712.setSort(712)
-        permissionList.add(permission712)
-
-        val permission713 = Permission()
-        permission713.setPid(permission700.id)
-        permission713.setName("严重质量问题申诉")
-        permission713.setSort(713)
-        permissionList.add(permission713)
-
-        val permission800 = Permission()
-        permission800.setName("取样调查")
-        permission800.setSort(800)
-        permissionList.add(permission800)
-
-        val permission801 = Permission()
-        permission801.setPid(permission800.id)
-        permission801.setName("取样调查表单明细")
-        permission801.setSort(801)
-        permissionList.add(permission801)
-
-        val permission802 = Permission()
-        permission802.setPid(permission800.id)
-        permission802.setName("质控退回样点明细")
-        permission802.setSort(802)
-        permissionList.add(permission802)
-
-        val permission803 = Permission()
-        permission803.setPid(permission800.id)
-        permission803.setName("严重问题申诉记录")
-        permission803.setSort(803)
-        permissionList.add(permission803)
-
-        val permission804 = Permission()
-        permission804.setPid(permission800.id)
-        permission804.setName("重采样品信息明细")
-        permission804.setSort(804)
-        permissionList.add(permission804)
-
-        val permission900 = Permission()
-        permission900.setName("采样质控管理")
-        permission900.setSort(900)
-        permissionList.add(permission900)
-
-        val permission901 = Permission()
-        permission901.setPid(permission900.id)
-        permission901.setName("采样一级质控(县)任务")
-        permission901.setSort(901)
-        permissionList.add(permission901)
-
-        val permission902 = Permission()
-        permission902.setPid(permission900.id)
-        permission902.setName("采样二级质控(市)任务")
-        permission902.setSort(902)
-        permissionList.add(permission902)
-
-        val permission903 = Permission()
-        permission903.setPid(permission900.id)
-        permission903.setName("采样三级质控(省)任务")
-        permission903.setSort(903)
-        permissionList.add(permission903)
-
-        val permission904 = Permission()
-        permission904.setPid(permission900.id)
-        permission904.setName("采样质控专家任务")
-        permission904.setSort(904)
-        permissionList.add(permission904)
-
-        val permission905 = Permission()
-        permission905.setPid(permission900.id)
-        permission905.setName("采样质控意见反馈")
-        permission905.setSort(905)
-        permissionList.add(permission905)
-
-        val permission906 = Permission()
-        permission906.setPid(permission900.id)
-        permission906.setName("取样资料质控进度")
-        permission906.setSort(906)
-        permissionList.add(permission906)
-
-        val permission907 = Permission()
-        permission907.setPid(permission900.id)
-        permission907.setName("采样质控专家查询")
-        permission907.setSort(907)
-        permissionList.add(permission907)
-
-        val permission908 = Permission()
-        permission908.setPid(permission900.id)
-        permission908.setName("采样质控意见退回")
-        permission908.setSort(908)
-        permissionList.add(permission908)
-
-        val permission1000 = Permission()
-        permission1000.setName("样品检测管理")
-        permission1000.setSort(1000)
-        permissionList.add(permission1000)
-
-        val permission1001 = Permission()
-        permission1001.setPid(permission1000.id)
-        permission1001.setName("批次送检样交接单")
-        permission1001.setSort(1001)
-        permissionList.add(permission1001)
-
-        val permission1002 = Permission()
-        permission1002.setPid(permission1000.id)
-        permission1002.setName("检测子样信息查询")
-        permission1002.setSort(1002)
-        permissionList.add(permission1002)
-
-        val permission1003 = Permission()
-        permission1003.setPid(permission1000.id)
-        permission1003.setName("检测资质文件报送")
-        permission1003.setSort(1003)
-        permissionList.add(permission1003)
-
-        val permission1004 = Permission()
-        permission1004.setPid(permission1000.id)
-        permission1004.setName("检测资质能力审核")
-        permission1004.setSort(1004)
-        permissionList.add(permission1004)
-
-        val permission1005 = Permission()
-        permission1005.setPid(permission1000.id)
-        permission1005.setName("基本检测方法标准")
-        permission1005.setSort(1005)
-        permissionList.add(permission1005)
-
-        val permission1006 = Permission()
-        permission1006.setPid(permission1000.id)
-        permission1006.setName("地方新增检测方法")
-        permission1006.setSort(1006)
-        permissionList.add(permission1006)
-
-        val permission1007 = Permission()
-        permission1007.setPid(permission1000.id)
-        permission1007.setName("方法验证材料上传")
-        permission1007.setSort(1007)
-        permissionList.add(permission1007)
-
-        val permission1008 = Permission()
-        permission1008.setPid(permission1000.id)
-        permission1008.setName("方法验证材料审核")
-        permission1008.setSort(1008)
-        permissionList.add(permission1008)
-
-        val permission1009 = Permission()
-        permission1009.setPid(permission1000.id)
-        permission1009.setName("统一监控样品管理")
-        permission1009.setSort(1009)
-        permissionList.add(permission1009)
-
-        val permission1010 = Permission()
-        permission1010.setPid(permission1000.id)
-        permission1010.setName("统一监控样品查询")
-        permission1010.setSort(1010)
-        permissionList.add(permission1010)
-
-        val permission1011 = Permission()
-        permission1011.setPid(permission1000.id)
-        permission1011.setName("严重问题样品查询")
-        permission1011.setSort(1011)
-        permissionList.add(permission1011)
-
-        val permission1012 = Permission()
-        permission1012.setPid(permission1000.id)
-        permission1012.setName("批次检测数据报送")
-        permission1012.setSort(1012)
-        permissionList.add(permission1012)
-
-        val permission1013 = Permission()
-        permission1013.setPid(permission1000.id)
-        permission1013.setName("批次检测数据整改")
-        permission1013.setSort(1013)
-        permissionList.add(permission1013)
-
-        val permission1014 = Permission()
-        permission1014.setPid(permission1000.id)
-        permission1014.setName("样品检测数据查询")
-        permission1014.setSort(1014)
-        permissionList.add(permission1014)
-
-        val permission1100 = Permission()
-        permission1100.setName("数据质量审核")
-        permission1100.setSort(1100)
-        permissionList.add(permission1100)
-
-        val permission1101 = Permission()
-        permission1101.setPid(permission1100.id)
-        permission1101.setName("检测一级质控(县)任务")
-        permission1101.setSort(1101)
-        permissionList.add(permission1101)
-
-        val permission1102 = Permission()
-        permission1102.setPid(permission1100.id)
-        permission1102.setName("检测二级质控(市)任务")
-        permission1102.setSort(1102)
-        permissionList.add(permission1102)
-
-        val permission1103 = Permission()
-        permission1103.setPid(permission1100.id)
-        permission1103.setName("检测三级质控(省)任务")
-        permission1103.setSort(1103)
-        permissionList.add(permission1103)
-
-        val permission1104 = Permission()
-        permission1104.setPid(permission1100.id)
-        permission1104.setName("检测质控专家任务")
-        permission1104.setSort(1104)
-        permissionList.add(permission1104)
-
-        val permission1105 = Permission()
-        permission1105.setPid(permission1100.id)
-        permission1105.setName("检测质控意见反馈")
-        permission1105.setSort(1105)
-        permissionList.add(permission1105)
-
-        val permission1106 = Permission()
-        permission1106.setPid(permission1100.id)
-        permission1106.setName("质控退改批次查询")
-        permission1106.setSort(1106)
-        permissionList.add(permission1106)
-
-        val permission1200 = Permission()
-        permission1200.setName("数据统计分析")
-        permission1200.setSort(1200)
-        permissionList.add(permission1200)
-
-        val permission1300 = Permission()
-        permission1300.setName("数据对标评价")
-        permission1300.setSort(1300)
-        permissionList.add(permission1300)
-
-        val permission1400 = Permission()
-        permission1400.setName("工作文件管理")
-        permission1400.setSort(1400)
-        permissionList.add(permission1400)
-
-        val permission1401 = Permission()
-        permission1401.setPid(permission1400.id)
-        permission1401.setName("工作文件下载")
-        permission1401.setSort(1401)
-        permissionList.add(permission1401)
-
-        val permission1500 = Permission()
-        permission1500.setName("后台数据管理")
-        permission1500.setSort(1500)
-        permissionList.add(permission1500)
-
-        val permission1501 = Permission()
-        permission1501.setPid(permission1500.id)
-        permission1501.setName("单位管理")
-        permission1501.setSort(1501)
-        permissionList.add(permission1501)
-
-        val permission1502 = Permission()
-        permission1502.setPid(permission1500.id)
-        permission1502.setName("用户管理")
-        permission1502.setSort(1502)
-        permissionList.add(permission1502)
-
-        val permission1503 = Permission()
-        permission1503.setPid(permission1500.id)
-        permission1503.setName("角色管理")
-        permission1503.setSort(1503)
-        permissionList.add(permission1503)
-
-        val permission1504 = Permission()
-        permission1504.setPid(permission1500.id)
-        permission1504.setName("权限管理")
-        permission1504.setSort(1504)
-        permissionList.add(permission1504)
-
-        val permission1505 = Permission()
-        permission1505.setPid(permission1500.id)
-        permission1505.setName("菜单管理")
-        permission1505.setSort(1505)
-        permissionList.add(permission1505)
-
-        val permission1506 = Permission()
-        permission1506.setPid(permission1500.id)
-        permission1506.setName("字典管理")
-        permission1506.setSort(1506)
-        permissionList.add(permission1506)
-        permissionRepository.saveAll<Permission?>(permissionList)
-
-
-        val menuList: MutableList<Menu?> = ArrayList<Menu?>()
-        val menu100 = Menu()
-        menu100.setPermissionId(permission100.id)
-        menu100.setName("基础数据管理")
-        menu100.setTitle("基础数据管理")
-        menu100.setType("ROUTE")
-        menu100.setPath("/basic")
-        menu100.setComponent("LAYOUT")
-        menu100.setSort(100)
-        menu100.setShowed(Boolean.TRUE)
-        menu100.setCached(Boolean.TRUE)
-        menu100.setExternal(Boolean.FALSE)
-        menuList.add(menu100)
-
-        val menu101 = Menu()
-        menu101.setPid(menu100.id)
-        menu101.setPermissionId(permission101.id)
-        menu101.setName("业务管理账号开通")
-        menu101.setTitle("业务管理账号开通")
-        menu101.setType("ROUTE")
-        menu101.setPath("/basic/accountOpen")
-        menu101.setComponent("/basic/accountOpen/index")
-        menu101.setSort(101)
-        menu101.setShowed(Boolean.TRUE)
-        menu101.setCached(Boolean.TRUE)
-        menu101.setExternal(Boolean.FALSE)
-        menuList.add(menu101)
-
-        val menu102 = Menu()
-        menu102.setPid(menu100.id)
-        menu102.setPermissionId(permission102.id)
-        menu102.setName("业务管理单位授权")
-        menu102.setTitle("业务管理单位授权")
-        menu102.setType("ROUTE")
-        menu102.setPath("/basic/empower")
-        menu102.setComponent("/basic/empower/index")
-        menu102.setSort(102)
-        menu102.setShowed(Boolean.TRUE)
-        menu102.setCached(Boolean.TRUE)
-        menu102.setExternal(Boolean.FALSE)
-        menuList.add(menu102)
-
-        val menu103 = Menu()
-        menu103.setPid(menu100.id)
-        menu103.setPermissionId(permission103.id)
-        menu103.setName("技术单位信息管理")
-        menu103.setTitle("技术单位信息管理")
-        menu103.setType("ROUTE")
-        menu103.setPath("/basic/orgInfoManage")
-        menu103.setComponent("/basic/orgInfoManage/index")
-        menu103.setSort(103)
-        menu103.setShowed(Boolean.TRUE)
-        menu103.setCached(Boolean.TRUE)
-        menu103.setExternal(Boolean.FALSE)
-        menuList.add(menu103)
-
-        val menu104 = Menu()
-        menu104.setPid(menu100.id)
-        menu104.setPermissionId(permission104.id)
-        menu104.setName("技术专家信息维护")
-        menu104.setTitle("技术专家信息维护")
-        menu104.setType("ROUTE")
-        menu104.setPath("/basic/d")
-        menu104.setComponent("/basic/d/index")
-        menu104.setSort(104)
-        menu104.setShowed(Boolean.TRUE)
-        menu104.setCached(Boolean.TRUE)
-        menu104.setExternal(Boolean.FALSE)
-        menuList.add(menu104)
-
-        val menu105 = Menu()
-        menu105.setPid(menu100.id)
-        menu105.setPermissionId(permission105.id)
-        menu105.setName("平台新增用户维护")
-        menu105.setTitle("平台新增用户维护")
-        menu105.setType("ROUTE")
-        menu105.setPath("/basic/newUsersManage")
-        menu105.setComponent("/basic/newUsersManage/index")
-        menu105.setSort(105)
-        menu105.setShowed(Boolean.TRUE)
-        menu105.setCached(Boolean.TRUE)
-        menu105.setExternal(Boolean.FALSE)
-        menuList.add(menu105)
-
-        val menu106 = Menu()
-        menu106.setPid(menu100.id)
-        menu106.setPermissionId(permission106.id)
-        menu106.setName("设备终端授权管理")
-        menu106.setTitle("设备终端授权管理")
-        menu106.setType("ROUTE")
-        menu106.setPath("/basic/f")
-        menu106.setComponent("/basic/f/index")
-        menu106.setSort(106)
-        menu106.setShowed(Boolean.TRUE)
-        menu106.setCached(Boolean.TRUE)
-        menu106.setExternal(Boolean.FALSE)
-        menuList.add(menu106)
-
-        val menu200 = Menu()
-        menu200.setPermissionId(permission200.id)
-        menu200.setName("用户单位管理")
-        menu200.setTitle("用户单位管理")
-        menu200.setType("ROUTE")
-        menu200.setPath("/organization")
-        menu200.setComponent("LAYOUT")
-        menu200.setSort(200)
-        menu200.setShowed(Boolean.TRUE)
-        menu200.setCached(Boolean.TRUE)
-        menu200.setExternal(Boolean.FALSE)
-        menuList.add(menu200)
-
-        val menu201 = Menu()
-        menu201.setPid(menu200.id)
-        menu201.setPermissionId(permission201.id)
-        menu201.setName("管理单位用户维护")
-        menu201.setTitle("管理单位用户维护")
-        menu201.setType("ROUTE")
-        menu201.setPath("/organization/manageUnitUser")
-        menu201.setComponent("/organization/manageUnitUser/index")
-        menu201.setSort(201)
-        menu201.setShowed(Boolean.TRUE)
-        menu201.setCached(Boolean.TRUE)
-        menu201.setExternal(Boolean.FALSE)
-        menuList.add(menu201)
-
-        val menu202 = Menu()
-        menu202.setPid(menu200.id)
-        menu202.setPermissionId(permission202.id)
-        menu202.setName("技术单位业务申请")
-        menu202.setTitle("技术单位业务申请")
-        menu202.setType("ROUTE")
-        menu202.setPath("/organization/organizationBusinessApply")
-        menu202.setComponent("/organization/organizationBusinessApply/index")
-        menu202.setSort(202)
-        menu202.setShowed(Boolean.TRUE)
-        menu202.setCached(Boolean.TRUE)
-        menu202.setExternal(Boolean.FALSE)
-        menuList.add(menu202)
-
-        val menu203 = Menu()
-        menu203.setPid(menu200.id)
-        menu203.setPermissionId(permission203.id)
-        menu203.setName("技术单位业务审核")
-        menu203.setTitle("技术单位业务审核")
-        menu203.setType("ROUTE")
-        menu203.setPath("/organization/organizationBusinessCheck")
-        menu203.setComponent("/organization/organizationBusinessCheck/index")
-        menu203.setSort(203)
-        menu203.setShowed(Boolean.TRUE)
-        menu203.setCached(Boolean.TRUE)
-        menu203.setExternal(Boolean.FALSE)
-        menuList.add(menu203)
-
-        val menu204 = Menu()
-        menu204.setPid(menu200.id)
-        menu204.setPermissionId(permission204.id)
-        menu204.setName("技术单位用户维护")
-        menu204.setTitle("技术单位用户维护")
-        menu204.setType("ROUTE")
-        menu204.setPath("/organization/technicalUnitUser")
-        menu204.setComponent("/organization/technicalUnitUser/index")
-        menu204.setSort(204)
-        menu204.setShowed(Boolean.TRUE)
-        menu204.setCached(Boolean.TRUE)
-        menu204.setExternal(Boolean.FALSE)
-        menuList.add(menu204)
-
-        val menu205 = Menu()
-        menu205.setPid(menu200.id)
-        menu205.setPermissionId(permission205.id)
-        menu205.setName("技术专家业务申请")
-        menu205.setTitle("技术专家业务申请")
-        menu205.setType("ROUTE")
-        menu205.setPath("/organization/e")
-        menu205.setComponent("/organization/e/index")
-        menu205.setSort(205)
-        menu205.setShowed(Boolean.TRUE)
-        menu205.setCached(Boolean.TRUE)
-        menu205.setExternal(Boolean.FALSE)
-        menuList.add(menu205)
-
-        val menu206 = Menu()
-        menu206.setPid(menu200.id)
-        menu206.setPermissionId(permission206.id)
-        menu206.setName("技术专家业务审核")
-        menu206.setTitle("技术专家业务审核")
-        menu206.setType("ROUTE")
-        menu206.setPath("/organization/f")
-        menu206.setComponent("/organization/f/index")
-        menu206.setSort(206)
-        menu206.setShowed(Boolean.TRUE)
-        menu206.setCached(Boolean.TRUE)
-        menu206.setExternal(Boolean.FALSE)
-        menuList.add(menu206)
-
-        val menu207 = Menu()
-        menu207.setPid(menu200.id)
-        menu207.setPermissionId(permission207.id)
-        menu207.setName("调查小组新建维护")
-        menu207.setTitle("调查小组新建维护")
-        menu207.setType("ROUTE")
-        menu207.setPath("/organization/groupAddOrUpt")
-        menu207.setComponent("/organization/groupAddOrUpt/index")
-        menu207.setSort(207)
-        menu207.setShowed(Boolean.TRUE)
-        menu207.setCached(Boolean.TRUE)
-        menu207.setExternal(Boolean.FALSE)
-        menuList.add(menu207)
-
-        val menu208 = Menu()
-        menu208.setPid(menu200.id)
-        menu208.setPermissionId(permission208.id)
-        menu208.setName("调查单位信息查询")
-        menu208.setTitle("调查单位信息查询")
-        menu208.setType("ROUTE")
-        menu208.setPath("/organization/unitInformationQuery")
-        menu208.setComponent("/organization/unitInformationQuery/index")
-        menu208.setSort(208)
-        menu208.setShowed(Boolean.TRUE)
-        menu208.setCached(Boolean.TRUE)
-        menu208.setExternal(Boolean.FALSE)
-        menuList.add(menu208)
-
-        val menu209 = Menu()
-        menu209.setPid(menu200.id)
-        menu209.setPermissionId(permission209.id)
-        menu209.setName("调查用户信息查询")
-        menu209.setTitle("调查用户信息查询")
-        menu209.setType("ROUTE")
-        menu209.setPath("/organization/userInformationQuery")
-        menu209.setComponent("/organization/userInformationQuery/index")
-        menu209.setSort(209)
-        menu209.setShowed(Boolean.TRUE)
-        menu209.setCached(Boolean.TRUE)
-        menu209.setExternal(Boolean.FALSE)
-        menuList.add(menu209)
-
-        val menu300 = Menu()
-        menu300.setPermissionId(permission300.id)
-        menu300.setName("项目任务管理")
-        menu300.setTitle("项目任务管理")
-        menu300.setType("ROUTE")
-        menu300.setPath("/projectTask")
-        menu300.setComponent("LAYOUT")
-        menu300.setSort(300)
-        menu300.setShowed(Boolean.TRUE)
-        menu300.setCached(Boolean.TRUE)
-        menu300.setExternal(Boolean.FALSE)
-        menuList.add(menu300)
-
-        val menu301 = Menu()
-        menu301.setPid(menu300.id)
-        menu301.setPermissionId(permission301.id)
-        menu301.setName("调查项目新增维护")
-        menu301.setTitle("调查项目新增维护")
-        menu301.setType("ROUTE")
-        menu301.setPath("/projectTask/a")
-        menu301.setComponent("/projectTask/a/index")
-        menu301.setSort(301)
-        menu301.setShowed(Boolean.TRUE)
-        menu301.setCached(Boolean.TRUE)
-        menu301.setExternal(Boolean.FALSE)
-        menuList.add(menu301)
-
-        val menu302 = Menu()
-        menu302.setPid(menu300.id)
-        menu302.setPermissionId(permission302.id)
-        menu302.setName("监管对象新增维护")
-        menu302.setTitle("监管对象新增维护")
-        menu302.setType("ROUTE")
-        menu302.setPath("/projectTask/superviseObjectMaintain")
-        menu302.setComponent("/projectTask/superviseObjectMaintain/index")
-        menu302.setSort(302)
-        menu302.setShowed(Boolean.TRUE)
-        menu302.setCached(Boolean.TRUE)
-        menu302.setExternal(Boolean.FALSE)
-        menuList.add(menu302)
-
-        val menu303 = Menu()
-        menu303.setPid(menu300.id)
-        menu303.setPermissionId(permission303.id)
-        menu303.setName("工作任务下发管理")
-        menu303.setTitle("工作任务下发管理")
-        menu303.setType("ROUTE")
-        menu303.setPath("/projectTask/taskDistribution")
-        menu303.setComponent("/projectTask/taskDistribution/index")
-        menu303.setSort(303)
-        menu303.setShowed(Boolean.TRUE)
-        menu303.setCached(Boolean.TRUE)
-        menu303.setExternal(Boolean.FALSE)
-        menuList.add(menu303)
-
-        val menu304 = Menu()
-        menu304.setPid(menu300.id)
-        menu304.setPermissionId(permission304.id)
-        menu304.setName("牵头单位组织实施")
-        menu304.setTitle("牵头单位组织实施")
-        menu304.setType("ROUTE")
-        menu304.setPath("/projectTask/leadOrgImplement")
-        menu304.setComponent("/projectTask/leadOrgImplement/index")
-        menu304.setSort(304)
-        menu304.setShowed(Boolean.TRUE)
-        menu304.setCached(Boolean.TRUE)
-        menu304.setExternal(Boolean.FALSE)
-        menuList.add(menu304)
-
-        val menu305 = Menu()
-        menu305.setPid(menu300.id)
-        menu305.setPermissionId(permission305.id)
-        menu305.setName("技术单位任务执行")
-        menu305.setTitle("技术单位任务执行")
-        menu305.setType("ROUTE")
-        menu305.setPath("/projectTask/taskExecution")
-        menu305.setComponent("/projectTask/taskExecution/index")
-        menu305.setSort(305)
-        menu305.setShowed(Boolean.TRUE)
-        menu305.setCached(Boolean.TRUE)
-        menu305.setExternal(Boolean.FALSE)
-        menuList.add(menu305)
-
-        val menu306 = Menu()
-        menu306.setPid(menu300.id)
-        menu306.setPermissionId(permission306.id)
-        menu306.setName("监管对象信息查询")
-        menu306.setTitle("监管对象信息查询")
-        menu306.setType("ROUTE")
-        menu306.setPath("/projectTask/supervisionInformationQuery")
-        menu306.setComponent("/projectTask/supervisionInformationQuery/index")
-        menu306.setSort(306)
-        menu306.setShowed(Boolean.TRUE)
-        menu306.setCached(Boolean.TRUE)
-        menu306.setExternal(Boolean.FALSE)
-        menuList.add(menu306)
-
-        val menu400 = Menu()
-        menu400.setPermissionId(permission400.id)
-        menu400.setName("点位布设管理")
-        menu400.setTitle("点位布设管理")
-        menu400.setType("ROUTE")
-        menu400.setPath("/pointManage")
-        menu400.setComponent("LAYOUT")
-        menu400.setSort(400)
-        menu400.setShowed(Boolean.TRUE)
-        menu400.setCached(Boolean.TRUE)
-        menu400.setExternal(Boolean.FALSE)
-        menuList.add(menu400)
-
-        val menu401 = Menu()
-        menu401.setPid(menu400.id)
-        menu401.setPermissionId(permission401.id)
-        menu401.setName("测试项目新增维护")
-        menu401.setTitle("测试项目新增维护")
-        menu401.setType("ROUTE")
-        menu401.setPath("/pointManage/testMaintenance")
-        menu401.setComponent("/pointManage/testMaintenance/index")
-        menu401.setSort(401)
-        menu401.setShowed(Boolean.TRUE)
-        menu401.setCached(Boolean.TRUE)
-        menu401.setExternal(Boolean.FALSE)
-        menuList.add(menu401)
-
-        val menu402 = Menu()
-        menu402.setPid(menu400.id)
-        menu402.setPermissionId(permission402.id)
-        menu402.setName("测试项目分类管理")
-        menu402.setTitle("测试项目分类管理")
-        menu402.setType("ROUTE")
-        menu402.setPath("/pointManage/testClassification")
-        menu402.setComponent("/pointManage/testClassification/index")
-        menu402.setSort(402)
-        menu402.setShowed(Boolean.TRUE)
-        menu402.setCached(Boolean.TRUE)
-        menu402.setExternal(Boolean.FALSE)
-        menuList.add(menu402)
-
-        val menu403 = Menu()
-        menu403.setPid(menu400.id)
-        menu403.setPermissionId(permission403.id)
-        menu403.setName("新增测试项目审核")
-        menu403.setTitle("新增测试项目审核")
-        menu403.setType("ROUTE")
-        menu403.setPath("/pointManage/addTestItemAudit")
-        menu403.setComponent("/pointManage/addTestItemAudit/index")
-        menu403.setSort(403)
-        menu403.setShowed(Boolean.TRUE)
-        menu403.setCached(Boolean.TRUE)
-        menu403.setExternal(Boolean.FALSE)
-        menuList.add(menu403)
-
-        val menu404 = Menu()
-        menu404.setPid(menu400.id)
-        menu404.setPermissionId(permission404.id)
-        menu404.setName("布点人员任务分配")
-        menu404.setTitle("布点人员任务分配")
-        menu404.setType("ROUTE")
-        menu404.setPath("/pointManage/assignPersonnelTask")
-        menu404.setComponent("/pointManage/assignPersonnelTask/index")
-        menu404.setSort(404)
-        menu404.setShowed(Boolean.TRUE)
-        menu404.setCached(Boolean.TRUE)
-        menu404.setExternal(Boolean.FALSE)
-        menuList.add(menu404)
-
-        val menu405 = Menu()
-        menu405.setPid(menu400.id)
-        menu405.setPermissionId(permission405.id)
-        menu405.setName("布点数据成果录入")
-        menu405.setTitle("布点数据成果录入")
-        menu405.setType("ROUTE")
-        menu405.setPath("/pointUserTasks/LayOutMethodMaintain")
-        menu405.setComponent("/pointUserTasks/LayOutMethodMaintain/index")
-        menu405.setSort(405)
-        menu405.setShowed(Boolean.TRUE)
-        menu405.setCached(Boolean.TRUE)
-        menu405.setExternal(Boolean.FALSE)
-        menuList.add(menu405)
-
-        val menu406 = Menu()
-        menu406.setPid(menu400.id)
-        menu406.setPermissionId(permission406.id)
-        menu406.setName("布点方案数据退回")
-        menu406.setTitle("布点方案数据退回")
-        menu406.setType("ROUTE")
-        menu406.setPath("/pointManage/dotsDataReturned")
-        menu406.setComponent("/pointManage/dotsDataReturned/index")
-        menu406.setSort(406)
-        menu406.setShowed(Boolean.TRUE)
-        menu406.setCached(Boolean.TRUE)
-        menu406.setExternal(Boolean.FALSE)
-        menuList.add(menu406)
-
-        val menu407 = Menu()
-        menu407.setPid(menu400.id)
-        menu407.setPermissionId(permission407.id)
-        menu407.setName("布点方案数据查询")
-        menu407.setTitle("布点方案数据查询")
-        menu407.setType("ROUTE")
-        menu407.setPath("/point/f")
-        menu407.setComponent("/point/f/index")
-        menu407.setSort(407)
-        menu407.setShowed(Boolean.TRUE)
-        menu407.setCached(Boolean.TRUE)
-        menu407.setExternal(Boolean.FALSE)
-        menuList.add(menu407)
-
-        val menu500 = Menu()
-        menu500.setPermissionId(permission500.id)
-        menu500.setName("点位布设")
-        menu500.setTitle("点位布设")
-        menu500.setType("ROUTE")
-        menu500.setPath("/pointLayout")
-        menu500.setComponent("LAYOUT")
-        menu500.setSort(500)
-        menu500.setShowed(Boolean.TRUE)
-        menu500.setCached(Boolean.TRUE)
-        menu500.setExternal(Boolean.FALSE)
-        menuList.add(menu500)
-
-        val menu501 = Menu()
-        menu501.setPid(menu500.id)
-        menu501.setPermissionId(permission501.id)
-        menu501.setName("布点方案数据维护")
-        menu501.setTitle("布点方案数据维护")
-        menu501.setType("ROUTE")
-        menu501.setPath("/pointLayout/planMaintain")
-        menu501.setComponent("/pointLayout/planMaintain/index")
-        menu501.setSort(501)
-        menu501.setShowed(Boolean.TRUE)
-        menu501.setCached(Boolean.TRUE)
-        menu501.setExternal(Boolean.FALSE)
-        menuList.add(menu501)
-
-        val menu502 = Menu()
-        menu502.setPid(menu500.id)
-        menu502.setPermissionId(permission502.id)
-        menu502.setName("布点方案问题整改")
-        menu502.setTitle("布点方案问题整改")
-        menu502.setType("ROUTE")
-        menu502.setPath("/pointLayout/planUpdate")
-        menu502.setComponent("/pointLayout/planUpdate/index")
-        menu502.setSort(502)
-        menu502.setShowed(Boolean.TRUE)
-        menu502.setCached(Boolean.TRUE)
-        menu502.setExternal(Boolean.FALSE)
-        menuList.add(menu502)
-
-        val menu503 = Menu()
-        menu503.setPid(menu500.id)
-        menu503.setPermissionId(permission503.id)
-        menu503.setName("布点方案信息查询")
-        menu503.setTitle("布点方案信息查询")
-        menu503.setType("ROUTE")
-        menu503.setPath("/pointLayout/planQuery")
-        menu503.setComponent("/pointLayout/planQuery/index")
-        menu503.setSort(503)
-        menu503.setShowed(Boolean.TRUE)
-        menu503.setCached(Boolean.TRUE)
-        menu503.setExternal(Boolean.FALSE)
-        menuList.add(menu503)
-
-        val menu600 = Menu()
-        menu600.setPermissionId(permission600.id)
-        menu600.setName("布点质控管理")
-        menu600.setTitle("布点质控管理")
-        menu600.setType("ROUTE")
-        menu600.setPath("/layout")
-        menu600.setComponent("LAYOUT")
-        menu600.setSort(600)
-        menu600.setShowed(Boolean.TRUE)
-        menu600.setCached(Boolean.TRUE)
-        menu600.setExternal(Boolean.FALSE)
-        menuList.add(menu600)
-
-        val menu601 = Menu()
-        menu601.setPid(menu600.id)
-        menu601.setPermissionId(permission601.id)
-        menu601.setName("布点质控专家组维护")
-        menu601.setTitle("布点质控专家组维护")
-        menu601.setType("ROUTE")
-        menu601.setPath("/layout/a")
-        menu601.setComponent("/layout/a/index")
-        menu601.setSort(601)
-        menu601.setShowed(Boolean.TRUE)
-        menu601.setCached(Boolean.TRUE)
-        menu601.setExternal(Boolean.FALSE)
-        menuList.add(menu601)
-
-        val menu602 = Menu()
-        menu602.setPid(menu600.id)
-        menu602.setPermissionId(permission602.id)
-        menu602.setName("一级质控(县)任务分配")
-        menu602.setTitle("一级质控(县)任务分配")
-        menu602.setType("ROUTE")
-        menu602.setPath("/layout/b")
-        menu602.setComponent("/layout/b/index")
-        menu602.setSort(602)
-        menu602.setShowed(Boolean.TRUE)
-        menu602.setCached(Boolean.TRUE)
-        menu602.setExternal(Boolean.FALSE)
-        menuList.add(menu602)
-
-        val menu603 = Menu()
-        menu603.setPid(menu600.id)
-        menu603.setPermissionId(permission603.id)
-        menu603.setName("二级质控(市)任务分配")
-        menu603.setTitle("二级质控(市)任务分配")
-        menu603.setType("ROUTE")
-        menu603.setPath("/layout/c")
-        menu603.setComponent("/layout/c/index")
-        menu603.setSort(603)
-        menu603.setShowed(Boolean.TRUE)
-        menu603.setCached(Boolean.TRUE)
-        menu603.setExternal(Boolean.FALSE)
-        menuList.add(menu603)
-
-        val menu604 = Menu()
-        menu604.setPid(menu600.id)
-        menu604.setPermissionId(permission604.id)
-        menu604.setName("三级质控(省)任务分配")
-        menu604.setTitle("三级质控(省)任务分配")
-        menu604.setType("ROUTE")
-        menu604.setPath("/layout/d")
-        menu604.setComponent("/layout/d/index")
-        menu604.setSort(604)
-        menu604.setShowed(Boolean.TRUE)
-        menu604.setCached(Boolean.TRUE)
-        menu604.setExternal(Boolean.FALSE)
-        menuList.add(menu604)
-
-        val menu605 = Menu()
-        menu605.setPid(menu600.id)
-        menu605.setPermissionId(permission605.id)
-        menu605.setName("布点质控专家组任务")
-        menu605.setTitle("布点质控专家组任务")
-        menu605.setType("ROUTE")
-        menu605.setPath("/layout/e")
-        menu605.setComponent("/layout/e/index")
-        menu605.setSort(605)
-        menu605.setShowed(Boolean.TRUE)
-        menu605.setCached(Boolean.TRUE)
-        menu605.setExternal(Boolean.FALSE)
-        menuList.add(menu605)
-
-        val menu606 = Menu()
-        menu606.setPid(menu600.id)
-        menu606.setPermissionId(permission606.id)
-        menu606.setName("布点质控意见反馈")
-        menu606.setTitle("布点质控意见反馈")
-        menu606.setType("ROUTE")
-        menu606.setPath("/layout/f")
-        menu606.setComponent("/layout/f/index")
-        menu606.setSort(606)
-        menu606.setShowed(Boolean.TRUE)
-        menu606.setCached(Boolean.TRUE)
-        menu606.setExternal(Boolean.FALSE)
-        menuList.add(menu606)
-
-        val menu607 = Menu()
-        menu607.setPid(menu600.id)
-        menu607.setPermissionId(permission607.id)
-        menu607.setName("布点质控专家查询")
-        menu607.setTitle("布点质控专家查询")
-        menu607.setType("ROUTE")
-        menu607.setPath("/layout/g")
-        menu607.setComponent("/layout/g/index")
-        menu607.setSort(607)
-        menu607.setShowed(Boolean.TRUE)
-        menu607.setCached(Boolean.TRUE)
-        menu607.setExternal(Boolean.FALSE)
-        menuList.add(menu607)
-
-        val menu608 = Menu()
-        menu608.setPid(menu600.id)
-        menu608.setPermissionId(permission608.id)
-        menu608.setName("布点质控意见退回")
-        menu608.setTitle("布点质控意见退回")
-        menu608.setType("ROUTE")
-        menu608.setPath("/layout/h")
-        menu608.setComponent("/layout/h/index")
-        menu608.setSort(608)
-        menu608.setShowed(Boolean.TRUE)
-        menu608.setCached(Boolean.TRUE)
-        menu608.setExternal(Boolean.FALSE)
-        menuList.add(menu608)
-
-        val menu700 = Menu()
-        menu700.setPermissionId(permission700.id)
-        menu700.setName("采样调查管理")
-        menu700.setTitle("采样调查管理")
-        menu700.setType("ROUTE")
-        menu700.setPath("/sampleManage")
-        menu700.setComponent("LAYOUT")
-        menu700.setSort(700)
-        menu700.setShowed(Boolean.TRUE)
-        menu700.setCached(Boolean.TRUE)
-        menu700.setExternal(Boolean.FALSE)
-        menuList.add(menu700)
-
-        val menu701 = Menu()
-        menu701.setPid(menu700.id)
-        menu701.setPermissionId(permission701.id)
-        menu701.setName("取样小组任务分配")
-        menu701.setTitle("取样小组任务分配")
-        menu701.setType("ROUTE")
-        menu701.setPath("/sampleManage/sampleGroupTask")
-        menu701.setComponent("/sampleManage/sampleGroupTask/index")
-        menu701.setSort(701)
-        menu701.setShowed(Boolean.TRUE)
-        menu701.setCached(Boolean.TRUE)
-        menu701.setExternal(Boolean.FALSE)
-        menuList.add(menu701)
-
-        val menu702 = Menu()
-        menu702.setPid(menu700.id)
-        menu702.setPermissionId(permission702.id)
-        menu702.setName("批次样品运送表单")
-        menu702.setTitle("批次样品运送表单")
-        menu702.setType("ROUTE")
-        menu702.setPath("/sampleManage/sampleShippingForm")
-        menu702.setComponent("/sampleManage/sampleShippingForm/index")
-        menu702.setSort(702)
-        menu702.setShowed(Boolean.TRUE)
-        menu702.setCached(Boolean.TRUE)
-        menu702.setExternal(Boolean.FALSE)
-        menuList.add(menu702)
-
-        val menu703 = Menu()
-        menu703.setPid(menu700.id)
-        menu703.setPermissionId(permission703.id)
-        menu703.setName("取样调查表单下载")
-        menu703.setTitle("取样调查表单下载")
-        menu703.setType("ROUTE")
-        menu703.setPath("/sampleManage/formDownload")
-        menu703.setComponent("/sampleManage/formDownload/index")
-        menu703.setSort(703)
-        menu703.setShowed(Boolean.TRUE)
-        menu703.setCached(Boolean.TRUE)
-        menu703.setExternal(Boolean.FALSE)
-        menuList.add(menu703)
-
-        val menu704 = Menu()
-        menu704.setPid(menu700.id)
-        menu704.setPermissionId(permission704.id)
-        menu704.setName("子样流转进度查询")
-        menu704.setTitle("子样流转进度查询")
-        menu704.setType("ROUTE")
-        menu704.setPath("/sampleManage/sampleProgressQuery")
-        menu704.setComponent("/sampleManage/sampleProgressQuery/index")
-        menu704.setSort(704)
-        menu704.setShowed(Boolean.TRUE)
-        menu704.setCached(Boolean.TRUE)
-        menu704.setExternal(Boolean.FALSE)
-        menuList.add(menu704)
-
-        val menu705 = Menu()
-        menu705.setPid(menu700.id)
-        menu705.setPermissionId(permission705.id)
-        menu705.setName("取样资料单位内审")
-        menu705.setTitle("取样资料单位内审")
-        menu705.setType("ROUTE")
-        menu705.setPath("/sampleManage/CYInformationCheck")
-        menu705.setComponent("/sampleManage/CYInformationCheck/index")
-        menu705.setSort(705)
-        menu705.setShowed(Boolean.TRUE)
-        menu705.setCached(Boolean.TRUE)
-        menu705.setExternal(Boolean.FALSE)
-        menuList.add(menu705)
-
-        val menu706 = Menu()
-        menu706.setPid(menu700.id)
-        menu706.setPermissionId(permission706.id)
-        menu706.setName("质控退回样点查询")
-        menu706.setTitle("质控退回样点查询")
-        menu706.setType("ROUTE")
-        menu706.setPath("/sampleManage/QCPointQuery")
-        menu706.setComponent("/sampleManage/QCPointQuery/index")
-        menu706.setSort(706)
-        menu706.setShowed(Boolean.TRUE)
-        menu706.setCached(Boolean.TRUE)
-        menu706.setExternal(Boolean.FALSE)
-        menuList.add(menu706)
-
-        val menu707 = Menu()
-        menu707.setPid(menu700.id)
-        menu707.setPermissionId(permission707.id)
-        menu707.setName("严重质量问题申诉")
-        menu707.setTitle("严重质量问题申诉")
-        menu707.setType("ROUTE")
-        menu707.setPath("/sampleManage/seriousIssueAppeal")
-        menu707.setComponent("/sampleManage/seriousIssueAppeal/index")
-        menu707.setSort(707)
-        menu707.setShowed(Boolean.TRUE)
-        menu707.setCached(Boolean.TRUE)
-        menu707.setExternal(Boolean.FALSE)
-        menuList.add(menu707)
-
-        val menu708 = Menu()
-        menu708.setPid(menu700.id)
-        menu708.setPermissionId(permission708.id)
-        menu708.setName("重采样品信息查询")
-        menu708.setTitle("重采样品信息查询")
-        menu708.setType("ROUTE")
-        menu708.setPath("/sampleManage/resampleSampleQuery")
-        menu708.setComponent("/sampleManage/resampleSampleQuery/index")
-        menu708.setSort(708)
-        menu708.setShowed(Boolean.TRUE)
-        menu708.setCached(Boolean.TRUE)
-        menu708.setExternal(Boolean.FALSE)
-        menuList.add(menu708)
-
-        val menu709 = Menu()
-        menu709.setPid(menu700.id)
-        menu709.setPermissionId(permission709.id)
-        menu709.setName("资料内审状态查询")
-        menu709.setTitle("资料内审状态查询")
-        menu709.setType("ROUTE")
-        menu709.setPath("/sampleManage/internalStatusInquiry")
-        menu709.setComponent("/sampleManage/internalStatusInquiry/index")
-        menu709.setSort(709)
-        menu709.setShowed(Boolean.TRUE)
-        menu709.setCached(Boolean.TRUE)
-        menu709.setExternal(Boolean.FALSE)
-        menuList.add(menu709)
-
-        val menu710 = Menu()
-        menu710.setPid(menu700.id)
-        menu710.setPermissionId(permission710.id)
-        menu710.setName("资料内审进展统计")
-        menu710.setTitle("资料内审进展统计")
-        menu710.setType("ROUTE")
-        menu710.setPath("/sampleSurveys/ky")
-        menu710.setComponent("/sampleSurveys/k/index")
-        menu710.setSort(710)
-        menu710.setShowed(Boolean.TRUE)
-        menu710.setCached(Boolean.TRUE)
-        menu710.setExternal(Boolean.FALSE)
-        menuList.add(menu710)
-
-        val menu711 = Menu()
-        menu711.setPid(menu700.id)
-        menu711.setPermissionId(permission711.id)
-        menu711.setName("采样调查信息查询")
-        menu711.setTitle("采样调查信息查询")
-        menu711.setType("ROUTE")
-        menu711.setPath("/sampleSurveys/l")
-        menu711.setComponent("/sampleSurveys/l/index")
-        menu711.setSort(711)
-        menu711.setShowed(Boolean.TRUE)
-        menu711.setCached(Boolean.TRUE)
-        menu711.setExternal(Boolean.FALSE)
-        menuList.add(menu711)
-
-        val menu712 = Menu()
-        menu712.setPid(menu700.id)
-        menu712.setPermissionId(permission712.id)
-        menu712.setName("单位取样进展统计")
-        menu712.setTitle("单位取样进展统计")
-        menu712.setType("ROUTE")
-        menu712.setPath("/sampleSurveys/i")
-        menu712.setComponent("/sampleSurveys/i/index")
-        menu712.setSort(712)
-        menu712.setShowed(Boolean.TRUE)
-        menu712.setCached(Boolean.TRUE)
-        menu712.setExternal(Boolean.FALSE)
-        menuList.add(menu712)
-
-        val menu800 = Menu()
-        menu800.setPermissionId(permission800.id)
-        menu800.setName("取样调查")
-        menu800.setTitle("取样调查")
-        menu800.setType("ROUTE")
-        menu800.setPath("/sampleSurvey")
-        menu800.setComponent("LAYOUT")
-        menu800.setSort(800)
-        menu800.setShowed(Boolean.TRUE)
-        menu800.setCached(Boolean.TRUE)
-        menu800.setExternal(Boolean.FALSE)
-        menuList.add(menu800)
-
-        val menu801 = Menu()
-        menu801.setPid(menu800.id)
-        menu801.setPermissionId(permission801.id)
-        menu801.setName("取样调查表单明细")
-        menu801.setTitle("取样调查表单明细")
-        menu801.setType("ROUTE")
-        menu801.setPath("/sampleSurvey/formDetails")
-        menu801.setComponent("/sampleSurvey/formDetails/index")
-        menu801.setSort(801)
-        menu801.setShowed(Boolean.TRUE)
-        menu801.setCached(Boolean.TRUE)
-        menu801.setExternal(Boolean.FALSE)
-        menuList.add(menu801)
-
-        val menu802 = Menu()
-        menu802.setPid(menu800.id)
-        menu802.setPermissionId(permission802.id)
-        menu802.setName("质控退回样点明细")
-        menu802.setTitle("质控退回样点明细")
-        menu802.setType("ROUTE")
-        menu802.setPath("/sampleSurvey/QCReturnDetails")
-        menu802.setComponent("/sampleSurvey/QCReturnDetails/index")
-        menu802.setSort(802)
-        menu802.setShowed(Boolean.TRUE)
-        menu802.setCached(Boolean.TRUE)
-        menu802.setExternal(Boolean.FALSE)
-        menuList.add(menu802)
-
-        val menu803 = Menu()
-        menu803.setPid(menu800.id)
-        menu803.setPermissionId(permission803.id)
-        menu803.setName("严重问题申诉记录")
-        menu803.setTitle("严重问题申诉记录")
-        menu803.setType("ROUTE")
-        menu803.setPath("/sampleSurvey/seriousProblemRecord")
-        menu803.setComponent("/sampleSurvey/seriousProblemRecord/index")
-        menu803.setSort(803)
-        menu803.setShowed(Boolean.TRUE)
-        menu803.setCached(Boolean.TRUE)
-        menu803.setExternal(Boolean.FALSE)
-        menuList.add(menu803)
-
-        val menu804 = Menu()
-        menu804.setPid(menu800.id)
-        menu804.setPermissionId(permission804.id)
-        menu804.setName("重采样品信息明细")
-        menu804.setTitle("重采样品信息明细")
-        menu804.setType("ROUTE")
-        menu804.setPath("/sampleSurvey/sampleInformationDetails")
-        menu804.setComponent("/sampleSurvey/sampleInformationDetails/index")
-        menu804.setSort(804)
-        menu804.setShowed(Boolean.TRUE)
-        menu804.setCached(Boolean.TRUE)
-        menu804.setExternal(Boolean.FALSE)
-        menuList.add(menu804)
-
-        val menu900 = Menu()
-        menu900.setPermissionId(permission900.id)
-        menu900.setName("采样质控管理")
-        menu900.setTitle("采样质控管理")
-        menu900.setType("ROUTE")
-        menu900.setPath("/samplingQualityControl")
-        menu900.setComponent("LAYOUT")
-        menu900.setSort(900)
-        menu900.setShowed(Boolean.TRUE)
-        menu900.setCached(Boolean.TRUE)
-        menu900.setExternal(Boolean.FALSE)
-        menuList.add(menu900)
-
-        val menu901 = Menu()
-        menu901.setPid(menu900.id)
-        menu901.setPermissionId(permission901.id)
-        menu901.setName("采样一级质控(县)任务")
-        menu901.setTitle("采样一级质控(县)任务")
-        menu901.setType("ROUTE")
-        menu901.setPath("/samplingQualityControl/a")
-        menu901.setComponent("/samplingQualityControl/a/index")
-        menu901.setSort(901)
-        menu901.setShowed(Boolean.TRUE)
-        menu901.setCached(Boolean.TRUE)
-        menu901.setExternal(Boolean.FALSE)
-        menuList.add(menu901)
-
-        val menu902 = Menu()
-        menu902.setPid(menu900.id)
-        menu902.setPermissionId(permission902.id)
-        menu902.setName("采样二级质控(市)任务")
-        menu902.setTitle("采样二级质控(市)任务")
-        menu902.setType("ROUTE")
-        menu902.setPath("/samplingQualityControl/b")
-        menu902.setComponent("/samplingQualityControl/b/index")
-        menu902.setSort(902)
-        menu902.setShowed(Boolean.TRUE)
-        menu902.setCached(Boolean.TRUE)
-        menu902.setExternal(Boolean.FALSE)
-        menuList.add(menu902)
-
-        val menu903 = Menu()
-        menu903.setPid(menu900.id)
-        menu903.setPermissionId(permission903.id)
-        menu903.setName("采样三级质控(省)任务")
-        menu903.setTitle("采样三级质控(省)任务")
-        menu903.setType("ROUTE")
-        menu903.setPath("/samplingQualityControl/c")
-        menu903.setComponent("/samplingQualityControl/c/index")
-        menu903.setSort(903)
-        menu903.setShowed(Boolean.TRUE)
-        menu903.setCached(Boolean.TRUE)
-        menu903.setExternal(Boolean.FALSE)
-        menuList.add(menu903)
-
-        val menu904 = Menu()
-        menu904.setPid(menu900.id)
-        menu904.setPermissionId(permission904.id)
-        menu904.setName("采样质控专家任务")
-        menu904.setTitle("采样质控专家任务")
-        menu904.setType("ROUTE")
-        menu904.setPath("/samplingQualityControl/d")
-        menu904.setComponent("/samplingQualityControl/d/index")
-        menu904.setSort(904)
-        menu904.setShowed(Boolean.TRUE)
-        menu904.setCached(Boolean.TRUE)
-        menu904.setExternal(Boolean.FALSE)
-        menuList.add(menu904)
-
-        val menu905 = Menu()
-        menu905.setPid(menu900.id)
-        menu905.setPermissionId(permission905.id)
-        menu905.setName("采样质控意见反馈")
-        menu905.setTitle("采样质控意见反馈")
-        menu905.setType("ROUTE")
-        menu905.setPath("/samplingQualityControl/e")
-        menu905.setComponent("/samplingQualityControl/e/index")
-        menu905.setSort(905)
-        menu905.setShowed(Boolean.TRUE)
-        menu905.setCached(Boolean.TRUE)
-        menu905.setExternal(Boolean.FALSE)
-        menuList.add(menu905)
-
-        val menu906 = Menu()
-        menu906.setPid(menu900.id)
-        menu906.setPermissionId(permission906.id)
-        menu906.setName("取样资料质控进度")
-        menu906.setTitle("取样资料质控进度")
-        menu906.setType("ROUTE")
-        menu906.setPath("/samplingQualityControl/f")
-        menu906.setComponent("/samplingQualityControl/f/index")
-        menu906.setSort(906)
-        menu906.setShowed(Boolean.TRUE)
-        menu906.setCached(Boolean.TRUE)
-        menu906.setExternal(Boolean.FALSE)
-        menuList.add(menu906)
-
-        val menu907 = Menu()
-        menu907.setPid(menu900.id)
-        menu907.setPermissionId(permission907.id)
-        menu907.setName("采样质控专家查询")
-        menu907.setTitle("采样质控专家查询")
-        menu907.setType("ROUTE")
-        menu907.setPath("/samplingQualityControl/g")
-        menu907.setComponent("/samplingQualityControl/g/index")
-        menu907.setSort(907)
-        menu907.setShowed(Boolean.TRUE)
-        menu907.setCached(Boolean.TRUE)
-        menu907.setExternal(Boolean.FALSE)
-        menuList.add(menu907)
-
-        val menu908 = Menu()
-        menu908.setPid(menu900.id)
-        menu908.setPermissionId(permission908.id)
-        menu908.setName("采样质控意见退回")
-        menu908.setTitle("采样质控意见退回")
-        menu908.setType("ROUTE")
-        menu908.setPath("/samplingQualityControl/h")
-        menu908.setComponent("/samplingQualityControl/h/index")
-        menu908.setSort(908)
-        menu908.setShowed(Boolean.TRUE)
-        menu908.setCached(Boolean.TRUE)
-        menu908.setExternal(Boolean.FALSE)
-        menuList.add(menu908)
-
-        val menu1000 = Menu()
-        menu1000.setPermissionId(permission1000.id)
-        menu1000.setName("样品检测管理")
-        menu1000.setTitle("样品检测管理")
-        menu1000.setType("ROUTE")
-        menu1000.setPath("/sampleTesting")
-        menu1000.setComponent("LAYOUT")
-        menu1000.setSort(1000)
-        menu1000.setShowed(Boolean.TRUE)
-        menu1000.setCached(Boolean.TRUE)
-        menu1000.setExternal(Boolean.FALSE)
-        menuList.add(menu1000)
-
-        val menu1001 = Menu()
-        menu1001.setPid(menu1000.id)
-        menu1001.setPermissionId(permission1001.id)
-        menu1001.setName("批次送检样交接单")
-        menu1001.setTitle("批次送检样交接单")
-        menu1001.setType("ROUTE")
-        menu1001.setPath("/sampleTesting/a")
-        menu1001.setComponent("/sampleTesting/a/index")
-        menu1001.setSort(1001)
-        menu1001.setShowed(Boolean.TRUE)
-        menu1001.setCached(Boolean.TRUE)
-        menu1001.setExternal(Boolean.FALSE)
-        menuList.add(menu1001)
-
-        val menu1002 = Menu()
-        menu1002.setPid(menu1000.id)
-        menu1002.setPermissionId(permission1002.id)
-        menu1002.setName("检测子样信息查询")
-        menu1002.setTitle("检测子样信息查询")
-        menu1002.setType("ROUTE")
-        menu1002.setPath("/sampleTesting/b")
-        menu1002.setComponent("/sampleTesting/b/index")
-        menu1002.setSort(1002)
-        menu1002.setShowed(Boolean.TRUE)
-        menu1002.setCached(Boolean.TRUE)
-        menu1002.setExternal(Boolean.FALSE)
-        menuList.add(menu1002)
-
-        val menu1003 = Menu()
-        menu1003.setPid(menu1000.id)
-        menu1003.setPermissionId(permission1003.id)
-        menu1003.setName("检测资质文件报送")
-        menu1003.setTitle("检测资质文件报送")
-        menu1003.setType("ROUTE")
-        menu1003.setPath("/sampleTesting/TestQualificationDocuments")
-        menu1003.setComponent("/sampleTesting/TestQualificationDocuments/index")
-        menu1003.setSort(1003)
-        menu1003.setShowed(Boolean.TRUE)
-        menu1003.setCached(Boolean.TRUE)
-        menu1003.setExternal(Boolean.FALSE)
-        menuList.add(menu1003)
-
-        val menu1004 = Menu()
-        menu1004.setPid(menu1000.id)
-        menu1004.setPermissionId(permission1004.id)
-        menu1004.setName("检测资质能力审核")
-        menu1004.setTitle("检测资质能力审核")
-        menu1004.setType("ROUTE")
-        menu1004.setPath("/sampleTesting/QualificationCompetencyAudit")
-        menu1004.setComponent("/sampleTesting/QualificationCompetencyAudit/index")
-        menu1004.setSort(1004)
-        menu1004.setShowed(Boolean.TRUE)
-        menu1004.setCached(Boolean.TRUE)
-        menu1004.setExternal(Boolean.FALSE)
-        menuList.add(menu1004)
-
-        val menu1005 = Menu()
-        menu1005.setPid(menu1000.id)
-        menu1005.setPermissionId(permission1005.id)
-        menu1005.setName("基本检测方法标准")
-        menu1005.setTitle("基本检测方法标准")
-        menu1005.setType("ROUTE")
-        menu1005.setPath("/sampleTesting/e")
-        menu1005.setComponent("/sampleTesting/e/index")
-        menu1005.setSort(1005)
-        menu1005.setShowed(Boolean.TRUE)
-        menu1005.setCached(Boolean.TRUE)
-        menu1005.setExternal(Boolean.FALSE)
-        menuList.add(menu1005)
-
-        val menu1006 = Menu()
-        menu1006.setPid(menu1000.id)
-        menu1006.setPermissionId(permission1006.id)
-        menu1006.setName("地方新增检测方法")
-        menu1006.setTitle("地方新增检测方法")
-        menu1006.setType("ROUTE")
-        menu1006.setPath("/sampleTesting/f")
-        menu1006.setComponent("/sampleTesting/f/index")
-        menu1006.setSort(1006)
-        menu1006.setShowed(Boolean.TRUE)
-        menu1006.setCached(Boolean.TRUE)
-        menu1006.setExternal(Boolean.FALSE)
-        menuList.add(menu1006)
-
-        val menu1007 = Menu()
-        menu1007.setPid(menu1000.id)
-        menu1007.setPermissionId(permission1007.id)
-        menu1007.setName("方法验证材料上传")
-        menu1007.setTitle("方法验证材料上传")
-        menu1007.setType("ROUTE")
-        menu1007.setPath("/sampleTesting/g")
-        menu1007.setComponent("/sampleTesting/g/index")
-        menu1007.setSort(1007)
-        menu1007.setShowed(Boolean.TRUE)
-        menu1007.setCached(Boolean.TRUE)
-        menu1007.setExternal(Boolean.FALSE)
-        menuList.add(menu1007)
-
-        val menu1008 = Menu()
-        menu1008.setPid(menu1000.id)
-        menu1008.setPermissionId(permission1008.id)
-        menu1008.setName("方法验证材料审核")
-        menu1008.setTitle("方法验证材料审核")
-        menu1008.setType("ROUTE")
-        menu1008.setPath("/sampleTesting/h")
-        menu1008.setComponent("/sampleTesting/h/index")
-        menu1008.setSort(1008)
-        menu1008.setShowed(Boolean.TRUE)
-        menu1008.setCached(Boolean.TRUE)
-        menu1008.setExternal(Boolean.FALSE)
-        menuList.add(menu1008)
-
-        val menu1009 = Menu()
-        menu1009.setPid(menu1000.id)
-        menu1009.setPermissionId(permission1009.id)
-        menu1009.setName("统一监控样品管理")
-        menu1009.setTitle("统一监控样品管理")
-        menu1009.setType("ROUTE")
-        menu1009.setPath("/sampleTesting/i")
-        menu1009.setComponent("/sampleTesting/i/index")
-        menu1009.setSort(1009)
-        menu1009.setShowed(Boolean.TRUE)
-        menu1009.setCached(Boolean.TRUE)
-        menu1009.setExternal(Boolean.FALSE)
-        menuList.add(menu1009)
-
-        val menu1010 = Menu()
-        menu1010.setPid(menu1000.id)
-        menu1010.setPermissionId(permission1010.id)
-        menu1010.setName("统一监控样品查询")
-        menu1010.setTitle("统一监控样品查询")
-        menu1010.setType("ROUTE")
-        menu1010.setPath("/sampleTesting/j")
-        menu1010.setComponent("/sampleTesting/j/index")
-        menu1010.setSort(1010)
-        menu1010.setShowed(Boolean.TRUE)
-        menu1010.setCached(Boolean.TRUE)
-        menu1010.setExternal(Boolean.FALSE)
-        menuList.add(menu1010)
-
-        val menu1011 = Menu()
-        menu1011.setPid(menu1000.id)
-        menu1011.setPermissionId(permission1011.id)
-        menu1011.setName("严重问题样品查询")
-        menu1011.setTitle("严重问题样品查询")
-        menu1011.setType("ROUTE")
-        menu1011.setPath("/sampleTesting/k")
-        menu1011.setComponent("/sampleTesting/k/index")
-        menu1011.setSort(1011)
-        menu1011.setShowed(Boolean.TRUE)
-        menu1011.setCached(Boolean.TRUE)
-        menu1011.setExternal(Boolean.FALSE)
-        menuList.add(menu1011)
-
-        val menu1012 = Menu()
-        menu1012.setPid(menu1000.id)
-        menu1012.setPermissionId(permission1012.id)
-        menu1012.setName("批次检测数据报送")
-        menu1012.setTitle("批次检测数据报送")
-        menu1012.setType("ROUTE")
-        menu1012.setPath("/sampleTesting/l")
-        menu1012.setComponent("/sampleTesting/l/index")
-        menu1012.setSort(1012)
-        menu1012.setShowed(Boolean.TRUE)
-        menu1012.setCached(Boolean.TRUE)
-        menu1012.setExternal(Boolean.FALSE)
-        menuList.add(menu1012)
-
-        val menu1013 = Menu()
-        menu1013.setPid(menu1000.id)
-        menu1013.setPermissionId(permission1013.id)
-        menu1013.setName("批次检测数据整改")
-        menu1013.setTitle("批次检测数据整改")
-        menu1013.setType("ROUTE")
-        menu1013.setPath("/sampleTesting/m")
-        menu1013.setComponent("/sampleTesting/m/index")
-        menu1013.setSort(1013)
-        menu1013.setShowed(Boolean.TRUE)
-        menu1013.setCached(Boolean.TRUE)
-        menu1013.setExternal(Boolean.FALSE)
-        menuList.add(menu1013)
-
-        val menu1014 = Menu()
-        menu1014.setPid(menu1000.id)
-        menu1014.setPermissionId(permission1014.id)
-        menu1014.setName("样品检测数据查询")
-        menu1014.setTitle("样品检测数据查询")
-        menu1014.setType("ROUTE")
-        menu1014.setPath("/sampleTesting/n")
-        menu1014.setComponent("/sampleTesting/n/index")
-        menu1014.setSort(1014)
-        menu1014.setShowed(Boolean.TRUE)
-        menu1014.setCached(Boolean.TRUE)
-        menu1014.setExternal(Boolean.FALSE)
-        menuList.add(menu1014)
-
-        val menu1100 = Menu()
-        menu1100.setPermissionId(permission1100.id)
-        menu1100.setName("数据质量审核")
-        menu1100.setTitle("数据质量审核")
-        menu1100.setType("ROUTE")
-        menu1100.setPath("/dataQualityAudits")
-        menu1100.setComponent("LAYOUT")
-        menu1100.setSort(1100)
-        menu1100.setShowed(Boolean.TRUE)
-        menu1100.setCached(Boolean.TRUE)
-        menu1100.setExternal(Boolean.FALSE)
-        menuList.add(menu1100)
-
-        val menu1101 = Menu()
-        menu1101.setPid(menu1100.id)
-        menu1101.setPermissionId(permission1101.id)
-        menu1101.setName("检测一级质控(县)任务")
-        menu1101.setTitle("检测一级质控(县)任务")
-        menu1101.setType("ROUTE")
-        menu1101.setPath("/dataQualityAudits/a")
-        menu1101.setComponent("/dataQualityAudits/a/index")
-        menu1101.setSort(1101)
-        menu1101.setShowed(Boolean.TRUE)
-        menu1101.setCached(Boolean.TRUE)
-        menu1101.setExternal(Boolean.FALSE)
-        menuList.add(menu1101)
-
-        val menu1102 = Menu()
-        menu1102.setPid(menu1100.id)
-        menu1102.setPermissionId(permission1102.id)
-        menu1102.setName("检测二级质控(市)任务")
-        menu1102.setTitle("检测二级质控(市)任务")
-        menu1102.setType("ROUTE")
-        menu1102.setPath("/dataQualityAudits/b")
-        menu1102.setComponent("/dataQualityAudits/b/index")
-        menu1102.setSort(1102)
-        menu1102.setShowed(Boolean.TRUE)
-        menu1102.setCached(Boolean.TRUE)
-        menu1102.setExternal(Boolean.FALSE)
-        menuList.add(menu1102)
-
-        val menu1103 = Menu()
-        menu1103.setPid(menu1100.id)
-        menu1103.setPermissionId(permission1103.id)
-        menu1103.setName("检测三级质控(省)任务")
-        menu1103.setTitle("检测三级质控(省)任务")
-        menu1103.setType("ROUTE")
-        menu1103.setPath("/dataQualityAudits/c")
-        menu1103.setComponent("/dataQualityAudits/c/index")
-        menu1103.setSort(1103)
-        menu1103.setShowed(Boolean.TRUE)
-        menu1103.setCached(Boolean.TRUE)
-        menu1103.setExternal(Boolean.FALSE)
-        menuList.add(menu1103)
-
-        val menu1104 = Menu()
-        menu1104.setPid(menu1100.id)
-        menu1104.setPermissionId(permission1104.id)
-        menu1104.setName("检测质控专家任务")
-        menu1104.setTitle("检测质控专家任务")
-        menu1104.setType("ROUTE")
-        menu1104.setPath("/dataQualityAudits/d")
-        menu1104.setComponent("/dataQualityAudits/d/index")
-        menu1104.setSort(1104)
-        menu1104.setShowed(Boolean.TRUE)
-        menu1104.setCached(Boolean.TRUE)
-        menu1104.setExternal(Boolean.FALSE)
-        menuList.add(menu1104)
-
-        val menu1105 = Menu()
-        menu1105.setPid(menu1100.id)
-        menu1105.setPermissionId(permission1105.id)
-        menu1105.setName("检测质控意见反馈")
-        menu1105.setTitle("检测质控意见反馈")
-        menu1105.setType("ROUTE")
-        menu1105.setPath("/dataQualityAudits/e")
-        menu1105.setComponent("/dataQualityAudits/e/index")
-        menu1105.setSort(1105)
-        menu1105.setShowed(Boolean.TRUE)
-        menu1105.setCached(Boolean.TRUE)
-        menu1105.setExternal(Boolean.FALSE)
-        menuList.add(menu1105)
-
-        val menu1106 = Menu()
-        menu1106.setPid(menu1100.id)
-        menu1106.setPermissionId(permission1106.id)
-        menu1106.setName("质控退改批次查询")
-        menu1106.setTitle("质控退改批次查询")
-        menu1106.setType("ROUTE")
-        menu1106.setPath("/dataQualityAudits/f")
-        menu1106.setComponent("/dataQualityAudits/f/index")
-        menu1106.setSort(1106)
-        menu1106.setShowed(Boolean.TRUE)
-        menu1106.setCached(Boolean.TRUE)
-        menu1106.setExternal(Boolean.FALSE)
-        menuList.add(menu1106)
-
-        val menu1200 = Menu()
-        menu1200.setPermissionId(permission1200.id)
-        menu1200.setName("数据统计分析")
-        menu1200.setTitle("数据统计分析")
-        menu1200.setType("ROUTE")
-        menu1200.setPath("/statisticalAnalysisOfData")
-        menu1200.setComponent("LAYOUT")
-        menu1200.setSort(1200)
-        menu1200.setShowed(Boolean.TRUE)
-        menu1200.setCached(Boolean.TRUE)
-        menu1200.setExternal(Boolean.FALSE)
-        menuList.add(menu1200)
-
-        val menu1300 = Menu()
-        menu1300.setPermissionId(permission1300.id)
-        menu1300.setName("数据对标评价")
-        menu1300.setTitle("数据对标评价")
-        menu1300.setType("ROUTE")
-        menu1300.setPath("/dataBenchmarkingEvaluation")
-        menu1300.setComponent("LAYOUT")
-        menu1300.setSort(1300)
-        menu1300.setShowed(Boolean.TRUE)
-        menu1300.setCached(Boolean.TRUE)
-        menu1300.setExternal(Boolean.FALSE)
-        menuList.add(menu1300)
-
-        val menu1400 = Menu()
-        menu1400.setPermissionId(permission1400.id)
-        menu1400.setName("工作文件管理")
-        menu1400.setTitle("工作文件管理")
-        menu1400.setType("ROUTE")
-        menu1400.setPath("/workFileManagement")
-        menu1400.setComponent("LAYOUT")
-        menu1400.setSort(1400)
-        menu1400.setShowed(Boolean.TRUE)
-        menu1400.setCached(Boolean.TRUE)
-        menu1400.setExternal(Boolean.FALSE)
-        menuList.add(menu1400)
-
-        val menu1401 = Menu()
-        menu1401.setPid(menu1400.id)
-        menu1401.setPermissionId(permission1401.id)
-        menu1401.setName("工作文件下载")
-        menu1401.setTitle("工作文件下载")
-        menu1401.setType("ROUTE")
-        menu1401.setPath("/workFileManagement/a")
-        menu1401.setComponent("LAYOUT")
-        menu1401.setSort(1401)
-        menu1401.setShowed(Boolean.TRUE)
-        menu1401.setCached(Boolean.TRUE)
-        menu1401.setExternal(Boolean.FALSE)
-        menuList.add(menu1401)
-
-        val menu1500 = Menu()
-        menu1500.setPermissionId(permission1500.id)
-        menu1500.setName("后台数据管理")
-        menu1500.setTitle("后台数据管理")
-        menu1500.setType("ROUTE")
-        menu1500.setPath("/system")
-        menu1500.setComponent("LAYOUT")
-        menu1500.setSort(1500)
-        menu1500.setShowed(Boolean.TRUE)
-        menu1500.setCached(Boolean.TRUE)
-        menu1500.setExternal(Boolean.FALSE)
-        menuList.add(menu1500)
-
-        val menu1501 = Menu()
-        menu1501.setPid(menu1500.id)
-        menu1501.setPermissionId(permission1501.id)
-        menu1501.setName("单位管理")
-        menu1501.setTitle("单位管理")
-        menu1501.setType("ROUTE")
-        menu1501.setPath("/system/organization")
-        menu1501.setComponent("/system/organization/index")
-        menu1501.setSort(1501)
-        menu1501.setShowed(Boolean.TRUE)
-        menu1501.setCached(Boolean.TRUE)
-        menu1501.setExternal(Boolean.FALSE)
-        menuList.add(menu1501)
-
-        val menu1502 = Menu()
-        menu1502.setPid(menu1500.id)
-        menu1502.setPermissionId(permission1502.id)
-        menu1502.setName("用户管理")
-        menu1502.setTitle("用户管理")
-        menu1502.setType("ROUTE")
-        menu1502.setPath("/system/user")
-        menu1502.setComponent("/system/user/index")
-        menu1502.setSort(1502)
-        menu1502.setShowed(Boolean.TRUE)
-        menu1502.setCached(Boolean.TRUE)
-        menu1502.setExternal(Boolean.FALSE)
-        menuList.add(menu1502)
-
-        val menu1503 = Menu()
-        menu1503.setPid(menu1500.id)
-        menu1503.setPermissionId(permission1503.id)
-        menu1503.setName("角色管理")
-        menu1503.setTitle("角色管理")
-        menu1503.setType("ROUTE")
-        menu1503.setPath("/system/role")
-        menu1503.setComponent("/system/role/index")
-        menu1503.setSort(1503)
-        menu1503.setShowed(Boolean.TRUE)
-        menu1503.setCached(Boolean.TRUE)
-        menu1503.setExternal(Boolean.FALSE)
-        menuList.add(menu1503)
-
-        val menu1504 = Menu()
-        menu1504.setPid(menu1500.id)
-        menu1504.setPermissionId(permission1504.id)
-        menu1504.setName("权限管理")
-        menu1504.setTitle("权限管理")
-        menu1504.setType("ROUTE")
-        menu1504.setPath("/system/permission")
-        menu1504.setComponent("/system/permission/index")
-        menu1504.setSort(1504)
-        menu1504.setShowed(Boolean.TRUE)
-        menu1504.setCached(Boolean.TRUE)
-        menu1504.setExternal(Boolean.FALSE)
-        menuList.add(menu1504)
-
-        val menu1505 = Menu()
-        menu1505.setPid(menu1500.id)
-        menu1505.setPermissionId(permission1505.id)
-        menu1505.setName("菜单管理")
-        menu1505.setTitle("菜单管理")
-        menu1505.setType("ROUTE")
-        menu1505.setPath("/system/menu")
-        menu1505.setComponent("/system/menu/index")
-        menu1505.setSort(1505)
-        menu1505.setShowed(Boolean.TRUE)
-        menu1505.setCached(Boolean.TRUE)
-        menu1505.setExternal(Boolean.FALSE)
-        menuList.add(menu1505)
-
-        val menu1506 = Menu()
-        menu1506.setPid(menu1500.id)
-        menu1506.setPermissionId(permission1506.id)
-        menu1506.setName("字典管理")
-        menu1506.setTitle("字典管理")
-        menu1506.setType("ROUTE")
-        menu1506.setPath("/system/dict")
-        menu1506.setComponent("/system/dict/index")
-        menu1506.setSort(1506)
-        menu1506.setShowed(Boolean.TRUE)
-        menu1506.setCached(Boolean.TRUE)
-        menu1506.setExternal(Boolean.FALSE)
-        menuList.add(menu1506)
-        menuRepository.saveAll(menuList)
+        val userRole = UserRole(userId = user.id, roleId = role.id)
+        userRoleRepository.save(userRole)
+
+
+        val permission100 = Permission(name = "基础数据管理", sort = 100)
+        permissionRepository.save(permission100)
+        val permission101 = Permission(pid = permission100.id, name = "业务管理账号开通", sort = 101)
+        val permission102 = Permission(pid = permission100.id, name = "业务管理单位授权", sort = 102)
+        val permission103 = Permission(pid = permission100.id, name = "技术单位信息管理", sort = 103)
+        val permission104 = Permission(pid = permission100.id, name = "技术专家信息维护", sort = 104)
+        val permission105 = Permission(pid = permission100.id, name = "数据字典管理", sort = 105)
+        val permission106 = Permission(pid = permission100.id, name = "设备终端授权管理", sort = 106)
+        val permission107 = Permission(pid = permission100.id, name = "平台用户新增维护", sort = 107)
+        val permission100List = listOfNotNull(
+            permission101,
+            permission102,
+            permission103,
+            permission104,
+            permission105,
+            permission106,
+            permission107
+        )
+        permissionRepository.saveAll(permission100List)
+        val permission200 = Permission(name = "用户单位管理", sort = 200)
+        permissionRepository.save(permission200)
+        val permission201 = Permission(pid = permission200.id, name = "管理单位用户维护", sort = 201)
+        val permission202 = Permission(pid = permission200.id, name = "技术单位业务申请", sort = 202)
+        val permission203 = Permission(pid = permission200.id, name = "技术单位业务审核", sort = 203)
+        val permission204 = Permission(pid = permission200.id, name = "技术单位用户维护", sort = 204)
+        val permission205 = Permission(pid = permission200.id, name = "技术专家业务申请", sort = 205)
+        val permission206 = Permission(pid = permission200.id, name = "技术专家业务审核", sort = 206)
+        val permission207 = Permission(pid = permission200.id, name = "调查小组新建维护", sort = 207)
+        val permission208 = Permission(pid = permission200.id, name = "调查单位信息查询", sort = 208)
+        val permission209 = Permission(pid = permission200.id, name = "调查用户信息查询", sort = 209)
+        val permission200List = listOfNotNull(
+            permission201,
+            permission202,
+            permission203,
+            permission204,
+            permission205,
+            permission206,
+            permission207,
+            permission208,
+            permission209
+        )
+        permissionRepository.saveAll(permission200List)
+        val permission300 = Permission(name = "项目任务管理", sort = 300)
+        permissionRepository.save(permission300)
+        val permission301 = Permission(pid = permission300.id, name = "项目新增维护", sort = 301)
+        val permission302 = Permission(pid = permission300.id, name = "监管对象维护", sort = 302)
+        val permission303 = Permission(pid = permission300.id, name = "任务下发管理", sort = 303)
+        val permission304 = Permission(pid = permission300.id, name = "牵头单位实施", sort = 304)
+        val permission305 = Permission(pid = permission300.id, name = "监管对象信息查询", sort = 305)
+        val permission306 = Permission(pid = permission300.id, name = "技术单位任务执行", sort = 306)
+        val permission300List = listOfNotNull(
+            permission301,
+            permission302,
+            permission303,
+            permission304,
+            permission305,
+            permission306
+        )
+        permissionRepository.saveAll(permission300List)
+        val permission400 = Permission(name = "点位布设管理", sort = 400)
+        permissionRepository.save(permission400)
+        val permission401 = Permission(pid = permission400.id, name = "测试项目新增维护", sort = 401)
+        val permission402 = Permission(pid = permission400.id, name = "测试项目分类管理", sort = 402)
+        val permission403 = Permission(pid = permission400.id, name = "布点人员任务分配", sort = 403)
+        val permission404 = Permission(pid = permission400.id, name = "布点数据成果录入", sort = 404)
+        val permission405 = Permission(pid = permission400.id, name = "布点方案数据退回", sort = 405)
+        val permission406 = Permission(pid = permission400.id, name = "布点方案数据查询", sort = 406)
+        val permission407 = Permission(pid = permission400.id, name = "新增测试项目审核", sort = 407)
+        val permission400List = listOfNotNull(
+            permission401,
+            permission402,
+            permission403,
+            permission404,
+            permission405,
+            permission406,
+            permission407
+        )
+        permissionRepository.saveAll(permission400List)
+        val permission500 = Permission(name = "点位布设", sort = 500)
+        permissionRepository.save(permission500)
+        val permission501 = Permission(pid = permission500.id, name = "布点方案问题整改", sort = 501)
+        val permission502 = Permission(pid = permission500.id, name = "布点方案数据维护", sort = 502)
+        val permission503 = Permission(pid = permission500.id, name = "布点方案信息查询", sort = 503)
+        val permission500List = listOfNotNull(
+            permission501,
+            permission502,
+            permission503
+        )
+        permissionRepository.saveAll(permission500List)
+        val permission600 = Permission(name = "布点质控管理", sort = 600)
+        permissionRepository.save(permission600)
+        val permission601 = Permission(pid = permission600.id, name = "布点质控专家组维护", sort = 601)
+        val permission602 = Permission(pid = permission600.id, name = "一级质控(县)任务分配", sort = 602)
+        val permission603 = Permission(pid = permission600.id, name = "二级质控(市)任务分配", sort = 603)
+        val permission604 = Permission(pid = permission600.id, name = "三级质控(省)任务分配", sort = 604)
+        val permission605 = Permission(pid = permission600.id, name = "布点质控专家组任务", sort = 605)
+        val permission606 = Permission(pid = permission600.id, name = "布点质控意见反馈", sort = 606)
+        val permission607 = Permission(pid = permission600.id, name = "布点质控专家查询", sort = 607)
+        val permission608 = Permission(pid = permission600.id, name = "布点质控意见退回", sort = 608)
+        val permission600List = listOfNotNull(
+            permission601,
+            permission602,
+            permission603,
+            permission604,
+            permission605,
+            permission606,
+            permission607,
+            permission608
+        )
+        permissionRepository.saveAll(permission600List)
+        val permission700 = Permission(name = "采样调查管理", sort = 700)
+        permissionRepository.save(permission700)
+        val permission701 = Permission(pid = permission700.id, name = "牵头单位组织实施", sort = 701)
+        val permission702 = Permission(pid = permission700.id, name = "采样小组任务分配", sort = 702)
+        val permission703 = Permission(pid = permission700.id, name = "采样调查信息查询", sort = 703)
+        val permission704 = Permission(pid = permission700.id, name = "检测子样进度查询", sort = 704)
+        val permission705 = Permission(pid = permission700.id, name = "取样调查表单下载", sort = 705)
+        val permission706 = Permission(pid = permission700.id, name = "采样资料单位内审", sort = 706)
+        val permission707 = Permission(pid = permission700.id, name = "质控退回样点查询", sort = 707)
+        val permission708 = Permission(pid = permission700.id, name = "批次样品运送表单", sort = 708)
+        val permission709 = Permission(pid = permission700.id, name = "单位取样进展统计", sort = 709)
+        val permission710 = Permission(pid = permission700.id, name = "资料内审状态查询", sort = 710)
+        val permission711 = Permission(pid = permission700.id, name = "资料内审进展统计", sort = 711)
+        val permission712 = Permission(pid = permission700.id, name = "重采样品信息查询", sort = 712)
+        val permission713 = Permission(pid = permission700.id, name = "严重质量问题申诉", sort = 713)
+        val permission700List = listOfNotNull(
+            permission701,
+            permission702,
+            permission703,
+            permission704,
+            permission705,
+            permission706,
+            permission707,
+            permission708,
+            permission709,
+            permission710,
+            permission711,
+            permission712,
+            permission713
+        )
+        permissionRepository.saveAll(permission700List)
+        val permission800 = Permission(name = "取样调查", sort = 800)
+        permissionRepository.save(permission800)
+        val permission801 = Permission(pid = permission800.id, name = "取样调查表单明细", sort = 801)
+        val permission802 = Permission(pid = permission800.id, name = "质控退回样点明细", sort = 802)
+        val permission803 = Permission(pid = permission800.id, name = "严重问题申诉记录", sort = 803)
+        val permission804 = Permission(pid = permission800.id, name = "重采样品信息明细", sort = 804)
+        val permission800List = listOfNotNull(
+            permission801,
+            permission802,
+            permission803,
+            permission804
+        )
+        permissionRepository.saveAll(permission800List)
+        val permission900 = Permission(name = "采样质控管理", sort = 900)
+        permissionRepository.save(permission900)
+        val permission901 = Permission(pid = permission900.id, name = "采样一级质控(县)任务", sort = 901)
+        val permission902 = Permission(pid = permission900.id, name = "采样二级质控(市)任务", sort = 902)
+        val permission903 = Permission(pid = permission900.id, name = "采样三级质控(省)任务", sort = 903)
+        val permission904 = Permission(pid = permission900.id, name = "采样质控专家任务", sort = 904)
+        val permission905 = Permission(pid = permission900.id, name = "采样质控意见反馈", sort = 905)
+        val permission906 = Permission(pid = permission900.id, name = "取样资料质控进度", sort = 906)
+        val permission907 = Permission(pid = permission900.id, name = "采样质控专家查询", sort = 907)
+        val permission908 = Permission(pid = permission900.id, name = "采样质控意见退回", sort = 908)
+        val permission900List = listOfNotNull(
+            permission901,
+            permission902,
+            permission903,
+            permission904,
+            permission905,
+            permission906,
+            permission907,
+            permission908
+        )
+        permissionRepository.saveAll(permission900List)
+        val permission1000 = Permission(name = "样品检测管理", sort = 1000)
+        permissionRepository.save(permission1000)
+        val permission1001 = Permission(pid = permission1000.id, name = "批次送检样交接单", sort = 1001)
+        val permission1002 = Permission(pid = permission1000.id, name = "检测子样信息查询", sort = 1002)
+        val permission1003 = Permission(pid = permission1000.id, name = "检测资质文件报送", sort = 1003)
+        val permission1004 = Permission(pid = permission1000.id, name = "检测资质能力审核", sort = 1004)
+        val permission1005 = Permission(pid = permission1000.id, name = "基本检测方法标准", sort = 1005)
+        val permission1006 = Permission(pid = permission1000.id, name = "地方新增检测方法", sort = 1006)
+        val permission1007 = Permission(pid = permission1000.id, name = "方法验证材料上传", sort = 1007)
+        val permission1008 = Permission(pid = permission1000.id, name = "方法验证材料审核", sort = 1008)
+        val permission1009 = Permission(pid = permission1000.id, name = "统一监控样品管理", sort = 1009)
+        val permission1010 = Permission(pid = permission1000.id, name = "统一监控样品查询", sort = 1010)
+        val permission1011 = Permission(pid = permission1000.id, name = "严重问题样品查询", sort = 1011)
+        val permission1012 = Permission(pid = permission1000.id, name = "批次检测数据报送", sort = 1012)
+        val permission1013 = Permission(pid = permission1000.id, name = "批次检测数据整改", sort = 1013)
+        val permission1014 = Permission(pid = permission1000.id, name = "样品检测数据查询", sort = 1014)
+        val permission1000List = listOfNotNull(
+            permission1001,
+            permission1002,
+            permission1003,
+            permission1004,
+            permission1005,
+            permission1006,
+            permission1007,
+            permission1008,
+            permission1009,
+            permission1010,
+            permission1011,
+            permission1012,
+            permission1013,
+            permission1014
+        )
+        permissionRepository.saveAll(permission1000List)
+        val permission1100 = Permission(name = "数据质量审核", sort = 1100)
+        permissionRepository.save(permission1100)
+        val permission1101 = Permission(pid = permission1100.id, name = "检测一级质控(县)任务", sort = 1101)
+        val permission1102 = Permission(pid = permission1100.id, name = "检测二级质控(市)任务", sort = 1102)
+        val permission1103 = Permission(pid = permission1100.id, name = "检测三级质控(省)任务", sort = 1103)
+        val permission1104 = Permission(pid = permission1100.id, name = "检测质控专家任务", sort = 1104)
+        val permission1105 = Permission(pid = permission1100.id, name = "检测质控意见反馈", sort = 1105)
+        val permission1106 = Permission(pid = permission1100.id, name = "质控退改批次查询", sort = 1106)
+        val permission1100List = listOfNotNull(
+            permission1101,
+            permission1102,
+            permission1103,
+            permission1104,
+            permission1105,
+            permission1106
+        )
+        permissionRepository.saveAll(permission1100List)
+        val permission1200 = Permission(name = "数据统计分析", sort = 1200)
+        permissionRepository.save(permission1200)
+        val permission1300 = Permission(name = "数据对标评价", sort = 1300)
+        permissionRepository.save(permission1300)
+        val permission1400 = Permission(name = "工作文件管理", sort = 1400)
+        permissionRepository.save(permission1400)
+        val permission1401 = Permission(pid = permission1400.id, name = "工作文件下载", sort = 1401)
+        permissionRepository.save(permission1401)
+        val permission1500 = Permission(name = "后台数据管理", sort = 1500)
+        permissionRepository.save(permission1500)
+        val permission1501 = Permission(pid = permission1500.id, name = "单位管理", sort = 1501)
+        val permission1502 = Permission(pid = permission1500.id, name = "用户管理", sort = 1502)
+        val permission1503 = Permission(pid = permission1500.id, name = "角色管理", sort = 1503)
+        val permission1504 = Permission(pid = permission1500.id, name = "权限管理", sort = 1504)
+        val permission1505 = Permission(pid = permission1500.id, name = "菜单管理", sort = 1505)
+        val permission1506 = Permission(pid = permission1500.id, name = "字典管理", sort = 1506)
+        val permission1500List = listOfNotNull(
+            permission1501,
+            permission1502,
+            permission1503,
+            permission1504,
+            permission1505,
+            permission1506
+        )
+        permissionRepository.saveAll(permission1500List)
+
+
+        val menu100 = Menu(
+            permissionId = permission100.id,
+            name = "基础数据管理",
+            title = "基础数据管理",
+            type = "ROUTE",
+            path = "/basic",
+            component = "LAYOUT",
+            sort = 100,
+            showed = true,
+            cached = true,
+            external = false
+        )
+        menuRepository.save(menu100)
+        val menu101 = Menu(
+            pid = menu100.id,
+            permissionId = permission101.id,
+            name = "业务管理账号开通",
+            title = "业务管理账号开通",
+            type = "ROUTE",
+            path = "/basic/accountOpen",
+            component = "/basic/accountOpen/index",
+            sort = 101,
+            showed = true,
+            cached = true,
+            external = false
+        )
+        val menu102 = Menu(
+            pid = menu100.id,
+            permissionId = permission102.id,
+            name = "业务管理单位授权",
+            title = "业务管理单位授权",
+            type = "ROUTE",
+            path = "/basic/empower",
+            component = "/basic/empower/index",
+            sort = 102,
+            showed = true,
+            cached = true,
+            external = false
+        )
+        val menu103 = Menu(
+            pid = menu100.id,
+            permissionId = permission103.id,
+            name = "技术单位信息管理",
+            title = "技术单位信息管理",
+            type = "ROUTE",
+            path = "/basic/orgInfoManage",
+            component = "/basic/orgInfoManage/index",
+            sort = 103,
+            showed = true,
+            cached = true,
+            external = false
+        )
+        val menu104 = Menu(
+            pid = menu100.id,
+            permissionId = permission104.id,
+            name = "技术专家信息维护",
+            title = "技术专家信息维护",
+            type = "ROUTE",
+            path = "/basic/d",
+            component = "/basic/d/index",
+            sort = 104,
+            showed = true,
+            cached = true,
+            external = false
+        )
+        val menu105 = Menu(
+            pid = menu100.id,
+            permissionId = permission105.id,
+            name = "平台新增用户维护",
+            title = "平台新增用户维护",
+            type = "ROUTE",
+            path = "/basic/newUsersManage",
+            component = "/basic/newUsersManage/index",
+            sort = 105,
+            showed = true,
+            cached = true,
+            external = false
+        )
+        val menu106 = Menu(
+            pid = menu100.id,
+            permissionId = permission106.id,
+            name = "设备终端授权管理",
+            title = "设备终端授权管理",
+            type = "ROUTE",
+            path = "/basic/f",
+            component = "/basic/f/index",
+            sort = 106,
+            showed = true,
+            cached = true,
+            external = false
+        )
+        val menu100List = listOfNotNull(
+            menu101,
+            menu102,
+            menu103,
+            menu104,
+            menu105,
+            menu106
+        )
+        menuRepository.saveAll(menu100List)
+        val menu200 = Menu(
+            permissionId = permission200.id,
+            name = "用户单位管理",
+            title = "用户单位管理",
+            type = "ROUTE",
+            path = "/organization",
+            component = "LAYOUT",
+            sort = 200,
+            showed = true,
+            cached = true,
+            external = false
+        )
+        menuRepository.save(menu200)
+        val menu201 = Menu(
+            pid = menu200.id,
+            permissionId = permission201.id,
+            name = "管理单位用户维护",
+            title = "管理单位用户维护",
+            type = "ROUTE",
+            path = "/organization/manageUnitUser",
+            component = "/organization/manageUnitUser/index",
+            sort = 201,
+            showed = true,
+            cached = true,
+            external = false
+        )
+        val menu202 = Menu(
+            pid = menu200.id,
+            permissionId = permission202.id,
+            name = "技术单位业务申请",
+            title = "技术单位业务申请",
+            type = "ROUTE",
+            path = "/organization/organizationBusinessApply",
+            component = "/organization/organizationBusinessApply/index",
+            sort = 202,
+            showed = true,
+            cached = true,
+            external = false
+        )
+        val menu203 = Menu(
+            pid = menu200.id,
+            permissionId = permission203.id,
+            name = "技术单位业务审核",
+            title = "技术单位业务审核",
+            type = "ROUTE",
+            path = "/organization/organizationBusinessCheck",
+            component = "/organization/organizationBusinessCheck/index",
+            sort = 203,
+            showed = true,
+            cached = true,
+            external = false
+        )
+        val menu204 = Menu(
+            pid = menu200.id,
+            permissionId = permission204.id,
+            name = "技术单位用户维护",
+            title = "技术单位用户维护",
+            type = "ROUTE",
+            path = "/organization/technicalUnitUser",
+            component = "/organization/technicalUnitUser/index",
+            sort = 204,
+            showed = true,
+            cached = true,
+            external = false
+        )
+        val menu205 = Menu(
+            pid = menu200.id,
+            permissionId = permission205.id,
+            name = "技术专家业务申请",
+            title = "技术专家业务申请",
+            type = "ROUTE",
+            path = "/organization/e",
+            component = "/organization/e/index",
+            sort = 205,
+            showed = true,
+            cached = true,
+            external = false
+        )
+        val menu206 = Menu(
+            pid = menu200.id,
+            permissionId = permission206.id,
+            name = "技术专家业务审核",
+            title = "技术专家业务审核",
+            type = "ROUTE",
+            path = "/organization/f",
+            component = "/organization/f/index",
+            sort = 206,
+            showed = true,
+            cached = true,
+            external = false
+        )
+        val menu207 = Menu(
+            pid = menu200.id,
+            permissionId = permission207.id,
+            name = "调查小组新建维护",
+            title = "调查小组新建维护",
+            type = "ROUTE",
+            path = "/organization/groupAddOrUpt",
+            component = "/organization/groupAddOrUpt/index",
+            sort = 207,
+            showed = true,
+            cached = true,
+            external = false
+        )
+        val menu208 = Menu(
+            pid = menu200.id,
+            permissionId = permission208.id,
+            name = "调查单位信息查询",
+            title = "调查单位信息查询",
+            type = "ROUTE",
+            path = "/organization/unitInformationQuery",
+            component = "/organization/unitInformationQuery/index",
+            sort = 208,
+            showed = true,
+            cached = true,
+            external = false
+        )
+        val menu209 = Menu(
+            pid = menu200.id,
+            permissionId = permission209.id,
+            name = "调查用户信息查询",
+            title = "调查用户信息查询",
+            type = "ROUTE",
+            path = "/organization/userInformationQuery",
+            component = "/organization/userInformationQuery/index",
+            sort = 209,
+            showed = true,
+            cached = true,
+            external = false
+        )
+        val menu200List = listOfNotNull(
+            menu201,
+            menu202,
+            menu203,
+            menu204,
+            menu205,
+            menu206,
+            menu207,
+            menu208,
+            menu209
+        )
+        menuRepository.saveAll(menu200List)
+        val menu300 = Menu(
+            permissionId = permission300.id,
+            name = "项目任务管理",
+            title = "项目任务管理",
+            type = "ROUTE",
+            path = "/projectTask",
+            component = "LAYOUT",
+            sort = 300,
+            showed = true,
+            cached = true,
+            external = false
+        )
+        menuRepository.save(menu300)
+        val menu301 = Menu(
+            pid = menu300.id,
+            permissionId = permission301.id,
+            name = "调查项目新增维护",
+            title = "调查项目新增维护",
+            type = "ROUTE",
+            path = "/projectTask/a",
+            component = "/projectTask/a/index",
+            sort = 301,
+            showed = true,
+            cached = true,
+            external = false
+        )
+        val menu302 = Menu(
+            pid = menu300.id,
+            permissionId = permission302.id,
+            name = "监管对象新增维护",
+            title = "监管对象新增维护",
+            type = "ROUTE",
+            path = "/projectTask/superviseObjectMaintain",
+            component = "/projectTask/superviseObjectMaintain/index",
+            sort = 302,
+            showed = true,
+            cached = true,
+            external = false
+        )
+        val menu303 = Menu(
+            pid = menu300.id,
+            permissionId = permission303.id,
+            name = "工作任务下发管理",
+            title = "工作任务下发管理",
+            type = "ROUTE",
+            path = "/projectTask/taskDistribution",
+            component = "/projectTask/taskDistribution/index",
+            sort = 303,
+            showed = true,
+            cached = true,
+            external = false
+        )
+        val menu304 = Menu(
+            pid = menu300.id,
+            permissionId = permission304.id,
+            name = "牵头单位组织实施",
+            title = "牵头单位组织实施",
+            type = "ROUTE",
+            path = "/projectTask/leadOrgImplement",
+            component = "/projectTask/leadOrgImplement/index",
+            sort = 304,
+            showed = true,
+            cached = true,
+            external = false
+        )
+        val menu305 = Menu(
+            pid = menu300.id,
+            permissionId = permission305.id,
+            name = "技术单位任务执行",
+            title = "技术单位任务执行",
+            type = "ROUTE",
+            path = "/projectTask/taskExecution",
+            component = "/projectTask/taskExecution/index",
+            sort = 305,
+            showed = true,
+            cached = true,
+            external = false
+        )
+        val menu306 = Menu(
+            pid = menu300.id,
+            permissionId = permission306.id,
+            name = "监管对象信息查询",
+            title = "监管对象信息查询",
+            type = "ROUTE",
+            path = "/projectTask/supervisionInformationQuery",
+            component = "/projectTask/supervisionInformationQuery/index",
+            sort = 306,
+            showed = true,
+            cached = true,
+            external = false
+        )
+        val menu300List = listOfNotNull(
+            menu301,
+            menu302,
+            menu303,
+            menu304,
+            menu305,
+            menu306
+        )
+        menuRepository.saveAll(menu300List)
+        val menu400 = Menu(
+            permissionId = permission400.id,
+            name = "点位布设管理",
+            title = "点位布设管理",
+            type = "ROUTE",
+            path = "/pointManage",
+            component = "LAYOUT",
+            sort = 400,
+            showed = true,
+            cached = true,
+            external = false
+        )
+        menuRepository.save(menu400)
+        val menu401 = Menu(
+            pid = menu400.id,
+            permissionId = permission401.id,
+            name = "测试项目新增维护",
+            title = "测试项目新增维护",
+            type = "ROUTE",
+            path = "/pointManage/testMaintenance",
+            component = "/pointManage/testMaintenance/index",
+            sort = 401,
+            showed = true,
+            cached = true,
+            external = false
+        )
+        val menu402 = Menu(
+            pid = menu400.id,
+            permissionId = permission402.id,
+            name = "测试项目分类管理",
+            title = "测试项目分类管理",
+            type = "ROUTE",
+            path = "/pointManage/testClassification",
+            component = "/pointManage/testClassification/index",
+            sort = 402,
+            showed = true,
+            cached = true,
+            external = false
+        )
+        val menu403 = Menu(
+            pid = menu400.id,
+            permissionId = permission403.id,
+            name = "新增测试项目审核",
+            title = "新增测试项目审核",
+            type = "ROUTE",
+            path = "/pointManage/addTestItemAudit",
+            component = "/pointManage/addTestItemAudit/index",
+            sort = 403,
+            showed = true,
+            cached = true,
+            external = false
+        )
+        val menu404 = Menu(
+            pid = menu400.id,
+            permissionId = permission404.id,
+            name = "布点人员任务分配",
+            title = "布点人员任务分配",
+            type = "ROUTE",
+            path = "/pointManage/assignPersonnelTask",
+            component = "/pointManage/assignPersonnelTask/index",
+            sort = 404,
+            showed = true,
+            cached = true,
+            external = false
+        )
+        val menu405 = Menu(
+            pid = menu400.id,
+            permissionId = permission405.id,
+            name = "布点数据成果录入",
+            title = "布点数据成果录入",
+            type = "ROUTE",
+            // TODO 应该是 pointManage 吧？
+            path = "/pointUserTasks/LayOutMethodMaintain",
+            component = "/pointUserTasks/LayOutMethodMaintain/index",
+            sort = 405,
+            showed = true,
+            cached = true,
+            external = false
+        )
+        val menu406 = Menu(
+            pid = menu400.id,
+            permissionId = permission406.id,
+            name = "布点方案数据退回",
+            title = "布点方案数据退回",
+            type = "ROUTE",
+            path = "/pointManage/dotsDataReturned",
+            component = "/pointManage/dotsDataReturned/index",
+            sort = 406,
+            showed = true,
+            cached = true,
+            external = false
+        )
+        val menu407 = Menu(
+            pid = menu400.id,
+            permissionId = permission407.id,
+            name = "布点方案数据查询",
+            title = "布点方案数据查询",
+            type = "ROUTE",
+            // TODO 应该是 pointManage 吧？
+            path = "/point/f",
+            component = "/point/f/index",
+            sort = 407,
+            showed = true,
+            cached = true,
+            external = false
+        )
+        val menu400List = listOfNotNull(
+            menu401,
+            menu402,
+            menu403,
+            menu404,
+            menu405,
+            menu406,
+            menu407
+        )
+        menuRepository.saveAll(menu400List)
+        val menu500 = Menu(
+            permissionId = permission500.id,
+            name = "点位布设",
+            title = "点位布设",
+            type = "ROUTE",
+            path = "/pointLayout",
+            component = "LAYOUT",
+            sort = 500,
+            showed = true,
+            cached = true,
+            external = false
+        )
+        menuRepository.save(menu500)
+        val menu501 = Menu(
+            pid = menu500.id,
+            permissionId = permission501.id,
+            name = "布点方案数据维护",
+            title = "布点方案数据维护",
+            type = "ROUTE",
+            path = "pointLayout/planMaintain",
+            component = "pointLayout/planMaintain/index",
+            sort = 501,
+            showed = true,
+            cached = true,
+            external = false
+        )
+        val menu502 = Menu(
+            pid = menu500.id,
+            permissionId = permission502.id,
+            name = "布点方案问题整改",
+            title = "布点方案问题整改",
+            type = "ROUTE",
+            path = "pointLayout/planUpdate",
+            component = "pointLayout/planUpdate/index",
+            sort = 502,
+            showed = true,
+            cached = true,
+            external = false
+        )
+        val menu503 = Menu(
+            pid = menu500.id,
+            permissionId = permission503.id,
+            name = "布点方案信息查询",
+            title = "布点方案信息查询",
+            type = "ROUTE",
+            path = "pointLayout/planQuery",
+            component = "pointLayout/planQuery/index",
+            sort = 503,
+            showed = true,
+            cached = true,
+            external = false
+        )
+        val menu500List = listOfNotNull(
+            menu501,
+            menu502,
+            menu503
+        )
+        menuRepository.saveAll(menu500List)
+        val menu600 = Menu(
+            permissionId = permission600.id,
+            name = "布点质控管理",
+            title = "布点质控管理",
+            type = "ROUTE",
+            path = "/layout",
+            component = "LAYOUT",
+            sort = 600,
+            showed = true,
+            cached = true,
+            external = false
+        )
+        menuRepository.save(menu600)
+        val menu601 = Menu(
+            pid = menu600.id,
+            permissionId = permission601.id,
+            name = "布点质控专家组维护",
+            title = "布点质控专家组维护",
+            type = "ROUTE",
+            path = "/layout/a",
+            component = "/layout/a/index",
+            sort = 601,
+            showed = true,
+            cached = true,
+            external = false
+        )
+        val menu602 = Menu(
+            pid = menu600.id,
+            permissionId = permission602.id,
+            name = "一级质控(县)任务分配",
+            title = "一级质控(县)任务分配",
+            type = "ROUTE",
+            path = "/layout/b",
+            component = "/layout/b/index",
+            sort = 602,
+            showed = true,
+            cached = true,
+            external = false
+        )
+        val menu603 = Menu(
+            pid = menu600.id,
+            permissionId = permission603.id,
+            name = "二级质控(市)任务分配",
+            title = "二级质控(市)任务分配",
+            type = "ROUTE",
+            path = "/layout/c",
+            component = "/layout/c/index",
+            sort = 603,
+            showed = true,
+            cached = true,
+            external = false
+        )
+        val menu604 = Menu(
+            pid = menu600.id,
+            permissionId = permission604.id,
+            name = "三级质控(省)任务分配",
+            title = "三级质控(省)任务分配",
+            type = "ROUTE",
+            path = "/layout/d",
+            component = "/layout/d/index",
+            sort = 604,
+            showed = true,
+            cached = true,
+            external = false
+        )
+        val menu605 = Menu(
+            pid = menu600.id,
+            permissionId = permission605.id,
+            name = "布点质控专家组任务",
+            title = "布点质控专家组任务",
+            type = "ROUTE",
+            path = "/layout/e",
+            component = "/layout/e/index",
+            sort = 605,
+            showed = true,
+            cached = true,
+            external = false
+        )
+        val menu606 = Menu(
+            pid = menu600.id,
+            permissionId = permission606.id,
+            name = "布点质控意见反馈",
+            title = "布点质控意见反馈",
+            type = "ROUTE",
+            path = "/layout/f",
+            component = "/layout/f/index",
+            sort = 606,
+            showed = true,
+            cached = true,
+            external = false
+        )
+        val menu607 = Menu(
+            pid = menu600.id,
+            permissionId = permission607.id,
+            name = "布点质控专家查询",
+            title = "布点质控专家查询",
+            type = "ROUTE",
+            path = "/layout/g",
+            component = "/layout/g/index",
+            sort = 607,
+            showed = true,
+            cached = true,
+            external = false
+        )
+        val menu608 = Menu(
+            pid = menu600.id,
+            permissionId = permission608.id,
+            name = "布点质控意见退回",
+            title = "布点质控意见退回",
+            type = "ROUTE",
+            path = "/layout/h",
+            component = "/layout/h/index",
+            sort = 608,
+            showed = true,
+            cached = true,
+            external = false
+        )
+        val menu600List = listOfNotNull(
+            menu601,
+            menu602,
+            menu603,
+            menu604,
+            menu605,
+            menu606,
+            menu607,
+            menu608
+        )
+        menuRepository.saveAll(menu600List)
+        val menu700 = Menu(
+            permissionId = permission700.id,
+            name = "采样调查管理",
+            title = "采样调查管理",
+            type = "ROUTE",
+            path = "/sampleManage",
+            component = "LAYOUT",
+            sort = 700,
+            showed = true,
+            cached = true,
+            external = false
+        )
+        menuRepository.save(menu700)
+        val menu701 = Menu(
+            pid = menu700.id,
+            permissionId = permission701.id,
+            name = "取样小组任务分配",
+            title = "取样小组任务分配",
+            type = "ROUTE",
+            path = "/sampleManage/sampleGroupTask",
+            component = "/sampleManage/sampleGroupTask/index",
+            sort = 701,
+            showed = true,
+            cached = true,
+            external = false
+        )
+        val menu702 = Menu(
+            pid = menu700.id,
+            permissionId = permission702.id,
+            name = "批次样品运送表单",
+            title = "批次样品运送表单",
+            type = "ROUTE",
+            path = "/sampleManage/sampleShippingForm",
+            component = "/sampleManage/sampleShippingForm/index",
+            sort = 702,
+            showed = true,
+            cached = true,
+            external = false
+        )
+        val menu703 = Menu(
+            pid = menu700.id,
+            permissionId = permission703.id,
+            name = "取样调查表单下载",
+            title = "取样调查表单下载",
+            type = "ROUTE",
+            path = "/sampleManage/formDownload",
+            component = "/sampleManage/formDownload/index",
+            sort = 703,
+            showed = true,
+            cached = true,
+            external = false
+        )
+        val menu704 = Menu(
+            pid = menu700.id,
+            permissionId = permission704.id,
+            name = "子样流转进度查询",
+            title = "子样流转进度查询",
+            type = "ROUTE",
+            path = "/sampleManage/sampleProgressQuery",
+            component = "/sampleManage/sampleProgressQuery/index",
+            sort = 704,
+            showed = true,
+            cached = true,
+            external = false
+        )
+        val menu705 = Menu(
+            pid = menu700.id,
+            permissionId = permission705.id,
+            name = "取样资料单位内审",
+            title = "取样资料单位内审",
+            type = "ROUTE",
+            path = "/sampleManage/CYInformationCheck",
+            component = "/sampleManage/CYInformationCheck/index",
+            sort = 705,
+            showed = true,
+            cached = true,
+            external = false
+        )
+        val menu706 = Menu(
+            pid = menu700.id,
+            permissionId = permission706.id,
+            name = "质控退回样点查询",
+            title = "质控退回样点查询",
+            type = "ROUTE",
+            path = "/sampleManage/QCPointQuery",
+            component = "/sampleManage/QCPointQuery/index",
+            sort = 706,
+            showed = true,
+            cached = true,
+            external = false
+        )
+        val menu707 = Menu(
+            pid = menu700.id,
+            permissionId = permission707.id,
+            name = "严重质量问题申诉",
+            title = "严重质量问题申诉",
+            type = "ROUTE",
+            path = "/sampleManage/seriousIssueAppeal",
+            component = "/sampleManage/seriousIssueAppeal/index",
+            sort = 707,
+            showed = true,
+            cached = true,
+            external = false
+        )
+        val menu708 = Menu(
+            pid = menu700.id,
+            permissionId = permission708.id,
+            name = "重采样品信息查询",
+            title = "重采样品信息查询",
+            type = "ROUTE",
+            path = "/sampleManage/resampleSampleQuery",
+            component = "/sampleManage/resampleSampleQuery/index",
+            sort = 708,
+            showed = true,
+            cached = true,
+            external = false
+        )
+        val menu709 = Menu(
+            pid = menu700.id,
+            permissionId = permission709.id,
+            name = "资料内审状态查询",
+            title = "资料内审状态查询",
+            type = "ROUTE",
+            path = "/sampleManage/internalStatusInquiry",
+            component = "/sampleManage/internalStatusInquiry/index",
+            sort = 709,
+            showed = true,
+            cached = true,
+            external = false
+        )
+        val menu710 = Menu(
+            pid = menu700.id,
+            permissionId = permission710.id,
+            name = "资料内审进展统计",
+            title = "资料内审进展统计",
+            type = "ROUTE",
+            // TODO 应该是 sampleManage 吧？
+            path = "/sampleSurveys/ky",
+            component = "/sampleSurveys/ky/index",
+            sort = 710,
+            showed = true,
+            cached = true,
+            external = false
+        )
+        val menu711 = Menu(
+            pid = menu700.id,
+            permissionId = permission711.id,
+            name = "采样调查信息查询",
+            title = "采样调查信息查询",
+            type = "ROUTE",
+            // TODO 应该是 sampleManage 吧？
+            path = "/sampleSurveys/l",
+            component = "/sampleSurveys/l/index",
+            sort = 711,
+            showed = true,
+            cached = true,
+            external = false
+        )
+        val menu712 = Menu(
+            pid = menu700.id,
+            permissionId = permission712.id,
+            name = "单位取样进展统计",
+            title = "单位取样进展统计",
+            type = "ROUTE",
+            // TODO 应该是 sampleManage 吧？
+            path = "/sampleSurveys/i",
+            component = "/sampleSurveys/i/index",
+            sort = 712,
+            showed = true,
+            cached = true,
+            external = false
+        )
+        val menu700List = listOfNotNull(
+            menu701,
+            menu702,
+            menu703,
+            menu704,
+            menu705,
+            menu706,
+            menu707,
+            menu708,
+            menu709,
+            menu710,
+            menu711,
+            menu712
+        )
+        menuRepository.saveAll(menu700List)
+        val menu800 = Menu(
+            permissionId = permission800.id,
+            name = "取样调查",
+            title = "取样调查",
+            type = "ROUTE",
+            path = "/sampleSurvey",
+            component = "LAYOUT",
+            sort = 800,
+            showed = true,
+            cached = true,
+            external = false
+        )
+        menuRepository.save(menu800)
+        val menu801 = Menu(
+            pid = menu800.id,
+            permissionId = permission801.id,
+            name = "取样调查表单明细",
+            title = "取样调查表单明细",
+            type = "ROUTE",
+            path = "/sampleSurvey/formDetails",
+            component = "/sampleSurvey/formDetails/index",
+            sort = 801,
+            showed = true,
+            cached = true,
+            external = false
+        )
+        val menu802 = Menu(
+            pid = menu800.id,
+            permissionId = permission802.id,
+            name = "质控退回样点明细",
+            title = "质控退回样点明细",
+            type = "ROUTE",
+            path = "/sampleSurvey/QCReturnDetails",
+            component = "/sampleSurvey/QCReturnDetails/index",
+            sort = 802,
+            showed = true,
+            cached = true,
+            external = false
+        )
+        val menu803 = Menu(
+            pid = menu800.id,
+            permissionId = permission803.id,
+            name = "严重问题申诉记录",
+            title = "严重问题申诉记录",
+            type = "ROUTE",
+            path = "/sampleSurvey/seriousProblemRecord",
+            component = "/sampleSurvey/seriousProblemRecord/index",
+            sort = 803,
+            showed = true,
+            cached = true,
+            external = false
+        )
+        val menu804 = Menu(
+            pid = menu800.id,
+            permissionId = permission804.id,
+            name = "重采样品信息明细",
+            title = "重采样品信息明细",
+            type = "ROUTE",
+            path = "/sampleSurvey/sampleInformationDetails",
+            component = "/sampleSurvey/sampleInformationDetails/index",
+            sort = 804,
+            showed = true,
+            cached = true,
+            external = false
+        )
+        val menu800List = listOfNotNull(
+            menu801,
+            menu802,
+            menu803,
+            menu804
+        )
+        menuRepository.saveAll(menu800List)
+        val menu900 = Menu(
+            permissionId = permission900.id,
+            name = "采样质控管理",
+            title = "采样质控管理",
+            type = "ROUTE",
+            path = "/samplingQualityControl",
+            component = "LAYOUT",
+            sort = 900,
+            showed = true,
+            cached = true,
+            external = false
+        )
+        menuRepository.save(menu900)
+        val menu901 = Menu(
+            pid = menu900.id,
+            permissionId = permission901.id,
+            name = "采样一级质控(县)任务",
+            title = "采样一级质控(县)任务",
+            type = "ROUTE",
+            path = "/samplingQualityControl/a",
+            component = "/samplingQualityControl/a/index",
+            sort = 901,
+            showed = true,
+            cached = true,
+            external = false
+        )
+        val menu902 = Menu(
+            pid = menu900.id,
+            permissionId = permission902.id,
+            name = "采样二级质控(市)任务",
+            title = "采样二级质控(市)任务",
+            type = "ROUTE",
+            path = "/samplingQualityControl/b",
+            component = "/samplingQualityControl/b/index",
+            sort = 902,
+            showed = true,
+            cached = true,
+            external = false
+        )
+        val menu903 = Menu(
+            pid = menu900.id,
+            permissionId = permission903.id,
+            name = "采样三级质控(省)任务",
+            title = "采样三级质控(省)任务",
+            type = "ROUTE",
+            path = "/samplingQualityControl/c",
+            component = "/samplingQualityControl/c/index",
+            sort = 903,
+            showed = true,
+            cached = true,
+            external = false
+        )
+        val menu904 = Menu(
+            pid = menu900.id,
+            permissionId = permission904.id,
+            name = "采样质控专家任务",
+            title = "采样质控专家任务",
+            type = "ROUTE",
+            path = "/samplingQualityControl/d",
+            component = "/samplingQualityControl/d/index",
+            sort = 904,
+            showed = true,
+            cached = true,
+            external = false
+        )
+        val menu905 = Menu(
+            pid = menu900.id,
+            permissionId = permission905.id,
+            name = "采样质控意见反馈",
+            title = "采样质控意见反馈",
+            type = "ROUTE",
+            path = "/samplingQualityControl/e",
+            component = "/samplingQualityControl/e/index",
+            sort = 905,
+            showed = true,
+            cached = true,
+            external = false
+        )
+        val menu906 = Menu(
+            pid = menu900.id,
+            permissionId = permission906.id,
+            name = "取样资料质控进度",
+            title = "取样资料质控进度",
+            type = "ROUTE",
+            path = "/samplingQualityControl/f",
+            component = "/samplingQualityControl/f/index",
+            sort = 906,
+            showed = true,
+            cached = true,
+            external = false
+        )
+        val menu907 = Menu(
+            pid = menu900.id,
+            permissionId = permission907.id,
+            name = "采样质控专家查询",
+            title = "采样质控专家查询",
+            type = "ROUTE",
+            path = "/samplingQualityControl/g",
+            component = "/samplingQualityControl/g/index",
+            sort = 907,
+            showed = true,
+            cached = true,
+            external = false
+        )
+        val menu908 = Menu(
+            pid = menu900.id,
+            permissionId = permission908.id,
+            name = "采样质控意见退回",
+            title = "采样质控意见退回",
+            type = "ROUTE",
+            path = "/samplingQualityControl/h",
+            component = "/samplingQualityControl/h/index",
+            sort = 908,
+            showed = true,
+            cached = true,
+            external = false
+        )
+        val menu900List = listOfNotNull(
+            menu901,
+            menu902,
+            menu903,
+            menu904,
+            menu905,
+            menu906,
+            menu907,
+            menu908
+        )
+        menuRepository.saveAll(menu900List)
+        val menu1000 = Menu(
+            permissionId = permission1000.id,
+            name = "样品检测管理",
+            title = "样品检测管理",
+            type = "ROUTE",
+            path = "/sampleTesting",
+            component = "LAYOUT",
+            sort = 1000,
+            showed = true,
+            cached = true,
+            external = false
+        )
+        menuRepository.save(menu1000)
+        val menu1001 = Menu(
+            pid = menu1000.id,
+            permissionId = permission1001.id,
+            name = "批次送检样交接单",
+            title = "批次送检样交接单",
+            type = "ROUTE",
+            path = "/sampleTesting/a",
+            component = "/sampleTesting/a/index",
+            sort = 1001,
+            showed = true,
+            cached = true,
+            external = false
+        )
+        val menu1002 = Menu(
+            pid = menu1000.id,
+            permissionId = permission1002.id,
+            name = "检测子样信息查询",
+            title = "检测子样信息查询",
+            type = "ROUTE",
+            path = "/sampleTesting/b",
+            component = "/sampleTesting/b/index",
+            sort = 1002,
+            showed = true,
+            cached = true,
+            external = false
+        )
+        val menu1003 = Menu(
+            pid = menu1000.id,
+            permissionId = permission1003.id,
+            name = "检测资质文件报送",
+            title = "检测资质文件报送",
+            type = "ROUTE",
+            path = "/sampleTesting/TestQualificationDocuments",
+            component = "/sampleTesting/TestQualificationDocuments/index",
+            sort = 1003,
+            showed = true,
+            cached = true,
+            external = false
+        )
+        val menu1004 = Menu(
+            pid = menu1000.id,
+            permissionId = permission1004.id,
+            name = "检测资质能力审核",
+            title = "检测资质能力审核",
+            type = "ROUTE",
+            path = "/sampleTesting/QualificationCompetencyAudit",
+            component = "/sampleTesting/QualificationCompetencyAudit/index",
+            sort = 1004,
+            showed = true,
+            cached = true,
+            external = false
+        )
+        val menu1005 = Menu(
+            pid = menu1000.id,
+            permissionId = permission1005.id,
+            name = "基本检测方法标准",
+            title = "基本检测方法标准",
+            type = "ROUTE",
+            path = "/sampleTesting/e",
+            component = "/sampleTesting/e/index",
+            sort = 1005,
+            showed = true,
+            cached = true,
+            external = false
+        )
+        val menu1006 = Menu(
+            pid = menu1000.id,
+            permissionId = permission1006.id,
+            name = "地方新增检测方法",
+            title = "地方新增检测方法",
+            type = "ROUTE",
+            path = "/sampleTesting/f",
+            component = "/sampleTesting/f/index",
+            sort = 1006,
+            showed = true,
+            cached = true,
+            external = false
+        )
+        val menu1007 = Menu(
+            pid = menu1000.id,
+            permissionId = permission1007.id,
+            name = "方法验证材料上传",
+            title = "方法验证材料上传",
+            type = "ROUTE",
+            path = "/sampleTesting/g",
+            component = "/sampleTesting/g/index",
+            sort = 1007,
+            showed = true,
+            cached = true,
+            external = false
+        )
+        val menu1008 = Menu(
+            pid = menu1000.id,
+            permissionId = permission1008.id,
+            name = "方法验证材料审核",
+            title = "方法验证材料审核",
+            type = "ROUTE",
+            path = "/sampleTesting/h",
+            component = "/sampleTesting/h/index",
+            sort = 1008,
+            showed = true,
+            cached = true,
+            external = false
+        )
+        val menu1009 = Menu(
+            pid = menu1000.id,
+            permissionId = permission1009.id,
+            name = "统一监控样品管理",
+            title = "统一监控样品管理",
+            type = "ROUTE",
+            path = "/sampleTesting/i",
+            component = "/sampleTesting/i/index",
+            sort = 1009,
+            showed = true,
+            cached = true,
+            external = false
+        )
+        val menu1010 = Menu(
+            pid = menu1000.id,
+            permissionId = permission1010.id,
+            name = "统一监控样品查询",
+            title = "统一监控样品查询",
+            type = "ROUTE",
+            path = "/sampleTesting/j",
+            component = "/sampleTesting/j/index",
+            sort = 1010,
+            showed = true,
+            cached = true,
+            external = false
+        )
+        val menu1011 = Menu(
+            pid = menu1000.id,
+            permissionId = permission1011.id,
+            name = "严重问题样品查询",
+            title = "严重问题样品查询",
+            type = "ROUTE",
+            path = "/sampleTesting/k",
+            component = "/sampleTesting/k/index",
+            sort = 1011,
+            showed = true,
+            cached = true,
+            external = false
+        )
+        val menu1012 = Menu(
+            pid = menu1000.id,
+            permissionId = permission1012.id,
+            name = "批次检测数据报送",
+            title = "批次检测数据报送",
+            type = "ROUTE",
+            path = "/sampleTesting/l",
+            component = "/sampleTesting/l/index",
+            sort = 1012,
+            showed = true,
+            cached = true,
+            external = false
+        )
+        val menu1013 = Menu(
+            pid = menu1000.id,
+            permissionId = permission1013.id,
+            name = "批次检测数据整改",
+            title = "批次检测数据整改",
+            type = "ROUTE",
+            path = "/sampleTesting/m",
+            component = "/sampleTesting/m/index",
+            sort = 1013,
+            showed = true,
+            cached = true,
+            external = false
+        )
+        val menu1014 = Menu(
+            pid = menu1000.id,
+            permissionId = permission1014.id,
+            name = "样品检测数据查询",
+            title = "样品检测数据查询",
+            type = "ROUTE",
+            path = "/sampleTesting/n",
+            component = "/sampleTesting/n/index",
+            sort = 1014,
+            showed = true,
+            cached = true,
+            external = false
+        )
+        val menu1000List = listOfNotNull(
+            menu1001,
+            menu1002,
+            menu1003,
+            menu1004,
+            menu1005,
+            menu1006,
+            menu1007,
+            menu1008,
+            menu1009,
+            menu1010,
+            menu1011,
+            menu1012,
+            menu1013,
+            menu1014
+        )
+        menuRepository.saveAll(menu1000List)
+        val menu1100 = Menu(
+            permissionId = permission1100.id,
+            name = "数据质量审核",
+            title = "数据质量审核",
+            type = "ROUTE",
+            path = "/dataQualityAudits",
+            component = "LAYOUT",
+            sort = 1100,
+            showed = true,
+            cached = true,
+            external = false
+        )
+        menuRepository.save(menu1100)
+        val menu1101 = Menu(
+            pid = menu1100.id,
+            permissionId = permission1101.id,
+            name = "检测一级质控(县)任务",
+            title = "检测一级质控(县)任务",
+            type = "ROUTE",
+            path = "/dataQualityAudits/a",
+            component = "/dataQualityAudits/a/index",
+            sort = 1101,
+            showed = true,
+            cached = true,
+            external = false
+        )
+        val menu1102 = Menu(
+            pid = menu1100.id,
+            permissionId = permission1102.id,
+            name = "检测二级质控(市)任务",
+            title = "检测二级质控(市)任务",
+            type = "ROUTE",
+            path = "/dataQualityAudits/b",
+            component = "/dataQualityAudits/b/index",
+            sort = 1102,
+            showed = true,
+            cached = true,
+            external = false
+        )
+        val menu1103 = Menu(
+            pid = menu1100.id,
+            permissionId = permission1103.id,
+            name = "检测三级质控(省)任务",
+            title = "检测三级质控(省)任务",
+            type = "ROUTE",
+            path = "/dataQualityAudits/c",
+            component = "/dataQualityAudits/c/index",
+            sort = 1103,
+            showed = true,
+            cached = true,
+            external = false
+        )
+        val menu1104 = Menu(
+            pid = menu1100.id,
+            permissionId = permission1104.id,
+            name = "检测质控专家任务",
+            title = "检测质控专家任务",
+            type = "ROUTE",
+            path = "/dataQualityAudits/d",
+            component = "/dataQualityAudits/d/index",
+            sort = 1104,
+            showed = true,
+            cached = true,
+            external = false
+        )
+        val menu1105 = Menu(
+            pid = menu1100.id,
+            permissionId = permission1105.id,
+            name = "检测质控意见反馈",
+            title = "检测质控意见反馈",
+            type = "ROUTE",
+            path = "/dataQualityAudits/e",
+            component = "/dataQualityAudits/e/index",
+            sort = 1105,
+            showed = true,
+            cached = true,
+            external = false
+        )
+        val menu1106 = Menu(
+            pid = menu1100.id,
+            permissionId = permission1106.id,
+            name = "质控退改批次查询",
+            title = "质控退改批次查询",
+            type = "ROUTE",
+            path = "/dataQualityAudits/f",
+            component = "/dataQualityAudits/f/index",
+            sort = 1106,
+            showed = true,
+            cached = true,
+            external = false
+        )
+        val menu1100List = listOfNotNull(
+            menu1101,
+            menu1102,
+            menu1103,
+            menu1104,
+            menu1105,
+            menu1106
+        )
+        menuRepository.saveAll(menu1100List)
+        val menu1200 = Menu(
+            permissionId = permission1200.id,
+            name = "数据统计分析",
+            title = "数据统计分析",
+            type = "ROUTE",
+            path = "/statisticalAnalysisOfData",
+            component = "LAYOUT",
+            sort = 1200,
+            showed = true,
+            cached = true,
+            external = false
+        )
+        menuRepository.save(menu1200)
+        val menu1300 = Menu(
+            permissionId = permission1300.id,
+            name = "数据对标评价",
+            title = "数据对标评价",
+            type = "ROUTE",
+            path = "/dataBenchmarkingEvaluation",
+            component = "LAYOUT",
+            sort = 1300,
+            showed = true,
+            cached = true,
+            external = false
+        )
+        menuRepository.save(menu1300)
+        val menu1400 = Menu(
+            permissionId = permission1400.id,
+            name = "工作文件管理",
+            title = "工作文件管理",
+            type = "ROUTE",
+            path = "/workFileManagement",
+            component = "LAYOUT",
+            sort = 1400,
+            showed = true,
+            cached = true,
+            external = false
+        )
+        menuRepository.save(menu1400)
+        val menu1401 = Menu(
+            pid = menu1400.id,
+            permissionId = permission1401.id,
+            name = "工作文件下载",
+            title = "工作文件下载",
+            type = "ROUTE",
+            path = "/workFileManagement/a",
+            component = "/workFileManagement/a/index",
+            sort = 1401,
+            showed = true,
+            cached = true,
+            external = false
+        )
+        menuRepository.save(menu1401)
+        val menu1500 = Menu(
+            permissionId = permission1500.id,
+            name = "后台数据管理",
+            title = "后台数据管理",
+            type = "ROUTE",
+            path = "/system",
+            component = "LAYOUT",
+            sort = 1500,
+            showed = true,
+            cached = true,
+            external = false
+        )
+        menuRepository.save(menu1500)
+        val menu1501 = Menu(
+            pid = menu1500.id,
+            permissionId = permission1501.id,
+            name = "单位管理",
+            title = "单位管理",
+            type = "ROUTE",
+            path = "/system/organization",
+            component = "/system/organization/index",
+            sort = 1501,
+            showed = true,
+            cached = true,
+            external = false
+        )
+        val menu1502 = Menu(
+            pid = menu1500.id,
+            permissionId = permission1502.id,
+            name = "用户管理",
+            title = "用户管理",
+            type = "ROUTE",
+            path = "/system/user",
+            component = "/system/user/index",
+            sort = 1502,
+            showed = true,
+            cached = true,
+            external = false
+        )
+        val menu1503 = Menu(
+            pid = menu1500.id,
+            permissionId = permission1503.id,
+            name = "角色管理",
+            title = "角色管理",
+            type = "ROUTE",
+            path = "/system/role",
+            component = "/system/role/index",
+            sort = 1503,
+            showed = true,
+            cached = true,
+            external = false
+        )
+        val menu1504 = Menu(
+            pid = menu1500.id,
+            permissionId = permission1504.id,
+            name = "权限管理",
+            title = "权限管理",
+            type = "ROUTE",
+            path = "/system/permission",
+            component = "/system/permission/index",
+            sort = 1504,
+            showed = true,
+            cached = true,
+            external = false
+        )
+        val menu1505 = Menu(
+            pid = menu1500.id,
+            permissionId = permission1505.id,
+            name = "菜单管理",
+            title = "菜单管理",
+            type = "ROUTE",
+            path = "/system/menu",
+            component = "/system/menu/index",
+            sort = 1505,
+            showed = true,
+            cached = true,
+            external = false
+        )
+        val menu1506 = Menu(
+            pid = menu1500.id,
+            permissionId = permission1506.id,
+            name = "字典管理",
+            title = "字典管理",
+            type = "ROUTE",
+            path = "/system/dict",
+            component = "/system/dict/index",
+            sort = 1506,
+            showed = true,
+            cached = true,
+            external = false
+        )
+        val menu1500List = listOfNotNull(
+            menu1501,
+            menu1502,
+            menu1503,
+            menu1504,
+            menu1505,
+            menu1506
+        )
+        menuRepository.saveAll(menu1500List)
     }
 
     /**
      * 保存区域数据
      */
     private fun saveArea(parent: Dict?, child: Area, dictList: MutableList<Dict>) {
-        val dict = Dict()
-        dict.setValue(child.adCode.toInt())
-        dict.setName(child.name)
-        dict.setType("area")
-        dict.setSort(areaSort++)
-        dict.setPid(parent?.getValue())
+        val dict = Dict(
+            value = child.adCode.toInt(),
+            name = child.name,
+            type = "area",
+            sort = areaSort++,
+            pid = parent?.value
+        )
         dictList.add(dict)
         // 保存下级区域
         for (c in child.children) {

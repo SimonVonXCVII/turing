@@ -47,19 +47,19 @@ public class OrganizationDTO extends PageQuery {
     @NotBlank(message = "单位类型不能为空")
     private String type;
     /**
-     * 单位所在省编号
+     * 单位所在省（市、区）编码
      */
-    @NotNull(message = "单位所在省不能为空")
+    @NotNull(message = "单位所在省（市、区）不能为空")
     private Integer provinceCode;
     /**
-     * 单位所在市编号
+     * 单位所在市（州、盟）编码
      */
-    @NotNull(message = "单位所在市不能为空")
+    @NotNull(message = "单位所在市（州、盟）不能为空")
     private Integer cityCode;
     /**
-     * 单位所在县编号
+     * 单位所在县（市、旗）编码
      */
-    @NotNull(message = "单位所在县不能为空")
+    @NotNull(message = "单位所在县（市、旗）不能为空")
     private Integer districtCode;
     /**
      * 单位地址详情

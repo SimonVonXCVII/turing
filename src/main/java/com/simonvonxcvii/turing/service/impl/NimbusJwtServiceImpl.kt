@@ -96,7 +96,7 @@ class NimbusJwtServiceImpl(
                     .audience(listOf(username))
                     // 设置过期时间 （exp） 声明，该声明标识不得接受 JWT 进行处理的时间或之后的时间。
                     // 形参: expiresAt – 不得接受 JWT 进行处理的时间或之后的时间
-                    .expiresAt(now.plusSeconds(securityProperties.expires))
+                    .expiresAt(now.plusSeconds(securityProperties.expires.toLong()))
                     // 设置不早于 （nbf） 声明，该声明标识不得接受 JWT 进行处理的时间。
                     // 形参: notBefore——不得接受 JWT 进行处理的时间
                     .notBefore(now)

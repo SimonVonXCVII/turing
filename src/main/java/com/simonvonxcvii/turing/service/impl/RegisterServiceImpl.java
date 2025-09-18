@@ -85,9 +85,10 @@ public class RegisterServiceImpl implements RegisterService {
         // 管理员信息
         User user = new User();
         BeanUtils.copyProperties(dto, user);
-        user.setNeedSetPassword(Boolean.TRUE);
+        user.setNeedResetPassword(Boolean.TRUE);
         // 密码
-        user.setPassword(passwordEncoder.encode(user.getMobile().toString().substring(3)));
+        String password = passwordEncoder.encode(String.valueOf(user.getMobile()).substring(3));
+        user.setPassword(password);
         user.setOrgId(organization.getId());
         user.setOrgName(organization.getName());
         user.setManager(Boolean.TRUE);
@@ -97,10 +98,10 @@ public class RegisterServiceImpl implements RegisterService {
         userRepository.save(user);
 
         // 赋予单位管理员角色
-        UserRole userRole = new UserRole()
-                .setUserId(user.getId())
-                // TODO: 2023/9/8
-                .setRoleId(40);
+        UserRole userRole = new UserRole();
+        userRole.setUserId(user.getId());
+        // TODO: 2023/9/8
+        userRole.setRoleId(40);
         userRoleRepository.save(userRole);
     }
 

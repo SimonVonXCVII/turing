@@ -1,103 +1,124 @@
-package com.simonvonxcvii.turing.entity;
+package com.simonvonxcvii.turing.entity
 
-import com.simonvonxcvii.turing.enums.FileTypeEnum;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
-import lombok.experimental.Accessors;
-import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.SQLRestriction;
+import com.simonvonxcvii.turing.enums.FileTypeEnum
+import jakarta.persistence.Column
+import jakarta.persistence.Entity
+import jakarta.persistence.Table
+import jakarta.persistence.UniqueConstraint
+import org.hibernate.annotations.Comment
+import org.hibernate.annotations.SQLDelete
+import org.hibernate.annotations.SQLRestriction
+import java.util.*
 
 /**
- * <p>
  * 文件表
- * </p>
  *
  * @author Simon Von
  * @since 2023-04-01 23:08:08
  */
-@Accessors(chain = true)
-@Getter
-@Setter
-@ToString
 @Entity
-@Table(schema = "public", name = "turing_app_file")
+@Table(
+    schema = "public",
+    name = "turing_app_file",
+    uniqueConstraints = [
+        UniqueConstraint(name = "con_public_turing_app_file_constraint_1", columnNames = arrayOf("id")),
+        UniqueConstraint(columnNames = arrayOf("md5"))
+    ]
+)
 // @SQLDelete 只支持 delete(T entity) 和 deleteById(ID id)
 @SQLDelete(sql = "UPDATE turing_app_file SET deleted = TRUE WHERE id = ? AND version = ? AND deleted = FALSE")
 @SQLRestriction("deleted = FALSE")
-public class AppFile extends AbstractAuditable {
-
-    /**
-     * ES 索引名称
-     */
-    public static final String INDEX = "turing_app_file";
-
-    /**
-     * Redis key 前缀
-     */
-    public static final String REDIS_KEY_PREFIX = INDEX + ":";
-
-    public static final String OWNER_ID = "ownerId";
-    public static final String FILENAME = "filename";
-    public static final String ORIGIN_FILENAME = "originFilename";
-    public static final String SUFFIX = "suffix";
-    public static final String CONTENT_TYPE = "contentType";
-    public static final String CONTENT_LENGTH = "contentLength";
-    public static final String MD5 = "md5";
-    public static final String PATH = "path";
-    public static final String BIZ_TYPE = "bizType";
-    public static final String REMARK = "remark";
-
+data class AppFile(
     /**
      * 所有者 id
      */
-    private Integer ownerId;
+    @Column(name = "owner_id", nullable = false, columnDefinition = "INTEGER")
+    @Comment("所有者 id")
+    var ownerId: Int = 0,
 
     /**
      * 文件名
      */
-    private String filename;
+    @Column(name = "filename", nullable = false, columnDefinition = "VARCHAR", length = 128)
+    @Comment("文件名")
+    var filename: String = "",
 
     /**
      * 原始文件名
      */
-    private String originFilename;
+    @Column(name = "origin_filename", nullable = false, columnDefinition = "VARCHAR", length = 128)
+    @Comment("原始文件名")
+    var originFilename: String = "",
 
     /**
      * 后缀
      */
-    private String suffix;
+    @Column(name = "suffix", nullable = false, columnDefinition = "VARCHAR", length = 8)
+    @Comment("后缀")
+    var suffix: String = "",
 
     /**
      * 内容类型
      */
-    private String contentType;
+    @Column(name = "content_type", nullable = false, columnDefinition = "VARCHAR", length = 128)
+    @Comment("内容类型")
+    var contentType: String = "",
 
     /**
-     * 内容长度
+     * 内容长度 TODO Int 就够用了吧？
      */
-    private Long contentLength;
+    @Column(name = "content_length", nullable = false, columnDefinition = "BIGINT")
+    @Comment("内容长度")
+    var contentLength: Long = 0,
 
     /**
      * md5
      */
-    private String md5;
+    @Column(name = "md5", nullable = false, columnDefinition = "VARCHAR", length = 64)
+    @Comment("md5")
+    var md5: String = "",
 
     /**
-     * 存放路径
+     * 存放路径 TODO length 不用给这么长吧？
      */
-    private String path;
+    @Column(name = "path", nullable = false, columnDefinition = "VARCHAR", length = 1024)
+    @Comment("存放路径")
+    var path: String = "",
 
     /**
      * 业务类型
      */
-    private FileTypeEnum bizType;
+    @Column(name = "biz_type", nullable = false, columnDefinition = "SMALLINT")
+    @Comment("业务类型")
+    var bizType: FileTypeEnum = FileTypeEnum.INFORMATION_COLLECTION,
 
     /**
-     * 备注
+     * 备注 TODO length 不用给这么长吧？
      */
-    private String remark;
+    @Column(name = "remark", columnDefinition = "VARCHAR", length = 1024)
+    @Comment("备注")
+    var remark: String = ""
+) : AbstractAuditable() {
+    companion object {
+        /**
+         * ES 索引名称
+         */
+        const val INDEX = "turing_app_file"
 
+        /**
+         * Redis key 前缀
+         */
+        const val REDIS_KEY_PREFIX = "$INDEX:"
+
+        const val OWNER_ID = "ownerId"
+        const val FILENAME = "filename"
+        const val ORIGIN_FILENAME = "originFilename"
+        const val SUFFIX = "suffix"
+        const val CONTENT_TYPE = "contentType"
+        const val CONTENT_LENGTH = "contentLength"
+        const val MD5 = "md5"
+        const val PATH = "path"
+        const val BIZ_TYPE = "bizType"
+        const val REMARK = "remark"
+    }
 }

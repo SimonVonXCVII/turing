@@ -1,118 +1,203 @@
-package com.simonvonxcvii.turing.entity;
+package com.simonvonxcvii.turing.entity
 
-import com.simonvonxcvii.turing.enums.OrganizationTypeEnum;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
-import lombok.experimental.Accessors;
-import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.SQLRestriction;
+import jakarta.persistence.Column
+import jakarta.persistence.Entity
+import jakarta.persistence.Table
+import jakarta.persistence.UniqueConstraint
+import org.hibernate.annotations.Comment
+import org.hibernate.annotations.SQLDelete
+import org.hibernate.annotations.SQLRestriction
 
 /**
- * <p>
  * 单位表
- * </p>
  *
  * @author Simon Von
  * @since 2022-12-29 11:33:31
+ * 改成 kotlin 了 @ToString 等可以去掉吗
  */
-@Accessors(chain = true)
-@Getter
-@Setter
-@ToString
 @Entity
-@Table(schema = "public", name = "turing_organization")
+@Table(
+    schema = "public",
+    name = "turing_organization",
+    uniqueConstraints = [
+        UniqueConstraint(name = "con_public_turing_organization_constraint_1", columnNames = arrayOf("id")),
+        UniqueConstraint(columnNames = arrayOf("name", "code", "phone"))
+    ]
+)
 // @SQLDelete 只支持 delete(T entity) 和 deleteById(ID id)
 @SQLDelete(sql = "UPDATE turing_organization SET deleted = TRUE WHERE id = ? AND version = ? AND deleted = FALSE")
 @SQLRestriction("deleted = FALSE")
-public class Organization extends AbstractAuditable {
-
-    /**
-     * ES 索引名称
-     */
-    public static final String ES_INDEX = "turing_organization";
-
-    /**
-     * Redis key 前缀
-     */
-    public static final String REDIS_KEY_PREFIX = ES_INDEX + ":";
-
-    public static final String PID = "pid";
-    public static final String NAME = "name";
-    public static final String CODE = "code";
-    public static final String TYPE = "type";
-    public static final String PROVINCE_CODE = "provinceCode";
-    public static final String CITY_CODE = "cityCode";
-    public static final String DISTRICT_CODE = "districtCode";
-    public static final String ADDRESS = "address";
-    public static final String LEGAL_PERSON = "legalPerson";
-    public static final String PHONE = "phone";
-    /**
-     * 单位所在省编号
-     */
-    public int provinceCode;
-    /**
-     * 单位所在市编号
-     */
-    public int cityCode;
-    /**
-     * 单位所在县编号
-     */
-    public int districtCode;
-    /**
-     * 单位所在省名称
-     */
-    public String provinceName;
-    /**
-     * 单位所在市名称
-     */
-    public String cityName;
-    /**
-     * 单位所在县名称
-     */
-    public String districtName;
-    /**
-     * 单位性质
-     */
-    public transient String property;
-    public transient String orgManagerId;
-    public transient String orgManagerName;
-    public transient String orgManagerMobile;
-    public transient Integer status;
-    public transient Integer remainingTime;
-    public transient String openPersonName;
-    public transient String orgLevel;
+data class Organization(
     /**
      * 上级单位 id
      */
-    private Integer pid;
+    @Column(name = "pid", columnDefinition = "INTEGER")
+    @Comment("上级单位 id")
+    var pid: Int? = null,
+
     /**
      * 单位名称
+     * TODO 尝试在前面加 private
      */
-    private String name;
+    @Column(name = "name", nullable = false, columnDefinition = "VARCHAR", length = 64)
+    @Comment("单位名称")
+    var name: String = "",
+
     /**
      * 信用代码
      */
-    private String code;
-    /**
-     * 单位类型
-     *
-     * @see OrganizationTypeEnum
-     */
-    private String type;
-    /**
-     * 单位地址详情
-     */
-    private String address;
+    @Column(name = "code", nullable = false, columnDefinition = "VARCHAR", length = 18)
+    @Comment("单位名称")
+    var code: String = "",
+
     /**
      * 单位法人
      */
-    private String legalPerson;
-    /**
-     * 联系电话
-     */
-    private String phone;
+    @Column(name = "legal_person", nullable = false, columnDefinition = "VARCHAR", length = 32)
+    @Comment("单位地址详情")
+    var legalPerson: String = "",
 
+    /**
+     * 单位联系电话
+     */
+    @Column(name = "phone", nullable = false, columnDefinition = "VARCHAR", length = 32)
+    @Comment("单位联系电话")
+    var phone: String = "",
+
+    /**
+     * 单位类型
+     *
+     * @see com.simonvonxcvii.turing.enums.OrganizationTypeEnum
+     */
+    @Column(name = "type", nullable = false, columnDefinition = "VARCHAR", length = 6)
+    @Comment("单位类型")
+    var type: String = "",
+
+    /**
+     * 单位所在省（市、区）编码
+     */
+    @Column(name = "province_code", nullable = false, columnDefinition = "INTEGER")
+    @Comment("单位所在省（市、区）编码")
+    var provinceCode: Int = 0,
+
+    /**
+     * 单位所在市（州、盟）编码
+     */
+    @Column(name = "city_code", nullable = false, columnDefinition = "INTEGER")
+    @Comment("单位所在市（州、盟）编码")
+    var cityCode: Int = 0,
+
+    /**
+     * 单位所在县（市、旗）编码
+     */
+    @Column(name = "district_code", nullable = false, columnDefinition = "INTEGER")
+    @Comment("单位所在区县（市、旗）编码")
+    var districtCode: Int = 0,
+
+    /**
+     * 单位所在省（市、区）名称
+     */
+    @Column(name = "province_name", nullable = false, columnDefinition = "VARCHAR", length = 16)
+    @Comment("单位所在省（市、区）名称")
+    var provinceName: String = "",
+
+    /**
+     * 单位所在市（州、盟）名称
+     */
+    @Column(name = "city_name", nullable = false, columnDefinition = "VARCHAR", length = 16)
+    @Comment("单位所在市（州、盟）名称")
+    var cityName: String = "",
+
+    /**
+     * 单位所在县（市、旗）名称
+     */
+    @Column(name = "district_name", nullable = false, columnDefinition = "VARCHAR", length = 16)
+    @Comment("单位所在区县（市、旗）名称")
+    var districtName: String = "",
+
+    /**
+     * 单位地址详情
+     */
+    @Column(name = "address", nullable = false, columnDefinition = "VARCHAR", length = 128)
+    @Comment("单位地址详情")
+    var address: String = "",
+
+    /**
+     * 单位性质
+     */
+    @Transient
+    @jakarta.persistence.Transient
+    var property: String? = null,
+
+    /**
+     * 单位管理员 id
+     */
+    @Transient
+    @jakarta.persistence.Transient
+    var orgManagerId: String? = null,
+
+    /**
+     * 单位管理员姓名
+     */
+    @Transient
+    @jakarta.persistence.Transient
+    var orgManagerName: String? = null,
+
+    /**
+     * 单位管理员电话
+     */
+    @Transient
+    @jakarta.persistence.Transient
+    var orgManagerMobile: String? = null,
+
+    /**
+     * 单位状态
+     */
+    @Transient
+    @jakarta.persistence.Transient
+    var status: Int? = null,
+
+    /**
+     * 单位剩余时间
+     */
+    @Transient
+    @jakarta.persistence.Transient
+    var remainingTime: Int? = null,
+
+    /**
+     * 单位法人姓名
+     */
+    @Transient
+    @jakarta.persistence.Transient
+    var openPersonName: String? = null,
+
+    /**
+     * 单位等级
+     */
+    @Transient
+    @jakarta.persistence.Transient
+    var orgLevel: String? = null
+) : AbstractAuditable() {
+    companion object {
+        /**
+         * ES 索引名称
+         */
+        const val ES_INDEX = "turing_organization"
+
+        /**
+         * Redis key 前缀
+         */
+        const val REDIS_KEY_PREFIX = "$ES_INDEX:"
+
+        const val PID = "pid"
+        const val NAME = "name"
+        const val CODE = "code"
+        const val TYPE = "type"
+        const val PROVINCE_CODE = "provinceCode"
+        const val CITY_CODE = "cityCode"
+        const val DISTRICT_CODE = "districtCode"
+        const val ADDRESS = "address"
+        const val LEGAL_PERSON = "legalPerson"
+        const val PHONE = "phone"
+    }
 }

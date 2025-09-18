@@ -1,63 +1,74 @@
-package com.simonvonxcvii.turing.entity;
+package com.simonvonxcvii.turing.entity
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
-import lombok.experimental.Accessors;
-import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.SQLRestriction;
+import jakarta.persistence.Column
+import jakarta.persistence.Entity
+import jakarta.persistence.Table
+import jakarta.persistence.UniqueConstraint
+import org.hibernate.annotations.Comment
+import org.hibernate.annotations.SQLDelete
+import org.hibernate.annotations.SQLRestriction
 
 /**
- * <p>
  * 权限表
- * </p>
  *
  * @author Simon Von
  * @since 2022-12-22 16:22:49
  */
-@Accessors(chain = true)
-@Getter
-@Setter
-@ToString
 @Entity
-@Table(schema = "public", name = "turing_permission")
+@Table(
+    schema = "public",
+    name = "turing_permission",
+    uniqueConstraints = [
+        UniqueConstraint(name = "con_public_turing_permission_constraint_1", columnNames = arrayOf("id")),
+        UniqueConstraint(columnNames = arrayOf("name", "code", "sort"))
+    ]
+)
 // @SQLDelete 只支持 delete(T entity) 和 deleteById(ID id)
 @SQLDelete(sql = "UPDATE turing_permission SET deleted = TRUE WHERE id = ? AND version = ? AND deleted = FALSE")
 @SQLRestriction("deleted = FALSE")
-public class Permission extends AbstractAuditable {
-
-    /**
-     * ES 索引名称
-     */
-    public static final String ES_INDEX = "turing_permission";
-
-    /**
-     * Redis key 前缀
-     */
-    public static final String REDIS_KEY_PREFIX = ES_INDEX + ":";
-
-    public static final String PID = "pid";
-    public static final String NAME = "name";
-    public static final String CODE = "code";
-    public static final String SORT = "sort";
-
+data class Permission(
     /**
      * 上级权限 id
      */
-    private Integer pid;
+    @Column(name = "pid", columnDefinition = "INTEGER")
+    @Comment("上级权限 id")
+    var pid: Int? = null,
+
     /**
      * 权限名称
      */
-    private String name;
+    @Column(name = "name", nullable = false, columnDefinition = "VARCHAR", length = 32)
+    @Comment("权限名称")
+    var name: String = "",
+
     /**
      * 权限编码
      */
-    private String code;
-    /**
-     * 权限排序
-     */
-    private int sort;
+    @Column(name = "code", columnDefinition = "VARCHAR", length = 32)
+    @Comment("权限编码")
+    var code: String? = null,
 
+    /**
+     * 排序编号
+     */
+    @Column(name = "sort", nullable = false, columnDefinition = "SMALLINT")
+    @Comment("排序编号")
+    var sort: Short = 0,
+) : AbstractAuditable() {
+    companion object {
+        /**
+         * ES 索引名称
+         */
+        const val ES_INDEX: String = "turing_permission"
+
+        /**
+         * Redis key 前缀
+         */
+        const val REDIS_KEY_PREFIX: String = "$ES_INDEX:"
+
+        const val PID: String = "pid"
+        const val NAME: String = "name"
+        const val CODE: String = "code"
+        const val SORT: String = "sort"
+    }
 }
