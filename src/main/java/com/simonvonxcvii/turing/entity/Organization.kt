@@ -1,19 +1,16 @@
 package com.simonvonxcvii.turing.entity
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.Table
-import jakarta.persistence.UniqueConstraint
+import jakarta.persistence.*
 import org.hibernate.annotations.Comment
 import org.hibernate.annotations.SQLDelete
 import org.hibernate.annotations.SQLRestriction
 
 /**
  * 单位表
+ * Transient 属性的字段，建议添加到圆括号 () 中，而不是花括号 {} 中，因为可以存在于生成的 toString() 等方法中
  *
  * @author Simon Von
  * @since 2022-12-29 11:33:31
- * 改成 kotlin 了 @ToString 等可以去掉吗
  */
 @Entity
 @Table(
@@ -126,56 +123,48 @@ data class Organization(
      * 单位性质
      */
     @Transient
-    @jakarta.persistence.Transient
     var property: String? = null,
 
     /**
      * 单位管理员 id
      */
     @Transient
-    @jakarta.persistence.Transient
     var orgManagerId: String? = null,
 
     /**
      * 单位管理员姓名
      */
     @Transient
-    @jakarta.persistence.Transient
     var orgManagerName: String? = null,
 
     /**
      * 单位管理员电话
      */
     @Transient
-    @jakarta.persistence.Transient
     var orgManagerMobile: String? = null,
 
     /**
      * 单位状态
      */
     @Transient
-    @jakarta.persistence.Transient
     var status: Int? = null,
 
     /**
      * 单位剩余时间
      */
     @Transient
-    @jakarta.persistence.Transient
     var remainingTime: Int? = null,
 
     /**
      * 单位法人姓名
      */
     @Transient
-    @jakarta.persistence.Transient
     var openPersonName: String? = null,
 
     /**
      * 单位等级
      */
     @Transient
-    @jakarta.persistence.Transient
     var orgLevel: String? = null
 ) : AbstractAuditable() {
     companion object {

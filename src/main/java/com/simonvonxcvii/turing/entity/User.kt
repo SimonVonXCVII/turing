@@ -1,9 +1,6 @@
 package com.simonvonxcvii.turing.entity
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.Table
-import jakarta.persistence.UniqueConstraint
+import jakarta.persistence.*
 import org.hibernate.annotations.Comment
 import org.hibernate.annotations.SQLDelete
 import org.hibernate.annotations.SQLRestriction
@@ -12,6 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails
 
 /**
  * 用户表
+ * Transient 属性的字段，建议添加到圆括号 () 中，而不是花括号 {} 中，因为可以存在于生成的 toString() 等方法中
  *
  * @author Simon Von
  * @since 2022-12-19 15:58:28
@@ -138,7 +136,6 @@ data class User(
      * 用户角色
      */
     @Transient
-    @jakarta.persistence.Transient
     @get:JvmName("getAuthoritiesValue")
     var authorities: Collection<Role> = mutableListOf(),
 
@@ -146,7 +143,6 @@ data class User(
      * 是否是超级管理员
      */
     @Transient
-    @jakarta.persistence.Transient
     @get:JvmName("isAdmin")
     var admin: Boolean = false,
 
@@ -156,7 +152,6 @@ data class User(
      * @since 2023/4/11 18:07
      */
     @Transient
-    @jakarta.persistence.Transient
     var token: String? = null,
 
     /**
@@ -165,7 +160,6 @@ data class User(
      * @since 2023/7/1 18:53
      */
     @Transient
-    @jakarta.persistence.Transient
     var orgLevel: String? = null,
 
     /**
@@ -174,7 +168,6 @@ data class User(
      * @since 2023/4/11 18:07
      */
     @Transient
-    @jakarta.persistence.Transient
     var provinceCode: Int? = null,
 
     /**
@@ -183,7 +176,6 @@ data class User(
      * @since 2023/7/1 18:53
      */
     @Transient
-    @jakarta.persistence.Transient
     var cityCode: Int? = null,
 
     /**
@@ -192,7 +184,6 @@ data class User(
      * @since 2023/7/1 18:53
      */
     @Transient
-    @jakarta.persistence.Transient
     var districtCode: Int? = null,
 
     /**
@@ -201,7 +192,6 @@ data class User(
      * @since 2023/7/1 18:53
      */
     @Transient
-    @jakarta.persistence.Transient
     var provinceName: String? = null,
 
     /**
@@ -210,7 +200,6 @@ data class User(
      * @since 2023/7/1 18:53
      */
     @Transient
-    @jakarta.persistence.Transient
     var cityName: String? = null,
 
     /**
@@ -219,7 +208,6 @@ data class User(
      * @since 2023/7/1 18:53
      */
     @Transient
-    @jakarta.persistence.Transient
     var districtName: String? = null
 ) : AbstractAuditable(), UserDetails {
     override fun getAuthorities(): Collection<GrantedAuthority> {
@@ -274,6 +262,6 @@ data class User(
         const val CREDENTIALS_NON_EXPIRED = "credentialsNonExpired"
         const val ENABLED = "enabled"
         const val MANAGER = "manager"
-        const val NEED_SET_PASSWORD = "needSetPassword"
+        const val NEED_RESET_PASSWORD = "needResetPassword"
     }
 }

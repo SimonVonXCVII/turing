@@ -132,7 +132,7 @@ public class UserServiceImpl implements IUserService {
                             predicateList.add(criteriaBuilder.equal(root.get(User.MANAGER), dto.getManager()));
                         }
                         if (dto.getNeedSetPassword() != null) {
-                            predicateList.add(criteriaBuilder.equal(root.get(User.NEED_SET_PASSWORD), dto.getNeedSetPassword()));
+                            predicateList.add(criteriaBuilder.equal(root.get(User.NEED_RESET_PASSWORD), dto.getNeedSetPassword()));
                         }
                         assert query != null;
                         return query.where(predicateList.toArray(Predicate[]::new)).getRestriction();

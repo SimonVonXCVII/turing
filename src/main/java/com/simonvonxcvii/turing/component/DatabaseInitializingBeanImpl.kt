@@ -23,6 +23,7 @@ import javax.sql.DataSource
 /**
  * 数据库初始化 runner
  * 需要保证在 RedisApplicationRunner 之前注册组件，所有改为了实现 InitializingBean
+ * TODO 尝试在各个地方删除 : Any
  *
  * @author Simon Von
  * @since 2023/8/25 21:24

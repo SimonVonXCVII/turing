@@ -11,6 +11,7 @@ import org.hibernate.annotations.SQLRestriction
 
 /**
  * 菜单表
+ * Transient 属性的字段，建议添加到圆括号 () 中，而不是花括号 {} 中，因为可以存在于生成的 toString() 等方法中
  *
  * @author Simon Von
  * @since 2022-12-26 18:25:51
