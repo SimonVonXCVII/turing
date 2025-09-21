@@ -14,7 +14,7 @@ spring:
   data:
     redis:
       # redis 服务器主机
-      host: ${security.address}:6379
+      host: ${security.address}
       # redis 密码
       password: ${REDIS_PASSWORD}
   datasource:

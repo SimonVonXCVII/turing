@@ -11,6 +11,7 @@ import com.simonvonxcvii.turing.utils.Constants
 import jakarta.persistence.criteria.Path
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.data.redis.core.RedisTemplate
+import org.springframework.data.redis.core.StringRedisTemplate
 import org.springframework.http.HttpHeaders
 import org.springframework.security.authentication.*
 import org.springframework.security.core.userdetails.UserDetails
@@ -33,7 +34,8 @@ import java.nio.charset.StandardCharsets
 class UserDetailsServiceImpl(
     private val nimbusJwtService: NimbusJwtService,
     private val httpServletRequest: HttpServletRequest,
-    private val redisTemplate: RedisTemplate<String, Any>,
+    private val redisTemplate: RedisTemplate<Any, Any>,
+    private val stringRedisTemplate: StringRedisTemplate,
     private val userRepository: UserRepository,
     private val roleRepository: RoleRepository,
     private val userRoleRepository: UserRoleRepository,
@@ -93,7 +95,7 @@ class UserDetailsServiceImpl(
         val userAgent = httpServletRequest.getHeader(HttpHeaders.USER_AGENT)
         val md5DigestAsHex = DigestUtils.md5DigestAsHex((ipAddr + userAgent).toByteArray(StandardCharsets.UTF_8))
         // 服务端验证码
-        val serverCaptcha = redisTemplate.opsForValue()[Constants.REDIS_CAPTCHA + md5DigestAsHex] as String?
+        val serverCaptcha = stringRedisTemplate.opsForValue().get(Constants.REDIS_CAPTCHA + md5DigestAsHex)
         // 客户端验证码
         val clientCaptcha = httpServletRequest.getParameter("captcha")
 
@@ -105,7 +107,7 @@ class UserDetailsServiceImpl(
         if (!serverCaptcha.equals(clientCaptcha, true)) throw BadCredentialsException("验证码错误，请重新输入")
 
         // 如果验证成功，则删除 Redis 中的验证码
-        redisTemplate.opsForValue().getAndDelete(Constants.REDIS_CAPTCHA + md5DigestAsHex)
+        stringRedisTemplate.opsForValue().getAndDelete(Constants.REDIS_CAPTCHA + md5DigestAsHex)
 
         // 缓存用户其他信息到实体类
         // 缓存当前用户的角色集合
@@ -128,7 +130,7 @@ class UserDetailsServiceImpl(
         user.districtName = organization.districtName
 
         // 缓存用户信息
-        redisTemplate.opsForValue()[User.REDIS_KEY_PREFIX + username] = user
+        redisTemplate.opsForHash<String, User>().put(User.REDIS_KEY_PREFIX, username, user)
         return user
     }
 }

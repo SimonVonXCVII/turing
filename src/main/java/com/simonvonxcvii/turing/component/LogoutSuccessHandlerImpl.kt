@@ -20,7 +20,7 @@ import org.springframework.stereotype.Component
 @Component
 class LogoutSuccessHandlerImpl(
     private val nimbusJwtService: NimbusJwtService,
-    private val redisTemplate: RedisTemplate<String, Any>
+    private val redisTemplate: RedisTemplate<Any, Any>
 ) : LogoutSuccessHandler {
     /**
      * 自定义用户退出登录后的一些操作
@@ -37,6 +37,6 @@ class LogoutSuccessHandlerImpl(
         val jwt = nimbusJwtService.resolve(request)
         val username = jwt.getClaim<String>(OAuth2ParameterNames.USERNAME)
         // 清除缓存的用户信息
-        redisTemplate.opsForValue().getAndDelete(User.REDIS_KEY_PREFIX + username)
+        redisTemplate.opsForHash<String, User>().delete(User.REDIS_KEY_PREFIX, username)
     }
 }

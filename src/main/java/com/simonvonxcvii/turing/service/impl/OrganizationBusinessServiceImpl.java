@@ -19,7 +19,7 @@ import jakarta.persistence.criteria.Predicate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
-import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -45,7 +45,7 @@ public class OrganizationBusinessServiceImpl implements IOrganizationBusinessSer
     private final UserRoleRepository userRoleRepository;
     private final RoleRepository roleRepository;
     private final UserRepository userRepository;
-    private final RedisTemplate<String, Object> redisTemplate;
+    private final StringRedisTemplate stringRedisTemplate;
 //    private final ElasticsearchClient elasticsearchClient;
 
     /**
@@ -183,14 +183,14 @@ public class OrganizationBusinessServiceImpl implements IOrganizationBusinessSer
         // 因为新增时没有主键 id，所以在 copy 时不需要排除 id 字段
         BeanUtils.copyProperties(dto, organizationBusiness);
         // 省市县
-        String province = (String) redisTemplate.opsForValue().get(Dict.REDIS_KEY_PREFIX + organizationBusiness.getProvinceCode());
+        String province = stringRedisTemplate.opsForValue().get(Dict.REDIS_KEY_PREFIX + organizationBusiness.getProvinceCode());
         organizationBusiness.setProvinceName(province);
         if (dto.getCityCode() != null) {
-            String city = (String) redisTemplate.opsForValue().get(Dict.REDIS_KEY_PREFIX + organizationBusiness.getCityCode());
+            String city = stringRedisTemplate.opsForValue().get(Dict.REDIS_KEY_PREFIX + organizationBusiness.getCityCode());
             organizationBusiness.setProvinceName(city);
         }
         if (dto.getDistrictCode() != null) {
-            String district = (String) redisTemplate.opsForValue().get(Dict.REDIS_KEY_PREFIX + organizationBusiness.getDistrictCode());
+            String district = stringRedisTemplate.opsForValue().get(Dict.REDIS_KEY_PREFIX + organizationBusiness.getDistrictCode());
             organizationBusiness.setProvinceName(district);
         }
         organizationBusiness.setLink(StringUtils.arrayToCommaDelimitedString(dto.getLink()));

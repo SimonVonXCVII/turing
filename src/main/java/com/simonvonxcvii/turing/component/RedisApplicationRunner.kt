@@ -5,7 +5,7 @@ import com.simonvonxcvii.turing.repository.DictRepository
 import jakarta.persistence.criteria.Path
 import org.springframework.boot.ApplicationArguments
 import org.springframework.boot.ApplicationRunner
-import org.springframework.data.redis.core.RedisTemplate
+import org.springframework.data.redis.core.StringRedisTemplate
 import org.springframework.stereotype.Component
 import java.util.stream.Collectors
 
@@ -19,7 +19,7 @@ import java.util.stream.Collectors
  */
 @Component
 class RedisApplicationRunner(
-    private val redisTemplate: RedisTemplate<String, Any>,
+    private val stringRedisTemplate: StringRedisTemplate,
     private val dictRepository: DictRepository
 ) : ApplicationRunner {
     /**
@@ -32,13 +32,9 @@ class RedisApplicationRunner(
             val type: Path<String> = root.get("type")
             query?.where(criteriaBuilder.equal(type, "area"))?.restriction
         }.filterNotNull()
-        if (dictList.isEmpty()) {
-            return
-        }
-        redisTemplate.opsForValue().multiSet(
-            dictList.stream().collect(
-                Collectors.toMap({ dict -> Dict.REDIS_KEY_PREFIX + dict.value }, Dict::name)
-            )
-        )
+        // TODO 考虑如果 Redis 中已经有上面这些数据了就不要执行下面的代码了，虽然数据只会覆盖掉，不会发生变化
+        val toMap = Collectors.toMap({ dict -> Dict.REDIS_KEY_PREFIX + dict.value }, Dict::name)
+        val collect = dictList.stream().collect(toMap)
+        stringRedisTemplate.opsForValue().multiSetIfAbsent(collect)
     }
 }

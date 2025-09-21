@@ -20,14 +20,14 @@ import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.beans.BeanUtils
 import org.springframework.data.domain.Sort
-import org.springframework.data.redis.core.RedisTemplate
+import org.springframework.data.redis.core.StringRedisTemplate
 import org.springframework.http.HttpHeaders
 import org.springframework.stereotype.Service
 import org.springframework.util.DigestUtils
 import java.io.IOException
 import java.net.InetAddress
 import java.nio.charset.StandardCharsets
-import java.util.concurrent.TimeUnit
+import java.time.Duration
 import java.util.function.Predicate
 
 /**
@@ -41,7 +41,7 @@ class LoginServiceImpl(
     private val randomUtils: RandomUtils,
     private val menuRepository: MenuRepository,
     private val rolePermissionRepository: RolePermissionRepository,
-    private val redisTemplate: RedisTemplate<String, Any>
+    private val stringRedisTemplate: StringRedisTemplate
 ) : LoginService {
     /**
      * 获取登录验证码
@@ -59,7 +59,8 @@ class LoginServiceImpl(
         val md5DigestAsHex = DigestUtils.md5DigestAsHex((ipAddr + userAgent).toByteArray(StandardCharsets.UTF_8))
         // 缓存当前用户标识生成的 md5 和验证码
         // 验证码一分钟有效期
-        redisTemplate.opsForValue()[Constants.REDIS_CAPTCHA + md5DigestAsHex, captcha, 1] = TimeUnit.MINUTES
+        stringRedisTemplate.opsForValue()
+            .set(Constants.REDIS_CAPTCHA + md5DigestAsHex, captcha, Duration.ofMinutes(1))
     }
 
     /**

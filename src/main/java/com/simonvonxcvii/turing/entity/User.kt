@@ -10,6 +10,12 @@ import org.springframework.security.core.userdetails.UserDetails
 /**
  * 用户表
  * Transient 属性的字段，建议添加到圆括号 () 中，而不是花括号 {} 中，因为可以存在于生成的 toString() 等方法中
+ * @jakarta.persistence.Transient 是最佳选择：
+ * 作用：
+ * 告诉 JPA 提供者（Hibernate/EclipseLink 等）：这个属性不是持久化字段，不要映射到数据库表，也不要生成列。
+ * 在 Spring Boot JPA 项目中这是标准的做法。
+ * 适用场景：
+ * JPA 实体类中某个属性只是运行期的临时值，或者是计算值，不需要入库。
  *
  * @author Simon Von
  * @since 2022-12-19 15:58:28

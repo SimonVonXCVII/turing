@@ -44,7 +44,7 @@ services:
     command: >
       bash -c '
         chmod +x /usr/local/bin/healthcheck.sh;
-        redis-server --requirepass ${REDIS_PASSWORD};
+        redis-server --requirepass ${REDIS_PASSWORD} --bind "* -::*";
       '
     # 指定自定义容器名称，而不是生成的默认名称。
     container_name: turing-redis

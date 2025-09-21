@@ -112,6 +112,8 @@ dependencies {
     // lombok
     compileOnly("org.projectlombok:lombok")
 
+    // https://central.sonatype.com/artifact/com.fasterxml.jackson.module/jackson-module-kotlin
+//    implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     // therapi
     // https://central.sonatype.com/artifact/com.github.therapi/therapi-runtime-javadoc
     implementation("com.github.therapi:therapi-runtime-javadoc:${libs.versions.therapiRuntimeJavadoc.get()}")

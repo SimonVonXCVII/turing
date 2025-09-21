@@ -14,7 +14,7 @@ import jakarta.persistence.criteria.Predicate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -38,7 +38,7 @@ public class OrganizationServiceImpl implements IOrganizationService {
     private final OrganizationBusinessRepository organizationBusinessRepository;
     private final UserRepository userRepository;
     private final UserRoleRepository userRoleRepository;
-    private final RedisTemplate<String, Object> redisTemplate;
+    private final StringRedisTemplate stringRedisTemplate;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -54,11 +54,11 @@ public class OrganizationServiceImpl implements IOrganizationService {
         }
         BeanUtils.copyProperties(dto, organization, AbstractAuditable.CREATED_DATE);
         // 获取省市县名称
-        String provinceName = (String) redisTemplate.opsForValue().get(Dict.REDIS_KEY_PREFIX + dto.getProvinceCode().toString());
+        String provinceName = stringRedisTemplate.opsForValue().get(Dict.REDIS_KEY_PREFIX + dto.getProvinceCode().toString());
         organization.setProvinceName(provinceName);
-        String cityName = (String) redisTemplate.opsForValue().get(Dict.REDIS_KEY_PREFIX + dto.getCityCode().toString());
+        String cityName = stringRedisTemplate.opsForValue().get(Dict.REDIS_KEY_PREFIX + dto.getCityCode().toString());
         organization.setCityName(cityName);
-        String districtName = (String) redisTemplate.opsForValue().get(Dict.REDIS_KEY_PREFIX + dto.getDistrictCode().toString());
+        String districtName = stringRedisTemplate.opsForValue().get(Dict.REDIS_KEY_PREFIX + dto.getDistrictCode().toString());
         organization.setDistrictName(districtName);
         organizationRepository.save(organization);
     }

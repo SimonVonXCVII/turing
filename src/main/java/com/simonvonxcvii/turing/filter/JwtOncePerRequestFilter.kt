@@ -26,7 +26,7 @@ import org.springframework.web.filter.OncePerRequestFilter
 class JwtOncePerRequestFilter(
     private val nimbusJwtService: NimbusJwtService,
     private val securityProperties: SecurityProperties,
-    private val redisTemplate: RedisTemplate<String, Any>
+    private val redisTemplate: RedisTemplate<Any, Any>
 ) : OncePerRequestFilter() {
     /**
      * 与 doFilter 的契约相同，但保证在单个请求线程中每个请求只调用一次。有关详细信息，请参阅 [shouldNotFilterAsyncDispatch]。
@@ -49,7 +49,7 @@ class JwtOncePerRequestFilter(
         val jwt = nimbusJwtService.resolve(request)
         // 缓存用户信息到 SecurityContext
         val username = jwt.getClaim<String>(OAuth2ParameterNames.USERNAME)
-        val user = redisTemplate.opsForValue()[User.REDIS_KEY_PREFIX + username] as User?
+        val user = redisTemplate.opsForHash<String, User>().get(User.REDIS_KEY_PREFIX, username)
             ?: throw AuthenticationServiceException("无法获取到用户信息")
         // TODO: 2023/8/31 在两个地方都设置了 user，如何才能只需要设置一次
         val token = UsernamePasswordAuthenticationToken.authenticated(user, user.password, user.authorities)
