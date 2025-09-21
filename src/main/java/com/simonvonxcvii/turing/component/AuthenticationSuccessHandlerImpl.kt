@@ -40,11 +40,9 @@ class AuthenticationSuccessHandlerImpl(private val objectMapper: ObjectMapper) :
         response.characterEncoding = StandardCharsets.UTF_8.name()
         response.contentType = MediaType.APPLICATION_JSON_VALUE
         response.status = HttpStatus.OK.value()
-        response.writer.write(
-            objectMapper.writeValueAsString(
-                Result.ok(mapOf(OAuth2ParameterNames.TOKEN to request.getAttribute(OAuth2ParameterNames.TOKEN)))
-            )
-        )
+        val map = mapOf(OAuth2ParameterNames.TOKEN to request.getAttribute(OAuth2ParameterNames.TOKEN))
+        val string = objectMapper.writeValueAsString(Result.ok(map))
+        response.writer.write(string)
         request.removeAttribute(OAuth2ParameterNames.TOKEN)
     }
 }

@@ -81,35 +81,33 @@ class NimbusJwtServiceImpl(
         // 重要：虽然 Instant.now() 获取的时间比我们本地时间少了八个小时，但是这不影响后续的解码操作。
         // 反而，如果是 .plus(8L, ChronoUnit.HOURS) 则会报错，提示使用的 JWT 在 notBefore 之前
         val now = Instant.now()
-        return nimbusJwtEncoder.encode(
-            // 返回一个新的 JwtEncoderParameters，使用提供的 JwtClaimsSet 进行初始化。
-            JwtEncoderParameters.from(
-                JwtClaimsSet.builder()
-                    // 设置颁发者 （iss） 声明，该声明标识颁发 JWT 的主体。
-                    // 形参: 颁发者 – 颁发者标识符
-                    .issuer("https://" + securityProperties.address)
-                    // 设置主题（子）声明，该声明标识作为 JWT 主题的主体。
-                    // 形参: 主题 – 主题标识符
-                    .subject(securityProperties.address)
-                    // 设置受众 （aud） 声明，该声明标识 JWT 所针对的收件人。
-                    // 形参: 受众 – 此 JWT 所针对的受众
-                    .audience(listOf(username))
-                    // 设置过期时间 （exp） 声明，该声明标识不得接受 JWT 进行处理的时间或之后的时间。
-                    // 形参: expiresAt – 不得接受 JWT 进行处理的时间或之后的时间
-                    .expiresAt(now.plusSeconds(securityProperties.expires.toLong()))
-                    // 设置不早于 （nbf） 声明，该声明标识不得接受 JWT 进行处理的时间。
-                    // 形参: notBefore——不得接受 JWT 进行处理的时间
-                    .notBefore(now)
-                    // 设置颁发时间 （iat） 声明，该声明标识颁发 JWT 的时间。
-                    // 形参: 发布时间 – JWT 发布的时间
-                    .issuedAt(now)
-                    // 设置 JWT ID （jti） 声明，该声明为 JWT 提供唯一标识符。
-                    // 形参: JTI – JWT 的唯一标识符
-                    .id(userId.toString())
-                    .claim(OAuth2ParameterNames.USERNAME, username)
-                    .build()
-            )
-        )
+        val jwtClaimsSet = JwtClaimsSet.builder()
+            // 设置颁发者 （iss） 声明，该声明标识颁发 JWT 的主体。
+            // 形参: 颁发者 – 颁发者标识符
+            .issuer("https://" + securityProperties.address)
+            // 设置主题（子）声明，该声明标识作为 JWT 主题的主体。
+            // 形参: 主题 – 主题标识符
+            .subject(securityProperties.address)
+            // 设置受众 （aud） 声明，该声明标识 JWT 所针对的收件人。
+            // 形参: 受众 – 此 JWT 所针对的受众
+            .audience(listOf(username))
+            // 设置过期时间 （exp） 声明，该声明标识不得接受 JWT 进行处理的时间或之后的时间。
+            // 形参: expiresAt – 不得接受 JWT 进行处理的时间或之后的时间
+            .expiresAt(now.plusSeconds(securityProperties.expires.toLong()))
+            // 设置不早于 （nbf） 声明，该声明标识不得接受 JWT 进行处理的时间。
+            // 形参: notBefore——不得接受 JWT 进行处理的时间
+            .notBefore(now)
+            // 设置颁发时间 （iat） 声明，该声明标识颁发 JWT 的时间。
+            // 形参: 发布时间 – JWT 发布的时间
+            .issuedAt(now)
+            // 设置 JWT ID （jti） 声明，该声明为 JWT 提供唯一标识符。
+            // 形参: JTI – JWT 的唯一标识符
+            .id(userId.toString())
+            .claim(OAuth2ParameterNames.USERNAME, username)
+            .build()
+        // 返回一个新的 JwtEncoderParameters，使用提供的 JwtClaimsSet 进行初始化。
+        val jwtEncoderParameters = JwtEncoderParameters.from(jwtClaimsSet)
+        return nimbusJwtEncoder.encode(jwtEncoderParameters)
     }
 
     /**
@@ -139,16 +137,17 @@ class NimbusJwtServiceImpl(
         if (!StringUtils.hasText(authorization)) {
             throw AuthenticationServiceException("令牌缺失")
         }
-        val split =
-            authorization.split(org.apache.commons.lang3.StringUtils.SPACE.toRegex()).dropLastWhile { it.isEmpty() }
-                .toTypedArray()
+        val split = authorization.split(org.apache.commons.lang3.StringUtils.SPACE.toRegex())
+            .dropLastWhile { it.isEmpty() }
+            .toTypedArray()
         if (split.size != 2) {
             throw AuthenticationServiceException("非法令牌，令牌必须以 Bearer 为前缀并以一个空格分开")
         }
         if (!OAuth2AccessToken.TokenType.BEARER.value.equals(split[0], true)) {
             throw AuthenticationServiceException("非法令牌，令牌必须以 Bearer 为前缀并以一个空格分开")
         }
-        // 目前认为没有必要实现 token 刷新的功能，因为有效期设置的一周，一周后重新登录就好，中间不需要做刷新，因为一直都是有效的，每次请求都会携带 token
+        // 目前认为没有必要实现 token 刷新的功能，因为有效期设置的一周，一周后重新登录就好，中间不需要做刷新，
+        // 因为一直都是有效的，每次请求都会携带 token
         try {
             return decode(split[1])
         } catch (_: JwtException) {

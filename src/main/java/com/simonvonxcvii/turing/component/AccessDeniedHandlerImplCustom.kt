@@ -34,8 +34,6 @@ class AccessDeniedHandlerImplCustom : AccessDeniedHandler {
     }
 
     companion object {
-        private val logger = LogFactory.getLog(
-            AccessDeniedHandlerImplCustom::class.java
-        )
+        private val logger = LogFactory.getLog(AccessDeniedHandlerImplCustom::class.java)
     }
 }

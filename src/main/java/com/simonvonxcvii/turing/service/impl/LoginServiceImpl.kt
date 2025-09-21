@@ -13,9 +13,6 @@ import com.simonvonxcvii.turing.service.LoginService
 import com.simonvonxcvii.turing.utils.Constants
 import com.simonvonxcvii.turing.utils.RandomUtils
 import com.simonvonxcvii.turing.utils.UserUtils
-import jakarta.persistence.criteria.CriteriaBuilder
-import jakarta.persistence.criteria.CriteriaQuery
-import jakarta.persistence.criteria.Root
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.beans.BeanUtils
@@ -56,7 +53,8 @@ class LoginServiceImpl(
         // 使用 md5 这种方式作为 key 的原因是 session id 总是会改变，同一个客户端的浏览器发送的请求的 session id 无法保持一致
         val ipAddr = InetAddress.getByName(request.remoteAddr).hostAddress
         val userAgent = request.getHeader(HttpHeaders.USER_AGENT)
-        val md5DigestAsHex = DigestUtils.md5DigestAsHex((ipAddr + userAgent).toByteArray(StandardCharsets.UTF_8))
+        val ipAddrUserAgentByte = (ipAddr + userAgent).toByteArray(StandardCharsets.UTF_8)
+        val md5DigestAsHex = DigestUtils.md5DigestAsHex(ipAddrUserAgentByte)
         // 缓存当前用户标识生成的 md5 和验证码
         // 验证码一分钟有效期
         stringRedisTemplate.opsForValue()
@@ -90,44 +88,39 @@ class LoginServiceImpl(
         val user = UserUtils.getUser()
         if (user.admin) {
             menuList.stream()
-                .map { menu: Menu -> menuConvertToDTO(menu) }
+                .map { menu -> menuConvertToDTO(menu) }
                 // 区分父级和子级菜单
-                .forEach { menuDTO: MenuDTO ->
+                .forEach { menuDTO ->
                     if (menuDTO.pid == null) {
                         menuDTOList.add(menuDTO)
                     } else {
                         menuDTOList.stream()
-                            .filter { parentMenuDTO: MenuDTO -> parentMenuDTO.id == menuDTO.pid }
-                            .forEach { parentMenuDTO: MenuDTO ->
-                                parentMenuDTO.children.add(menuDTO)
-                            }
+                            .filter { parentMenuDTO -> parentMenuDTO.id == menuDTO.pid }
+                            .forEach { parentMenuDTO -> parentMenuDTO.children.add(menuDTO) }
                     }
                 }
             return menuDTOList
         }
 
         // 获取所有角色的所有角色与权限中间表数据
-        val rolePermissionList =
-            rolePermissionRepository.findAll { root: Root<RolePermission?>, _: CriteriaQuery<*>?, _: CriteriaBuilder? ->
-                root.get<Any>(RolePermission.ROLE_ID).`in`(
-                    user.authorities.stream().map(
-                        AbstractAuditable::id
-                    ).toList()
-                )
-            }.filterNotNull()
+        val roleIdList = user.authorities.stream().map(AbstractAuditable::id).toList()
+        val rolePermissionList = rolePermissionRepository.findAll { root, _, _ ->
+            root.get<Any>(RolePermission.ROLE_ID).`in`(roleIdList)
+        }.filterNotNull()
         if (rolePermissionList.isEmpty()) {
             throw BizRuntimeException("无法获取菜单，因为当前用户的角色没有任何权限")
         }
 
         // 该用户权限对应的所有子级菜单
         menuDTOList = menuList.stream()
-            .filter { menu: Menu ->
-                rolePermissionList.stream().map { obj: RolePermission -> obj.permissionId }
+            .filter { menu ->
+                rolePermissionList.stream()
+                    .map { obj -> obj.permissionId }
                     .anyMatch(Predicate.isEqual(menu.permissionId))
             }
             // 只需要子级
-            .filter { menu: Menu -> menu.pid != null }
-            .map { menu: Menu -> menuConvertToDTO(menu) }
+            .filter { menu -> menu.pid != null }
+            .map { menu -> menuConvertToDTO(menu) }
             .toList()
         if (menuDTOList.isEmpty()) {
             throw BizRuntimeException("当前用户没有任何菜单")
@@ -135,15 +128,16 @@ class LoginServiceImpl(
 
         // 匹配父级和子级菜单
         return menuList.stream()
-            .filter { menu: Menu ->
-                menuDTOList.stream().map { obj: MenuDTO -> obj.pid }
+            .filter { menu ->
+                menuDTOList.stream()
+                    .map { obj -> obj.pid }
                     .anyMatch(Predicate.isEqual(menu.id))
             }
-            .map { menu: Menu -> menuConvertToDTO(menu) }
+            .map { menu -> menuConvertToDTO(menu) }
             .peek { menuDTO: MenuDTO ->
                 menuDTOList.stream()
-                    .filter { childMenuDTO: MenuDTO -> menuDTO.id == childMenuDTO.pid }
-                    .forEach { childMenuDTO: MenuDTO? -> menuDTO.children.add(childMenuDTO) }
+                    .filter { childMenuDTO -> menuDTO.id == childMenuDTO.pid }
+                    .forEach { childMenuDTO -> menuDTO.children.add(childMenuDTO) }
             }
             .toList()
     }

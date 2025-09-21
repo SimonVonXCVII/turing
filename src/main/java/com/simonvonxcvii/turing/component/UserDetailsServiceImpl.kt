@@ -1,7 +1,6 @@
 package com.simonvonxcvii.turing.component
 
 import com.simonvonxcvii.turing.entity.User
-import com.simonvonxcvii.turing.entity.UserRole
 import com.simonvonxcvii.turing.repository.OrganizationRepository
 import com.simonvonxcvii.turing.repository.RoleRepository
 import com.simonvonxcvii.turing.repository.UserRepository
@@ -82,7 +81,8 @@ class UserDetailsServiceImpl(
                 }
 
             // 获取用户角色
-            roleRepository.findAllById(userRoleList.stream().map { userRole: UserRole -> userRole.roleId }.toList())
+            val userRoleIdList = userRoleList.stream().map { userRole -> userRole.roleId }.toList()
+            roleRepository.findAllById(userRoleIdList)
                 .filterNotNull()
                 .apply {
                     if (this.isEmpty()) throw BadCredentialsException("非法账号，该账号没有角色：$username")
@@ -93,7 +93,8 @@ class UserDetailsServiceImpl(
         // 使用 md5 这种方式作为 key 的原因是 session id 总是会改变，同一个客户端的浏览器发送的请求的 session id 无法保持一致
         val ipAddr = InetAddress.getByName(httpServletRequest.remoteAddr).hostAddress
         val userAgent = httpServletRequest.getHeader(HttpHeaders.USER_AGENT)
-        val md5DigestAsHex = DigestUtils.md5DigestAsHex((ipAddr + userAgent).toByteArray(StandardCharsets.UTF_8))
+        val ipAddrUserAgentByte = (ipAddr + userAgent).toByteArray(StandardCharsets.UTF_8)
+        val md5DigestAsHex = DigestUtils.md5DigestAsHex(ipAddrUserAgentByte)
         // 服务端验证码
         val serverCaptcha = stringRedisTemplate.opsForValue().get(Constants.REDIS_CAPTCHA + md5DigestAsHex)
         // 客户端验证码
@@ -104,7 +105,8 @@ class UserDetailsServiceImpl(
         println("clientCaptcha: $clientCaptcha")
         if (!StringUtils.hasText(serverCaptcha)) throw BadCredentialsException("验证码已过期")
         if (!StringUtils.hasText(clientCaptcha)) throw BadCredentialsException("请输入验证码")
-        if (!serverCaptcha.equals(clientCaptcha, true)) throw BadCredentialsException("验证码错误，请重新输入")
+        if (!serverCaptcha.equals(clientCaptcha, true))
+            throw BadCredentialsException("验证码错误，请重新输入")
 
         // 如果验证成功，则删除 Redis 中的验证码
         stringRedisTemplate.opsForValue().getAndDelete(Constants.REDIS_CAPTCHA + md5DigestAsHex)

@@ -36,6 +36,7 @@ class AuthenticationFailureHandlerImpl(private val objectMapper: ObjectMapper) :
         response.characterEncoding = StandardCharsets.UTF_8.name()
         response.contentType = MediaType.APPLICATION_JSON_VALUE
         response.status = HttpStatus.OK.value()
-        response.writer.write(objectMapper.writeValueAsString(BizRuntimeException(exception.localizedMessage)))
+        val string = objectMapper.writeValueAsString(BizRuntimeException(exception.localizedMessage))
+        response.writer.write(string)
     }
 }

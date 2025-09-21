@@ -11,4 +11,4 @@ import org.springframework.stereotype.Repository
  * @since 2023-08-21 18:08:08
  */
 @Repository
-interface PermissionRepository : JpaRepositoryImplementation<Permission?, Int?>
+interface PermissionRepository : JpaRepositoryImplementation<Permission, Int>

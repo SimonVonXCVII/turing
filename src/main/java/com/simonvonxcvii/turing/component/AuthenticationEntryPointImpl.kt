@@ -76,6 +76,7 @@ class AuthenticationEntryPointImpl(private val objectMapper: ObjectMapper) : Aut
         response.characterEncoding = StandardCharsets.UTF_8.name()
         response.contentType = MediaType.APPLICATION_JSON_VALUE
         response.status = HttpStatus.UNAUTHORIZED.value()
-        response.writer.write(objectMapper.writeValueAsString(BizRuntimeException(massage)))
+        val string = objectMapper.writeValueAsString(BizRuntimeException(massage))
+        response.writer.write(string)
     }
 }

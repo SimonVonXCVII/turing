@@ -100,7 +100,7 @@ class SecurityConfig {
         // 设置最大有效期
         // 配置客户端可以缓存飞行前请求的响应多长时间（以秒为单位）。
         // 默认情况下未设置。
-        config.maxAge = 1800L
+        config.maxAge = 1800
         // CorsConfigurationSource 使用 URL 模式为请求选择 CorsConfiguration。
         val source = UrlBasedCorsConfigurationSource()
         // 注册 Cors 配置

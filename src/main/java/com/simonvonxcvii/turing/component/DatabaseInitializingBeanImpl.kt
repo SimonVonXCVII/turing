@@ -3,7 +3,6 @@ package com.simonvonxcvii.turing.component
 import com.simonvonxcvii.turing.entity.*
 import com.simonvonxcvii.turing.enums.OrganizationTypeEnum
 import com.simonvonxcvii.turing.repository.*
-import org.apache.commons.logging.Log
 import org.apache.commons.logging.LogFactory
 import org.springframework.beans.factory.InitializingBean
 import org.springframework.core.io.ClassPathResource
@@ -44,8 +43,7 @@ class DatabaseInitializingBeanImpl(
     override fun afterPropertiesSet() {
         // 判断是否需要初始化，如果表存在说明不需要
         val connection = dataSource.connection
-        connection.metaData
-            .getTables(null, null, "turing_dict", null)
+        connection.metaData.getTables(null, null, "turing_dict", null)
             .next()
             .run { if (this) return }
 
@@ -2039,7 +2037,7 @@ class DatabaseInitializingBeanImpl(
     }
 
     companion object {
-        private val log: Log = LogFactory.getLog(DatabaseInitializingBeanImpl::class.java)
+        private val log = LogFactory.getLog(DatabaseInitializingBeanImpl::class.java)
 
         /**
          * 字典排序
