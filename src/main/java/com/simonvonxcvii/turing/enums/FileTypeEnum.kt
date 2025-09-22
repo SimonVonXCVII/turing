@@ -1,14 +1,11 @@
 package com.simonvonxcvii.turing.enums
 
-import lombok.Getter
-
 /**
  * 文件类型枚举
  *
  * @author Simon Von
  * @since 2023/4/3 11:05
  */
-@Getter
 enum class FileTypeEnum(val desc: String) {
     /**
      * 信息采集

@@ -4,8 +4,8 @@ import com.simonvonxcvii.turing.common.exception.BizRuntimeException;
 import com.simonvonxcvii.turing.entity.Menu;
 import com.simonvonxcvii.turing.entity.Permission;
 import com.simonvonxcvii.turing.model.dto.MenuDTO;
-import com.simonvonxcvii.turing.repository.MenuRepository;
-import com.simonvonxcvii.turing.repository.PermissionRepository;
+import com.simonvonxcvii.turing.repository.jpa.MenuJpaRepository;
+import com.simonvonxcvii.turing.repository.jpa.PermissionJpaRepository;
 import com.simonvonxcvii.turing.service.IMenuService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
@@ -30,8 +30,8 @@ import java.util.Objects;
 @Service
 public class MenuServiceImpl implements IMenuService {
 
-    private final MenuRepository menuRepository;
-    private final PermissionRepository permissionRepository;
+    private final MenuJpaRepository menuJpaRepository;
+    private final PermissionJpaRepository permissionJpaRepository;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -46,16 +46,16 @@ public class MenuServiceImpl implements IMenuService {
         }
         // 修改
         else {
-            menu = menuRepository.findById(dto.getId()).orElseThrow(() -> BizRuntimeException.from("无法查找到该数据"));
+            menu = menuJpaRepository.findById(dto.getId()).orElseThrow(() -> BizRuntimeException.from("无法查找到该数据"));
         }
         BeanUtils.copyProperties(dto, menu);
-        menuRepository.save(menu);
+        menuJpaRepository.save(menu);
     }
 
     @Override
     public List<MenuDTO> selectList(MenuDTO dto) {
         // 将两次查询改为提前查询所有数据，减少查询次数，减轻数据库压力
-        List<Menu> menuList = menuRepository.findAll(Sort.by(Menu.SORT));
+        List<Menu> menuList = menuJpaRepository.findAll(Sort.by(Menu.SORT));
         // 按条件过滤
         List<Menu> menuList1 = menuList.stream()
                 .filter(menu -> !StringUtils.hasText(dto.getName()) ||
@@ -95,14 +95,14 @@ public class MenuServiceImpl implements IMenuService {
                 .map(parent -> {
                     MenuDTO parentDTO = new MenuDTO();
                     BeanUtils.copyProperties(parent, parentDTO);
-                    Permission permission = permissionRepository.getReferenceById(parent.getPermissionId());
+                    Permission permission = permissionJpaRepository.getReferenceById(parent.getPermissionId());
                     parentDTO.setPermission(permission.getName());
                     childList.stream()
                             .filter(child -> Objects.equals(parent.getId(), child.getPid()))
                             .forEach(child -> {
                                 MenuDTO childDTO = new MenuDTO();
                                 BeanUtils.copyProperties(child, childDTO);
-                                Permission permission1 = permissionRepository.getReferenceById(child.getPermissionId());
+                                Permission permission1 = permissionJpaRepository.getReferenceById(child.getPermissionId());
                                 childDTO.setPermission(permission1.getName());
                                 parentDTO.getChildren().add(childDTO);
                             });
@@ -114,7 +114,7 @@ public class MenuServiceImpl implements IMenuService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void deleteById(Integer id) {
-        menuRepository.deleteById(id);
+        menuJpaRepository.deleteById(id);
     }
 
 }

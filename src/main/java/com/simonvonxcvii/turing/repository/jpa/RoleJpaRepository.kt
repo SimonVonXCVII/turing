@@ -1,14 +1,14 @@
-package com.simonvonxcvii.turing.repository
+package com.simonvonxcvii.turing.repository.jpa
 
-import com.simonvonxcvii.turing.entity.AppFile
+import com.simonvonxcvii.turing.entity.Role
 import org.springframework.data.jpa.repository.support.JpaRepositoryImplementation
 import org.springframework.stereotype.Repository
 
 /**
- * 菜单 Repository 接口
+ * 行政区划 JpaRepository 接口
  *
  * @author Simon Von
  * @since 2023-08-21 18:08:08
  */
 @Repository
-interface AppFileRepository : JpaRepositoryImplementation<AppFile, Int>
+interface RoleJpaRepository : JpaRepositoryImplementation<Role, Int>

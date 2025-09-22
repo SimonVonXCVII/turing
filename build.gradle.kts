@@ -119,17 +119,17 @@ dependencies {
     implementation("com.github.therapi:therapi-runtime-javadoc:${libs.versions.therapiRuntimeJavadoc.get()}")
     // google
     // https://central.sonatype.com/artifact/com.google.guava/guava
-    implementation("com.google.guava:guava:${libs.versions.googleGuava.get()}")
+//    implementation("com.google.guava:guava:${libs.versions.googleGuava.get()}")
     // https://central.sonatype.com/artifact/com.google.zxing/javase
-    implementation("com.google.zxing:javase:${libs.versions.googleZxing.get()}")
+//    implementation("com.google.zxing:javase:${libs.versions.googleZxing.get()}")
     // thumbnailator
     // https://central.sonatype.com/artifact/net.coobird/thumbnailator
-    implementation("net.coobird:thumbnailator:${libs.versions.thumbnailator.get()}")
+//    implementation("net.coobird:thumbnailator:${libs.versions.thumbnailator.get()}")
     // apache
     // https://central.sonatype.com/artifact/org.apache.poi/poi
     implementation("org.apache.poi:poi:${libs.versions.apachePoi.get()}")
     // https://central.sonatype.com/artifact/org.apache.velocity/velocity-engine-core
-    implementation("org.apache.velocity:velocity-engine-core:${libs.versions.apacheVelocity.get()}")
+//    implementation("org.apache.velocity:velocity-engine-core:${libs.versions.apacheVelocity.get()}")
     // kotlin 非必需
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     // springdoc
@@ -149,12 +149,12 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
     implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
     implementation("org.springframework.boot:spring-boot-starter-security")
-    implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
+//    implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.springframework.boot:spring-boot-starter-web")
     // PDF TODO 尝试换成 apache 的，或者试试 itext
     // https://central.sonatype.com/artifact/org.xhtmlrenderer/flying-saucer-pdf
-    implementation("org.xhtmlrenderer:flying-saucer-pdf:${libs.versions.flyingSaucerPdf.get()}")
+//    implementation("org.xhtmlrenderer:flying-saucer-pdf:${libs.versions.flyingSaucerPdf.get()}")
 //    implementation("org.apache.pdfbox:pdfbox:3.0.1")
 
     // postgresql

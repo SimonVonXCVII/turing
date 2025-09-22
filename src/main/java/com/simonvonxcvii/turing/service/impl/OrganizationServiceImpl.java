@@ -5,10 +5,10 @@ import com.simonvonxcvii.turing.entity.*;
 import com.simonvonxcvii.turing.enums.OrganizationBusinessBusinessLinksEnum;
 import com.simonvonxcvii.turing.enums.OrganizationBusinessStateEnum;
 import com.simonvonxcvii.turing.model.dto.OrganizationDTO;
-import com.simonvonxcvii.turing.repository.OrganizationBusinessRepository;
-import com.simonvonxcvii.turing.repository.OrganizationRepository;
-import com.simonvonxcvii.turing.repository.UserRepository;
-import com.simonvonxcvii.turing.repository.UserRoleRepository;
+import com.simonvonxcvii.turing.repository.jpa.OrganizationBusinessJpaRepository;
+import com.simonvonxcvii.turing.repository.jpa.OrganizationJpaRepository;
+import com.simonvonxcvii.turing.repository.jpa.UserJpaRepository;
+import com.simonvonxcvii.turing.repository.jpa.UserRoleJpaRepository;
 import com.simonvonxcvii.turing.service.IOrganizationService;
 import jakarta.persistence.criteria.Predicate;
 import lombok.RequiredArgsConstructor;
@@ -34,10 +34,10 @@ import java.util.stream.Collectors;
 @Service
 public class OrganizationServiceImpl implements IOrganizationService {
 
-    private final OrganizationRepository organizationRepository;
-    private final OrganizationBusinessRepository organizationBusinessRepository;
-    private final UserRepository userRepository;
-    private final UserRoleRepository userRoleRepository;
+    private final OrganizationJpaRepository organizationJpaRepository;
+    private final OrganizationBusinessJpaRepository organizationBusinessJpaRepository;
+    private final UserJpaRepository userJpaRepository;
+    private final UserRoleJpaRepository userRoleJpaRepository;
     private final StringRedisTemplate stringRedisTemplate;
 
     @Override
@@ -50,7 +50,7 @@ public class OrganizationServiceImpl implements IOrganizationService {
         }
         // 修改
         else {
-            organization = organizationRepository.findById(dto.getId()).orElseThrow(() -> BizRuntimeException.from("无法查找到该数据"));
+            organization = organizationJpaRepository.findById(dto.getId()).orElseThrow(() -> BizRuntimeException.from("无法查找到该数据"));
         }
         BeanUtils.copyProperties(dto, organization, AbstractAuditable.CREATED_DATE);
         // 获取省市县名称
@@ -60,12 +60,12 @@ public class OrganizationServiceImpl implements IOrganizationService {
         organization.setCityName(cityName);
         String districtName = stringRedisTemplate.opsForValue().get(Dict.REDIS_KEY_PREFIX + dto.getDistrictCode().toString());
         organization.setDistrictName(districtName);
-        organizationRepository.save(organization);
+        organizationJpaRepository.save(organization);
     }
 
     @Override
     public org.springframework.data.domain.Page<OrganizationDTO> selectPage(OrganizationDTO dto) {
-        return organizationRepository.findAll((root, query, criteriaBuilder) -> {
+        return organizationJpaRepository.findAll((root, query, criteriaBuilder) -> {
                             List<Predicate> predicateList = new LinkedList<>();
                             if (StringUtils.hasText(dto.getName())) {
                                 Predicate name = criteriaBuilder.like(root.get(Organization.NAME),
@@ -112,7 +112,7 @@ public class OrganizationServiceImpl implements IOrganizationService {
 
     @Override
     public List<OrganizationDTO> selectIdAndNameList() {
-        return organizationRepository.findAll()
+        return organizationJpaRepository.findAll()
                 .stream()
                 .map(organization -> {
                     OrganizationDTO dto = new OrganizationDTO();
@@ -133,7 +133,7 @@ public class OrganizationServiceImpl implements IOrganizationService {
      */
     @Override
     public List<OrganizationDTO> selectList(String name) {
-        return organizationBusinessRepository.findAll((root, query, criteriaBuilder) -> {
+        return organizationBusinessJpaRepository.findAll((root, query, criteriaBuilder) -> {
                     List<Predicate> predicateList = new LinkedList<>();
                     Predicate linkPredicate = criteriaBuilder.like(root.get(OrganizationBusiness.LINK),
                             "%" + OrganizationBusinessBusinessLinksEnum.SAMPLE_TESTING.getDesc() + "%", '/');
@@ -163,13 +163,13 @@ public class OrganizationServiceImpl implements IOrganizationService {
     public void deleteById(Integer id) {
         // 逻辑删除用户-角色关联数据
         // TODO: 2023/9/7 是否能实现查询指定列
-        List<User> userList = userRepository.findAll((root, _, _) -> root.get(User.ORG_ID).in(id));
+        List<User> userList = userJpaRepository.findAll((root, _, _) -> root.get(User.ORG_ID).in(id));
         List<Integer> userIdList = userList.stream().map(AbstractAuditable::getId).toList();
-        userRoleRepository.delete((root, _, _) -> root.get(UserRole.USER_ID).in(userIdList));
+        userRoleJpaRepository.delete((root, _, _) -> root.get(UserRole.USER_ID).in(userIdList));
         // 删除单位下的所有用户
-        userRepository.delete((root, _, _) -> root.get(User.ORG_ID).in(id));
+        userJpaRepository.delete((root, _, _) -> root.get(User.ORG_ID).in(id));
         // 删除单位
-        organizationRepository.deleteById(id);
+        organizationJpaRepository.deleteById(id);
     }
 
 }

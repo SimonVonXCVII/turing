@@ -1,14 +1,11 @@
 package com.simonvonxcvii.turing.enums
 
-import lombok.Getter
-
 /**
  * 任务状态枚举
  *
  * @author Simon Von
  * @since 2023/4/1 18:11
  */
-@Getter
 enum class AssignmentStateEnum(val desc: String) {
     UNASSIGNED("未分配"),
     ASSIGNED("已分配"),

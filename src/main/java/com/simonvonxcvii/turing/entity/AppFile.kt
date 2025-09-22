@@ -17,6 +17,7 @@ import java.util.*
  * @author Simon Von
  * @since 2023-04-01 23:08:08
  */
+//@RedisHash("turing_app_file")
 @Entity
 @Table(
     schema = "public",

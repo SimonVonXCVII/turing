@@ -2,7 +2,7 @@
 //
 //import co.elastic.clients.elasticsearch.ElasticsearchClient
 //import com.simonvonxcvii.turing.entity.OrganizationBusiness
-//import com.simonvonxcvii.turing.repository.OrganizationBusinessRepository
+//import com.simonvonxcvii.turing.repository.jpa.OrganizationBusinessRepository
 //import org.springframework.boot.ApplicationArguments
 //import org.springframework.boot.ApplicationRunner
 //import org.springframework.stereotype.Component

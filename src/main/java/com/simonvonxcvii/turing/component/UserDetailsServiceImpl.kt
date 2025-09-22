@@ -1,10 +1,10 @@
 package com.simonvonxcvii.turing.component
 
 import com.simonvonxcvii.turing.entity.User
-import com.simonvonxcvii.turing.repository.OrganizationRepository
-import com.simonvonxcvii.turing.repository.RoleRepository
-import com.simonvonxcvii.turing.repository.UserRepository
-import com.simonvonxcvii.turing.repository.UserRoleRepository
+import com.simonvonxcvii.turing.repository.jpa.OrganizationJpaRepository
+import com.simonvonxcvii.turing.repository.jpa.RoleJpaRepository
+import com.simonvonxcvii.turing.repository.jpa.UserJpaRepository
+import com.simonvonxcvii.turing.repository.jpa.UserRoleJpaRepository
 import com.simonvonxcvii.turing.service.NimbusJwtService
 import com.simonvonxcvii.turing.utils.Constants
 import jakarta.persistence.criteria.Path
@@ -35,10 +35,10 @@ class UserDetailsServiceImpl(
     private val httpServletRequest: HttpServletRequest,
     private val redisTemplate: RedisTemplate<Any, Any>,
     private val stringRedisTemplate: StringRedisTemplate,
-    private val userRepository: UserRepository,
-    private val roleRepository: RoleRepository,
-    private val userRoleRepository: UserRoleRepository,
-    private val organizationRepository: OrganizationRepository,
+    private val userJpaRepository: UserJpaRepository,
+    private val roleJpaRepository: RoleJpaRepository,
+    private val userRoleJpaRepository: UserRoleJpaRepository,
+    private val organizationJpaRepository: OrganizationJpaRepository,
 ) : UserDetailsService {
     /**
      * 根据用户名定位用户。在实际实现中，搜索可能区分大小写或不区分大小写，具体取决于实现实例的配置方式。
@@ -56,7 +56,7 @@ class UserDetailsServiceImpl(
             throw UsernameNotFoundException("用户账号不能为空")
         }
         // 获取用户数据
-        val user = userRepository.findOne { root, query, criteriaBuilder ->
+        val user = userJpaRepository.findOne { root, query, criteriaBuilder ->
             val usernamePath: Path<String> = root.get("username")
             query?.where(criteriaBuilder.equal(usernamePath, username))?.restriction
         }.orElse(null) ?: throw UsernameNotFoundException("该用户账号不存在：$username")
@@ -69,10 +69,10 @@ class UserDetailsServiceImpl(
         user.admin = "admin" == user.username
         // 超级管理员拥有所有角色和权限
         val roleList = if (user.admin) {
-            roleRepository.findAll().filterNotNull()
+            roleJpaRepository.findAll().filterNotNull()
         } else {
             // 获取用户角色与用户关联记录表
-            val userRoleList = userRoleRepository.findAll { root, query, criteriaBuilder ->
+            val userRoleList = userRoleJpaRepository.findAll { root, query, criteriaBuilder ->
                 val userId: Path<String> = root.get("user_id")
                 query?.where(criteriaBuilder.equal(userId, user.id))?.restriction
             }.filterNotNull()
@@ -82,7 +82,7 @@ class UserDetailsServiceImpl(
 
             // 获取用户角色
             val userRoleIdList = userRoleList.stream().map { userRole -> userRole.roleId }.toList()
-            roleRepository.findAllById(userRoleIdList)
+            roleJpaRepository.findAllById(userRoleIdList)
                 .filterNotNull()
                 .apply {
                     if (this.isEmpty()) throw BadCredentialsException("非法账号，该账号没有角色：$username")
@@ -118,7 +118,7 @@ class UserDetailsServiceImpl(
         user.token = nimbusJwtService.encode(user.id, username).tokenValue
         // 将 token 保存到 request 中，便于在 AuthenticationSuccessHandlerImpl#onAuthenticationSuccess 方法中获取
         httpServletRequest.setAttribute(OAuth2ParameterNames.TOKEN, user.token)
-        val organization = organizationRepository.findById(user.orgId)
+        val organization = organizationJpaRepository.findById(user.orgId)
             .orElse(null) ?: throw BadCredentialsException("无法找到当前用户的单位信息")
         // 用户所处的单位级别
 //         user.orgLevel = organization.orgLevel

@@ -3,7 +3,7 @@ package com.simonvonxcvii.turing.service.impl;
 import com.simonvonxcvii.turing.common.exception.BizRuntimeException;
 import com.simonvonxcvii.turing.entity.Dict;
 import com.simonvonxcvii.turing.model.dto.DictDTO;
-import com.simonvonxcvii.turing.repository.DictRepository;
+import com.simonvonxcvii.turing.repository.jpa.DictJpaRepository;
 import com.simonvonxcvii.turing.service.IDictService;
 import jakarta.persistence.criteria.Predicate;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +30,7 @@ import java.util.List;
 @Service
 public class DictServiceImpl implements IDictService {
 
-    private final DictRepository dictRepository;
+    private final DictJpaRepository dictJpaRepository;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -42,19 +42,19 @@ public class DictServiceImpl implements IDictService {
         }
         // 修改
         else {
-            dict = dictRepository.findById(dto.getId()).orElseThrow(() -> BizRuntimeException.from("无法查找到该数据"));
+            dict = dictJpaRepository.findById(dto.getId()).orElseThrow(() -> BizRuntimeException.from("无法查找到该数据"));
         }
         if (dto.getSort() == null) {
             BeanUtils.copyProperties(dto, dict, Dict.SORT);
         } else {
             BeanUtils.copyProperties(dto, dict);
         }
-        dictRepository.save(dict);
+        dictJpaRepository.save(dict);
     }
 
     @Override
     public Page<DictDTO> selectPage(DictDTO dto) {
-        return dictRepository.findAll((root, query, criteriaBuilder) -> {
+        return dictJpaRepository.findAll((root, query, criteriaBuilder) -> {
                             List<Predicate> predicateList = new LinkedList<>();
                             if (StringUtils.hasText(dto.getType())) {
                                 Predicate name = criteriaBuilder.like(root.get(Dict.TYPE),
@@ -96,7 +96,7 @@ public class DictServiceImpl implements IDictService {
     public DictDTO getAreaByCode(Integer code) {
         if (code == null) {
             DictDTO dictDTO = new DictDTO();
-            List<Dict> children = dictRepository.findAll((root, query, criteriaBuilder) ->
+            List<Dict> children = dictJpaRepository.findAll((root, query, criteriaBuilder) ->
                     {
                         assert query != null;
                         return query.where(root.get(Dict.PID).isNull(), root.get(Dict.TYPE).in("area"))
@@ -109,14 +109,14 @@ public class DictServiceImpl implements IDictService {
             }
             return dictDTO;
         }
-        Dict dict = dictRepository.findOne((root, query, _) ->
+        Dict dict = dictJpaRepository.findOne((root, query, _) ->
                 {
                     assert query != null;
                     return query.where(root.get(Dict.VALUE).in(code.toString()), root.get(Dict.TYPE).in("area")).getRestriction();
                 })
                 .orElseThrow(() -> BizRuntimeException.from("没有找到区域编码：" + code));
         DictDTO dictDTO = convertToDictDTO(dict);
-        List<Dict> children = dictRepository.findAll((root, query, criteriaBuilder) ->
+        List<Dict> children = dictJpaRepository.findAll((root, query, criteriaBuilder) ->
                 {
                     assert query != null;
                     return query.where(root.get(Dict.PID).in(code), root.get(Dict.TYPE).in("area"))
@@ -133,7 +133,7 @@ public class DictServiceImpl implements IDictService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void deleteById(Integer id) {
-        dictRepository.deleteById(id);
+        dictJpaRepository.deleteById(id);
     }
 
     public DictDTO convertToDictDTO(Dict dict) {

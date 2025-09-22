@@ -5,9 +5,9 @@ import com.simonvonxcvii.turing.entity.Menu;
 import com.simonvonxcvii.turing.entity.Permission;
 import com.simonvonxcvii.turing.entity.RolePermission;
 import com.simonvonxcvii.turing.model.dto.PermissionDTO;
-import com.simonvonxcvii.turing.repository.MenuRepository;
-import com.simonvonxcvii.turing.repository.PermissionRepository;
-import com.simonvonxcvii.turing.repository.RolePermissionRepository;
+import com.simonvonxcvii.turing.repository.jpa.MenuJpaRepository;
+import com.simonvonxcvii.turing.repository.jpa.PermissionJpaRepository;
+import com.simonvonxcvii.turing.repository.jpa.RolePermissionJpaRepository;
 import com.simonvonxcvii.turing.service.IPermissionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
@@ -32,9 +32,9 @@ import java.util.Objects;
 @Service
 public class PermissionServiceImpl implements IPermissionService {
 
-    private final PermissionRepository permissionRepository;
-    private final RolePermissionRepository rolePermissionRepository;
-    private final MenuRepository menuRepository;
+    private final PermissionJpaRepository permissionJpaRepository;
+    private final RolePermissionJpaRepository rolePermissionJpaRepository;
+    private final MenuJpaRepository menuJpaRepository;
 
     /**
      * 单个新增或修改
@@ -55,10 +55,10 @@ public class PermissionServiceImpl implements IPermissionService {
         }
         // 修改
         else {
-            permission = permissionRepository.findById(dto.getId()).orElseThrow(() -> BizRuntimeException.from("无法查找到该数据"));
+            permission = permissionJpaRepository.findById(dto.getId()).orElseThrow(() -> BizRuntimeException.from("无法查找到该数据"));
         }
         BeanUtils.copyProperties(dto, permission);
-        permissionRepository.save(permission);
+        permissionJpaRepository.save(permission);
     }
 
     /**
@@ -71,7 +71,7 @@ public class PermissionServiceImpl implements IPermissionService {
     @Override
     public List<PermissionDTO> selectList(PermissionDTO dto) {
         // 将两次查询改为提前查询所有数据，减少查询次数，减轻数据库压力
-        List<Permission> permissionList = permissionRepository.findAll(Sort.by(Permission.SORT));
+        List<Permission> permissionList = permissionJpaRepository.findAll(Sort.by(Permission.SORT));
         // 按条件过滤
         List<Permission> permissionList1 = permissionList.stream()// TODO use anyMatch
                 .filter(permission -> !StringUtils.hasText(dto.getName()) ||
@@ -127,15 +127,15 @@ public class PermissionServiceImpl implements IPermissionService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void deleteById(Integer id) {
-        boolean exists = rolePermissionRepository.exists((root, _, _) ->
+        boolean exists = rolePermissionJpaRepository.exists((root, _, _) ->
                 root.get(RolePermission.PERMISSION_ID).in(id));
         if (exists) {
             throw BizRuntimeException.from("该权限已关联角色");
         }
-        exists = menuRepository.exists((root, _, _) -> root.get(Menu.PERMISSION_ID).in(id));
+        exists = menuJpaRepository.exists((root, _, _) -> root.get(Menu.PERMISSION_ID).in(id));
         if (exists) {
             throw BizRuntimeException.from("该权限已关联菜单");
         }
-        permissionRepository.deleteById(id);
+        permissionJpaRepository.deleteById(id);
     }
 }

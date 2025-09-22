@@ -1,4 +1,4 @@
-package com.simonvonxcvii.turing.repository
+package com.simonvonxcvii.turing.repository.jpa
 
 import com.simonvonxcvii.turing.entity.User
 import org.springframework.data.jpa.repository.support.JpaRepositoryImplementation
@@ -6,12 +6,12 @@ import org.springframework.data.repository.query.QueryByExampleExecutor
 import org.springframework.stereotype.Repository
 
 /**
- * 行政区划 Repository 接口
+ * 行政区划 JpaRepository 接口
  *
  * @author Simon Von
  * @since 2023-08-21 18:08:08
  */
 @Repository
-interface UserRepository : JpaRepositoryImplementation<User, Int>,
+interface UserJpaRepository : JpaRepositoryImplementation<User, Int>,
     QueryByExampleExecutor<User> /*, JpaCriteriaQuery<User>*/
 

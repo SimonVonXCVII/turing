@@ -8,10 +8,10 @@ import com.simonvonxcvii.turing.entity.UserRole;
 import com.simonvonxcvii.turing.enums.OrganizationBusinessBusinessLinksEnum;
 import com.simonvonxcvii.turing.enums.OrganizationBusinessStateEnum;
 import com.simonvonxcvii.turing.model.dto.RoleDTO;
-import com.simonvonxcvii.turing.repository.OrganizationBusinessRepository;
-import com.simonvonxcvii.turing.repository.RolePermissionRepository;
-import com.simonvonxcvii.turing.repository.RoleRepository;
-import com.simonvonxcvii.turing.repository.UserRoleRepository;
+import com.simonvonxcvii.turing.repository.jpa.OrganizationBusinessJpaRepository;
+import com.simonvonxcvii.turing.repository.jpa.RoleJpaRepository;
+import com.simonvonxcvii.turing.repository.jpa.RolePermissionJpaRepository;
+import com.simonvonxcvii.turing.repository.jpa.UserRoleJpaRepository;
 import com.simonvonxcvii.turing.service.IRoleService;
 import com.simonvonxcvii.turing.utils.UserUtils;
 import jakarta.persistence.criteria.Predicate;
@@ -41,10 +41,10 @@ import java.util.List;
 @Service
 public class RoleServiceImpl implements IRoleService {
 
-    private final RolePermissionRepository rolePermissionRepository;
-    private final OrganizationBusinessRepository organizationBusinessRepository;
-    private final RoleRepository roleRepository;
-    private final UserRoleRepository userRoleRepository;
+    private final RolePermissionJpaRepository rolePermissionJpaRepository;
+    private final OrganizationBusinessJpaRepository organizationBusinessJpaRepository;
+    private final RoleJpaRepository roleJpaRepository;
+    private final UserRoleJpaRepository userRoleJpaRepository;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -56,14 +56,14 @@ public class RoleServiceImpl implements IRoleService {
         }
         // 修改
         else {
-            role = roleRepository.findById(dto.getId()).orElseThrow(() -> BizRuntimeException.from("无法查找到该数据"));
+            role = roleJpaRepository.findById(dto.getId()).orElseThrow(() -> BizRuntimeException.from("无法查找到该数据"));
         }
         BeanUtils.copyProperties(dto, role);
-        roleRepository.save(role);
+        roleJpaRepository.save(role);
 
         // 更新角色权限表
         // TODO 可以优化成只添加需要添加的，只删除需要删除的
-        rolePermissionRepository.delete((root, _, _) ->
+        rolePermissionJpaRepository.delete((root, _, _) ->
                 root.get(RolePermission.ROLE_ID).in(dto.getId()));
         List<RolePermission> rolePermissionList = new LinkedList<>();
         dto.getPermissionIdList()
@@ -73,12 +73,12 @@ public class RoleServiceImpl implements IRoleService {
                     rolePermission.setPermissionId(permissionId);
                     rolePermissionList.add(rolePermission);
                 });
-        rolePermissionRepository.saveAll(rolePermissionList);
+        rolePermissionJpaRepository.saveAll(rolePermissionList);
     }
 
     @Override
     public Page<RoleDTO> selectPage(RoleDTO dto) {
-        return roleRepository.findAll((root, query, criteriaBuilder) -> {
+        return roleJpaRepository.findAll((root, query, criteriaBuilder) -> {
                             List<Predicate> predicateList = new LinkedList<>();
                             if (StringUtils.hasText(dto.getName())) {
                                 Predicate name = criteriaBuilder.like(root.get(Role.NAME),
@@ -109,7 +109,7 @@ public class RoleServiceImpl implements IRoleService {
 
     @Override
     public List<RoleDTO> selectList(RoleDTO dto) {
-        return roleRepository.findAll((root, query, criteriaBuilder) -> {
+        return roleJpaRepository.findAll((root, query, criteriaBuilder) -> {
                     List<Predicate> predicateList = new LinkedList<>();
                     if (StringUtils.hasText(dto.getName())) {
                         Predicate name = criteriaBuilder.like(root.get(Role.NAME),
@@ -140,11 +140,11 @@ public class RoleServiceImpl implements IRoleService {
 
     @Override
     public RoleDTO selectById(Integer id) {
-        Role role = roleRepository.findById(id).orElseThrow(() -> BizRuntimeException.from("没有查询到该角色"));
+        Role role = roleJpaRepository.findById(id).orElseThrow(() -> BizRuntimeException.from("没有查询到该角色"));
         RoleDTO roleDTO = new RoleDTO();
         BeanUtils.copyProperties(role, roleDTO);
         // 查询该角色具有的权限
-        List<Integer> permissionIdList = rolePermissionRepository
+        List<Integer> permissionIdList = rolePermissionJpaRepository
                 .findAll((root, _, _) ->
                         root.get(RolePermission.ROLE_ID).in(role.getId()))
                 .stream()
@@ -157,15 +157,15 @@ public class RoleServiceImpl implements IRoleService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void deleteById(Integer id) {
-        boolean exists = userRoleRepository.exists((root, _, _) ->
+        boolean exists = userRoleJpaRepository.exists((root, _, _) ->
                 root.get(UserRole.ROLE_ID).in(id));
         if (exists) {
             throw BizRuntimeException.from("该角色已关联用户");
         }
         // 删除角色-权限关联数据
-        rolePermissionRepository.delete((root, _, _) ->
+        rolePermissionJpaRepository.delete((root, _, _) ->
                 root.get(RolePermission.ROLE_ID).in(id));
-        roleRepository.deleteById(id);
+        roleJpaRepository.deleteById(id);
     }
 
     /**
@@ -175,7 +175,7 @@ public class RoleServiceImpl implements IRoleService {
      */
     public List<RoleDTO> selectListForBusinessOrg() {
         // 获取所有已通过的业务申请
-        List<OrganizationBusiness> organizationBusinessList = organizationBusinessRepository.findAll(
+        List<OrganizationBusiness> organizationBusinessList = organizationBusinessJpaRepository.findAll(
                 (root, _, criteriaBuilder) ->
                         criteriaBuilder.and(root.get(OrganizationBusiness.ORG_ID).in(UserUtils.getOrgId()),
                                 root.get(OrganizationBusiness.STATE).in(OrganizationBusinessStateEnum.PASSES.getDesc())));
@@ -189,7 +189,7 @@ public class RoleServiceImpl implements IRoleService {
                 String[] links = StringUtils.commaDelimitedListToStringArray(organizationBusiness.getLink());
                 for (String link : links) {
                     OrganizationBusinessBusinessLinksEnum.getEnumByDesc(link).ifPresent(anEnum ->
-                            roleRepository.findAll((root, _, _) ->
+                            roleJpaRepository.findAll((root, _, _) ->
                                             root.get(Role.AUTHORITY).in("STAFF_" + anEnum.name()))
                                     .forEach(role -> {
                                         RoleDTO roleDTO = new RoleDTO();
@@ -198,7 +198,7 @@ public class RoleServiceImpl implements IRoleService {
                                         roleDTOList.add(roleDTO);
                                     }));
                     OrganizationBusinessBusinessLinksEnum.getEnumByDesc(link).ifPresent(anEnum ->
-                            roleRepository.findAll((root, _, _) ->
+                            roleJpaRepository.findAll((root, _, _) ->
                                             root.get(Role.AUTHORITY).in("STAFF_" + anEnum.name()))
                                     .forEach(role -> {
                                         RoleDTO roleDTO = new RoleDTO();
@@ -212,7 +212,7 @@ public class RoleServiceImpl implements IRoleService {
                 String[] types = StringUtils.commaDelimitedListToStringArray(organizationBusiness.getType());
                 for (String type : types) {
                     OrganizationBusinessBusinessLinksEnum.getEnumByDesc(type).ifPresent(anEnum ->
-                            roleRepository.findAll((root, _, _) ->
+                            roleJpaRepository.findAll((root, _, _) ->
                                             root.get(Role.AUTHORITY).in("STAFF_" + anEnum.name()))
                                     .forEach(role -> {
                                         RoleDTO roleDTO = new RoleDTO();
@@ -236,19 +236,19 @@ public class RoleServiceImpl implements IRoleService {
         Collection<? extends GrantedAuthority> authorities = UserUtils.getAuthorities();
         assert authorities != null;
         if (authorities.contains(new SimpleGrantedAuthority("ROLE_ADMIN_PROVINCE_GOV"))) {
-            return roleRepository.findAll((root, _, _) ->
+            return roleJpaRepository.findAll((root, _, _) ->
                             root.get(Role.AUTHORITY).in("STAFF_PROVINCE_GOV"))
                     .stream()
                     .map(role -> new RoleDTO().setId(role.getId()).setName(role.getName()))
                     .toList();
         } else if (authorities.contains(new SimpleGrantedAuthority("ROLE_ADMIN_CITY_GOV"))) {
-            return roleRepository.findAll((root, _, _) ->
+            return roleJpaRepository.findAll((root, _, _) ->
                             root.get(Role.AUTHORITY).in("STAFF_CITY_GOV"))
                     .stream()
                     .map(role -> new RoleDTO().setId(role.getId()).setName(role.getName()))
                     .toList();
         } else if (authorities.contains(new SimpleGrantedAuthority("ROLE_ADMIN_DISTRICT_GOV"))) {
-            return roleRepository.findAll((root, _, _) ->
+            return roleJpaRepository.findAll((root, _, _) ->
                             root.get(Role.AUTHORITY).in("STAFF_DISTRICT_GOV"))
                     .stream()
                     .map(role -> new RoleDTO().setId(role.getId()).setName(role.getName()))

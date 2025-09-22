@@ -5,12 +5,11 @@ import com.simonvonxcvii.turing.entity.AppFile;
 import com.simonvonxcvii.turing.entity.Dict;
 import com.simonvonxcvii.turing.enums.FileTypeEnum;
 import com.simonvonxcvii.turing.model.dto.UploadFileDTO;
-import com.simonvonxcvii.turing.repository.AppFileRepository;
+import com.simonvonxcvii.turing.repository.jpa.AppFileJpaRepository;
 import com.simonvonxcvii.turing.service.IAppFileService;
 import com.simonvonxcvii.turing.utils.UserUtils;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import net.coobird.thumbnailator.Thumbnails;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.http.ContentDisposition;
@@ -43,7 +42,7 @@ public class AppFileServiceImpl implements IAppFileService {
 
     private static final Log log = LogFactory.getLog(AppFileServiceImpl.class);
 
-    private final AppFileRepository appFileRepository;
+    private final AppFileJpaRepository appFileJpaRepository;
 
     /**
      * 上传文件
@@ -66,20 +65,20 @@ public class AppFileServiceImpl implements IAppFileService {
         byte[] bytes;
         try (ByteArrayOutputStream os = new ByteArrayOutputStream();
              InputStream is = multipartFile.getInputStream()) {
-            // 是否压缩
+            // 是否压缩 TODO 尝试使用其它方式
             // 这样写的原因在于 isCompress 可以为 null（拆箱的 'isCompress' 可能产生 'java.lang.NullPointerException'）
             if (Boolean.TRUE.equals(isCompress)) {
-                Thumbnails.of(is)
-                        // 设置缩略图的比例因子
-                        .scale(0.9f)
-                        // 设置将缩略图写入外部目标（例如文件或输出流）时用于压缩缩略图的压缩算法的输出质量。
-                        // 该值是介于 0.0f 和 1.0f 之间的浮点数，其中 0.0f 表示最低质量，1.0f 表示压缩编解码器应使用的最高质量设置。
-                        // 调用此方法来设置此参数是可选的。
-                        .outputQuality(0.9f)
-                        // 创建缩略图并将其写入 OutputStream。
-                        // 要调用此方法，缩略图必须是从单一来源创建的。
-                        // 请注意，在将缩略图写入 OutputStream 完成后，不会调用 OutputStream.close() 方法。
-                        .toOutputStream(os);
+//                Thumbnails.of(is)
+//                        // 设置缩略图的比例因子
+//                        .scale(0.9f)
+//                        // 设置将缩略图写入外部目标（例如文件或输出流）时用于压缩缩略图的压缩算法的输出质量。
+//                        // 该值是介于 0.0f 和 1.0f 之间的浮点数，其中 0.0f 表示最低质量，1.0f 表示压缩编解码器应使用的最高质量设置。
+//                        // 调用此方法来设置此参数是可选的。
+//                        .outputQuality(0.9f)
+//                        // 创建缩略图并将其写入 OutputStream。
+//                        // 要调用此方法，缩略图必须是从单一来源创建的。
+//                        // 请注意，在将缩略图写入 OutputStream 完成后，不会调用 OutputStream.close() 方法。
+//                        .toOutputStream(os);
             } else {
                 byte[] buf = new byte[1024];
                 int len;
@@ -94,7 +93,7 @@ public class AppFileServiceImpl implements IAppFileService {
         // 生成 md5
         String md5 = DigestUtils.md5DigestAsHex(bytes);
         // 通过 md5 查询文件
-        Optional<AppFile> appFileOptional = appFileRepository.findOne((root, query, _) ->
+        Optional<AppFile> appFileOptional = appFileJpaRepository.findOne((root, query, _) ->
         {
             assert query != null;
             return query.where(root.get(AppFile.MD5).in(md5), root.get(Dict.TYPE).in("area")).getRestriction();
@@ -139,7 +138,7 @@ public class AppFileServiceImpl implements IAppFileService {
         appFile.setBizType(bizType);
         // 备注
         appFile.setRemark(remark);
-        appFileRepository.save(appFile);
+        appFileJpaRepository.save(appFile);
         // 设置需要返回的文件信息
         dto.setId(appFile.getId());
         dto.setFilename(originalFilename);
@@ -156,7 +155,7 @@ public class AppFileServiceImpl implements IAppFileService {
      */
     @Override
     public void getFileById(Integer id, HttpServletResponse response) throws IOException {
-        AppFile appFile = appFileRepository.findById(id).orElseThrow(() -> BizRuntimeException.from("没有找到该文件"));
+        AppFile appFile = appFileJpaRepository.findById(id).orElseThrow(() -> BizRuntimeException.from("没有找到该文件"));
         String appFilePath = appFile.getPath();
         if (appFilePath == null) {
             throw BizRuntimeException.from("文件路径为空");
@@ -196,7 +195,7 @@ public class AppFileServiceImpl implements IAppFileService {
      */
     @Override
     public void getOriginalImageById(Integer id, HttpServletResponse response) throws IOException {
-        AppFile appFile = appFileRepository.findById(id).orElseThrow(() -> BizRuntimeException.from("没有找到该图片"));
+        AppFile appFile = appFileJpaRepository.findById(id).orElseThrow(() -> BizRuntimeException.from("没有找到该图片"));
         String appFilePath = appFile.getPath();
         if (!StringUtils.hasText(appFilePath)) {
             throw BizRuntimeException.from("图片路径为空");
@@ -236,7 +235,7 @@ public class AppFileServiceImpl implements IAppFileService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void deleteById(Integer id) {
-        appFileRepository.deleteById(id);
+        appFileJpaRepository.deleteById(id);
     }
 
 }

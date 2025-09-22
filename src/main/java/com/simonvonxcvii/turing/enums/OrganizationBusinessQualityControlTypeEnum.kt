@@ -1,6 +1,5 @@
 package com.simonvonxcvii.turing.enums
 
-import lombok.Getter
 import java.util.*
 
 /**
@@ -9,7 +8,6 @@ import java.util.*
  * @author Simon Von
  * @since 1/4/2023 5:26 PM
  */
-@Getter
 enum class OrganizationBusinessQualityControlTypeEnum(val desc: String) {
     INFORMATION_COLLECTION_QC("信息采集质控"),
     DISTRIBUTE_QC("布点质控"),

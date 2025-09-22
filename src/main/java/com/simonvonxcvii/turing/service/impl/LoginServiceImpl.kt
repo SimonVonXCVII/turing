@@ -7,8 +7,8 @@ import com.simonvonxcvii.turing.entity.RolePermission
 import com.simonvonxcvii.turing.model.dto.MenuDTO
 import com.simonvonxcvii.turing.model.dto.MenuMetaDTO
 import com.simonvonxcvii.turing.model.dto.UserDTO
-import com.simonvonxcvii.turing.repository.MenuRepository
-import com.simonvonxcvii.turing.repository.RolePermissionRepository
+import com.simonvonxcvii.turing.repository.jpa.MenuJpaRepository
+import com.simonvonxcvii.turing.repository.jpa.RolePermissionJpaRepository
 import com.simonvonxcvii.turing.service.LoginService
 import com.simonvonxcvii.turing.utils.Constants
 import com.simonvonxcvii.turing.utils.RandomUtils
@@ -36,8 +36,8 @@ import java.util.function.Predicate
 @Service
 class LoginServiceImpl(
     private val randomUtils: RandomUtils,
-    private val menuRepository: MenuRepository,
-    private val rolePermissionRepository: RolePermissionRepository,
+    private val menuJpaRepository: MenuJpaRepository,
+    private val rolePermissionJpaRepository: RolePermissionJpaRepository,
     private val stringRedisTemplate: StringRedisTemplate
 ) : LoginService {
     /**
@@ -83,7 +83,7 @@ class LoginServiceImpl(
     override fun getMenuList(): List<MenuDTO> {
         var menuDTOList = mutableListOf<MenuDTO>()
         // 预先查询所有菜单
-        val menuList = menuRepository.findAll(Sort.by(Menu.SORT)).filterNotNull()
+        val menuList = menuJpaRepository.findAll(Sort.by(Menu.SORT)).filterNotNull()
         // 超级管理员可查看所有菜单
         val user = UserUtils.getUser()
         if (user.admin) {
@@ -104,7 +104,7 @@ class LoginServiceImpl(
 
         // 获取所有角色的所有角色与权限中间表数据
         val roleIdList = user.authorities.stream().map(AbstractAuditable::id).toList()
-        val rolePermissionList = rolePermissionRepository.findAll { root, _, _ ->
+        val rolePermissionList = rolePermissionJpaRepository.findAll { root, _, _ ->
             root.get<Any>(RolePermission.ROLE_ID).`in`(roleIdList)
         }.filterNotNull()
         if (rolePermissionList.isEmpty()) {

@@ -12,7 +12,7 @@ import com.simonvonxcvii.turing.enums.OrganizationBusinessBusinessLinksEnum;
 import com.simonvonxcvii.turing.enums.OrganizationBusinessLevelEnum;
 import com.simonvonxcvii.turing.enums.OrganizationBusinessQualityControlTypeEnum;
 import com.simonvonxcvii.turing.model.dto.OrganizationBusinessDTO;
-import com.simonvonxcvii.turing.repository.*;
+import com.simonvonxcvii.turing.repository.jpa.*;
 import com.simonvonxcvii.turing.service.IOrganizationBusinessService;
 import com.simonvonxcvii.turing.utils.UserUtils;
 import jakarta.persistence.criteria.Predicate;
@@ -40,11 +40,11 @@ import java.util.List;
 @Service
 public class OrganizationBusinessServiceImpl implements IOrganizationBusinessService {
 
-    private final OrganizationBusinessRepository organizationBusinessRepository;
-    private final OrganizationRepository organizationRepository;
-    private final UserRoleRepository userRoleRepository;
-    private final RoleRepository roleRepository;
-    private final UserRepository userRepository;
+    private final OrganizationBusinessJpaRepository organizationBusinessJpaRepository;
+    private final OrganizationJpaRepository organizationJpaRepository;
+    private final UserRoleJpaRepository userRoleJpaRepository;
+    private final RoleJpaRepository roleJpaRepository;
+    private final UserJpaRepository userJpaRepository;
     private final StringRedisTemplate stringRedisTemplate;
 //    private final ElasticsearchClient elasticsearchClient;
 
@@ -155,7 +155,7 @@ public class OrganizationBusinessServiceImpl implements IOrganizationBusinessSer
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void insert(OrganizationBusinessDTO dto) throws IOException {
-        boolean exists = organizationBusinessRepository.exists((root, query, _) -> {
+        boolean exists = organizationBusinessJpaRepository.exists((root, query, _) -> {
             List<Predicate> predicateList = new LinkedList<>();
             // 本单位
             predicateList.add(root.get(OrganizationBusiness.ORG_ID).in(UserUtils.getOrgId()));
@@ -195,7 +195,7 @@ public class OrganizationBusinessServiceImpl implements IOrganizationBusinessSer
         }
         organizationBusiness.setLink(StringUtils.arrayToCommaDelimitedString(dto.getLink()));
         organizationBusiness.setType(StringUtils.arrayToCommaDelimitedString(dto.getType()));
-        Organization organization = organizationRepository.getReferenceById(UserUtils.getOrgId());
+        Organization organization = organizationJpaRepository.getReferenceById(UserUtils.getOrgId());
         organizationBusiness.setOrgId(organization.getId());
         organizationBusiness.setOrgName(organization.getName());
         // 业务申请状态
@@ -205,7 +205,7 @@ public class OrganizationBusinessServiceImpl implements IOrganizationBusinessSer
                 ? OrganizationBusinessLevelEnum.DISTRICT : organizationBusiness.getCityCode() != null
                 ? OrganizationBusinessLevelEnum.CITY : OrganizationBusinessLevelEnum.PROVINCE;
         organizationBusiness.setBusinessLevel(businessLevel);
-        organizationBusinessRepository.save(organizationBusiness);
+        organizationBusinessJpaRepository.save(organizationBusiness);
 
         // 同步到 ES
 //        elasticsearchClient.create(CreateRequest.of(builder -> builder.index(OrganizationBusiness.INDEX)
@@ -223,12 +223,12 @@ public class OrganizationBusinessServiceImpl implements IOrganizationBusinessSer
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void applyUpdate(OrganizationBusinessDTO dto) throws IOException {
-        OrganizationBusiness organizationBusiness = organizationBusinessRepository.findById(dto.getId())
+        OrganizationBusiness organizationBusiness = organizationBusinessJpaRepository.findById(dto.getId())
                 .orElseThrow(() -> BizRuntimeException.from("没有找到该业务记录"));
         organizationBusiness.setLink(StringUtils.arrayToCommaDelimitedString(dto.getLink()));
         organizationBusiness.setType(StringUtils.arrayToCommaDelimitedString(dto.getType()));
         organizationBusiness.setState("待审核");
-        organizationBusinessRepository.save(organizationBusiness);
+        organizationBusinessJpaRepository.save(organizationBusiness);
 
         // 同步到 ES
 //        elasticsearchClient.update(builder -> builder.index(OrganizationBusiness.INDEX)
@@ -238,12 +238,12 @@ public class OrganizationBusinessServiceImpl implements IOrganizationBusinessSer
 
         for (String link : StringUtils.commaDelimitedListToStringArray(organizationBusiness.getLink())) {
             OrganizationBusinessBusinessLinksEnum.getEnumByDesc(link).ifPresent(anEnum -> {
-                Role role = roleRepository.findOne((root, _, _) ->
+                Role role = roleJpaRepository.findOne((root, _, _) ->
                                 root.get(Role.AUTHORITY).in("ADMIN_" + anEnum.name()))
                         .orElseThrow(() -> BizRuntimeException.from("没有找到对应角色"));
 
                 // 如果该单位对应的通过的业务类型为空才进行删除操作
-                List<OrganizationBusiness> organizationBusinessList = organizationBusinessRepository.findAll(
+                List<OrganizationBusiness> organizationBusinessList = organizationBusinessJpaRepository.findAll(
                         (root, query, criteriaBuilder) -> {
                             assert query != null;
                             return query.where(root.get(OrganizationBusiness.ORG_ID).in(UserUtils.getOrgId()),
@@ -251,7 +251,7 @@ public class OrganizationBusinessServiceImpl implements IOrganizationBusinessSer
                                     root.get(OrganizationBusiness.STATE).in("已通过")).getRestriction();
                         });
                 if (organizationBusinessList.isEmpty()) {
-                    userRoleRepository.delete((root, _, criteriaBuilder) ->
+                    userRoleJpaRepository.delete((root, _, criteriaBuilder) ->
                             criteriaBuilder.and(root.get(UserRole.USER_ID).in(UserUtils.getId()),
                                     root.get(UserRole.ROLE_ID).in(role.getId())));
                 }
@@ -259,12 +259,12 @@ public class OrganizationBusinessServiceImpl implements IOrganizationBusinessSer
         }
         for (String type : StringUtils.commaDelimitedListToStringArray(organizationBusiness.getType())) {
             OrganizationBusinessQualityControlTypeEnum.getEnumByDesc(type).ifPresent(anEnum -> {
-                Role role = roleRepository.findOne((root, _, _) ->
+                Role role = roleJpaRepository.findOne((root, _, _) ->
                                 root.get(Role.AUTHORITY).in("ADMIN_" + anEnum.name()))
                         .orElseThrow(() -> BizRuntimeException.from("没有找到对应角色"));
 
                 // 如果该单位对应的通过的业务类型为空才进行删除操作
-                List<OrganizationBusiness> organizationBusinessList = organizationBusinessRepository.findAll(
+                List<OrganizationBusiness> organizationBusinessList = organizationBusinessJpaRepository.findAll(
                         (root, query, criteriaBuilder) -> {
                             assert query != null;
                             return query.where(root.get(OrganizationBusiness.ORG_ID).in(UserUtils.getOrgId()),
@@ -272,7 +272,7 @@ public class OrganizationBusinessServiceImpl implements IOrganizationBusinessSer
                                     root.get(OrganizationBusiness.STATE).in("已通过")).getRestriction();
                         });
                 if (organizationBusinessList.isEmpty()) {
-                    userRoleRepository.delete((root, _, criteriaBuilder) ->
+                    userRoleJpaRepository.delete((root, _, criteriaBuilder) ->
                             criteriaBuilder.and(root.get(UserRole.USER_ID).in(UserUtils.getId()),
                                     root.get(UserRole.ROLE_ID).in(role.getId())));
                 }
@@ -290,10 +290,10 @@ public class OrganizationBusinessServiceImpl implements IOrganizationBusinessSer
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void checkUpdate(OrganizationBusinessDTO dto) throws IOException {
-        OrganizationBusiness organizationBusiness = organizationBusinessRepository.findById(dto.getId())
+        OrganizationBusiness organizationBusiness = organizationBusinessJpaRepository.findById(dto.getId())
                 .orElseThrow(() -> BizRuntimeException.from("没有找到该业务记录"));
         organizationBusiness.setState(dto.getState());
-        organizationBusinessRepository.save(organizationBusiness);
+        organizationBusinessJpaRepository.save(organizationBusiness);
 
         // 同步到 ES
 //        elasticsearchClient.update(builder -> builder.index(OrganizationBusiness.INDEX)
@@ -301,30 +301,30 @@ public class OrganizationBusinessServiceImpl implements IOrganizationBusinessSer
 //                        .doc(organizationBusiness),
 //                OrganizationBusiness.class);
 
-        User user = userRepository.findOne((root, _, criteriaBuilder) ->
+        User user = userJpaRepository.findOne((root, _, criteriaBuilder) ->
                         criteriaBuilder.and(root.get(User.ORG_ID).in(organizationBusiness.getOrgId()),
                                 root.get(User.MANAGER).in(Boolean.TRUE)))
                 .orElseThrow(() -> BizRuntimeException.from("没有找到该业务的单位管理员"));
 
         for (String link : StringUtils.commaDelimitedListToStringArray(organizationBusiness.getLink())) {
             OrganizationBusinessBusinessLinksEnum.getEnumByDesc(link).ifPresent(anEnum -> {
-                Role role = roleRepository.findOne((root, _, _) ->
+                Role role = roleJpaRepository.findOne((root, _, _) ->
                                 root.get(Role.AUTHORITY).in("ADMIN_" + anEnum.name()))
                         .orElseThrow(() -> BizRuntimeException.from("没有找到对应角色"));
                 if ("已通过".equals(dto.getState())) {
                     // 如果当前用户没有当前角色才进行添加操作
-                    boolean exists = userRoleRepository.exists((root, _, criteriaBuilder) ->
+                    boolean exists = userRoleJpaRepository.exists((root, _, criteriaBuilder) ->
                             criteriaBuilder.and(root.get(UserRole.USER_ID).in(user.getId()),
                                     root.get(UserRole.ROLE_ID).in(role.getId())));
                     if (!exists) {
                         UserRole userRole = new UserRole();
                         userRole.setUserId(user.getId());
                         userRole.setRoleId(role.getId());
-                        userRoleRepository.save(userRole);
+                        userRoleJpaRepository.save(userRole);
                     }
                 } else {
                     // 如果该单位对应的通过的业务类型为空才进行删除操作
-                    List<OrganizationBusiness> organizationBusinessList = organizationBusinessRepository.findAll(
+                    List<OrganizationBusiness> organizationBusinessList = organizationBusinessJpaRepository.findAll(
                             (root, query, criteriaBuilder) -> {
                                 assert query != null;
                                 return query.where(root.get(OrganizationBusiness.ORG_ID).in(user.getOrgId()),
@@ -332,7 +332,7 @@ public class OrganizationBusinessServiceImpl implements IOrganizationBusinessSer
                                         root.get(OrganizationBusiness.STATE).in("已通过")).getRestriction();
                             });
                     if (organizationBusinessList.isEmpty()) {
-                        userRoleRepository.delete((root, _, criteriaBuilder) ->
+                        userRoleJpaRepository.delete((root, _, criteriaBuilder) ->
                                 criteriaBuilder.and(root.get(UserRole.USER_ID).in(user.getId()),
                                         root.get(UserRole.ROLE_ID).in(role.getId())));
                     }
@@ -341,23 +341,23 @@ public class OrganizationBusinessServiceImpl implements IOrganizationBusinessSer
         }
         for (String type : StringUtils.commaDelimitedListToStringArray(organizationBusiness.getType())) {
             OrganizationBusinessQualityControlTypeEnum.getEnumByDesc(type).ifPresent(anEnum -> {
-                Role role = roleRepository.findOne((root, _, _) ->
+                Role role = roleJpaRepository.findOne((root, _, _) ->
                                 root.get(Role.AUTHORITY).in("ADMIN_" + anEnum.name()))
                         .orElseThrow(() -> BizRuntimeException.from("没有找到对应角色"));
                 if ("已通过".equals(dto.getState())) {
                     // 如果当前用户没有当前角色才进行添加操作
-                    boolean exists = userRoleRepository.exists((root, _, criteriaBuilder) ->
+                    boolean exists = userRoleJpaRepository.exists((root, _, criteriaBuilder) ->
                             criteriaBuilder.and(root.get(UserRole.USER_ID).in(user.getId()),
                                     root.get(UserRole.ROLE_ID).in(role.getId())));
                     if (!exists) {
                         UserRole userRole = new UserRole();
                         userRole.setUserId(user.getId());
                         userRole.setRoleId(role.getId());
-                        userRoleRepository.save(userRole);
+                        userRoleJpaRepository.save(userRole);
                     }
                 } else {
                     // 如果该单位对应的通过的业务类型为空才进行删除操作
-                    List<OrganizationBusiness> organizationBusinessList = organizationBusinessRepository.findAll(
+                    List<OrganizationBusiness> organizationBusinessList = organizationBusinessJpaRepository.findAll(
                             (root, query, criteriaBuilder) -> {
                                 assert query != null;
                                 return query.where(root.get(OrganizationBusiness.ORG_ID).in(user.getOrgId()),
@@ -365,7 +365,7 @@ public class OrganizationBusinessServiceImpl implements IOrganizationBusinessSer
                                         root.get(OrganizationBusiness.STATE).in("已通过")).getRestriction();
                             });
                     if (organizationBusinessList.isEmpty()) {
-                        userRoleRepository.delete((root, _, criteriaBuilder) ->
+                        userRoleJpaRepository.delete((root, _, criteriaBuilder) ->
                                 criteriaBuilder.and(root.get(UserRole.USER_ID).in(user.getId()),
                                         root.get(UserRole.ROLE_ID).in(role.getId())));
                     }

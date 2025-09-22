@@ -1,7 +1,7 @@
 package com.simonvonxcvii.turing.component
 
 import com.simonvonxcvii.turing.entity.Dict
-import com.simonvonxcvii.turing.repository.DictRepository
+import com.simonvonxcvii.turing.repository.jpa.DictJpaRepository
 import jakarta.persistence.criteria.Path
 import org.springframework.boot.ApplicationArguments
 import org.springframework.boot.ApplicationRunner
@@ -20,7 +20,7 @@ import java.util.stream.Collectors
 @Component
 class RedisApplicationRunner(
     private val stringRedisTemplate: StringRedisTemplate,
-    private val dictRepository: DictRepository
+    private val dictJpaRepository: DictJpaRepository
 ) : ApplicationRunner {
     /**
      * Callback used to run the bean.
@@ -28,7 +28,7 @@ class RedisApplicationRunner(
      * @param args incoming application arguments
      */
     override fun run(args: ApplicationArguments) {
-        val dictList = dictRepository.findAll { root, query, criteriaBuilder ->
+        val dictList = dictJpaRepository.findAll { root, query, criteriaBuilder ->
             val type: Path<String> = root.get("type")
             query?.where(criteriaBuilder.equal(type, "area"))?.restriction
         }.filterNotNull()

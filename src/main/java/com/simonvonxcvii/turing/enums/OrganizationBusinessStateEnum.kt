@@ -1,14 +1,11 @@
 package com.simonvonxcvii.turing.enums
 
-import lombok.Getter
-
 /**
  * 单位业务类型枚举类
  *
  * @author Simon Von
  * @since 1/4/2023 5:26 PM
  */
-@Getter
 enum class OrganizationBusinessStateEnum(val desc: String) {
     AWAITING_CHECK("待审核"),
     PASSES("已通过"),

@@ -36,11 +36,19 @@ spring:
   application:
     # 应用程序名称
     name: turing-backend
+  data:
+    redis:
+      repositories:
+        # 是否启用 Redis 存储库。
+        enabled: false
   jackson:
-    # 时区
+    # 格式化日期时使用的时区。例如，“America/Los_Angeles”或“GMT+10”。
     time-zone: GMT+8
-    # 全局统一接收和返回的时间格式
+    # 日期格式字符串或完全限定的日期格式类名称。例如，“yyyy-MM-dd HH:mm:ss”。
     date-format: yyyy-MM-dd HH:mm:ss
+  jpa:
+    # 注册 OpenEntityManagerInViewInterceptor。将 JPA EntityManager 绑定到线程以处理整个请求。
+    open-in-view: false
   profiles:
     # 指定起作用的配置文件
     active: dev

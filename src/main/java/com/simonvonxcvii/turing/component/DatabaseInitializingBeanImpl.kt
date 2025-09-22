@@ -2,7 +2,7 @@ package com.simonvonxcvii.turing.component
 
 import com.simonvonxcvii.turing.entity.*
 import com.simonvonxcvii.turing.enums.OrganizationTypeEnum
-import com.simonvonxcvii.turing.repository.*
+import com.simonvonxcvii.turing.repository.jpa.*
 import org.apache.commons.logging.LogFactory
 import org.springframework.beans.factory.InitializingBean
 import org.springframework.core.io.ClassPathResource
@@ -30,14 +30,14 @@ import javax.sql.DataSource
 @Component
 class DatabaseInitializingBeanImpl(
     private val dataSource: DataSource,
-    private val organizationRepository: OrganizationRepository,
+    private val organizationJpaRepository: OrganizationJpaRepository,
     private val passwordEncoder: PasswordEncoder,
-    private val userRepository: UserRepository,
-    private val roleRepository: RoleRepository,
-    private val userRoleRepository: UserRoleRepository,
-    private val permissionRepository: PermissionRepository,
-    private val menuRepository: MenuRepository,
-    private val dictRepository: DictRepository
+    private val userJpaRepository: UserJpaRepository,
+    private val roleJpaRepository: RoleJpaRepository,
+    private val userRoleJpaRepository: UserRoleJpaRepository,
+    private val permissionJpaRepository: PermissionJpaRepository,
+    private val menuJpaRepository: MenuJpaRepository,
+    private val dictJpaRepository: DictJpaRepository
 ) : InitializingBean {
     @Throws(Exception::class)
     override fun afterPropertiesSet() {
@@ -140,7 +140,7 @@ class DatabaseInitializingBeanImpl(
         })
         val dictList: MutableList<Dict> = ArrayList<Dict>()
         provinceMap.forEach { (_: String, area: Area) -> saveArea(null, area, dictList) }
-        dictRepository.saveAll(dictList)
+        dictJpaRepository.saveAll(dictList)
         log.info("初始化区域完成")
     }
 
@@ -165,7 +165,7 @@ class DatabaseInitializingBeanImpl(
             districtName = "黄浦区",
             address = "太平路一号"
         )
-        organizationRepository.save(organization)
+        organizationJpaRepository.save(organization)
         // TODO 为什么保存后 created_by 和 last_modified_by 是 0，而不是 null？
 
 
@@ -184,7 +184,7 @@ class DatabaseInitializingBeanImpl(
             manager = true,
             needResetPassword = false
         )
-        userRepository.save(user)
+        userJpaRepository.save(user)
 
 
         val role = Role(authority = "SUPER_ADMIN", name = "超级管理员")
@@ -234,15 +234,15 @@ class DatabaseInitializingBeanImpl(
                 description = "注册技术单位时赋予管理员的默认角色，仅有【技术单位业务申请】权限"
             )
         )
-        roleRepository.saveAll(roleList)
+        roleJpaRepository.saveAll(roleList)
 
 
         val userRole = UserRole(userId = user.id, roleId = role.id)
-        userRoleRepository.save(userRole)
+        userRoleJpaRepository.save(userRole)
 
 
         val permission100 = Permission(name = "基础数据管理", sort = 100)
-        permissionRepository.save(permission100)
+        permissionJpaRepository.save(permission100)
         val permission101 = Permission(pid = permission100.id, name = "业务管理账号开通", sort = 101)
         val permission102 = Permission(pid = permission100.id, name = "业务管理单位授权", sort = 102)
         val permission103 = Permission(pid = permission100.id, name = "技术单位信息管理", sort = 103)
@@ -259,9 +259,9 @@ class DatabaseInitializingBeanImpl(
             permission106,
             permission107
         )
-        permissionRepository.saveAll(permission100List)
+        permissionJpaRepository.saveAll(permission100List)
         val permission200 = Permission(name = "用户单位管理", sort = 200)
-        permissionRepository.save(permission200)
+        permissionJpaRepository.save(permission200)
         val permission201 = Permission(pid = permission200.id, name = "管理单位用户维护", sort = 201)
         val permission202 = Permission(pid = permission200.id, name = "技术单位业务申请", sort = 202)
         val permission203 = Permission(pid = permission200.id, name = "技术单位业务审核", sort = 203)
@@ -282,9 +282,9 @@ class DatabaseInitializingBeanImpl(
             permission208,
             permission209
         )
-        permissionRepository.saveAll(permission200List)
+        permissionJpaRepository.saveAll(permission200List)
         val permission300 = Permission(name = "项目任务管理", sort = 300)
-        permissionRepository.save(permission300)
+        permissionJpaRepository.save(permission300)
         val permission301 = Permission(pid = permission300.id, name = "项目新增维护", sort = 301)
         val permission302 = Permission(pid = permission300.id, name = "监管对象维护", sort = 302)
         val permission303 = Permission(pid = permission300.id, name = "任务下发管理", sort = 303)
@@ -299,9 +299,9 @@ class DatabaseInitializingBeanImpl(
             permission305,
             permission306
         )
-        permissionRepository.saveAll(permission300List)
+        permissionJpaRepository.saveAll(permission300List)
         val permission400 = Permission(name = "点位布设管理", sort = 400)
-        permissionRepository.save(permission400)
+        permissionJpaRepository.save(permission400)
         val permission401 = Permission(pid = permission400.id, name = "测试项目新增维护", sort = 401)
         val permission402 = Permission(pid = permission400.id, name = "测试项目分类管理", sort = 402)
         val permission403 = Permission(pid = permission400.id, name = "布点人员任务分配", sort = 403)
@@ -318,9 +318,9 @@ class DatabaseInitializingBeanImpl(
             permission406,
             permission407
         )
-        permissionRepository.saveAll(permission400List)
+        permissionJpaRepository.saveAll(permission400List)
         val permission500 = Permission(name = "点位布设", sort = 500)
-        permissionRepository.save(permission500)
+        permissionJpaRepository.save(permission500)
         val permission501 = Permission(pid = permission500.id, name = "布点方案问题整改", sort = 501)
         val permission502 = Permission(pid = permission500.id, name = "布点方案数据维护", sort = 502)
         val permission503 = Permission(pid = permission500.id, name = "布点方案信息查询", sort = 503)
@@ -329,9 +329,9 @@ class DatabaseInitializingBeanImpl(
             permission502,
             permission503
         )
-        permissionRepository.saveAll(permission500List)
+        permissionJpaRepository.saveAll(permission500List)
         val permission600 = Permission(name = "布点质控管理", sort = 600)
-        permissionRepository.save(permission600)
+        permissionJpaRepository.save(permission600)
         val permission601 = Permission(pid = permission600.id, name = "布点质控专家组维护", sort = 601)
         val permission602 = Permission(pid = permission600.id, name = "一级质控(县)任务分配", sort = 602)
         val permission603 = Permission(pid = permission600.id, name = "二级质控(市)任务分配", sort = 603)
@@ -350,9 +350,9 @@ class DatabaseInitializingBeanImpl(
             permission607,
             permission608
         )
-        permissionRepository.saveAll(permission600List)
+        permissionJpaRepository.saveAll(permission600List)
         val permission700 = Permission(name = "采样调查管理", sort = 700)
-        permissionRepository.save(permission700)
+        permissionJpaRepository.save(permission700)
         val permission701 = Permission(pid = permission700.id, name = "牵头单位组织实施", sort = 701)
         val permission702 = Permission(pid = permission700.id, name = "采样小组任务分配", sort = 702)
         val permission703 = Permission(pid = permission700.id, name = "采样调查信息查询", sort = 703)
@@ -381,9 +381,9 @@ class DatabaseInitializingBeanImpl(
             permission712,
             permission713
         )
-        permissionRepository.saveAll(permission700List)
+        permissionJpaRepository.saveAll(permission700List)
         val permission800 = Permission(name = "取样调查", sort = 800)
-        permissionRepository.save(permission800)
+        permissionJpaRepository.save(permission800)
         val permission801 = Permission(pid = permission800.id, name = "取样调查表单明细", sort = 801)
         val permission802 = Permission(pid = permission800.id, name = "质控退回样点明细", sort = 802)
         val permission803 = Permission(pid = permission800.id, name = "严重问题申诉记录", sort = 803)
@@ -394,9 +394,9 @@ class DatabaseInitializingBeanImpl(
             permission803,
             permission804
         )
-        permissionRepository.saveAll(permission800List)
+        permissionJpaRepository.saveAll(permission800List)
         val permission900 = Permission(name = "采样质控管理", sort = 900)
-        permissionRepository.save(permission900)
+        permissionJpaRepository.save(permission900)
         val permission901 = Permission(pid = permission900.id, name = "采样一级质控(县)任务", sort = 901)
         val permission902 = Permission(pid = permission900.id, name = "采样二级质控(市)任务", sort = 902)
         val permission903 = Permission(pid = permission900.id, name = "采样三级质控(省)任务", sort = 903)
@@ -415,9 +415,9 @@ class DatabaseInitializingBeanImpl(
             permission907,
             permission908
         )
-        permissionRepository.saveAll(permission900List)
+        permissionJpaRepository.saveAll(permission900List)
         val permission1000 = Permission(name = "样品检测管理", sort = 1000)
-        permissionRepository.save(permission1000)
+        permissionJpaRepository.save(permission1000)
         val permission1001 = Permission(pid = permission1000.id, name = "批次送检样交接单", sort = 1001)
         val permission1002 = Permission(pid = permission1000.id, name = "检测子样信息查询", sort = 1002)
         val permission1003 = Permission(pid = permission1000.id, name = "检测资质文件报送", sort = 1003)
@@ -448,9 +448,9 @@ class DatabaseInitializingBeanImpl(
             permission1013,
             permission1014
         )
-        permissionRepository.saveAll(permission1000List)
+        permissionJpaRepository.saveAll(permission1000List)
         val permission1100 = Permission(name = "数据质量审核", sort = 1100)
-        permissionRepository.save(permission1100)
+        permissionJpaRepository.save(permission1100)
         val permission1101 = Permission(pid = permission1100.id, name = "检测一级质控(县)任务", sort = 1101)
         val permission1102 = Permission(pid = permission1100.id, name = "检测二级质控(市)任务", sort = 1102)
         val permission1103 = Permission(pid = permission1100.id, name = "检测三级质控(省)任务", sort = 1103)
@@ -465,17 +465,17 @@ class DatabaseInitializingBeanImpl(
             permission1105,
             permission1106
         )
-        permissionRepository.saveAll(permission1100List)
+        permissionJpaRepository.saveAll(permission1100List)
         val permission1200 = Permission(name = "数据统计分析", sort = 1200)
-        permissionRepository.save(permission1200)
+        permissionJpaRepository.save(permission1200)
         val permission1300 = Permission(name = "数据对标评价", sort = 1300)
-        permissionRepository.save(permission1300)
+        permissionJpaRepository.save(permission1300)
         val permission1400 = Permission(name = "工作文件管理", sort = 1400)
-        permissionRepository.save(permission1400)
+        permissionJpaRepository.save(permission1400)
         val permission1401 = Permission(pid = permission1400.id, name = "工作文件下载", sort = 1401)
-        permissionRepository.save(permission1401)
+        permissionJpaRepository.save(permission1401)
         val permission1500 = Permission(name = "后台数据管理", sort = 1500)
-        permissionRepository.save(permission1500)
+        permissionJpaRepository.save(permission1500)
         val permission1501 = Permission(pid = permission1500.id, name = "单位管理", sort = 1501)
         val permission1502 = Permission(pid = permission1500.id, name = "用户管理", sort = 1502)
         val permission1503 = Permission(pid = permission1500.id, name = "角色管理", sort = 1503)
@@ -490,7 +490,7 @@ class DatabaseInitializingBeanImpl(
             permission1505,
             permission1506
         )
-        permissionRepository.saveAll(permission1500List)
+        permissionJpaRepository.saveAll(permission1500List)
 
 
         val menu100 = Menu(
@@ -505,7 +505,7 @@ class DatabaseInitializingBeanImpl(
             cached = true,
             external = false
         )
-        menuRepository.save(menu100)
+        menuJpaRepository.save(menu100)
         val menu101 = Menu(
             pid = menu100.id,
             permissionId = permission101.id,
@@ -592,7 +592,7 @@ class DatabaseInitializingBeanImpl(
             menu105,
             menu106
         )
-        menuRepository.saveAll(menu100List)
+        menuJpaRepository.saveAll(menu100List)
         val menu200 = Menu(
             permissionId = permission200.id,
             name = "用户单位管理",
@@ -605,7 +605,7 @@ class DatabaseInitializingBeanImpl(
             cached = true,
             external = false
         )
-        menuRepository.save(menu200)
+        menuJpaRepository.save(menu200)
         val menu201 = Menu(
             pid = menu200.id,
             permissionId = permission201.id,
@@ -734,7 +734,7 @@ class DatabaseInitializingBeanImpl(
             menu208,
             menu209
         )
-        menuRepository.saveAll(menu200List)
+        menuJpaRepository.saveAll(menu200List)
         val menu300 = Menu(
             permissionId = permission300.id,
             name = "项目任务管理",
@@ -747,7 +747,7 @@ class DatabaseInitializingBeanImpl(
             cached = true,
             external = false
         )
-        menuRepository.save(menu300)
+        menuJpaRepository.save(menu300)
         val menu301 = Menu(
             pid = menu300.id,
             permissionId = permission301.id,
@@ -834,7 +834,7 @@ class DatabaseInitializingBeanImpl(
             menu305,
             menu306
         )
-        menuRepository.saveAll(menu300List)
+        menuJpaRepository.saveAll(menu300List)
         val menu400 = Menu(
             permissionId = permission400.id,
             name = "点位布设管理",
@@ -847,7 +847,7 @@ class DatabaseInitializingBeanImpl(
             cached = true,
             external = false
         )
-        menuRepository.save(menu400)
+        menuJpaRepository.save(menu400)
         val menu401 = Menu(
             pid = menu400.id,
             permissionId = permission401.id,
@@ -950,7 +950,7 @@ class DatabaseInitializingBeanImpl(
             menu406,
             menu407
         )
-        menuRepository.saveAll(menu400List)
+        menuJpaRepository.saveAll(menu400List)
         val menu500 = Menu(
             permissionId = permission500.id,
             name = "点位布设",
@@ -963,7 +963,7 @@ class DatabaseInitializingBeanImpl(
             cached = true,
             external = false
         )
-        menuRepository.save(menu500)
+        menuJpaRepository.save(menu500)
         val menu501 = Menu(
             pid = menu500.id,
             permissionId = permission501.id,
@@ -1008,7 +1008,7 @@ class DatabaseInitializingBeanImpl(
             menu502,
             menu503
         )
-        menuRepository.saveAll(menu500List)
+        menuJpaRepository.saveAll(menu500List)
         val menu600 = Menu(
             permissionId = permission600.id,
             name = "布点质控管理",
@@ -1021,7 +1021,7 @@ class DatabaseInitializingBeanImpl(
             cached = true,
             external = false
         )
-        menuRepository.save(menu600)
+        menuJpaRepository.save(menu600)
         val menu601 = Menu(
             pid = menu600.id,
             permissionId = permission601.id,
@@ -1136,7 +1136,7 @@ class DatabaseInitializingBeanImpl(
             menu607,
             menu608
         )
-        menuRepository.saveAll(menu600List)
+        menuJpaRepository.saveAll(menu600List)
         val menu700 = Menu(
             permissionId = permission700.id,
             name = "采样调查管理",
@@ -1149,7 +1149,7 @@ class DatabaseInitializingBeanImpl(
             cached = true,
             external = false
         )
-        menuRepository.save(menu700)
+        menuJpaRepository.save(menu700)
         val menu701 = Menu(
             pid = menu700.id,
             permissionId = permission701.id,
@@ -1323,7 +1323,7 @@ class DatabaseInitializingBeanImpl(
             menu711,
             menu712
         )
-        menuRepository.saveAll(menu700List)
+        menuJpaRepository.saveAll(menu700List)
         val menu800 = Menu(
             permissionId = permission800.id,
             name = "取样调查",
@@ -1336,7 +1336,7 @@ class DatabaseInitializingBeanImpl(
             cached = true,
             external = false
         )
-        menuRepository.save(menu800)
+        menuJpaRepository.save(menu800)
         val menu801 = Menu(
             pid = menu800.id,
             permissionId = permission801.id,
@@ -1395,7 +1395,7 @@ class DatabaseInitializingBeanImpl(
             menu803,
             menu804
         )
-        menuRepository.saveAll(menu800List)
+        menuJpaRepository.saveAll(menu800List)
         val menu900 = Menu(
             permissionId = permission900.id,
             name = "采样质控管理",
@@ -1408,7 +1408,7 @@ class DatabaseInitializingBeanImpl(
             cached = true,
             external = false
         )
-        menuRepository.save(menu900)
+        menuJpaRepository.save(menu900)
         val menu901 = Menu(
             pid = menu900.id,
             permissionId = permission901.id,
@@ -1523,7 +1523,7 @@ class DatabaseInitializingBeanImpl(
             menu907,
             menu908
         )
-        menuRepository.saveAll(menu900List)
+        menuJpaRepository.saveAll(menu900List)
         val menu1000 = Menu(
             permissionId = permission1000.id,
             name = "样品检测管理",
@@ -1536,7 +1536,7 @@ class DatabaseInitializingBeanImpl(
             cached = true,
             external = false
         )
-        menuRepository.save(menu1000)
+        menuJpaRepository.save(menu1000)
         val menu1001 = Menu(
             pid = menu1000.id,
             permissionId = permission1001.id,
@@ -1735,7 +1735,7 @@ class DatabaseInitializingBeanImpl(
             menu1013,
             menu1014
         )
-        menuRepository.saveAll(menu1000List)
+        menuJpaRepository.saveAll(menu1000List)
         val menu1100 = Menu(
             permissionId = permission1100.id,
             name = "数据质量审核",
@@ -1748,7 +1748,7 @@ class DatabaseInitializingBeanImpl(
             cached = true,
             external = false
         )
-        menuRepository.save(menu1100)
+        menuJpaRepository.save(menu1100)
         val menu1101 = Menu(
             pid = menu1100.id,
             permissionId = permission1101.id,
@@ -1835,7 +1835,7 @@ class DatabaseInitializingBeanImpl(
             menu1105,
             menu1106
         )
-        menuRepository.saveAll(menu1100List)
+        menuJpaRepository.saveAll(menu1100List)
         val menu1200 = Menu(
             permissionId = permission1200.id,
             name = "数据统计分析",
@@ -1848,7 +1848,7 @@ class DatabaseInitializingBeanImpl(
             cached = true,
             external = false
         )
-        menuRepository.save(menu1200)
+        menuJpaRepository.save(menu1200)
         val menu1300 = Menu(
             permissionId = permission1300.id,
             name = "数据对标评价",
@@ -1861,7 +1861,7 @@ class DatabaseInitializingBeanImpl(
             cached = true,
             external = false
         )
-        menuRepository.save(menu1300)
+        menuJpaRepository.save(menu1300)
         val menu1400 = Menu(
             permissionId = permission1400.id,
             name = "工作文件管理",
@@ -1874,7 +1874,7 @@ class DatabaseInitializingBeanImpl(
             cached = true,
             external = false
         )
-        menuRepository.save(menu1400)
+        menuJpaRepository.save(menu1400)
         val menu1401 = Menu(
             pid = menu1400.id,
             permissionId = permission1401.id,
@@ -1888,7 +1888,7 @@ class DatabaseInitializingBeanImpl(
             cached = true,
             external = false
         )
-        menuRepository.save(menu1401)
+        menuJpaRepository.save(menu1401)
         val menu1500 = Menu(
             permissionId = permission1500.id,
             name = "后台数据管理",
@@ -1901,7 +1901,7 @@ class DatabaseInitializingBeanImpl(
             cached = true,
             external = false
         )
-        menuRepository.save(menu1500)
+        menuJpaRepository.save(menu1500)
         val menu1501 = Menu(
             pid = menu1500.id,
             permissionId = permission1501.id,
@@ -1988,7 +1988,7 @@ class DatabaseInitializingBeanImpl(
             menu1505,
             menu1506
         )
-        menuRepository.saveAll(menu1500List)
+        menuJpaRepository.saveAll(menu1500List)
     }
 
     /**

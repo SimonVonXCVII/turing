@@ -1,6 +1,5 @@
 package com.simonvonxcvii.turing.enums
 
-import lombok.Getter
 import java.util.*
 
 /**
@@ -9,7 +8,6 @@ import java.util.*
  * @author Simon Von
  * @since 1/4/2023 5:26 PM
  */
-@Getter
 enum class OrganizationBusinessBusinessLinksEnum(val desc: String) {
     MINE_INFORMATION_COLLECTION("矿山信息采集"),
     REGIONAL_SURVEY_LOCATIONS("区域调查布点"),

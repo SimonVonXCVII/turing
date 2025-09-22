@@ -4,10 +4,10 @@ import com.simonvonxcvii.turing.common.exception.BizRuntimeException;
 import com.simonvonxcvii.turing.entity.*;
 import com.simonvonxcvii.turing.model.dto.RoleDTO;
 import com.simonvonxcvii.turing.model.dto.UserDTO;
-import com.simonvonxcvii.turing.repository.OrganizationRepository;
-import com.simonvonxcvii.turing.repository.RoleRepository;
-import com.simonvonxcvii.turing.repository.UserRepository;
-import com.simonvonxcvii.turing.repository.UserRoleRepository;
+import com.simonvonxcvii.turing.repository.jpa.OrganizationJpaRepository;
+import com.simonvonxcvii.turing.repository.jpa.RoleJpaRepository;
+import com.simonvonxcvii.turing.repository.jpa.UserJpaRepository;
+import com.simonvonxcvii.turing.repository.jpa.UserRoleJpaRepository;
 import com.simonvonxcvii.turing.service.IUserService;
 import jakarta.persistence.criteria.Predicate;
 import lombok.RequiredArgsConstructor;
@@ -35,10 +35,10 @@ import java.util.List;
 public class UserServiceImpl implements IUserService {
 
     private final PasswordEncoder passwordEncoder;
-    private final UserRepository userRepository;
-    private final OrganizationRepository organizationRepository;
-    private final UserRoleRepository userRoleRepository;
-    private final RoleRepository roleRepository;
+    private final UserJpaRepository userJpaRepository;
+    private final OrganizationJpaRepository organizationJpaRepository;
+    private final UserRoleJpaRepository userRoleJpaRepository;
+    private final RoleJpaRepository roleJpaRepository;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -50,7 +50,7 @@ public class UserServiceImpl implements IUserService {
         }
         // 修改
         else {
-            user = userRepository.findById(dto.getId()).orElseThrow(() -> BizRuntimeException.from("无法查找到用户数据"));
+            user = userJpaRepository.findById(dto.getId()).orElseThrow(() -> BizRuntimeException.from("无法查找到用户数据"));
         }
         dto.setAccountNonExpired(Boolean.TRUE);
         dto.setAccountNonLocked(Boolean.TRUE);
@@ -62,12 +62,12 @@ public class UserServiceImpl implements IUserService {
         // 密码
         user.setPassword(passwordEncoder.encode(dto.getMobile().substring(3)));
         // 单位名称
-        Organization organization = organizationRepository.findById(dto.getOrgId()).orElseThrow(() -> BizRuntimeException.from("无法查找到单位数据"));
+        Organization organization = organizationJpaRepository.findById(dto.getOrgId()).orElseThrow(() -> BizRuntimeException.from("无法查找到单位数据"));
         user.setOrgName(organization.getName());
-        userRepository.save(user);
+        userJpaRepository.save(user);
         // 更新用户角色表
         // TODO 可以优化成只添加需要添加的，只删除需要删除的
-        userRoleRepository.delete((root, _, _) -> root.get(UserRole.USER_ID).in(dto.getId()));
+        userRoleJpaRepository.delete((root, _, _) -> root.get(UserRole.USER_ID).in(dto.getId()));
         List<UserRole> userRoleList = new LinkedList<>();
         dto.getRoleList()
                 .forEach(id -> {
@@ -76,14 +76,14 @@ public class UserServiceImpl implements IUserService {
                     userRole.setRoleId(id);
                     userRoleList.add(userRole);
                 });
-        userRoleRepository.saveAll(userRoleList);
+        userRoleJpaRepository.saveAll(userRoleList);
     }
 
     @Override
     public org.springframework.data.domain.Page<UserDTO> selectPage(UserDTO dto) {
         org.springframework.data.domain.Page<User> userPage;
         try {
-            userPage = userRepository.findAll((root, query, criteriaBuilder) -> {
+            userPage = userJpaRepository.findAll((root, query, criteriaBuilder) -> {
                         List<Predicate> predicateList = new LinkedList<>();
                         if (StringUtils.hasText(dto.getName())) {
                             predicateList.add(criteriaBuilder.like(root.get(User.NAME),
@@ -109,7 +109,7 @@ public class UserServiceImpl implements IUserService {
                                     "%" + dto.getUsername() + "%", '/'));
                         }
                         if (!CollectionUtils.isEmpty(dto.getRoleList())) {
-                            List<UserRole> userRoleList = userRoleRepository.findAll((root1, _, _) ->
+                            List<UserRole> userRoleList = userRoleJpaRepository.findAll((root1, _, _) ->
                                     root1.get(UserRole.ROLE_ID).in(dto.getRoleList()));
                             if (userRoleList.isEmpty()) {
                                 throw new RuntimeException();
@@ -145,12 +145,12 @@ public class UserServiceImpl implements IUserService {
         return userPage.map(user -> {
             UserDTO userDTO = new UserDTO();
             BeanUtils.copyProperties(user, userDTO);
-            List<UserRole> userRoleList = userRoleRepository.findAll((root, _, _) ->
+            List<UserRole> userRoleList = userRoleJpaRepository.findAll((root, _, _) ->
                     root.get(UserRole.USER_ID).in(user.getId()));
             if (userRoleList.isEmpty()) {
                 throw BizRuntimeException.from("数据异常，该用户没有角色：" + user.getUsername());
             }
-            List<Role> roleList = roleRepository.findAllById(userRoleList.stream().map(AbstractAuditable::getId).toList());
+            List<Role> roleList = roleJpaRepository.findAllById(userRoleList.stream().map(AbstractAuditable::getId).toList());
             if (roleList.isEmpty()) {
                 throw BizRuntimeException.from("数据异常，该用户没有角色：" + user.getUsername());
             }
@@ -170,9 +170,9 @@ public class UserServiceImpl implements IUserService {
     @Transactional(rollbackFor = Exception.class)
     public void deleteById(Integer id) {
         // 逻辑删除用户-角色关联数据
-        userRoleRepository.delete((root, _, _) -> root.get(UserRole.USER_ID).in(id));
+        userRoleJpaRepository.delete((root, _, _) -> root.get(UserRole.USER_ID).in(id));
         // 逻辑删除用户数据
-        userRepository.deleteById(id);
+        userJpaRepository.deleteById(id);
     }
 
 }

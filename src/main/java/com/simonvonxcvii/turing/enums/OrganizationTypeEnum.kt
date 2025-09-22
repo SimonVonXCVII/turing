@@ -1,14 +1,11 @@
 package com.simonvonxcvii.turing.enums
 
-import lombok.Getter
-
 /**
  * 单位类型枚举类
  *
  * @author Simon Von
  * @since 12/30/2022 6:46 PM
  */
-@Getter
 enum class OrganizationTypeEnum(val desc: String) {
     PLATFORM("平台管理单位"),
     ADMINISTRATION("行政管理单位"),

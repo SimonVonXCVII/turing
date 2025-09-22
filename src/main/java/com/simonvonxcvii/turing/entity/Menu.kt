@@ -4,7 +4,6 @@ import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.Table
 import jakarta.persistence.UniqueConstraint
-import lombok.Getter
 import org.hibernate.annotations.Comment
 import org.hibernate.annotations.SQLDelete
 import org.hibernate.annotations.SQLRestriction
@@ -16,7 +15,6 @@ import org.hibernate.annotations.SQLRestriction
  * @author Simon Von
  * @since 2022-12-26 18:25:51
  */
-@Getter
 @Entity
 @Table(
     schema = "public",
