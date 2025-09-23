@@ -1,10 +1,9 @@
 package com.simonvonxcvii.turing.entity
 
+import com.simonvonxcvii.turing.enums.OrganizationBusinessBusinessLinksEnum
 import com.simonvonxcvii.turing.enums.OrganizationBusinessLevelEnum
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.Table
-import jakarta.persistence.UniqueConstraint
+import com.simonvonxcvii.turing.enums.OrganizationBusinessQualityControlTypeEnum
+import jakarta.persistence.*
 import org.hibernate.annotations.Comment
 import org.hibernate.annotations.SQLDelete
 import org.hibernate.annotations.SQLRestriction
@@ -31,90 +30,90 @@ data class OrganizationBusiness(
     /**
      * 单位 id
      */
-    @Column(name = "org_id", nullable = false, columnDefinition = "INTEGER")
+    @Column(nullable = false, columnDefinition = "INTEGER")
     @Comment("单位 id")
     var orgId: Int = 0,
 
     /**
      * 单位名称
      */
-    @Column(name = "org_name", nullable = false, columnDefinition = "VARCHAR", length = 128)
+    @Column(nullable = false, columnDefinition = "VARCHAR(128)")
     @Comment("单位名称")
     var orgName: String = "",
 
     /**
      * 业务环节
-     *
-     * @see com.simonvonxcvii.turing.enums.OrganizationBusinessBusinessLinksEnum
+     * TODO MutableSet<OrganizationBusinessBusinessLinksEnum>? 还是 MutableSet<OrganizationBusinessBusinessLinksEnum?>?
      */
-    @Column(name = "link", columnDefinition = "VARCHAR", length = 128)
+    @Enumerated(EnumType.STRING)
+    @Column(columnDefinition = "VARCHAR[]")
     @Comment("业务环节")
-    var link: String? = null,
+    var link: MutableSet<OrganizationBusinessBusinessLinksEnum?>? = null,
 
     /**
      * 质控类型
-     *
-     * @see com.simonvonxcvii.turing.enums.OrganizationBusinessQualityControlTypeEnum
      */
-    @Column(name = "type", columnDefinition = "VARCHAR", length = 128)
+    @Enumerated(EnumType.STRING)
+    @Column(columnDefinition = "VARCHAR[]")
     @Comment("质控类型")
-    var type: String? = null,
+    var type: MutableSet<OrganizationBusinessQualityControlTypeEnum?>? = null,
 
     /**
      * 业务申请所在省（市、区）编码
      */
-    @Column(name = "province_code", nullable = false, columnDefinition = "INTEGER")
+    @Column(nullable = false, columnDefinition = "INTEGER")
     @Comment("业务申请所在省（市、区）编码")
     var provinceCode: Int = 0,
 
     /**
      * 业务申请所在市（州、盟）编码
      */
-    @Column(name = "city_code", columnDefinition = "INTEGER")
+    @Column(columnDefinition = "INTEGER")
     @Comment("业务申请所在市（州、盟）编码")
     var cityCode: Int? = null,
 
     /**
      * 业务申请所在县（市、旗）编码
      */
-    @Column(name = "district_code", columnDefinition = "INTEGER")
+    @Column(columnDefinition = "INTEGER")
     @Comment("业务申请所在区县（市、旗）编码")
     var districtCode: Int? = null,
 
     /**
      * 业务申请所在省（市、区）名称
      */
-    @Column(name = "province_name", nullable = false, columnDefinition = "VARCHAR", length = 16)
+    @Column(nullable = false, columnDefinition = "VARCHAR(16)")
     @Comment("业务申请所在省（市、区）名称")
     var provinceName: String = "",
 
     /**
      * 业务申请所在市（州、盟）名称
      */
-    @Column(name = "city_name", columnDefinition = "VARCHAR", length = 16)
+    @Column(columnDefinition = "VARCHAR(16)")
     @Comment("业务申请所在市（州、盟）名称")
     var cityName: String? = null,
 
     /**
      * 业务申请所在县（市、旗）名称
      */
-    @Column(name = "district_name", columnDefinition = "VARCHAR", length = 16)
+    @Column(columnDefinition = "VARCHAR(16)")
     @Comment("业务申请所在区县（市、旗）名称")
     var districtName: String? = null,
 
     /**
      * 业务申请状态
      */
-    @Column(name = "state", nullable = false, columnDefinition = "VARCHAR", length = 3)
+    @Column(nullable = false, columnDefinition = "VARCHAR(3)")
     @Comment("业务申请状态")
     var state: String = "",
 
     /**
      * 申请业务级别
      */
-    @Column(name = "business_level", columnDefinition = "VARCHAR", length = 16)
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, columnDefinition = "VARCHAR(64)")
     @Comment("申请业务级别")
-    var businessLevel: OrganizationBusinessLevelEnum? = null
+    var businessLevel: OrganizationBusinessLevelEnum = OrganizationBusinessLevelEnum.DISTRICT
 ) : AbstractAuditable() {
     companion object {
         /**

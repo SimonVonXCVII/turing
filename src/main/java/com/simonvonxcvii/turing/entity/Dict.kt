@@ -28,46 +28,46 @@ import org.hibernate.annotations.SQLRestriction
 @SQLRestriction("deleted = FALSE")
 data class Dict(
     /**
-     * 字典类型
+     * 字典类型 TODO 考虑将类型写成 Enum
      */
-    @Column(name = "type", columnDefinition = "VARCHAR", length = 32)
+    @Column(columnDefinition = "VARCHAR(32)")
     @Comment("字典类型")
     var type: String? = null,
 
     /**
      * 上级 id
      */
-    @Column(name = "pid", columnDefinition = "INTEGER")
+    @Column(columnDefinition = "INTEGER")
     @Comment("上级 id")
     var pid: Int? = null,
 
     /**
      * 字典名称
      */
-    @Column(name = "name", nullable = false, columnDefinition = "VARCHAR", length = 32)
+    @Column(nullable = false, columnDefinition = "VARCHAR(32)")
     @Comment("字典名称")
     var name: String = "",
 
     /**
      * 字典值
      */
-    @Column(name = "value", nullable = false, columnDefinition = "INTEGER")
+    @Column(nullable = false, columnDefinition = "INTEGER")
     @Comment("字典值")
     var value: Int = 0,
 
     /**
      * 说明
      */
-    @Column(name = "description", columnDefinition = "VARCHAR", length = 128)
+    @Column(columnDefinition = "VARCHAR(128)")
     @Comment("说明")
     var description: String = "",
 
     /**
      * 排序
      */
-    @Column(name = "sort", columnDefinition = "SMALLINT")
+    @Column(columnDefinition = "SMALLINT")
     @Comment("排序")
-    var sort: Int? = 0
+    var sort: Short? = 0
 ) : AbstractAuditable() {
     companion object {
         /**

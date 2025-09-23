@@ -25,8 +25,7 @@ import org.springframework.security.core.userdetails.UserDetails
     schema = "public",
     name = "turing_user",
     uniqueConstraints = [
-        UniqueConstraint(name = "con_public_turing_user_constraint_1", columnNames = arrayOf("id")),
-        UniqueConstraint(columnNames = arrayOf("username"))
+        UniqueConstraint(name = "con_public_turing_user_constraint_1", columnNames = arrayOf("id"))
     ]
 )
 // @SQLDelete 只支持 delete(T entity) 和 deleteById(ID id)
@@ -39,49 +38,49 @@ data class User(
     /**
      * 用户姓名
      */
-    @Column(name = "name", nullable = false, columnDefinition = "VARCHAR", length = 64)
+    @Column(nullable = false, columnDefinition = "VARCHAR(64)")
     @Comment("用户姓名")
     var name: String = "",
 
     /**
      * 用户电话
      */
-    @Column(name = "mobile", nullable = false, columnDefinition = "BIGINT")
+    @Column(nullable = false, columnDefinition = "BIGINT")
     @Comment("用户电话")
     var mobile: Long = 0,
 
     /**
      * 用户性别
      */
-    @Column(name = "gender", nullable = false, columnDefinition = "VARCHAR", length = 1)
+    @Column(nullable = false, columnDefinition = "VARCHAR(1)")
     @Comment("用户性别")
     var gender: String = "",
 
     /**
      * 组织机构 id
      */
-    @Column(name = "org_id", nullable = false, columnDefinition = "INTEGER")
+    @Column(nullable = false, columnDefinition = "INTEGER")
     @Comment("组织机构 id")
     var orgId: Int = 0,
 
     /**
      * 组织机构名称
      */
-    @Column(name = "org_name", nullable = false, columnDefinition = "VARCHAR", length = 128)
+    @Column(nullable = false, columnDefinition = "VARCHAR(128)")
     @Comment("组织机构名称")
     var orgName: String = "",
 
     /**
      * 部门
      */
-    @Column(name = "department", columnDefinition = "VARCHAR", length = 128)
+    @Column(columnDefinition = "VARCHAR(128)")
     @Comment("部门")
     var department: String? = null,
 
     /**
      * 登录账号
      */
-    @Column(name = "username", nullable = false, columnDefinition = "VARCHAR", length = 64)
+    @Column(unique = true, nullable = false, columnDefinition = "VARCHAR(64)")
     @Comment("登录账号")
     @get:JvmName("getUsernameValue")
     var username: String = "",
@@ -89,7 +88,7 @@ data class User(
     /**
      * 用户密码
      */
-    @Column(name = "password", nullable = false, columnDefinition = "VARCHAR", length = 128)
+    @Column(nullable = false, columnDefinition = "VARCHAR(128)")
     @Comment("用户密码")
     @get:JvmName("getPasswordValue")
     var password: String = "",
@@ -97,35 +96,35 @@ data class User(
     /**
      * 是否账号没有过期
      */
-    @Column(name = "account_non_expired", nullable = false, columnDefinition = "BOOLEAN")
+    @Column(nullable = false, columnDefinition = "BOOLEAN")
     @Comment("是否账号没有过期")
     var accountNonExpired: Boolean = true,
 
     /**
      * 是否账号没有锁定
      */
-    @Column(name = "account_non_locked", nullable = false, columnDefinition = "BOOLEAN")
+    @Column(nullable = false, columnDefinition = "BOOLEAN")
     @Comment("是否账号没有锁定")
     var accountNonLocked: Boolean = true,
 
     /**
      * 是否凭证没有过期
      */
-    @Column(name = "credentials_non_expired", nullable = false, columnDefinition = "BOOLEAN")
+    @Column(nullable = false, columnDefinition = "BOOLEAN")
     @Comment("是否凭证没有过期")
     var credentialsNonExpired: Boolean = true,
 
     /**
      * 是否启用
      */
-    @Column(name = "enabled", nullable = false, columnDefinition = "BOOLEAN")
+    @Column(nullable = false, columnDefinition = "BOOLEAN")
     @Comment("是否启用")
     var enabled: Boolean = true,
 
     /**
      * 是否单位管理员
      */
-    @Column(name = "manager", nullable = false, columnDefinition = "BOOLEAN")
+    @Column(nullable = false, columnDefinition = "BOOLEAN")
     @Comment("是否单位管理员")
     @get:JvmName("isManager")
     var manager: Boolean = false,
@@ -133,7 +132,7 @@ data class User(
     /**
      * 是否需要重置密码
      */
-    @Column(name = "need_reset_password", nullable = false, columnDefinition = "BOOLEAN")
+    @Column(nullable = false, columnDefinition = "BOOLEAN")
     @Comment("是否需要重置密码")
     @get:JvmName("isNeedResetPassword")
     var needResetPassword: Boolean = true,

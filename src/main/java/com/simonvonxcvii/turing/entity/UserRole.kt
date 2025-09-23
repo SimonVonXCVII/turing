@@ -30,14 +30,14 @@ data class UserRole(
     /**
      * 用户 id
      */
-    @Column(name = "user_id", nullable = false, columnDefinition = "INTEGER")
+    @Column(nullable = false, columnDefinition = "INTEGER")
     @Comment("用户 id")
     var userId: Int = 0,
 
     /**
      * 角色 id
      */
-    @Column(name = "roleId", nullable = false, columnDefinition = "INTEGER")
+    @Column(nullable = false, columnDefinition = "INTEGER")
     @Comment("角色 id")
     var roleId: Int = 0
 ) : AbstractAuditable() {

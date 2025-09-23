@@ -20,8 +20,7 @@ import org.hibernate.annotations.SQLRestriction
     schema = "public",
     name = "turing_menu",
     uniqueConstraints = [
-        UniqueConstraint(name = "con_public_turing_menu_constraint_1", columnNames = arrayOf("id")),
-        UniqueConstraint(columnNames = arrayOf("permission_id", "name", "title", "path", "sort"))
+        UniqueConstraint(name = "con_public_turing_menu_constraint_1", columnNames = arrayOf("id"))
     ]
 )
 // @SQLDelete 只支持 delete(T entity) 和 deleteById(ID id)
@@ -31,70 +30,70 @@ data class Menu(
     /**
      * 上级菜单 id
      */
-    @Column(name = "pid", columnDefinition = "INTEGER")
+    @Column(columnDefinition = "INTEGER")
     @Comment("上级菜单 id")
     var pid: Int? = null,
 
     /**
      * 系统权限 id
      */
-    @Column(name = "permission_id", nullable = false, columnDefinition = "INTEGER")
+    @Column(unique = true, nullable = false, columnDefinition = "INTEGER")
     @Comment("系统权限 id")
     var permissionId: Int = 0,
 
     /**
      * 菜单名称
      */
-    @Column(name = "name", nullable = false, columnDefinition = "VARCHAR", length = 64)
+    @Column(unique = true, nullable = false, columnDefinition = "VARCHAR(64)")
     @Comment("菜单名称")
     var name: String = "",
 
     /**
      * 标头
      */
-    @Column(name = "title", nullable = false, columnDefinition = "VARCHAR", length = 64)
+    @Column(unique = true, nullable = false, columnDefinition = "VARCHAR(64)")
     @Comment("标头")
     var title: String = "",
 
     /**
-     * 菜单类型：目录、菜单、按钮
+     * 菜单类型：目录、菜单、按钮 TODO 考虑将类型写成 Enum
      */
-    @Column(name = "type", nullable = false, columnDefinition = "VARCHAR", length = 32)
+    @Column(nullable = false, columnDefinition = "VARCHAR(32)")
     @Comment("菜单类型：目录、菜单、按钮")
     var type: String = "",
 
     /**
      * 菜单路径
      */
-    @Column(name = "path", nullable = false, columnDefinition = "VARCHAR", length = 128)
+    @Column(unique = true, nullable = false, columnDefinition = "VARCHAR(128)")
     @Comment("菜单路径")
     var path: String = "",
 
     /**
      * 组件路径
      */
-    @Column(name = "component", nullable = false, columnDefinition = "VARCHAR", length = 128)
+    @Column(nullable = false, columnDefinition = "VARCHAR(128)")
     @Comment("组件路径")
     var component: String = "",
 
     /**
      * 图标
      */
-    @Column(name = "icon", columnDefinition = "VARCHAR", length = 128)
+    @Column(columnDefinition = "VARCHAR(128)")
     @Comment("图标")
     var icon: String? = null,
 
     /**
      * 排序编号
      */
-    @Column(name = "sort", nullable = false, columnDefinition = "SMALLINT")
+    @Column(unique = true, nullable = false, columnDefinition = "SMALLINT")
     @Comment("排序编号")
     var sort: Short = 0,
 
     /**
      * 是否显示
      */
-    @Column(name = "showed", nullable = false, columnDefinition = "BOOLEAN")
+    @Column(nullable = false, columnDefinition = "BOOLEAN")
     @Comment("是否显示")
     @get:JvmName("isShowed")
     var showed: Boolean = true,
@@ -102,7 +101,7 @@ data class Menu(
     /**
      * 是否缓存
      */
-    @Column(name = "cached", nullable = false, columnDefinition = "BOOLEAN")
+    @Column(nullable = false, columnDefinition = "BOOLEAN")
     @Comment("是否缓存")
     @get:JvmName("isCached")
     var cached: Boolean = true,
@@ -110,7 +109,7 @@ data class Menu(
     /**
      * 是否外链
      */
-    @Column(name = "external", nullable = false, columnDefinition = "BOOLEAN")
+    @Column(nullable = false, columnDefinition = "BOOLEAN")
     @Comment("是否外链")
     @get:JvmName("isExternal")
     var external: Boolean = false

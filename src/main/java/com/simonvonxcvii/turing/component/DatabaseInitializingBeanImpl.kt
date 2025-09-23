@@ -6,7 +6,6 @@ import com.simonvonxcvii.turing.repository.jpa.*
 import org.apache.commons.logging.LogFactory
 import org.springframework.beans.factory.InitializingBean
 import org.springframework.core.io.ClassPathResource
-import org.springframework.jdbc.datasource.init.ScriptUtils
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Component
 import org.springframework.util.StringUtils
@@ -17,7 +16,6 @@ import java.util.function.BiConsumer
 import java.util.function.Consumer
 import java.util.function.Function
 import java.util.stream.Collectors
-import javax.sql.DataSource
 
 /**
  * 数据库初始化 runner
@@ -29,7 +27,6 @@ import javax.sql.DataSource
  */
 @Component
 class DatabaseInitializingBeanImpl(
-    private val dataSource: DataSource,
     private val organizationJpaRepository: OrganizationJpaRepository,
     private val passwordEncoder: PasswordEncoder,
     private val userJpaRepository: UserJpaRepository,
@@ -41,22 +38,27 @@ class DatabaseInitializingBeanImpl(
 ) : InitializingBean {
     @Throws(Exception::class)
     override fun afterPropertiesSet() {
-        // 判断是否需要初始化，如果表存在说明不需要
-        val connection = dataSource.connection
-        connection.metaData.getTables(null, null, "turing_dict", null)
-            .next()
-            .run { if (this) return }
+        // 判断是否需要初始化，如果表数据存在说明不需要
+        val exists = dictJpaRepository.exists { root, _, _ -> root.get<String>(Dict.TYPE).`in`("area") }
+        if (exists) {
+            return
+        }
+//        val connection = dataSource.connection
+//        connection.metaData.getTables(null, null, "turing_dict", null)
+//            .next()
+//            .run { if (this) return }
 
-        // 创建数据库表 TODO 移除该方式，实现在服务启动时自动检测是否存在实体类对应的 table，不存在则根据实体类相关注解自动生成对应的 table
-        val classPathResourceTableSql = ClassPathResource("/db/table.sql")
-        classPathResourceTableSql.exists()
-            .run {
-                if (!this) {
-                    log.warn("数据库表文件不存在，无法初始化")
-                    return
-                }
-            }
-        ScriptUtils.executeSqlScript(connection, classPathResourceTableSql)
+        // 创建数据库表
+        // 已实现在服务启动时自动检测是否存在实体类对应的 table，不存在则根据实体类相关注解自动生成对应的 table
+//        val classPathResourceTableSql = ClassPathResource("/db/table.sql")
+//        classPathResourceTableSql.exists()
+//            .run {
+//                if (!this) {
+//                    log.warn("数据库表文件不存在，无法初始化")
+//                    return
+//                }
+//            }
+//        ScriptUtils.executeSqlScript(connection, classPathResourceTableSql)
 
         // 创建基础数据
         init()
@@ -156,7 +158,7 @@ class DatabaseInitializingBeanImpl(
             code = "000000000000000000",
             legalPerson = "admin",
             phone = "021-88888888",
-            type = OrganizationTypeEnum.PLATFORM.desc,
+            type = OrganizationTypeEnum.PLATFORM,
             provinceCode = 310000,
             cityCode = 310100,
             districtCode = 310101,
@@ -2042,6 +2044,6 @@ class DatabaseInitializingBeanImpl(
         /**
          * 字典排序
          */
-        private var areaSort = 0
+        private var areaSort: Short = 0
     }
 }

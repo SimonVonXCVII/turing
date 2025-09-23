@@ -30,14 +30,14 @@ data class RolePermission(
     /**
      * 角色 id
      */
-    @Column(name = "role_id", nullable = false, columnDefinition = "INTEGER")
+    @Column(nullable = false, columnDefinition = "INTEGER")
     @Comment("角色 id")
     var roleId: Int = 0,
 
     /**
      * 权限 id
      */
-    @Column(name = "permission_id", nullable = false, columnDefinition = "INTEGER")
+    @Column(nullable = false, columnDefinition = "INTEGER")
     @Comment("权限 id")
     var permissionId: Int = 0
 ) : AbstractAuditable() {

@@ -79,7 +79,7 @@ public class RegisterServiceImpl implements RegisterService {
         organization.setCityCode(dto.getCityCode());
         organization.setDistrictCode(dto.getDistrictCode());
         // 单位类型
-        organization.setType(OrganizationTypeEnum.BUSINESS_TECHNOLOGY.getDesc());
+        organization.setType(OrganizationTypeEnum.BUSINESS_TECHNOLOGY);
         organizationJpaRepository.save(organization);
 
         // 管理员信息

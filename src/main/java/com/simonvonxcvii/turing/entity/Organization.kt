@@ -1,5 +1,6 @@
 package com.simonvonxcvii.turing.entity
 
+import com.simonvonxcvii.turing.enums.OrganizationTypeEnum
 import jakarta.persistence.*
 import org.hibernate.annotations.Comment
 import org.hibernate.annotations.SQLDelete
@@ -23,8 +24,7 @@ import org.hibernate.annotations.SQLRestriction
     schema = "public",
     name = "turing_organization",
     uniqueConstraints = [
-        UniqueConstraint(name = "con_public_turing_organization_constraint_1", columnNames = arrayOf("id")),
-        UniqueConstraint(columnNames = arrayOf("name", "code", "phone"))
+        UniqueConstraint(name = "con_public_turing_organization_constraint_1", columnNames = arrayOf("id"))
     ]
 )
 // @SQLDelete 只支持 delete(T entity) 和 deleteById(ID id)
@@ -34,93 +34,92 @@ data class Organization(
     /**
      * 上级单位 id
      */
-    @Column(name = "pid", columnDefinition = "INTEGER")
+    @Column(columnDefinition = "INTEGER")
     @Comment("上级单位 id")
     var pid: Int? = null,
 
     /**
      * 单位名称
      */
-    @Column(name = "name", nullable = false, columnDefinition = "VARCHAR", length = 64)
+    @Column(unique = true, nullable = false, columnDefinition = "VARCHAR(64)")
     @Comment("单位名称")
     var name: String = "",
 
     /**
      * 信用代码
      */
-    @Column(name = "code", nullable = false, columnDefinition = "VARCHAR", length = 18)
+    @Column(unique = true, nullable = false, columnDefinition = "VARCHAR(18)")
     @Comment("单位名称")
     var code: String = "",
 
     /**
      * 单位法人
      */
-    @Column(name = "legal_person", nullable = false, columnDefinition = "VARCHAR", length = 32)
+    @Column(nullable = false, columnDefinition = "VARCHAR(32)")
     @Comment("单位地址详情")
     var legalPerson: String = "",
 
     /**
      * 单位联系电话
      */
-    @Column(name = "phone", nullable = false, columnDefinition = "VARCHAR", length = 32)
+    @Column(unique = true, nullable = false, columnDefinition = "VARCHAR(32)")
     @Comment("单位联系电话")
     var phone: String = "",
 
     /**
      * 单位类型
-     *
-     * @see com.simonvonxcvii.turing.enums.OrganizationTypeEnum
      */
-    @Column(name = "type", nullable = false, columnDefinition = "VARCHAR", length = 6)
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, columnDefinition = "VARCHAR(64)")
     @Comment("单位类型")
-    var type: String = "",
+    var type: OrganizationTypeEnum = OrganizationTypeEnum.PLATFORM,
 
     /**
      * 单位所在省（市、区）编码
      */
-    @Column(name = "province_code", nullable = false, columnDefinition = "INTEGER")
+    @Column(nullable = false, columnDefinition = "INTEGER")
     @Comment("单位所在省（市、区）编码")
     var provinceCode: Int = 0,
 
     /**
      * 单位所在市（州、盟）编码
      */
-    @Column(name = "city_code", nullable = false, columnDefinition = "INTEGER")
+    @Column(nullable = false, columnDefinition = "INTEGER")
     @Comment("单位所在市（州、盟）编码")
     var cityCode: Int = 0,
 
     /**
      * 单位所在县（市、旗）编码
      */
-    @Column(name = "district_code", nullable = false, columnDefinition = "INTEGER")
+    @Column(nullable = false, columnDefinition = "INTEGER")
     @Comment("单位所在区县（市、旗）编码")
     var districtCode: Int = 0,
 
     /**
      * 单位所在省（市、区）名称
      */
-    @Column(name = "province_name", nullable = false, columnDefinition = "VARCHAR", length = 16)
+    @Column(nullable = false, columnDefinition = "VARCHAR(16)")
     @Comment("单位所在省（市、区）名称")
     var provinceName: String = "",
 
     /**
      * 单位所在市（州、盟）名称
      */
-    @Column(name = "city_name", nullable = false, columnDefinition = "VARCHAR", length = 16)
+    @Column(nullable = false, columnDefinition = "VARCHAR(16)")
     @Comment("单位所在市（州、盟）名称")
     var cityName: String = "",
 
     /**
      * 单位所在县（市、旗）名称
      */
-    @Column(name = "district_name", nullable = false, columnDefinition = "VARCHAR", length = 16)
+    @Column(nullable = false, columnDefinition = "VARCHAR(16)")
     @Comment("单位所在区县（市、旗）名称")
     var districtName: String = "",
 
     /**
      * 单位地址详情
      */
-    @Column(name = "address", nullable = false, columnDefinition = "VARCHAR", length = 128)
+    @Column(nullable = false, columnDefinition = "VARCHAR(128)")
     @Comment("单位地址详情")
     var address: String = "",
 

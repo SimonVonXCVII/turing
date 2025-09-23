@@ -20,8 +20,7 @@ import org.hibernate.annotations.SQLRestriction
     schema = "public",
     name = "turing_permission",
     uniqueConstraints = [
-        UniqueConstraint(name = "con_public_turing_permission_constraint_1", columnNames = arrayOf("id")),
-        UniqueConstraint(columnNames = arrayOf("name", "code", "sort"))
+        UniqueConstraint(name = "con_public_turing_permission_constraint_1", columnNames = arrayOf("id"))
     ]
 )
 // @SQLDelete 只支持 delete(T entity) 和 deleteById(ID id)
@@ -31,28 +30,28 @@ data class Permission(
     /**
      * 上级权限 id
      */
-    @Column(name = "pid", columnDefinition = "INTEGER")
+    @Column(columnDefinition = "INTEGER")
     @Comment("上级权限 id")
     var pid: Int? = null,
 
     /**
      * 权限名称
      */
-    @Column(name = "name", nullable = false, columnDefinition = "VARCHAR", length = 32)
+    @Column(unique = true, nullable = false, columnDefinition = "VARCHAR(32)")
     @Comment("权限名称")
     var name: String = "",
 
     /**
      * 权限编码
      */
-    @Column(name = "code", columnDefinition = "VARCHAR", length = 32)
+    @Column(unique = true, columnDefinition = "VARCHAR(32)")
     @Comment("权限编码")
     var code: String? = null,
 
     /**
      * 排序编号
      */
-    @Column(name = "sort", nullable = false, columnDefinition = "SMALLINT")
+    @Column(unique = true, nullable = false, columnDefinition = "SMALLINT")
     @Comment("排序编号")
     var sort: Short = 0,
 ) : AbstractAuditable() {

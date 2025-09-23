@@ -49,6 +49,10 @@ spring:
   jpa:
     # 注册 OpenEntityManagerInViewInterceptor。将 JPA EntityManager 绑定到线程以处理整个请求。
     open-in-view: false
+    hibernate:
+      # DDL 模式。这实际上是“hibernate.hbm2ddl.auto”属性的快捷方式。
+      # 当使用嵌入式数据库且未检测到模式管理器时，默认为“create-drop”。否则，默认为“none”。
+      ddl-auto: update
   profiles:
     # 指定起作用的配置文件
     active: dev

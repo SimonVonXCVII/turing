@@ -32,7 +32,7 @@ abstract class AbstractAuditable(
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false, columnDefinition = "INTEGER")
+    @Column(nullable = false, columnDefinition = "INTEGER")
     @Comment("表主键 id")
     open var id: Int = 0,
 
@@ -40,7 +40,7 @@ abstract class AbstractAuditable(
      * 创建主体
      */
     @CreatedBy
-    @Column(name = "created_by", columnDefinition = "INTEGER")
+    @Column(columnDefinition = "INTEGER")
     @Comment("创建主体")
     open var createdBy: Int? = null,
 
@@ -51,7 +51,7 @@ abstract class AbstractAuditable(
     @field:JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @field:JsonSerialize(using = LocalDateTimeSerializer::class)
     @CreatedDate
-    @Column(name = "created_date", nullable = false, columnDefinition = "TIMESTAMP")
+    @Column(nullable = false, columnDefinition = "TIMESTAMP")
     @Comment("创建时间")
     open var createdDate: LocalDateTime = LocalDateTime.now(),
 
@@ -59,7 +59,7 @@ abstract class AbstractAuditable(
      * 最后修改主体
      */
     @LastModifiedBy
-    @Column(name = "last_modified_by", columnDefinition = "INTEGER")
+    @Column(columnDefinition = "INTEGER")
     @Comment("更新主体")
     open var lastModifiedBy: Int? = null,
 
@@ -70,7 +70,7 @@ abstract class AbstractAuditable(
     @field:JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @field:JsonSerialize(using = LocalDateTimeSerializer::class)
     @LastModifiedDate
-    @Column(name = "last_modified_date", nullable = false, columnDefinition = "TIMESTAMP")
+    @Column(nullable = false, columnDefinition = "TIMESTAMP")
     @Comment("更新时间")
     open var lastModifiedDate: LocalDateTime = LocalDateTime.now(),
 
@@ -78,14 +78,14 @@ abstract class AbstractAuditable(
      * 乐观锁版本
      */
     @Version
-    @Column(name = "version", nullable = false, columnDefinition = "INTEGER")
+    @Column(nullable = false, columnDefinition = "INTEGER")
     @Comment("乐观锁版本")
     open var version: Int = 0,
 
     /**
      * 逻辑删除标记
      */
-    @Column(name = "deleted", nullable = false, columnDefinition = "BOOLEAN")
+    @Column(nullable = false, columnDefinition = "BOOLEAN")
     @Comment("逻辑删除")
     open var deleted: Boolean = false
 ) : Serializable {

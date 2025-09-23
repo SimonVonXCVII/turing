@@ -20,7 +20,9 @@ enum class OrganizationBusinessQualityControlTypeEnum(val desc: String) {
 
         fun getValueByOrdinal(ordinal: Int): String? {
             // Use cached VALUES instead of values() to prevent array allocation.
-            for (anEnum in VALUES) if (anEnum.ordinal == ordinal) return anEnum.desc
+            for (anEnum in VALUES)
+                if (anEnum.ordinal == ordinal)
+                    return anEnum.desc
 
             return null
         }
@@ -28,9 +30,9 @@ enum class OrganizationBusinessQualityControlTypeEnum(val desc: String) {
         @JvmStatic
         fun getEnumByDesc(desc: String?): Optional<OrganizationBusinessQualityControlTypeEnum> {
             // Use cached VALUES instead of values() to prevent array allocation.
-            for (anEnum in VALUES) if (anEnum.desc == desc) return Optional.of<OrganizationBusinessQualityControlTypeEnum>(
-                anEnum
-            )
+            for (anEnum in VALUES)
+                if (anEnum.desc == desc)
+                    return Optional.of<OrganizationBusinessQualityControlTypeEnum>(anEnum)
 
             return Optional.empty<OrganizationBusinessQualityControlTypeEnum>()
         }

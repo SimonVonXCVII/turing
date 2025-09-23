@@ -7,10 +7,11 @@ package com.simonvonxcvii.turing.service.impl;
 //import co.elastic.clients.elasticsearch.core.SearchResponse;
 
 import com.simonvonxcvii.turing.common.exception.BizRuntimeException;
-import com.simonvonxcvii.turing.entity.*;
-import com.simonvonxcvii.turing.enums.OrganizationBusinessBusinessLinksEnum;
+import com.simonvonxcvii.turing.entity.Dict;
+import com.simonvonxcvii.turing.entity.Organization;
+import com.simonvonxcvii.turing.entity.OrganizationBusiness;
+import com.simonvonxcvii.turing.entity.User;
 import com.simonvonxcvii.turing.enums.OrganizationBusinessLevelEnum;
-import com.simonvonxcvii.turing.enums.OrganizationBusinessQualityControlTypeEnum;
 import com.simonvonxcvii.turing.model.dto.OrganizationBusinessDTO;
 import com.simonvonxcvii.turing.repository.jpa.*;
 import com.simonvonxcvii.turing.service.IOrganizationBusinessService;
@@ -22,7 +23,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 
 import java.io.IOException;
 import java.util.LinkedList;
@@ -193,8 +193,9 @@ public class OrganizationBusinessServiceImpl implements IOrganizationBusinessSer
             String district = stringRedisTemplate.opsForValue().get(Dict.REDIS_KEY_PREFIX + organizationBusiness.getDistrictCode());
             organizationBusiness.setProvinceName(district);
         }
-        organizationBusiness.setLink(StringUtils.arrayToCommaDelimitedString(dto.getLink()));
-        organizationBusiness.setType(StringUtils.arrayToCommaDelimitedString(dto.getType()));
+        // TODO 晚些时候修改！
+//        organizationBusiness.setLink(dto.getLink());
+//        organizationBusiness.setType(dto.getType());
         Organization organization = organizationJpaRepository.getReferenceById(UserUtils.getOrgId());
         organizationBusiness.setOrgId(organization.getId());
         organizationBusiness.setOrgName(organization.getName());
@@ -225,8 +226,9 @@ public class OrganizationBusinessServiceImpl implements IOrganizationBusinessSer
     public void applyUpdate(OrganizationBusinessDTO dto) throws IOException {
         OrganizationBusiness organizationBusiness = organizationBusinessJpaRepository.findById(dto.getId())
                 .orElseThrow(() -> BizRuntimeException.from("没有找到该业务记录"));
-        organizationBusiness.setLink(StringUtils.arrayToCommaDelimitedString(dto.getLink()));
-        organizationBusiness.setType(StringUtils.arrayToCommaDelimitedString(dto.getType()));
+        // TODO 晚些时候修改！
+//        organizationBusiness.setLink(dto.getLink());
+//        organizationBusiness.setType(dto.getType());
         organizationBusiness.setState("待审核");
         organizationBusinessJpaRepository.save(organizationBusiness);
 
@@ -236,48 +238,49 @@ public class OrganizationBusinessServiceImpl implements IOrganizationBusinessSer
 //                        .doc(organizationBusiness),
 //                OrganizationBusiness.class);
 
-        for (String link : StringUtils.commaDelimitedListToStringArray(organizationBusiness.getLink())) {
-            OrganizationBusinessBusinessLinksEnum.getEnumByDesc(link).ifPresent(anEnum -> {
-                Role role = roleJpaRepository.findOne((root, _, _) ->
-                                root.get(Role.AUTHORITY).in("ADMIN_" + anEnum.name()))
-                        .orElseThrow(() -> BizRuntimeException.from("没有找到对应角色"));
-
-                // 如果该单位对应的通过的业务类型为空才进行删除操作
-                List<OrganizationBusiness> organizationBusinessList = organizationBusinessJpaRepository.findAll(
-                        (root, query, criteriaBuilder) -> {
-                            assert query != null;
-                            return query.where(root.get(OrganizationBusiness.ORG_ID).in(UserUtils.getOrgId()),
-                                    criteriaBuilder.like(root.get(OrganizationBusiness.LINK), "%" + link + "%", '/'),
-                                    root.get(OrganizationBusiness.STATE).in("已通过")).getRestriction();
-                        });
-                if (organizationBusinessList.isEmpty()) {
-                    userRoleJpaRepository.delete((root, _, criteriaBuilder) ->
-                            criteriaBuilder.and(root.get(UserRole.USER_ID).in(UserUtils.getId()),
-                                    root.get(UserRole.ROLE_ID).in(role.getId())));
-                }
-            });
-        }
-        for (String type : StringUtils.commaDelimitedListToStringArray(organizationBusiness.getType())) {
-            OrganizationBusinessQualityControlTypeEnum.getEnumByDesc(type).ifPresent(anEnum -> {
-                Role role = roleJpaRepository.findOne((root, _, _) ->
-                                root.get(Role.AUTHORITY).in("ADMIN_" + anEnum.name()))
-                        .orElseThrow(() -> BizRuntimeException.from("没有找到对应角色"));
-
-                // 如果该单位对应的通过的业务类型为空才进行删除操作
-                List<OrganizationBusiness> organizationBusinessList = organizationBusinessJpaRepository.findAll(
-                        (root, query, criteriaBuilder) -> {
-                            assert query != null;
-                            return query.where(root.get(OrganizationBusiness.ORG_ID).in(UserUtils.getOrgId()),
-                                    criteriaBuilder.like(root.get(OrganizationBusiness.TYPE), "%" + type + "%", '/'),
-                                    root.get(OrganizationBusiness.STATE).in("已通过")).getRestriction();
-                        });
-                if (organizationBusinessList.isEmpty()) {
-                    userRoleJpaRepository.delete((root, _, criteriaBuilder) ->
-                            criteriaBuilder.and(root.get(UserRole.USER_ID).in(UserUtils.getId()),
-                                    root.get(UserRole.ROLE_ID).in(role.getId())));
-                }
-            });
-        }
+        // TODO 晚些时候修改！
+//        for (OrganizationBusinessBusinessLinksEnum link : organizationBusiness.getLink()) {
+//            OrganizationBusinessBusinessLinksEnum.getEnumByDesc(link).ifPresent(anEnum -> {
+//                Role role = roleJpaRepository.findOne((root, _, _) ->
+//                                root.get(Role.AUTHORITY).in("ADMIN_" + anEnum.name()))
+//                        .orElseThrow(() -> BizRuntimeException.from("没有找到对应角色"));
+//
+//                // 如果该单位对应的通过的业务类型为空才进行删除操作
+//                List<OrganizationBusiness> organizationBusinessList = organizationBusinessJpaRepository.findAll(
+//                        (root, query, criteriaBuilder) -> {
+//                            assert query != null;
+//                            return query.where(root.get(OrganizationBusiness.ORG_ID).in(UserUtils.getOrgId()),
+//                                    criteriaBuilder.like(root.get(OrganizationBusiness.LINK), "%" + link + "%", '/'),
+//                                    root.get(OrganizationBusiness.STATE).in("已通过")).getRestriction();
+//                        });
+//                if (organizationBusinessList.isEmpty()) {
+//                    userRoleJpaRepository.delete((root, _, criteriaBuilder) ->
+//                            criteriaBuilder.and(root.get(UserRole.USER_ID).in(UserUtils.getId()),
+//                                    root.get(UserRole.ROLE_ID).in(role.getId())));
+//                }
+//            });
+//        }
+//        for (String type : StringUtils.commaDelimitedListToStringArray(organizationBusiness.getType())) {
+//            OrganizationBusinessQualityControlTypeEnum.getEnumByDesc(type).ifPresent(anEnum -> {
+//                Role role = roleJpaRepository.findOne((root, _, _) ->
+//                                root.get(Role.AUTHORITY).in("ADMIN_" + anEnum.name()))
+//                        .orElseThrow(() -> BizRuntimeException.from("没有找到对应角色"));
+//
+//                // 如果该单位对应的通过的业务类型为空才进行删除操作
+//                List<OrganizationBusiness> organizationBusinessList = organizationBusinessJpaRepository.findAll(
+//                        (root, query, criteriaBuilder) -> {
+//                            assert query != null;
+//                            return query.where(root.get(OrganizationBusiness.ORG_ID).in(UserUtils.getOrgId()),
+//                                    criteriaBuilder.like(root.get(OrganizationBusiness.TYPE), "%" + type + "%", '/'),
+//                                    root.get(OrganizationBusiness.STATE).in("已通过")).getRestriction();
+//                        });
+//                if (organizationBusinessList.isEmpty()) {
+//                    userRoleJpaRepository.delete((root, _, criteriaBuilder) ->
+//                            criteriaBuilder.and(root.get(UserRole.USER_ID).in(UserUtils.getId()),
+//                                    root.get(UserRole.ROLE_ID).in(role.getId())));
+//                }
+//            });
+//        }
     }
 
     /**
@@ -306,72 +309,73 @@ public class OrganizationBusinessServiceImpl implements IOrganizationBusinessSer
                                 root.get(User.MANAGER).in(Boolean.TRUE)))
                 .orElseThrow(() -> BizRuntimeException.from("没有找到该业务的单位管理员"));
 
-        for (String link : StringUtils.commaDelimitedListToStringArray(organizationBusiness.getLink())) {
-            OrganizationBusinessBusinessLinksEnum.getEnumByDesc(link).ifPresent(anEnum -> {
-                Role role = roleJpaRepository.findOne((root, _, _) ->
-                                root.get(Role.AUTHORITY).in("ADMIN_" + anEnum.name()))
-                        .orElseThrow(() -> BizRuntimeException.from("没有找到对应角色"));
-                if ("已通过".equals(dto.getState())) {
-                    // 如果当前用户没有当前角色才进行添加操作
-                    boolean exists = userRoleJpaRepository.exists((root, _, criteriaBuilder) ->
-                            criteriaBuilder.and(root.get(UserRole.USER_ID).in(user.getId()),
-                                    root.get(UserRole.ROLE_ID).in(role.getId())));
-                    if (!exists) {
-                        UserRole userRole = new UserRole();
-                        userRole.setUserId(user.getId());
-                        userRole.setRoleId(role.getId());
-                        userRoleJpaRepository.save(userRole);
-                    }
-                } else {
-                    // 如果该单位对应的通过的业务类型为空才进行删除操作
-                    List<OrganizationBusiness> organizationBusinessList = organizationBusinessJpaRepository.findAll(
-                            (root, query, criteriaBuilder) -> {
-                                assert query != null;
-                                return query.where(root.get(OrganizationBusiness.ORG_ID).in(user.getOrgId()),
-                                        criteriaBuilder.like(root.get(OrganizationBusiness.LINK), "%" + link + "%", '/'),
-                                        root.get(OrganizationBusiness.STATE).in("已通过")).getRestriction();
-                            });
-                    if (organizationBusinessList.isEmpty()) {
-                        userRoleJpaRepository.delete((root, _, criteriaBuilder) ->
-                                criteriaBuilder.and(root.get(UserRole.USER_ID).in(user.getId()),
-                                        root.get(UserRole.ROLE_ID).in(role.getId())));
-                    }
-                }
-            });
-        }
-        for (String type : StringUtils.commaDelimitedListToStringArray(organizationBusiness.getType())) {
-            OrganizationBusinessQualityControlTypeEnum.getEnumByDesc(type).ifPresent(anEnum -> {
-                Role role = roleJpaRepository.findOne((root, _, _) ->
-                                root.get(Role.AUTHORITY).in("ADMIN_" + anEnum.name()))
-                        .orElseThrow(() -> BizRuntimeException.from("没有找到对应角色"));
-                if ("已通过".equals(dto.getState())) {
-                    // 如果当前用户没有当前角色才进行添加操作
-                    boolean exists = userRoleJpaRepository.exists((root, _, criteriaBuilder) ->
-                            criteriaBuilder.and(root.get(UserRole.USER_ID).in(user.getId()),
-                                    root.get(UserRole.ROLE_ID).in(role.getId())));
-                    if (!exists) {
-                        UserRole userRole = new UserRole();
-                        userRole.setUserId(user.getId());
-                        userRole.setRoleId(role.getId());
-                        userRoleJpaRepository.save(userRole);
-                    }
-                } else {
-                    // 如果该单位对应的通过的业务类型为空才进行删除操作
-                    List<OrganizationBusiness> organizationBusinessList = organizationBusinessJpaRepository.findAll(
-                            (root, query, criteriaBuilder) -> {
-                                assert query != null;
-                                return query.where(root.get(OrganizationBusiness.ORG_ID).in(user.getOrgId()),
-                                        criteriaBuilder.like(root.get(OrganizationBusiness.TYPE), "%" + type + "%", '/'),
-                                        root.get(OrganizationBusiness.STATE).in("已通过")).getRestriction();
-                            });
-                    if (organizationBusinessList.isEmpty()) {
-                        userRoleJpaRepository.delete((root, _, criteriaBuilder) ->
-                                criteriaBuilder.and(root.get(UserRole.USER_ID).in(user.getId()),
-                                        root.get(UserRole.ROLE_ID).in(role.getId())));
-                    }
-                }
-            });
-        }
+        // TODO 晚些时候修改！
+//        for (String link : StringUtils.commaDelimitedListToStringArray(organizationBusiness.getLink())) {
+//            OrganizationBusinessBusinessLinksEnum.getEnumByDesc(link).ifPresent(anEnum -> {
+//                Role role = roleJpaRepository.findOne((root, _, _) ->
+//                                root.get(Role.AUTHORITY).in("ADMIN_" + anEnum.name()))
+//                        .orElseThrow(() -> BizRuntimeException.from("没有找到对应角色"));
+//                if ("已通过".equals(dto.getState())) {
+//                    // 如果当前用户没有当前角色才进行添加操作
+//                    boolean exists = userRoleJpaRepository.exists((root, _, criteriaBuilder) ->
+//                            criteriaBuilder.and(root.get(UserRole.USER_ID).in(user.getId()),
+//                                    root.get(UserRole.ROLE_ID).in(role.getId())));
+//                    if (!exists) {
+//                        UserRole userRole = new UserRole();
+//                        userRole.setUserId(user.getId());
+//                        userRole.setRoleId(role.getId());
+//                        userRoleJpaRepository.save(userRole);
+//                    }
+//                } else {
+//                    // 如果该单位对应的通过的业务类型为空才进行删除操作
+//                    List<OrganizationBusiness> organizationBusinessList = organizationBusinessJpaRepository.findAll(
+//                            (root, query, criteriaBuilder) -> {
+//                                assert query != null;
+//                                return query.where(root.get(OrganizationBusiness.ORG_ID).in(user.getOrgId()),
+//                                        criteriaBuilder.like(root.get(OrganizationBusiness.LINK), "%" + link + "%", '/'),
+//                                        root.get(OrganizationBusiness.STATE).in("已通过")).getRestriction();
+//                            });
+//                    if (organizationBusinessList.isEmpty()) {
+//                        userRoleJpaRepository.delete((root, _, criteriaBuilder) ->
+//                                criteriaBuilder.and(root.get(UserRole.USER_ID).in(user.getId()),
+//                                        root.get(UserRole.ROLE_ID).in(role.getId())));
+//                    }
+//                }
+//            });
+//        }
+//        for (String type : StringUtils.commaDelimitedListToStringArray(organizationBusiness.getType())) {
+//            OrganizationBusinessQualityControlTypeEnum.getEnumByDesc(type).ifPresent(anEnum -> {
+//                Role role = roleJpaRepository.findOne((root, _, _) ->
+//                                root.get(Role.AUTHORITY).in("ADMIN_" + anEnum.name()))
+//                        .orElseThrow(() -> BizRuntimeException.from("没有找到对应角色"));
+//                if ("已通过".equals(dto.getState())) {
+//                    // 如果当前用户没有当前角色才进行添加操作
+//                    boolean exists = userRoleJpaRepository.exists((root, _, criteriaBuilder) ->
+//                            criteriaBuilder.and(root.get(UserRole.USER_ID).in(user.getId()),
+//                                    root.get(UserRole.ROLE_ID).in(role.getId())));
+//                    if (!exists) {
+//                        UserRole userRole = new UserRole();
+//                        userRole.setUserId(user.getId());
+//                        userRole.setRoleId(role.getId());
+//                        userRoleJpaRepository.save(userRole);
+//                    }
+//                } else {
+//                    // 如果该单位对应的通过的业务类型为空才进行删除操作
+//                    List<OrganizationBusiness> organizationBusinessList = organizationBusinessJpaRepository.findAll(
+//                            (root, query, criteriaBuilder) -> {
+//                                assert query != null;
+//                                return query.where(root.get(OrganizationBusiness.ORG_ID).in(user.getOrgId()),
+//                                        criteriaBuilder.like(root.get(OrganizationBusiness.TYPE), "%" + type + "%", '/'),
+//                                        root.get(OrganizationBusiness.STATE).in("已通过")).getRestriction();
+//                            });
+//                    if (organizationBusinessList.isEmpty()) {
+//                        userRoleJpaRepository.delete((root, _, criteriaBuilder) ->
+//                                criteriaBuilder.and(root.get(UserRole.USER_ID).in(user.getId()),
+//                                        root.get(UserRole.ROLE_ID).in(role.getId())));
+//                    }
+//                }
+//            });
+//        }
     }
 
 }

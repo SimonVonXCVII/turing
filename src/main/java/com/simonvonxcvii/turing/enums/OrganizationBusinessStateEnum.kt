@@ -17,7 +17,9 @@ enum class OrganizationBusinessStateEnum(val desc: String) {
 
         fun getValueByOrdinal(ordinal: Int): String {
             // Use cached VALUES instead of values() to prevent array allocation.
-            for (anEnum in VALUES) if (anEnum.ordinal == ordinal) return anEnum.desc
+            for (anEnum in VALUES)
+                if (anEnum.ordinal == ordinal)
+                    return anEnum.desc
 
             return ""
         }

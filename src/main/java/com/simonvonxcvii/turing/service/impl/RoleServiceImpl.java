@@ -5,7 +5,6 @@ import com.simonvonxcvii.turing.entity.OrganizationBusiness;
 import com.simonvonxcvii.turing.entity.Role;
 import com.simonvonxcvii.turing.entity.RolePermission;
 import com.simonvonxcvii.turing.entity.UserRole;
-import com.simonvonxcvii.turing.enums.OrganizationBusinessBusinessLinksEnum;
 import com.simonvonxcvii.turing.enums.OrganizationBusinessStateEnum;
 import com.simonvonxcvii.turing.model.dto.RoleDTO;
 import com.simonvonxcvii.turing.repository.jpa.OrganizationBusinessJpaRepository;
@@ -186,41 +185,43 @@ public class RoleServiceImpl implements IRoleService {
         List<RoleDTO> roleDTOList = new LinkedList<>();
         organizationBusinessList.forEach(organizationBusiness -> {
             if (organizationBusiness.getLink() != null) {
-                String[] links = StringUtils.commaDelimitedListToStringArray(organizationBusiness.getLink());
-                for (String link : links) {
-                    OrganizationBusinessBusinessLinksEnum.getEnumByDesc(link).ifPresent(anEnum ->
-                            roleJpaRepository.findAll((root, _, _) ->
-                                            root.get(Role.AUTHORITY).in("STAFF_" + anEnum.name()))
-                                    .forEach(role -> {
-                                        RoleDTO roleDTO = new RoleDTO();
-                                        roleDTO.setId(role.getId());
-                                        roleDTO.setName(role.getName());
-                                        roleDTOList.add(roleDTO);
-                                    }));
-                    OrganizationBusinessBusinessLinksEnum.getEnumByDesc(link).ifPresent(anEnum ->
-                            roleJpaRepository.findAll((root, _, _) ->
-                                            root.get(Role.AUTHORITY).in("STAFF_" + anEnum.name()))
-                                    .forEach(role -> {
-                                        RoleDTO roleDTO = new RoleDTO();
-                                        roleDTO.setId(role.getId());
-                                        roleDTO.setName(role.getName());
-                                        roleDTOList.add(roleDTO);
-                                    }));
-                }
+                // TODO 晚些时候修改！
+//                String[] links = StringUtils.commaDelimitedListToStringArray(organizationBusiness.getLink());
+//                for (String link : links) {
+//                    OrganizationBusinessBusinessLinksEnum.getEnumByDesc(link).ifPresent(anEnum ->
+//                            roleJpaRepository.findAll((root, _, _) ->
+//                                            root.get(Role.AUTHORITY).in("STAFF_" + anEnum.name()))
+//                                    .forEach(role -> {
+//                                        RoleDTO roleDTO = new RoleDTO();
+//                                        roleDTO.setId(role.getId());
+//                                        roleDTO.setName(role.getName());
+//                                        roleDTOList.add(roleDTO);
+//                                    }));
+//                    OrganizationBusinessBusinessLinksEnum.getEnumByDesc(link).ifPresent(anEnum ->
+//                            roleJpaRepository.findAll((root, _, _) ->
+//                                            root.get(Role.AUTHORITY).in("STAFF_" + anEnum.name()))
+//                                    .forEach(role -> {
+//                                        RoleDTO roleDTO = new RoleDTO();
+//                                        roleDTO.setId(role.getId());
+//                                        roleDTO.setName(role.getName());
+//                                        roleDTOList.add(roleDTO);
+//                                    }));
+//                }
             }
             if (organizationBusiness.getType() != null) {
-                String[] types = StringUtils.commaDelimitedListToStringArray(organizationBusiness.getType());
-                for (String type : types) {
-                    OrganizationBusinessBusinessLinksEnum.getEnumByDesc(type).ifPresent(anEnum ->
-                            roleJpaRepository.findAll((root, _, _) ->
-                                            root.get(Role.AUTHORITY).in("STAFF_" + anEnum.name()))
-                                    .forEach(role -> {
-                                        RoleDTO roleDTO = new RoleDTO();
-                                        roleDTO.setId(role.getId());
-                                        roleDTO.setName(role.getName());
-                                        roleDTOList.add(roleDTO);
-                                    }));
-                }
+                // TODO 晚些时候修改！
+//                String[] types = StringUtils.commaDelimitedListToStringArray(organizationBusiness.getType());
+//                for (String type : types) {
+//                    OrganizationBusinessBusinessLinksEnum.getEnumByDesc(type).ifPresent(anEnum ->
+//                            roleJpaRepository.findAll((root, _, _) ->
+//                                            root.get(Role.AUTHORITY).in("STAFF_" + anEnum.name()))
+//                                    .forEach(role -> {
+//                                        RoleDTO roleDTO = new RoleDTO();
+//                                        roleDTO.setId(role.getId());
+//                                        roleDTO.setName(role.getName());
+//                                        roleDTOList.add(roleDTO);
+//                                    }));
+//                }
             }
         });
         return roleDTOList;

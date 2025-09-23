@@ -10,22 +10,22 @@ enum class FileTypeEnum(val desc: String) {
     /**
      * 信息采集
      */
-    INFORMATION_COLLECTION("Information Collection"),
+    INFORMATION_COLLECTION("信息采集"),
 
     /**
      * 调查布点
      */
-    SURVEY_LAYOUT("Survey Layout"),
+    SURVEY_LAYOUT("信息采集"),
 
     /**
      * 采样调查
      */
-    PLOT_SAMPLING_SURVEY("Plot Sampling Survey"),
+    PLOT_SAMPLING_SURVEY("信息采集"),
 
     /**
      * 样品检测
      */
-    SAMPLE_TESTING("Sample Testing"),
+    SAMPLE_TESTING("信息采集"),
     ;
 
     companion object {
@@ -33,7 +33,9 @@ enum class FileTypeEnum(val desc: String) {
 
         fun getValueByOrdinal(ordinal: Int): String {
             // Use cached VALUES instead of values() to prevent array allocation.
-            for (anEnum in VALUES) if (anEnum.ordinal == ordinal) return anEnum.desc
+            for (anEnum in VALUES)
+                if (anEnum.ordinal == ordinal)
+                    return anEnum.desc
 
             return ""
         }
@@ -41,7 +43,9 @@ enum class FileTypeEnum(val desc: String) {
         @JvmStatic
         fun getByOrdinal(ordinal: Int): FileTypeEnum? {
             // Use cached VALUES instead of values() to prevent array allocation.
-            for (anEnum in VALUES) if (anEnum.ordinal == ordinal) return anEnum
+            for (anEnum in VALUES)
+                if (anEnum.ordinal == ordinal)
+                    return anEnum
 
             return null
         }

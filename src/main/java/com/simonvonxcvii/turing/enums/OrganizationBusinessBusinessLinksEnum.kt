@@ -25,7 +25,9 @@ enum class OrganizationBusinessBusinessLinksEnum(val desc: String) {
 
         fun getValueByOrdinal(ordinal: Int): String? {
             // Use cached VALUES instead of values() to prevent array allocation.
-            for (anEnum in VALUES) if (anEnum.ordinal == ordinal) return anEnum.desc
+            for (anEnum in VALUES)
+                if (anEnum.ordinal == ordinal)
+                    return anEnum.desc
 
             return null
         }
@@ -33,9 +35,9 @@ enum class OrganizationBusinessBusinessLinksEnum(val desc: String) {
         @JvmStatic
         fun getEnumByDesc(desc: String?): Optional<OrganizationBusinessBusinessLinksEnum> {
             // Use cached VALUES instead of values() to prevent array allocation.
-            for (anEnum in VALUES) if (anEnum.desc == desc) return Optional.of<OrganizationBusinessBusinessLinksEnum>(
-                anEnum
-            )
+            for (anEnum in VALUES)
+                if (anEnum.desc == desc)
+                    return Optional.of<OrganizationBusinessBusinessLinksEnum>(anEnum)
 
             return Optional.empty<OrganizationBusinessBusinessLinksEnum>()
         }

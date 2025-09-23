@@ -21,8 +21,7 @@ import org.springframework.security.core.GrantedAuthority
     schema = "public",
     name = "turing_role",
     uniqueConstraints = [
-        UniqueConstraint(name = "con_public_turing_role_constraint_1", columnNames = arrayOf("id")),
-        UniqueConstraint(columnNames = arrayOf("authority", "name"))
+        UniqueConstraint(name = "con_public_turing_role_constraint_1", columnNames = arrayOf("id"))
     ]
 )
 // @SQLDelete 只支持 delete(T entity) 和 deleteById(ID id)
@@ -32,7 +31,7 @@ data class Role(
     /**
      * 角色编码
      */
-    @Column(name = "authority", nullable = false, columnDefinition = "VARCHAR", length = 64)
+    @Column(unique = true, nullable = false, columnDefinition = "VARCHAR(64)")
     @Comment("角色编码")
     @get:JvmName("getAuthorityValue")
     var authority: String = "",
@@ -40,14 +39,14 @@ data class Role(
     /**
      * 角色名称
      */
-    @Column(name = "name", nullable = false, columnDefinition = "VARCHAR", length = 64)
+    @Column(unique = true, nullable = false, columnDefinition = "VARCHAR(64)")
     @Comment("角色名称")
     var name: String = "",
 
     /**
      * 角色说明
      */
-    @Column(name = "description", columnDefinition = "VARCHAR", length = 128)
+    @Column(columnDefinition = "VARCHAR(128)")
     @Comment("角色说明")
     var description: String? = null
 ) : AbstractAuditable(), GrantedAuthority {

@@ -51,11 +51,11 @@ public class OrganizationBusinessDTO extends PageQuery {
      */
     private String districtName;
     /**
-     * 业务环节
+     * 业务环节 TODO，尝试改成 Set<String> 或者 Set<OrganizationBusinessBusinessLinksEnum>
      */
     private String[] link;
     /**
-     * 质控类型
+     * 质控类型 TODO，尝试改成 Set<String> 或者 Set<OrganizationBusinessQualityControlTypeEnum>
      */
     private String[] type;
     /**
