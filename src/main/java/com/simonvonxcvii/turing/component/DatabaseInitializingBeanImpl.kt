@@ -39,7 +39,10 @@ class DatabaseInitializingBeanImpl(
     @Throws(Exception::class)
     override fun afterPropertiesSet() {
         // 判断是否需要初始化，如果表数据存在说明不需要
-        val exists = dictJpaRepository.exists { root, _, _ -> root.get<String>(Dict.TYPE).`in`("area") }
+        val exists = dictJpaRepository.exists { root, query, builder ->
+            val type = builder.equal(root.get<String>(Dict.TYPE), "area")
+            query?.where(type)?.restriction
+        }
         if (exists) {
             return
         }
@@ -1998,11 +2001,11 @@ class DatabaseInitializingBeanImpl(
      */
     private fun saveArea(parent: Dict?, child: Area, dictList: MutableList<Dict>) {
         val dict = Dict(
-            value = child.adCode.toInt(),
+            value = child.adCode,
             name = child.name,
             type = "area",
             sort = areaSort++,
-            pid = parent?.value
+            pid = parent?.id
         )
         dictList.add(dict)
         // 保存下级区域

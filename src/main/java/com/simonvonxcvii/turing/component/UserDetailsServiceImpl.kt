@@ -1,13 +1,13 @@
 package com.simonvonxcvii.turing.component
 
 import com.simonvonxcvii.turing.entity.User
+import com.simonvonxcvii.turing.entity.UserRole
 import com.simonvonxcvii.turing.repository.jpa.OrganizationJpaRepository
 import com.simonvonxcvii.turing.repository.jpa.RoleJpaRepository
 import com.simonvonxcvii.turing.repository.jpa.UserJpaRepository
 import com.simonvonxcvii.turing.repository.jpa.UserRoleJpaRepository
 import com.simonvonxcvii.turing.service.NimbusJwtService
 import com.simonvonxcvii.turing.utils.Constants
-import jakarta.persistence.criteria.Path
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.data.redis.core.StringRedisTemplate
@@ -56,9 +56,9 @@ class UserDetailsServiceImpl(
             throw UsernameNotFoundException("用户账号不能为空")
         }
         // 获取用户数据
-        val user = userJpaRepository.findOne { root, query, criteriaBuilder ->
-            val usernamePath: Path<String> = root.get("username")
-            query?.where(criteriaBuilder.equal(usernamePath, username))?.restriction
+        val user = userJpaRepository.findOne { root, query, builder ->
+            val usernamePredicate = builder.equal(root.get<String>(User.USERNAME), username)
+            query?.where(usernamePredicate)?.restriction
         }.orElse(null) ?: throw UsernameNotFoundException("该用户账号不存在：$username")
 
         if (!user.isAccountNonExpired) throw AccountExpiredException("账号已过期")
@@ -72,9 +72,9 @@ class UserDetailsServiceImpl(
             roleJpaRepository.findAll().filterNotNull()
         } else {
             // 获取用户角色与用户关联记录表
-            val userRoleList = userRoleJpaRepository.findAll { root, query, criteriaBuilder ->
-                val userId: Path<String> = root.get("user_id")
-                query?.where(criteriaBuilder.equal(userId, user.id))?.restriction
+            val userRoleList = userRoleJpaRepository.findAll { root, query, builder ->
+                val userId = builder.equal(root.get<String>(UserRole.USER_ID), user.id)
+                query?.where(userId)?.restriction
             }.filterNotNull()
                 .apply {
                     if (this.isEmpty()) throw BadCredentialsException("非法账号，该账号没有角色：$username")

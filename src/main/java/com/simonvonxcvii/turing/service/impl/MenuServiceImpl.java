@@ -95,14 +95,16 @@ public class MenuServiceImpl implements IMenuService {
                 .map(parent -> {
                     MenuDTO parentDTO = new MenuDTO();
                     BeanUtils.copyProperties(parent, parentDTO);
-                    Permission permission = permissionJpaRepository.getReferenceById(parent.getPermissionId());
+                    Permission permission = permissionJpaRepository.findById(parent.getPermissionId())
+                            .orElseThrow(() -> BizRuntimeException.from("无法查询到相应的权限数据"));
                     parentDTO.setPermission(permission.getName());
                     childList.stream()
                             .filter(child -> Objects.equals(parent.getId(), child.getPid()))
                             .forEach(child -> {
                                 MenuDTO childDTO = new MenuDTO();
                                 BeanUtils.copyProperties(child, childDTO);
-                                Permission permission1 = permissionJpaRepository.getReferenceById(child.getPermissionId());
+                                Permission permission1 = permissionJpaRepository.findById(child.getPermissionId())
+                                        .orElseThrow(() -> BizRuntimeException.from("无法查询到相应的权限数据"));
                                 childDTO.setPermission(permission1.getName());
                                 parentDTO.getChildren().add(childDTO);
                             });

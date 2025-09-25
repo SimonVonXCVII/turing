@@ -2,7 +2,6 @@ package com.simonvonxcvii.turing.component
 
 import com.simonvonxcvii.turing.entity.Dict
 import com.simonvonxcvii.turing.repository.jpa.DictJpaRepository
-import jakarta.persistence.criteria.Path
 import org.springframework.boot.ApplicationArguments
 import org.springframework.boot.ApplicationRunner
 import org.springframework.data.redis.core.StringRedisTemplate
@@ -28,9 +27,9 @@ class RedisApplicationRunner(
      * @param args incoming application arguments
      */
     override fun run(args: ApplicationArguments) {
-        val dictList = dictJpaRepository.findAll { root, query, criteriaBuilder ->
-            val type: Path<String> = root.get("type")
-            query?.where(criteriaBuilder.equal(type, "area"))?.restriction
+        val dictList = dictJpaRepository.findAll { root, query, builder ->
+            val type = builder.equal(root.get<String>(Dict.TYPE), "area")
+            query?.where(type)?.restriction
         }.filterNotNull()
         // TODO 考虑如果 Redis 中已经有上面这些数据了就不要执行下面的代码了，虽然数据只会覆盖掉，不会发生变化
         val toMap = Collectors.toMap({ dict -> Dict.REDIS_KEY_PREFIX + dict.value }, Dict::name)

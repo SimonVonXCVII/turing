@@ -12,6 +12,7 @@ import com.simonvonxcvii.turing.entity.Organization;
 import com.simonvonxcvii.turing.entity.OrganizationBusiness;
 import com.simonvonxcvii.turing.entity.User;
 import com.simonvonxcvii.turing.enums.OrganizationBusinessLevelEnum;
+import com.simonvonxcvii.turing.enums.OrganizationBusinessStateEnum;
 import com.simonvonxcvii.turing.model.dto.OrganizationBusinessDTO;
 import com.simonvonxcvii.turing.repository.jpa.*;
 import com.simonvonxcvii.turing.service.IOrganizationBusinessService;
@@ -20,6 +21,7 @@ import jakarta.persistence.criteria.Predicate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -155,27 +157,34 @@ public class OrganizationBusinessServiceImpl implements IOrganizationBusinessSer
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void insert(OrganizationBusinessDTO dto) throws IOException {
-        boolean exists = organizationBusinessJpaRepository.exists((root, query, _) -> {
+        // TODO 需要检验生成的 sql
+        Specification<OrganizationBusiness> spec = (root, query, builder) -> {
             List<Predicate> predicateList = new LinkedList<>();
             // 本单位
-            predicateList.add(root.get(OrganizationBusiness.ORG_ID).in(UserUtils.getOrgId()));
+            Predicate orgId = builder.equal(root.get(OrganizationBusiness.ORG_ID), UserUtils.getOrgId());
+            predicateList.add(orgId);
             // 省级
-            predicateList.add(root.get(OrganizationBusiness.PROVINCE_CODE).in(dto.getProvinceCode()));
+            Predicate provinceCode = builder.equal(root.get(OrganizationBusiness.PROVINCE_CODE), dto.getProvinceCode());
+            predicateList.add(provinceCode);
             // 市级
             if (dto.getCityCode() == null) {
-                predicateList.add(root.get(OrganizationBusiness.CITY_CODE).isNull());
+                Predicate cityCode = builder.isNull(root.get(OrganizationBusiness.CITY_CODE));
+                predicateList.add(cityCode);
             } else {
-                predicateList.add(root.get(OrganizationBusiness.CITY_CODE).in(dto.getCityCode()));
+                Predicate cityCode = builder.equal(root.get(OrganizationBusiness.CITY_CODE), dto.getCityCode());
+                predicateList.add(cityCode);
             }
             // 县级
             if (dto.getCityCode() == null) {
-                predicateList.add(root.get(OrganizationBusiness.DISTRICT_CODE).isNull());
+                Predicate districtCode = builder.isNull(root.get(OrganizationBusiness.DISTRICT_CODE));
+                predicateList.add(districtCode);
             } else {
-                predicateList.add(root.get(OrganizationBusiness.DISTRICT_CODE).in(dto.getDistrictCode()));
+                Predicate districtCode = builder.equal(root.get(OrganizationBusiness.DISTRICT_CODE), dto.getDistrictCode());
+                predicateList.add(districtCode);
             }
-            assert query != null;
-            return query.where(predicateList.toArray(Predicate[]::new)).getRestriction();
-        });
+            return query.where(builder.and(predicateList.toArray(Predicate[]::new))).getRestriction();
+        };
+        boolean exists = organizationBusinessJpaRepository.exists(spec);
         if (exists) {
             throw BizRuntimeException.from("已申请该地区业务，请重新选择");
         }
@@ -196,11 +205,12 @@ public class OrganizationBusinessServiceImpl implements IOrganizationBusinessSer
         // TODO 晚些时候修改！
 //        organizationBusiness.setLink(dto.getLink());
 //        organizationBusiness.setType(dto.getType());
-        Organization organization = organizationJpaRepository.getReferenceById(UserUtils.getOrgId());
+        Organization organization = organizationJpaRepository.findById(UserUtils.getOrgId())
+                .orElseThrow(() -> BizRuntimeException.from("无法查询到该单位数据"));
         organizationBusiness.setOrgId(organization.getId());
         organizationBusiness.setOrgName(organization.getName());
         // 业务申请状态
-        organizationBusiness.setState("待审核");
+        organizationBusiness.setState(OrganizationBusinessStateEnum.AWAITING_CHECK);
         // 业务级别
         OrganizationBusinessLevelEnum businessLevel = organizationBusiness.getDistrictCode() != null
                 ? OrganizationBusinessLevelEnum.DISTRICT : organizationBusiness.getCityCode() != null
@@ -229,7 +239,7 @@ public class OrganizationBusinessServiceImpl implements IOrganizationBusinessSer
         // TODO 晚些时候修改！
 //        organizationBusiness.setLink(dto.getLink());
 //        organizationBusiness.setType(dto.getType());
-        organizationBusiness.setState("待审核");
+        organizationBusiness.setState(OrganizationBusinessStateEnum.AWAITING_CHECK);
         organizationBusinessJpaRepository.save(organizationBusiness);
 
         // 同步到 ES
@@ -295,7 +305,8 @@ public class OrganizationBusinessServiceImpl implements IOrganizationBusinessSer
     public void checkUpdate(OrganizationBusinessDTO dto) throws IOException {
         OrganizationBusiness organizationBusiness = organizationBusinessJpaRepository.findById(dto.getId())
                 .orElseThrow(() -> BizRuntimeException.from("没有找到该业务记录"));
-        organizationBusiness.setState(dto.getState());
+        // TODO 不知道使用 OrganizationBusinessStateEnum.valueOf(dto.getState()) 对不对
+        organizationBusiness.setState(OrganizationBusinessStateEnum.valueOf(dto.getState()));
         organizationBusinessJpaRepository.save(organizationBusiness);
 
         // 同步到 ES
@@ -304,9 +315,14 @@ public class OrganizationBusinessServiceImpl implements IOrganizationBusinessSer
 //                        .doc(organizationBusiness),
 //                OrganizationBusiness.class);
 
-        User user = userJpaRepository.findOne((root, _, criteriaBuilder) ->
-                        criteriaBuilder.and(root.get(User.ORG_ID).in(organizationBusiness.getOrgId()),
-                                root.get(User.MANAGER).in(Boolean.TRUE)))
+        // TODO 需要检验生成的 sql
+        Specification<User> spec = (root, query, builder) -> {
+            Predicate orgId = builder.equal(root.get(User.ORG_ID), organizationBusiness.getOrgId());
+            Predicate manager = builder.equal(root.get(User.MANAGER), Boolean.TRUE);
+            Predicate predicate = builder.and(orgId, manager);
+            return query.where(predicate).getRestriction();
+        };
+        User user = userJpaRepository.findOne(spec)
                 .orElseThrow(() -> BizRuntimeException.from("没有找到该业务的单位管理员"));
 
         // TODO 晚些时候修改！

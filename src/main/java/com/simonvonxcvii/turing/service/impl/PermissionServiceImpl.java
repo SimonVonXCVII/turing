@@ -9,9 +9,11 @@ import com.simonvonxcvii.turing.repository.jpa.MenuJpaRepository;
 import com.simonvonxcvii.turing.repository.jpa.PermissionJpaRepository;
 import com.simonvonxcvii.turing.repository.jpa.RolePermissionJpaRepository;
 import com.simonvonxcvii.turing.service.IPermissionService;
+import jakarta.persistence.criteria.Predicate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -55,7 +57,8 @@ public class PermissionServiceImpl implements IPermissionService {
         }
         // 修改
         else {
-            permission = permissionJpaRepository.findById(dto.getId()).orElseThrow(() -> BizRuntimeException.from("无法查找到该数据"));
+            permission = permissionJpaRepository.findById(dto.getId())
+                    .orElseThrow(() -> BizRuntimeException.from("无法查找到该数据"));
         }
         BeanUtils.copyProperties(dto, permission);
         permissionJpaRepository.save(permission);
@@ -127,12 +130,19 @@ public class PermissionServiceImpl implements IPermissionService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void deleteById(Integer id) {
-        boolean exists = rolePermissionJpaRepository.exists((root, _, _) ->
-                root.get(RolePermission.PERMISSION_ID).in(id));
+        Specification<RolePermission> spec = (root, query, builder) -> {
+            Predicate predicate = builder.equal(root.get(RolePermission.PERMISSION_ID), id);
+            return query.where(predicate).getRestriction();
+        };
+        boolean exists = rolePermissionJpaRepository.exists(spec);
         if (exists) {
             throw BizRuntimeException.from("该权限已关联角色");
         }
-        exists = menuJpaRepository.exists((root, _, _) -> root.get(Menu.PERMISSION_ID).in(id));
+        Specification<Menu> menuSpec = (root, query, builder) -> {
+            Predicate predicate = builder.equal(root.get(Menu.PERMISSION_ID), id);
+            return query.where(predicate).getRestriction();
+        };
+        exists = menuJpaRepository.exists(menuSpec);
         if (exists) {
             throw BizRuntimeException.from("该权限已关联菜单");
         }

@@ -96,7 +96,7 @@ data class AppFile(
      */
     @Column(columnDefinition = "VARCHAR(1024)")
     @Comment("备注")
-    var remark: String = ""
+    var remark: String? = null
 ) : AbstractAuditable() {
     companion object {
         /**

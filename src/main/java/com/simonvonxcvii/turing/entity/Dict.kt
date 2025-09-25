@@ -51,16 +51,16 @@ data class Dict(
     /**
      * 字典值
      */
-    @Column(nullable = false, columnDefinition = "INTEGER")
+    @Column(nullable = false, columnDefinition = "VARCHAR(32)")
     @Comment("字典值")
-    var value: Int = 0,
+    var value: String = "",
 
     /**
      * 说明
      */
     @Column(columnDefinition = "VARCHAR(128)")
     @Comment("说明")
-    var description: String = "",
+    var description: String? = null,
 
     /**
      * 排序

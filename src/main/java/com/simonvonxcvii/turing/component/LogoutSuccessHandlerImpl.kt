@@ -32,7 +32,7 @@ class LogoutSuccessHandlerImpl(
     override fun onLogoutSuccess(
         request: HttpServletRequest,
         response: HttpServletResponse,
-        authentication: Authentication
+        authentication: Authentication?
     ) {
         val jwt = nimbusJwtService.resolve(request)
         val username = jwt.getClaim<String>(OAuth2ParameterNames.USERNAME)

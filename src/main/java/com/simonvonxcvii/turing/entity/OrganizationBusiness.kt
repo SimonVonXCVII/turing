@@ -3,6 +3,7 @@ package com.simonvonxcvii.turing.entity
 import com.simonvonxcvii.turing.enums.OrganizationBusinessBusinessLinksEnum
 import com.simonvonxcvii.turing.enums.OrganizationBusinessLevelEnum
 import com.simonvonxcvii.turing.enums.OrganizationBusinessQualityControlTypeEnum
+import com.simonvonxcvii.turing.enums.OrganizationBusinessStateEnum
 import jakarta.persistence.*
 import org.hibernate.annotations.Comment
 import org.hibernate.annotations.SQLDelete
@@ -103,9 +104,10 @@ data class OrganizationBusiness(
     /**
      * 业务申请状态
      */
-    @Column(nullable = false, columnDefinition = "VARCHAR(3)")
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, columnDefinition = "VARCHAR(64)")
     @Comment("业务申请状态")
-    var state: String = "",
+    var state: OrganizationBusinessStateEnum = OrganizationBusinessStateEnum.AWAITING_CHECK,
 
     /**
      * 申请业务级别

@@ -18,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
@@ -62,8 +63,11 @@ public class RoleServiceImpl implements IRoleService {
 
         // 更新角色权限表
         // TODO 可以优化成只添加需要添加的，只删除需要删除的
-        rolePermissionJpaRepository.delete((root, _, _) ->
-                root.get(RolePermission.ROLE_ID).in(dto.getId()));
+        Specification<RolePermission> spec = (root, query, builder) -> {
+            Predicate predicate = builder.equal(root.get(RolePermission.ROLE_ID), dto.getId());
+            return query.where(predicate).getRestriction();
+        };
+        rolePermissionJpaRepository.delete(spec);
         List<RolePermission> rolePermissionList = new LinkedList<>();
         dto.getPermissionIdList()
                 .forEach(permissionId -> {
@@ -77,28 +81,28 @@ public class RoleServiceImpl implements IRoleService {
 
     @Override
     public Page<RoleDTO> selectPage(RoleDTO dto) {
-        return roleJpaRepository.findAll((root, query, criteriaBuilder) -> {
-                            List<Predicate> predicateList = new LinkedList<>();
-                            if (StringUtils.hasText(dto.getName())) {
-                                Predicate name = criteriaBuilder.like(root.get(Role.NAME),
-                                        "%" + dto.getName() + "%", '/');
-                                predicateList.add(name);
-                            }
-                            if (StringUtils.hasText(dto.getAuthority())) {
-                                Predicate code = criteriaBuilder.like(criteriaBuilder.lower(root.get(Role.AUTHORITY)),
-                                        "%" + dto.getAuthority().toLowerCase() + "%", '/');
-                                predicateList.add(code);
-                            }
-                            if (StringUtils.hasText(dto.getDescription())) {
-                                Predicate description = criteriaBuilder.like(root.get(Role.DESCRIPTION),
-                                        "%" + dto.getDescription() + "%", '/');
-                                predicateList.add(description);
-                            }
-                            assert query != null;
-                            return query.where(predicateList.toArray(Predicate[]::new)).getRestriction();
-                        },
-                        // TODO: 2023/8/29 设置前端 number 默认从 0 开始，或许就不需要减一了
-                        PageRequest.of(dto.getNumber() - 1, dto.getSize()))
+        Specification<Role> spec = (root, query, builder) -> {
+            List<Predicate> predicateList = new LinkedList<>();
+            if (StringUtils.hasText(dto.getName())) {
+                Predicate name = builder.like(root.get(Role.NAME), "%" + dto.getName() + "%", '/');
+                predicateList.add(name);
+            }
+            if (StringUtils.hasText(dto.getAuthority())) {
+                Predicate code = builder.like(builder.lower(root.get(Role.AUTHORITY)),
+                        "%" + dto.getAuthority().toLowerCase() + "%", '/');
+                predicateList.add(code);
+            }
+            if (StringUtils.hasText(dto.getDescription())) {
+                Predicate description = builder.like(root.get(Role.DESCRIPTION),
+                        "%" + dto.getDescription() + "%", '/');
+                predicateList.add(description);
+            }
+            Predicate predicate = builder.and(predicateList.toArray(Predicate[]::new));
+            return query.where(predicate).getRestriction();
+        };
+        // TODO: 2023/8/29 设置前端 number 默认从 0 开始，或许就不需要减一了
+        PageRequest pageRequest = PageRequest.of(dto.getNumber() - 1, dto.getSize());
+        return roleJpaRepository.findAll(spec, pageRequest)
                 .map(role -> {
                     RoleDTO roleDTO = new RoleDTO();
                     BeanUtils.copyProperties(role, roleDTO);
@@ -108,26 +112,26 @@ public class RoleServiceImpl implements IRoleService {
 
     @Override
     public List<RoleDTO> selectList(RoleDTO dto) {
-        return roleJpaRepository.findAll((root, query, criteriaBuilder) -> {
-                    List<Predicate> predicateList = new LinkedList<>();
-                    if (StringUtils.hasText(dto.getName())) {
-                        Predicate name = criteriaBuilder.like(root.get(Role.NAME),
-                                "%" + dto.getName() + "%", '/');
-                        predicateList.add(name);
-                    }
-                    if (StringUtils.hasText(dto.getAuthority())) {
-                        Predicate authority = criteriaBuilder.like(criteriaBuilder.lower(root.get(Role.AUTHORITY)),
-                                "%" + dto.getAuthority().toLowerCase() + "%", '/');
-                        predicateList.add(authority);
-                    }
-                    if (StringUtils.hasText(dto.getDescription())) {
-                        Predicate description = criteriaBuilder.like(root.get(Role.DESCRIPTION),
-                                "%" + dto.getDescription() + "%", '/');
-                        predicateList.add(description);
-                    }
-                    assert query != null;
-                    return query.where(predicateList.toArray(Predicate[]::new)).getRestriction();
-                })
+        Specification<Role> spec = (root, query, builder) -> {
+            List<Predicate> predicateList = new LinkedList<>();
+            if (StringUtils.hasText(dto.getName())) {
+                Predicate name = builder.like(root.get(Role.NAME), "%" + dto.getName() + "%", '/');
+                predicateList.add(name);
+            }
+            if (StringUtils.hasText(dto.getAuthority())) {
+                Predicate authority = builder.like(builder.lower(root.get(Role.AUTHORITY)),
+                        "%" + dto.getAuthority().toLowerCase() + "%", '/');
+                predicateList.add(authority);
+            }
+            if (StringUtils.hasText(dto.getDescription())) {
+                Predicate description = builder.like(root.get(Role.DESCRIPTION),
+                        "%" + dto.getDescription() + "%", '/');
+                predicateList.add(description);
+            }
+            Predicate predicate = builder.and(predicateList.toArray(Predicate[]::new));
+            return query.where(predicate).getRestriction();
+        };
+        return roleJpaRepository.findAll(spec)
                 .stream()
                 .map(role -> {
                     RoleDTO roleDTO = new RoleDTO();
@@ -143,9 +147,11 @@ public class RoleServiceImpl implements IRoleService {
         RoleDTO roleDTO = new RoleDTO();
         BeanUtils.copyProperties(role, roleDTO);
         // 查询该角色具有的权限
-        List<Integer> permissionIdList = rolePermissionJpaRepository
-                .findAll((root, _, _) ->
-                        root.get(RolePermission.ROLE_ID).in(role.getId()))
+        Specification<RolePermission> spec = (root, query, builder) -> {
+            Predicate predicate = builder.equal(root.get(RolePermission.ROLE_ID), role.getId());
+            return query.where(predicate).getRestriction();
+        };
+        List<Integer> permissionIdList = rolePermissionJpaRepository.findAll(spec)
                 .stream()
                 .map(RolePermission::getPermissionId)
                 .toList();
@@ -156,14 +162,20 @@ public class RoleServiceImpl implements IRoleService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void deleteById(Integer id) {
-        boolean exists = userRoleJpaRepository.exists((root, _, _) ->
-                root.get(UserRole.ROLE_ID).in(id));
+        Specification<UserRole> spec = (root, query, builder) -> {
+            Predicate predicate = builder.equal(root.get(UserRole.ROLE_ID), id);
+            return query.where(predicate).getRestriction();
+        };
+        boolean exists = userRoleJpaRepository.exists(spec);
         if (exists) {
             throw BizRuntimeException.from("该角色已关联用户");
         }
         // 删除角色-权限关联数据
-        rolePermissionJpaRepository.delete((root, _, _) ->
-                root.get(RolePermission.ROLE_ID).in(id));
+        Specification<RolePermission> spec2 = (root, query, builder) -> {
+            Predicate predicate = builder.equal(root.get(RolePermission.ROLE_ID), id);
+            return query.where(predicate).getRestriction();
+        };
+        rolePermissionJpaRepository.delete(spec2);
         roleJpaRepository.deleteById(id);
     }
 
@@ -174,10 +186,13 @@ public class RoleServiceImpl implements IRoleService {
      */
     public List<RoleDTO> selectListForBusinessOrg() {
         // 获取所有已通过的业务申请
-        List<OrganizationBusiness> organizationBusinessList = organizationBusinessJpaRepository.findAll(
-                (root, _, criteriaBuilder) ->
-                        criteriaBuilder.and(root.get(OrganizationBusiness.ORG_ID).in(UserUtils.getOrgId()),
-                                root.get(OrganizationBusiness.STATE).in(OrganizationBusinessStateEnum.PASSES.getDesc())));
+        Specification<OrganizationBusiness> spec = (root, query, builder) -> {
+            Predicate orgId = builder.equal(root.get(OrganizationBusiness.ORG_ID), UserUtils.getOrgId());
+            Predicate state = builder.equal(root.get(OrganizationBusiness.STATE), OrganizationBusinessStateEnum.PASSES);
+            Predicate predicate = builder.and(orgId, state);
+            return query.where(predicate).getRestriction();
+        };
+        List<OrganizationBusiness> organizationBusinessList = organizationBusinessJpaRepository.findAll(spec);
         if (organizationBusinessList.isEmpty()) {
             return List.of();
         }
@@ -237,20 +252,29 @@ public class RoleServiceImpl implements IRoleService {
         Collection<? extends GrantedAuthority> authorities = UserUtils.getAuthorities();
         assert authorities != null;
         if (authorities.contains(new SimpleGrantedAuthority("ROLE_ADMIN_PROVINCE_GOV"))) {
-            return roleJpaRepository.findAll((root, _, _) ->
-                            root.get(Role.AUTHORITY).in("STAFF_PROVINCE_GOV"))
+            Specification<Role> spec = (root, query, builder) -> {
+                Predicate predicate = builder.equal(root.get(Role.AUTHORITY), "STAFF_PROVINCE_GOV");
+                return query.where(predicate).getRestriction();
+            };
+            return roleJpaRepository.findAll(spec)
                     .stream()
                     .map(role -> new RoleDTO().setId(role.getId()).setName(role.getName()))
                     .toList();
         } else if (authorities.contains(new SimpleGrantedAuthority("ROLE_ADMIN_CITY_GOV"))) {
-            return roleJpaRepository.findAll((root, _, _) ->
-                            root.get(Role.AUTHORITY).in("STAFF_CITY_GOV"))
+            Specification<Role> spec = (root, query, builder) -> {
+                Predicate predicate = builder.equal(root.get(Role.AUTHORITY), "STAFF_CITY_GOV");
+                return query.where(predicate).getRestriction();
+            };
+            return roleJpaRepository.findAll(spec)
                     .stream()
                     .map(role -> new RoleDTO().setId(role.getId()).setName(role.getName()))
                     .toList();
         } else if (authorities.contains(new SimpleGrantedAuthority("ROLE_ADMIN_DISTRICT_GOV"))) {
-            return roleJpaRepository.findAll((root, _, _) ->
-                            root.get(Role.AUTHORITY).in("STAFF_DISTRICT_GOV"))
+            Specification<Role> spec = (root, query, builder) -> {
+                Predicate predicate = builder.equal(root.get(Role.AUTHORITY), "STAFF_DISTRICT_GOV");
+                return query.where(predicate).getRestriction();
+            };
+            return roleJpaRepository.findAll(spec)
                     .stream()
                     .map(role -> new RoleDTO().setId(role.getId()).setName(role.getName()))
                     .toList();

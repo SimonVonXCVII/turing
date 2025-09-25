@@ -5,11 +5,13 @@ import com.simonvonxcvii.turing.entity.Dict;
 import com.simonvonxcvii.turing.model.dto.DictDTO;
 import com.simonvonxcvii.turing.repository.jpa.DictJpaRepository;
 import com.simonvonxcvii.turing.service.IDictService;
+import jakarta.persistence.criteria.Order;
 import jakarta.persistence.criteria.Predicate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -54,28 +56,26 @@ public class DictServiceImpl implements IDictService {
 
     @Override
     public Page<DictDTO> selectPage(DictDTO dto) {
-        return dictJpaRepository.findAll((root, query, criteriaBuilder) -> {
-                            List<Predicate> predicateList = new LinkedList<>();
-                            if (StringUtils.hasText(dto.getType())) {
-                                Predicate name = criteriaBuilder.like(root.get(Dict.TYPE),
-                                        "%" + dto.getType() + "%", '/');
-                                predicateList.add(name);
-                            }
-                            if (StringUtils.hasText(dto.getName())) {
-                                Predicate name = criteriaBuilder.like(root.get(Dict.NAME),
-                                        "%" + dto.getName() + "%", '/');
-                                predicateList.add(name);
-                            }
-                            if (StringUtils.hasText(dto.getValue())) {
-                                Predicate code = criteriaBuilder.like(criteriaBuilder.lower(root.get(Dict.VALUE)),
-                                        "%" + dto.getValue().toLowerCase() + "%", '/');
-                                predicateList.add(code);
-                            }
-                            assert query != null;
-                            return query.where(predicateList.toArray(Predicate[]::new)).getRestriction();
-                        },
-                        // TODO: 2023/8/29 设置前端 number 默认从 0 开始，或许就不需要减一了
-                        PageRequest.of(dto.getNumber() - 1, dto.getSize()))
+        Specification<Dict> spec = (root, query, builder) -> {
+            List<Predicate> predicateList = new LinkedList<>();
+            if (StringUtils.hasText(dto.getType())) {
+                Predicate type = builder.like(root.get(Dict.TYPE), "%" + dto.getType() + "%", '/');
+                predicateList.add(type);
+            }
+            if (StringUtils.hasText(dto.getName())) {
+                Predicate name = builder.like(root.get(Dict.NAME), "%" + dto.getName() + "%", '/');
+                predicateList.add(name);
+            }
+            if (StringUtils.hasText(dto.getValue())) {
+                Predicate value = builder.like(root.get(Dict.VALUE), "%" + dto.getValue() + "%", '/');
+                predicateList.add(value);
+            }
+            Predicate predicate = builder.and(predicateList.toArray(Predicate[]::new));
+            return query.where(predicate).getRestriction();
+        };
+        // TODO: 2023/8/29 设置前端 number 默认从 0 开始，或许就不需要减一了
+        PageRequest pageRequest = PageRequest.of(dto.getNumber() - 1, dto.getSize());
+        return dictJpaRepository.findAll(spec, pageRequest)
                 .map(dict -> {
                     DictDTO dictDTO = new DictDTO();
                     BeanUtils.copyProperties(dict, dictDTO);
@@ -96,34 +96,37 @@ public class DictServiceImpl implements IDictService {
     public DictDTO getAreaByCode(Integer code) {
         if (code == null) {
             DictDTO dictDTO = new DictDTO();
-            List<Dict> children = dictJpaRepository.findAll((root, query, criteriaBuilder) ->
-                    {
-                        assert query != null;
-                        return query.where(root.get(Dict.PID).isNull(), root.get(Dict.TYPE).in("area"))
-                                .orderBy(criteriaBuilder.asc(root.get(Dict.SORT)))
-                                .getRestriction();
-                    }
-            );
+            Specification<Dict> spec = (root, query, builder) -> {
+                Predicate pid = builder.isNull(root.get(Dict.PID));
+                Predicate type = builder.equal(root.get(Dict.TYPE), "area");
+                Predicate predicate = builder.and(pid, type);
+                Order sortAsc = builder.asc(root.get(Dict.SORT));
+                return query.where(predicate).orderBy(sortAsc).getRestriction();
+            };
+            List<Dict> children = dictJpaRepository.findAll(spec);
             if (!children.isEmpty()) {
                 dictDTO.setChildren(children.stream().map(this::convertToDictDTO).toList());
             }
             return dictDTO;
         }
-        Dict dict = dictJpaRepository.findOne((root, query, _) ->
-                {
-                    assert query != null;
-                    return query.where(root.get(Dict.VALUE).in(code.toString()), root.get(Dict.TYPE).in("area")).getRestriction();
-                })
+        Specification<Dict> spec = (root, query, builder) -> {
+            Predicate value = builder.equal(root.get(Dict.VALUE), code.toString());
+            Predicate type = builder.equal(root.get(Dict.TYPE), "area");
+            Predicate predicate = builder.and(value, type);
+            return query.where(predicate).getRestriction();
+        };
+        Dict dict = dictJpaRepository.findOne(spec)
                 .orElseThrow(() -> BizRuntimeException.from("没有找到区域编码：" + code));
         DictDTO dictDTO = convertToDictDTO(dict);
-        List<Dict> children = dictJpaRepository.findAll((root, query, criteriaBuilder) ->
-                {
-                    assert query != null;
-                    return query.where(root.get(Dict.PID).in(code), root.get(Dict.TYPE).in("area"))
-                            .orderBy(criteriaBuilder.asc(root.get(Dict.SORT)))
-                            .getRestriction();
-                }
-        );
+        Specification<Dict> spec2 = (root, query, builder) -> {
+            Predicate pid = builder.equal(root.get(Dict.PID), dict.getId());
+            Predicate type = builder.equal(root.get(Dict.TYPE), "area");
+            Predicate type1 = builder.in(root.get(Dict.TYPE)).in("area");
+            Predicate predicate = builder.and(pid, type);
+            Order sortAsc = builder.asc(root.get(Dict.SORT));
+            return query.where(predicate).orderBy(sortAsc).getRestriction();
+        };
+        List<Dict> children = dictJpaRepository.findAll(spec2);
         if (!children.isEmpty()) {
             dictDTO.setChildren(children.stream().map(this::convertToDictDTO).toList());
         }

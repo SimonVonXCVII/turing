@@ -13,6 +13,7 @@ import jakarta.persistence.criteria.Predicate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -62,12 +63,17 @@ public class UserServiceImpl implements IUserService {
         // 密码
         user.setPassword(passwordEncoder.encode(dto.getMobile().substring(3)));
         // 单位名称
-        Organization organization = organizationJpaRepository.findById(dto.getOrgId()).orElseThrow(() -> BizRuntimeException.from("无法查找到单位数据"));
+        Organization organization = organizationJpaRepository.findById(dto.getOrgId())
+                .orElseThrow(() -> BizRuntimeException.from("无法查找到单位数据"));
         user.setOrgName(organization.getName());
         userJpaRepository.save(user);
         // 更新用户角色表
         // TODO 可以优化成只添加需要添加的，只删除需要删除的
-        userRoleJpaRepository.delete((root, _, _) -> root.get(UserRole.USER_ID).in(dto.getId()));
+        Specification<UserRole> spec = (root, query, builder) -> {
+            Predicate predicate = builder.equal(root.get(UserRole.USER_ID), dto.getId());
+            return query.where(predicate).getRestriction();
+        };
+        userRoleJpaRepository.delete(spec);
         List<UserRole> userRoleList = new LinkedList<>();
         dto.getRoleList()
                 .forEach(id -> {
@@ -83,70 +89,79 @@ public class UserServiceImpl implements IUserService {
     public org.springframework.data.domain.Page<UserDTO> selectPage(UserDTO dto) {
         org.springframework.data.domain.Page<User> userPage;
         try {
-            userPage = userJpaRepository.findAll((root, query, criteriaBuilder) -> {
-                        List<Predicate> predicateList = new LinkedList<>();
-                        if (StringUtils.hasText(dto.getName())) {
-                            predicateList.add(criteriaBuilder.like(root.get(User.NAME),
-                                    "%" + dto.getName() + "%", '/'));
-                        }
-                        if (StringUtils.hasText(dto.getMobile())) {
-                            predicateList.add(criteriaBuilder.like(root.get(User.MOBILE),
-                                    "%" + dto.getMobile() + "%", '/'));
-                        }
-                        if (StringUtils.hasText(dto.getGender())) {
-                            predicateList.add(criteriaBuilder.equal(root.get(User.GENDER), dto.getGender()));
-                        }
-                        if (StringUtils.hasText(dto.getOrgName())) {
-                            predicateList.add(criteriaBuilder.like(root.get(User.ORG_NAME),
-                                    "%" + dto.getOrgName() + "%", '/'));
-                        }
-                        if (StringUtils.hasText(dto.getDepartment())) {
-                            predicateList.add(criteriaBuilder.like(root.get(User.DEPARTMENT),
-                                    "%" + dto.getDepartment() + "%", '/'));
-                        }
-                        if (StringUtils.hasText(dto.getUsername())) {
-                            predicateList.add(criteriaBuilder.like(root.get(User.USERNAME),
-                                    "%" + dto.getUsername() + "%", '/'));
-                        }
-                        if (!CollectionUtils.isEmpty(dto.getRoleList())) {
-                            List<UserRole> userRoleList = userRoleJpaRepository.findAll((root1, _, _) ->
-                                    root1.get(UserRole.ROLE_ID).in(dto.getRoleList()));
-                            if (userRoleList.isEmpty()) {
-                                throw new RuntimeException();
-                            }
-                            predicateList.add(root.get(User.ID).in(userRoleList.stream().map(UserRole::getUserId).toList()));
-                        }
-                        if (dto.getAccountNonExpired() != null) {
-                            predicateList.add(criteriaBuilder.equal(root.get(User.ACCOUNT_NON_EXPIRED), dto.getAccountNonExpired()));
-                        }
-                        if (dto.getAccountNonLocked() != null) {
-                            predicateList.add(criteriaBuilder.equal(root.get(User.ACCOUNT_NON_LOCKED), dto.getAccountNonLocked()));
-                        }
-                        if (dto.getCredentialsNonExpired() != null) {
-                            predicateList.add(criteriaBuilder.equal(root.get(User.CREDENTIALS_NON_EXPIRED), dto.getCredentialsNonExpired()));
-                        }
-                        if (dto.getEnabled() != null) {
-                            predicateList.add(criteriaBuilder.equal(root.get(User.ENABLED), dto.getEnabled()));
-                        }
-                        if (dto.getManager() != null) {
-                            predicateList.add(criteriaBuilder.equal(root.get(User.MANAGER), dto.getManager()));
-                        }
-                        if (dto.getNeedSetPassword() != null) {
-                            predicateList.add(criteriaBuilder.equal(root.get(User.NEED_RESET_PASSWORD), dto.getNeedSetPassword()));
-                        }
-                        assert query != null;
-                        return query.where(predicateList.toArray(Predicate[]::new)).getRestriction();
-                    },
-                    // TODO: 2023/8/29 设置前端 number 默认从 0 开始，或许就不需要减一了
-                    PageRequest.of(dto.getNumber() - 1, dto.getSize()));
+            Specification<User> spec = (root, query, builder) -> {
+                List<Predicate> predicateList = new LinkedList<>();
+                if (StringUtils.hasText(dto.getName())) {
+                    predicateList.add(builder.like(root.get(User.NAME),
+                            "%" + dto.getName() + "%", '/'));
+                }
+                if (StringUtils.hasText(dto.getMobile())) {
+                    predicateList.add(builder.like(root.get(User.MOBILE),
+                            "%" + dto.getMobile() + "%", '/'));
+                }
+                if (StringUtils.hasText(dto.getGender())) {
+                    predicateList.add(builder.equal(root.get(User.GENDER), dto.getGender()));
+                }
+                if (StringUtils.hasText(dto.getOrgName())) {
+                    predicateList.add(builder.like(root.get(User.ORG_NAME),
+                            "%" + dto.getOrgName() + "%", '/'));
+                }
+                if (StringUtils.hasText(dto.getDepartment())) {
+                    predicateList.add(builder.like(root.get(User.DEPARTMENT),
+                            "%" + dto.getDepartment() + "%", '/'));
+                }
+                if (StringUtils.hasText(dto.getUsername())) {
+                    predicateList.add(builder.like(root.get(User.USERNAME),
+                            "%" + dto.getUsername() + "%", '/'));
+                }
+                if (!CollectionUtils.isEmpty(dto.getRoleList())) {
+                    Specification<UserRole> userRoleSpec = (root1, query1, builder1) -> {
+                        Predicate predicate = builder1.in(root1.get(UserRole.ROLE_ID)).in(dto.getRoleList());
+                        return query1.where(predicate).getRestriction();
+                    };
+                    List<UserRole> userRoleList = userRoleJpaRepository.findAll(userRoleSpec);
+                    if (userRoleList.isEmpty()) {
+                        throw new RuntimeException();
+                    }
+                    List<Integer> userIdlist = userRoleList.stream().map(UserRole::getUserId).toList();
+                    Predicate predicate = root.get(User.ID).in(userIdlist);
+                    predicateList.add(predicate);
+                }
+                if (dto.getAccountNonExpired() != null) {
+                    predicateList.add(builder.equal(root.get(User.ACCOUNT_NON_EXPIRED), dto.getAccountNonExpired()));
+                }
+                if (dto.getAccountNonLocked() != null) {
+                    predicateList.add(builder.equal(root.get(User.ACCOUNT_NON_LOCKED), dto.getAccountNonLocked()));
+                }
+                if (dto.getCredentialsNonExpired() != null) {
+                    predicateList.add(builder.equal(root.get(User.CREDENTIALS_NON_EXPIRED), dto.getCredentialsNonExpired()));
+                }
+                if (dto.getEnabled() != null) {
+                    predicateList.add(builder.equal(root.get(User.ENABLED), dto.getEnabled()));
+                }
+                if (dto.getManager() != null) {
+                    predicateList.add(builder.equal(root.get(User.MANAGER), dto.getManager()));
+                }
+                if (dto.getNeedSetPassword() != null) {
+                    predicateList.add(builder.equal(root.get(User.NEED_RESET_PASSWORD), dto.getNeedSetPassword()));
+                }
+                Predicate predicate = builder.and(predicateList.toArray(Predicate[]::new));
+                return query.where(predicate).getRestriction();
+            };
+            // TODO: 2023/8/29 设置前端 number 默认从 0 开始，或许就不需要减一了
+            PageRequest pageRequest = PageRequest.of(dto.getNumber() - 1, dto.getSize());
+            userPage = userJpaRepository.findAll(spec, pageRequest);
         } catch (Exception e) {
             return org.springframework.data.domain.Page.empty();
         }
         return userPage.map(user -> {
             UserDTO userDTO = new UserDTO();
             BeanUtils.copyProperties(user, userDTO);
-            List<UserRole> userRoleList = userRoleJpaRepository.findAll((root, _, _) ->
-                    root.get(UserRole.USER_ID).in(user.getId()));
+            Specification<UserRole> spec = (root, query, builder) -> {
+                Predicate predicate = builder.equal(root.get(UserRole.USER_ID), user.getId());
+                return query.where(predicate).getRestriction();
+            };
+            List<UserRole> userRoleList = userRoleJpaRepository.findAll(spec);
             if (userRoleList.isEmpty()) {
                 throw BizRuntimeException.from("数据异常，该用户没有角色：" + user.getUsername());
             }
@@ -170,7 +185,11 @@ public class UserServiceImpl implements IUserService {
     @Transactional(rollbackFor = Exception.class)
     public void deleteById(Integer id) {
         // 逻辑删除用户-角色关联数据
-        userRoleJpaRepository.delete((root, _, _) -> root.get(UserRole.USER_ID).in(id));
+        Specification<UserRole> spec = (root, query, builder) -> {
+            Predicate predicate = builder.equal(root.get(UserRole.USER_ID), id);
+            return query.where(predicate).getRestriction();
+        };
+        userRoleJpaRepository.delete(spec);
         // 逻辑删除用户数据
         userJpaRepository.deleteById(id);
     }

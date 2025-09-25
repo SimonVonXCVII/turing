@@ -14,6 +14,7 @@ import jakarta.persistence.criteria.Predicate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -65,44 +66,44 @@ public class OrganizationServiceImpl implements IOrganizationService {
 
     @Override
     public org.springframework.data.domain.Page<OrganizationDTO> selectPage(OrganizationDTO dto) {
-        return organizationJpaRepository.findAll((root, query, criteriaBuilder) -> {
-                            List<Predicate> predicateList = new LinkedList<>();
-                            if (StringUtils.hasText(dto.getName())) {
-                                Predicate name = criteriaBuilder.like(root.get(Organization.NAME),
-                                        "%" + dto.getName() + "%", '/');
-                                predicateList.add(name);
-                            }
-                            if (StringUtils.hasText(dto.getCode())) {
-                                Predicate code = criteriaBuilder.like(criteriaBuilder.lower(root.get(Organization.CODE)),
-                                        "%" + dto.getCode().toLowerCase() + "%", '/');
-                                predicateList.add(code);
-                            }
-                            if (StringUtils.hasText(dto.getType())) {
-                                Predicate type = criteriaBuilder.equal(root.get(Organization.TYPE), dto.getType());
-                                predicateList.add(type);
-                            }
-                            if (dto.getProvinceCode() != null) {
-                                Predicate provinceCode = criteriaBuilder.equal(root.get(Organization.PROVINCE_CODE), dto.getProvinceCode());
-                                predicateList.add(provinceCode);
-                            }
-                            if (dto.getCityCode() != null) {
-                                Predicate cityCode = criteriaBuilder.equal(root.get(Organization.CITY_CODE), dto.getCityCode());
-                                predicateList.add(cityCode);
-                            }
-                            if (dto.getDistrictCode() != null) {
-                                Predicate districtCode = criteriaBuilder.equal(root.get(Organization.DISTRICT_CODE), dto.getDistrictCode());
-                                predicateList.add(districtCode);
-                            }
-                            if (StringUtils.hasText(dto.getLegalPerson())) {
-                                Predicate legalPerson = criteriaBuilder.like(root.get(Organization.LEGAL_PERSON),
-                                        "%" + dto.getLegalPerson() + "%", '/');
-                                predicateList.add(legalPerson);
-                            }
-                            assert query != null;
-                            return query.where(predicateList.toArray(Predicate[]::new)).getRestriction();
-                        },
-                        // TODO: 2023/8/29 设置前端 number 默认从 0 开始，或许就不需要减一了
-                        PageRequest.of(dto.getNumber() - 1, dto.getSize()))
+        Specification<Organization> spec = (root, query, builder) -> {
+            List<Predicate> predicateList = new LinkedList<>();
+            if (StringUtils.hasText(dto.getName())) {
+                Predicate name = builder.like(root.get(Organization.NAME), "%" + dto.getName() + "%", '/');
+                predicateList.add(name);
+            }
+            if (StringUtils.hasText(dto.getCode())) {
+                Predicate code = builder.like(builder.lower(root.get(Organization.CODE)),
+                        "%" + dto.getCode().toLowerCase() + "%", '/');
+                predicateList.add(code);
+            }
+            if (StringUtils.hasText(dto.getType())) {
+                Predicate type = builder.equal(root.get(Organization.TYPE), dto.getType());
+                predicateList.add(type);
+            }
+            if (dto.getProvinceCode() != null) {
+                Predicate provinceCode = builder.equal(root.get(Organization.PROVINCE_CODE), dto.getProvinceCode());
+                predicateList.add(provinceCode);
+            }
+            if (dto.getCityCode() != null) {
+                Predicate cityCode = builder.equal(root.get(Organization.CITY_CODE), dto.getCityCode());
+                predicateList.add(cityCode);
+            }
+            if (dto.getDistrictCode() != null) {
+                Predicate districtCode = builder.equal(root.get(Organization.DISTRICT_CODE), dto.getDistrictCode());
+                predicateList.add(districtCode);
+            }
+            if (StringUtils.hasText(dto.getLegalPerson())) {
+                Predicate legalPerson = builder.like(root.get(Organization.LEGAL_PERSON),
+                        "%" + dto.getLegalPerson() + "%", '/');
+                predicateList.add(legalPerson);
+            }
+            Predicate predicate = builder.and(predicateList.toArray(Predicate[]::new));
+            return query.where(predicate).getRestriction();
+        };
+        // TODO: 2023/8/29 设置前端 number 默认从 0 开始，或许就不需要减一了
+        PageRequest pageRequest = PageRequest.of(dto.getNumber() - 1, dto.getSize());
+        return organizationJpaRepository.findAll(spec, pageRequest)
                 .map(organization -> {
                     OrganizationDTO organizationDTO = new OrganizationDTO();
                     BeanUtils.copyProperties(organization, organizationDTO);
@@ -133,20 +134,17 @@ public class OrganizationServiceImpl implements IOrganizationService {
      */
     @Override
     public List<OrganizationDTO> selectList(String name) {
-        return organizationBusinessJpaRepository.findAll((root, query, criteriaBuilder) -> {
-                    List<Predicate> predicateList = new LinkedList<>();
-                    Predicate linkPredicate = criteriaBuilder.like(root.get(OrganizationBusiness.LINK),
-                            "%" + OrganizationBusinessBusinessLinksEnum.SAMPLE_TESTING.getDesc() + "%", '/');
-                    predicateList.add(linkPredicate);
-                    Predicate statePredicate = criteriaBuilder.like(root.get(OrganizationBusiness.STATE),
-                            "%" + OrganizationBusinessStateEnum.PASSES + "%", '/');
-                    predicateList.add(statePredicate);
-                    Predicate namePredicate = criteriaBuilder.like(root.get(OrganizationBusiness.ORG_NAME),
-                            "%" + name + "%", '/');
-                    predicateList.add(namePredicate);
-                    assert query != null;
-                    return query.where(predicateList.toArray(Predicate[]::new)).getRestriction();
-                })
+        Specification<OrganizationBusiness> spec = (root, query, builder) -> {
+            Predicate linkPredicate = builder.like(root.get(OrganizationBusiness.LINK),
+                    "%" + OrganizationBusinessBusinessLinksEnum.SAMPLE_TESTING.getDesc() + "%", '/');
+            Predicate statePredicate = builder.like(root.get(OrganizationBusiness.STATE),
+                    "%" + OrganizationBusinessStateEnum.PASSES + "%", '/');
+            Predicate namePredicate = builder.like(root.get(OrganizationBusiness.ORG_NAME),
+                    "%" + name + "%", '/');
+            Predicate predicate = builder.and(linkPredicate, statePredicate, namePredicate);
+            return query.where(predicate).getRestriction();
+        };
+        return organizationBusinessJpaRepository.findAll(spec)
                 .stream()
                 .map(organizationBusiness -> {
                     OrganizationDTO dto = new OrganizationDTO();
@@ -163,11 +161,19 @@ public class OrganizationServiceImpl implements IOrganizationService {
     public void deleteById(Integer id) {
         // 逻辑删除用户-角色关联数据
         // TODO: 2023/9/7 是否能实现查询指定列
-        List<User> userList = userJpaRepository.findAll((root, _, _) -> root.get(User.ORG_ID).in(id));
+        Specification<User> spec = (root, query, builder) -> {
+            Predicate predicate = builder.equal(root.get(User.ORG_ID), id);
+            return query.where(predicate).getRestriction();
+        };
+        List<User> userList = userJpaRepository.findAll(spec);
         List<Integer> userIdList = userList.stream().map(AbstractAuditable::getId).toList();
-        userRoleJpaRepository.delete((root, _, _) -> root.get(UserRole.USER_ID).in(userIdList));
+        Specification<UserRole> userRoleSpec = (root, query, builder) -> {
+            Predicate predicate = builder.in(root.get(UserRole.USER_ID)).in(userIdList);
+            return query.where(predicate).getRestriction();
+        };
+        userRoleJpaRepository.delete(userRoleSpec);
         // 删除单位下的所有用户
-        userJpaRepository.delete((root, _, _) -> root.get(User.ORG_ID).in(id));
+        userJpaRepository.delete(spec);
         // 删除单位
         organizationJpaRepository.deleteById(id);
     }

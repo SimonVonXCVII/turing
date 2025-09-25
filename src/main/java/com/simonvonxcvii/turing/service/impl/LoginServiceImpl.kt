@@ -104,8 +104,9 @@ class LoginServiceImpl(
 
         // 获取所有角色的所有角色与权限中间表数据
         val roleIdList = user.authorities.stream().map(AbstractAuditable::id).toList()
-        val rolePermissionList = rolePermissionJpaRepository.findAll { root, _, _ ->
-            root.get<Any>(RolePermission.ROLE_ID).`in`(roleIdList)
+        val rolePermissionList = rolePermissionJpaRepository.findAll { root, query, builder ->
+            val roleId = builder.`in`(root.get<String>(RolePermission.ROLE_ID)).`in`(roleIdList)
+            query?.where(roleId)?.restriction
         }.filterNotNull()
         if (rolePermissionList.isEmpty()) {
             throw BizRuntimeException("无法获取菜单，因为当前用户的角色没有任何权限")
