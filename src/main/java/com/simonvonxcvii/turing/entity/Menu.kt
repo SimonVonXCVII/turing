@@ -1,9 +1,7 @@
 package com.simonvonxcvii.turing.entity
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.Table
-import jakarta.persistence.UniqueConstraint
+import com.simonvonxcvii.turing.enums.MenuTypeEnum
+import jakarta.persistence.*
 import org.hibernate.annotations.Comment
 import org.hibernate.annotations.SQLDelete
 import org.hibernate.annotations.SQLRestriction
@@ -56,11 +54,12 @@ data class Menu(
     var title: String = "",
 
     /**
-     * 菜单类型：目录、菜单、按钮 TODO 考虑将类型写成 Enum
+     * 菜单类型：目录、菜单、按钮
      */
-    @Column(nullable = false, columnDefinition = "VARCHAR(32)")
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, columnDefinition = "VARCHAR(64)")
     @Comment("菜单类型：目录、菜单、按钮")
-    var type: String = "",
+    var type: MenuTypeEnum = MenuTypeEnum.ROUTE,
 
     /**
      * 菜单路径

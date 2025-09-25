@@ -44,12 +44,11 @@ data class OrganizationBusiness(
 
     /**
      * 业务环节
-     * TODO MutableSet<OrganizationBusinessBusinessLinksEnum>? 还是 MutableSet<OrganizationBusinessBusinessLinksEnum?>?
      */
     @Enumerated(EnumType.STRING)
     @Column(columnDefinition = "VARCHAR[]")
     @Comment("业务环节")
-    var link: MutableSet<OrganizationBusinessBusinessLinksEnum?>? = null,
+    var link: MutableSet<OrganizationBusinessBusinessLinksEnum>? = null,
 
     /**
      * 质控类型
@@ -57,7 +56,7 @@ data class OrganizationBusiness(
     @Enumerated(EnumType.STRING)
     @Column(columnDefinition = "VARCHAR[]")
     @Comment("质控类型")
-    var type: MutableSet<OrganizationBusinessQualityControlTypeEnum?>? = null,
+    var type: MutableSet<OrganizationBusinessQualityControlTypeEnum>? = null,
 
     /**
      * 业务申请所在省（市、区）编码

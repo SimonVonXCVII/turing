@@ -1,9 +1,7 @@
 package com.simonvonxcvii.turing.entity
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.Table
-import jakarta.persistence.UniqueConstraint
+import com.simonvonxcvii.turing.enums.DictTypeEnum
+import jakarta.persistence.*
 import org.hibernate.annotations.Comment
 import org.hibernate.annotations.SQLDelete
 import org.hibernate.annotations.SQLRestriction
@@ -28,11 +26,12 @@ import org.hibernate.annotations.SQLRestriction
 @SQLRestriction("deleted = FALSE")
 data class Dict(
     /**
-     * 字典类型 TODO 考虑将类型写成 Enum
+     * 字典类型
      */
-    @Column(columnDefinition = "VARCHAR(32)")
+    @Enumerated(EnumType.STRING)
+    @Column(columnDefinition = "VARCHAR(64)")
     @Comment("字典类型")
-    var type: String? = null,
+    var type: DictTypeEnum = DictTypeEnum.AREA,
 
     /**
      * 上级 id

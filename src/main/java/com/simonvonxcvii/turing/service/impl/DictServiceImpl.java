@@ -2,6 +2,7 @@ package com.simonvonxcvii.turing.service.impl;
 
 import com.simonvonxcvii.turing.common.exception.BizRuntimeException;
 import com.simonvonxcvii.turing.entity.Dict;
+import com.simonvonxcvii.turing.enums.DictTypeEnum;
 import com.simonvonxcvii.turing.model.dto.DictDTO;
 import com.simonvonxcvii.turing.repository.jpa.DictJpaRepository;
 import com.simonvonxcvii.turing.service.IDictService;
@@ -98,7 +99,7 @@ public class DictServiceImpl implements IDictService {
             DictDTO dictDTO = new DictDTO();
             Specification<Dict> spec = (root, query, builder) -> {
                 Predicate pid = builder.isNull(root.get(Dict.PID));
-                Predicate type = builder.equal(root.get(Dict.TYPE), "area");
+                Predicate type = builder.equal(root.get(Dict.TYPE), DictTypeEnum.AREA);
                 Predicate predicate = builder.and(pid, type);
                 Order sortAsc = builder.asc(root.get(Dict.SORT));
                 return query.where(predicate).orderBy(sortAsc).getRestriction();
@@ -111,7 +112,7 @@ public class DictServiceImpl implements IDictService {
         }
         Specification<Dict> spec = (root, query, builder) -> {
             Predicate value = builder.equal(root.get(Dict.VALUE), code.toString());
-            Predicate type = builder.equal(root.get(Dict.TYPE), "area");
+            Predicate type = builder.equal(root.get(Dict.TYPE), DictTypeEnum.AREA);
             Predicate predicate = builder.and(value, type);
             return query.where(predicate).getRestriction();
         };
@@ -120,8 +121,7 @@ public class DictServiceImpl implements IDictService {
         DictDTO dictDTO = convertToDictDTO(dict);
         Specification<Dict> spec2 = (root, query, builder) -> {
             Predicate pid = builder.equal(root.get(Dict.PID), dict.getId());
-            Predicate type = builder.equal(root.get(Dict.TYPE), "area");
-            Predicate type1 = builder.in(root.get(Dict.TYPE)).in("area");
+            Predicate type = builder.equal(root.get(Dict.TYPE), DictTypeEnum.AREA);
             Predicate predicate = builder.and(pid, type);
             Order sortAsc = builder.asc(root.get(Dict.SORT));
             return query.where(predicate).orderBy(sortAsc).getRestriction();

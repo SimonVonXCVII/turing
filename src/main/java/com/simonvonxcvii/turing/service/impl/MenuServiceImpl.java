@@ -61,7 +61,7 @@ public class MenuServiceImpl implements IMenuService {
                 .filter(menu -> !StringUtils.hasText(dto.getName()) ||
                         (menu.getName().contains(dto.getName()) || dto.getName().contains(menu.getName())))
                 .filter(menu -> !StringUtils.hasText(dto.getType()) ||
-                        (menu.getType().contains(dto.getType()) || dto.getType().contains(menu.getType())))
+                        (menu.getType().getDesc().contains(dto.getType()) || dto.getType().contains(menu.getType().getDesc())))
                 .filter(menu -> !StringUtils.hasText(dto.getPath()) ||
                         (menu.getPath().contains(dto.getPath()) || dto.getPath().contains(menu.getPath())))
                 .filter(menu -> !StringUtils.hasText(dto.getComponent()) ||

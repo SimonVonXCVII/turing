@@ -72,7 +72,7 @@ public class MenuDTO extends PageQuery {
      * 菜单排序
      */
     @NotNull(message = "菜单排序不能为空")
-    private Integer sort;
+    private Short sort;
     /**
      * 是否显示
      */
