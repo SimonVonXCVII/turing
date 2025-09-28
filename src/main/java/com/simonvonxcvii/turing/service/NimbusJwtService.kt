@@ -40,4 +40,14 @@ interface NimbusJwtService {
      * @since 2023/6/17 20:23
      */
     fun resolve(request: HttpServletRequest): Jwt
+
+    /**
+     * 从请求中解析 username
+     *
+     * @param request the request
+     * @return username
+     * @author Simon Von
+     * @since 9/29/25 1:20 AM
+     */
+    fun getUsername(request: HttpServletRequest): String
 }

@@ -24,6 +24,7 @@ import java.time.Instant
 
 /**
  * NimbusJwt 服务实现
+ * TODO 尝试基于 JwtAuthenticationProvider 实现
  *
  * @author Simon Von
  * @since 2/20/2023 11:21 PM
@@ -153,5 +154,19 @@ class NimbusJwtServiceImpl(
         } catch (_: JwtException) {
             throw AuthenticationServiceException("令牌已过期或验证不正确")
         }
+    }
+
+    /**
+     * 从请求中解析 username
+     *
+     * @param request the request
+     * @return username
+     * @author Simon Von
+     * @since 9/29/25 1:20 AM
+     */
+    override fun getUsername(request: HttpServletRequest): String {
+        // 校验请求是否正确携带 token
+        val jwt = resolve(request)
+        return jwt.getClaim(OAuth2ParameterNames.USERNAME)
     }
 }

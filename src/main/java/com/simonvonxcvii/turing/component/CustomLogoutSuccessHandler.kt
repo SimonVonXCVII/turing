@@ -6,7 +6,6 @@ import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.security.core.Authentication
-import org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler
 import org.springframework.stereotype.Component
 
@@ -34,8 +33,8 @@ class CustomLogoutSuccessHandler(
         response: HttpServletResponse,
         authentication: Authentication?
     ) {
-        val jwt = nimbusJwtService.resolve(request)
-        val username = jwt.getClaim<String>(OAuth2ParameterNames.USERNAME)
+        // 从请求中解析 username
+        val username = nimbusJwtService.getUsername(request)
         // 清除缓存的用户信息
         redisTemplate.opsForHash<String, User>().delete(User.REDIS_KEY_PREFIX, username)
     }

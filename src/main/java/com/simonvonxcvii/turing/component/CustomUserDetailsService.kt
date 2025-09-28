@@ -75,17 +75,18 @@ class CustomUserDetailsService(
                 val userId = builder.equal(root.get<String>(UserRole.USER_ID), user.id)
                 query?.where(userId)?.restriction
             }
-            val userRoleList = userRoleJpaRepository.findAll(spec).filterNotNull()
-                .apply {
-                    if (this.isEmpty()) throw BadCredentialsException("非法账号，该账号没有角色：$username")
+            val userRoleList = userRoleJpaRepository.findAll(spec)
+                .filterNotNull()
+                .also {
+                    if (it.isEmpty()) throw BadCredentialsException("非法账号，该账号没有角色：$username")
                 }
 
             // 获取用户角色
             val userRoleIdList = userRoleList.stream().map { userRole -> userRole.roleId }.toList()
             roleJpaRepository.findAllById(userRoleIdList)
                 .filterNotNull()
-                .apply {
-                    if (this.isEmpty()) throw BadCredentialsException("非法账号，该账号没有角色：$username")
+                .also {
+                    if (it.isEmpty()) throw BadCredentialsException("非法账号，该账号没有角色：$username")
                 }
         }
 

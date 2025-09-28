@@ -3,7 +3,6 @@ package com.simonvonxcvii.turing.filter
 import com.simonvonxcvii.turing.entity.User
 import com.simonvonxcvii.turing.properties.SecurityProperties
 import com.simonvonxcvii.turing.service.NimbusJwtService
-import com.simonvonxcvii.turing.utils.Constants
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
@@ -11,8 +10,8 @@ import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.security.authentication.AuthenticationServiceException
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
-import org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames
 import org.springframework.stereotype.Component
+import org.springframework.util.AntPathMatcher
 import org.springframework.web.filter.OncePerRequestFilter
 
 /**
@@ -36,27 +35,25 @@ class CustomJwtOncePerRequestFilter(
         response: HttpServletResponse,
         filterChain: FilterChain
     ) {
+        // TODO AntPathMatcher 到底是否线程安全？如果是就恢复成常量
+        val antPathMatcher = AntPathMatcher()
         // 判断本次请求是否需要拦截
-        for (path in securityProperties.whitelist) {
-            if (Constants.ANT_PATH_MATCHER.match(path, request.requestURI)) {
-                // 执行下一个 filter
-                filterChain.doFilter(request, response)
-                // return 是必须的，不然会执行下面的代码
-                return
-            }
-        }
-        // 校验请求是否正确携带 token
-        val jwt = nimbusJwtService.resolve(request)
-        // 缓存用户信息到 SecurityContext
-        val username = jwt.getClaim<String>(OAuth2ParameterNames.USERNAME)
-        val user = redisTemplate.opsForHash<String, User>().get(User.REDIS_KEY_PREFIX, username)
-            ?: throw AuthenticationServiceException("无法获取到用户信息")
-        // TODO: 2023/8/31 在两个地方都设置了 user，如何才能只需要设置一次
-        val token = UsernamePasswordAuthenticationToken.authenticated(
-            user, user.password, user.authorities
-        )
+        val matched = securityProperties.whitelist.none { antPathMatcher.match(it, request.requestURI) }
+        // 如果不在白名单则拦截
+        if (matched) {
+            // 从请求中解析 username
+            val username = nimbusJwtService.getUsername(request)
+            // 根据 username 从 redis 获取 user
+            val user = redisTemplate.opsForHash<String, User>().get(User.REDIS_KEY_PREFIX, username)
+                ?: throw AuthenticationServiceException("无法获取到用户信息")
+            // 缓存用户信息到 SecurityContext
+            // TODO: 2023/8/31 在两个地方都设置了 user，如何才能只需要设置一次
+            val token = UsernamePasswordAuthenticationToken.authenticated(
+                user, user.password, user.authorities
+            )
 //        token.details = user
-        SecurityContextHolder.getContext().authentication = token
+            SecurityContextHolder.getContext().authentication = token
+        }
         // 执行下一个 filter
         filterChain.doFilter(request, response)
     }

@@ -121,6 +121,7 @@ public class UserServiceImpl implements IUserService {
                     };
                     List<UserRole> userRoleList = userRoleJpaRepository.findAll(userRoleSpec);
                     if (userRoleList.isEmpty()) {
+                        // todo
                         throw new RuntimeException();
                     }
                     List<Integer> userIdlist = userRoleList.stream().map(UserRole::getUserId).toList();
