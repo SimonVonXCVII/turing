@@ -31,7 +31,7 @@ import java.nio.charset.StandardCharsets
  * @since 3/9/2023 5:13 PM
  */
 @Component
-class AuthenticationEntryPointImpl(private val objectMapper: ObjectMapper) : AuthenticationEntryPoint {
+class CustomAuthenticationEntryPoint(private val objectMapper: ObjectMapper) : AuthenticationEntryPoint {
     /**
      * 启动身份验证方案。
      * 在调用此方法之前，ExceptionTranslationFilter 将使用请求的目标 URL 填充名为

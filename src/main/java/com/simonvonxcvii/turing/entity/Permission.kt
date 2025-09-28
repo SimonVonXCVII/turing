@@ -59,16 +59,16 @@ data class Permission(
         /**
          * ES 索引名称
          */
-        const val ES_INDEX: String = "turing_permission"
+        const val ES_INDEX = "turing_permission"
 
         /**
          * Redis key 前缀
          */
-        const val REDIS_KEY_PREFIX: String = "$ES_INDEX:"
+        const val REDIS_KEY_PREFIX = "$ES_INDEX:"
 
-        const val PID: String = "pid"
-        const val NAME: String = "name"
-        const val CODE: String = "code"
-        const val SORT: String = "sort"
+        const val PID = "pid"
+        const val NAME = "name"
+        const val CODE = "code"
+        const val SORT = "sort"
     }
 }

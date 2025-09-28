@@ -120,24 +120,24 @@ data class OrganizationBusiness(
         /**
          * ES 索引名称
          */
-        const val INDEX: String = "turing_organization_business"
+        const val INDEX = "turing_organization_business"
 
         /**
          * Redis key 前缀
          */
-        const val REDIS_KEY_PREFIX: String = "$INDEX:"
+        const val REDIS_KEY_PREFIX = "$INDEX:"
 
-        const val ORG_ID: String = "orgId"
-        const val ORG_NAME: String = "orgName"
-        const val LINK: String = "link"
-        const val TYPE: String = "type"
-        const val PROVINCE_CODE: String = "provinceCode"
-        const val CITY_CODE: String = "cityCode"
-        const val DISTRICT_CODE: String = "districtCode"
-        const val PROVINCE_NAME: String = "provinceName"
-        const val CITY_NAME: String = "cityName"
-        const val DISTRICT_NAME: String = "districtName"
-        const val STATE: String = "state"
-        const val BUSINESS_LEVEL: String = "businessLevel"
+        const val ORG_ID = "orgId"
+        const val ORG_NAME = "orgName"
+        const val LINK = "link"
+        const val TYPE = "type"
+        const val PROVINCE_CODE = "provinceCode"
+        const val CITY_CODE = "cityCode"
+        const val DISTRICT_CODE = "districtCode"
+        const val PROVINCE_NAME = "provinceName"
+        const val CITY_NAME = "cityName"
+        const val DISTRICT_NAME = "districtName"
+        const val STATE = "state"
+        const val BUSINESS_LEVEL = "businessLevel"
     }
 }

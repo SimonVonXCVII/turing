@@ -8,6 +8,7 @@ import com.simonvonxcvii.turing.repository.jpa.*
 import org.apache.commons.logging.LogFactory
 import org.springframework.beans.factory.InitializingBean
 import org.springframework.core.io.ClassPathResource
+import org.springframework.data.jpa.domain.Specification
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Component
 import org.springframework.util.StringUtils
@@ -28,7 +29,7 @@ import java.util.stream.Collectors
  * @since 2023/8/25 21:24
  */
 @Component
-class DatabaseInitializingBeanImpl(
+class CustomDatabaseInitializingBean(
     private val organizationJpaRepository: OrganizationJpaRepository,
     private val passwordEncoder: PasswordEncoder,
     private val userJpaRepository: UserJpaRepository,
@@ -41,10 +42,11 @@ class DatabaseInitializingBeanImpl(
     @Throws(Exception::class)
     override fun afterPropertiesSet() {
         // 判断是否需要初始化，如果表数据存在说明不需要
-        val exists = dictJpaRepository.exists { root, query, builder ->
+        val spec = Specification<Dict> { root, query, builder ->
             val type = builder.equal(root.get<String>(Dict.TYPE), DictTypeEnum.AREA)
             query?.where(type)?.restriction
         }
+        val exists = dictJpaRepository.exists(spec)
         if (exists) {
             return
         }
@@ -87,7 +89,7 @@ class DatabaseInitializingBeanImpl(
                     var line: String?
                     // 解析区域文件
                     val aresCodeSet = HashSet<String>()
-                    while ((bufferedReader.readLine().also { line = it }) != null) {
+                    while (bufferedReader.readLine().also { line = it } != null) {
                         val oneArea = listOf(*StringUtils.commaDelimitedListToStringArray(line))
                         val area = Area()
                         area.name = oneArea[0]
@@ -2044,7 +2046,7 @@ class DatabaseInitializingBeanImpl(
     }
 
     companion object {
-        private val log = LogFactory.getLog(DatabaseInitializingBeanImpl::class.java)
+        private val log = LogFactory.getLog(CustomDatabaseInitializingBean::class.java)
 
         /**
          * 字典排序

@@ -9,19 +9,16 @@ import com.simonvonxcvii.turing.repository.jpa.UserRoleJpaRepository
 import com.simonvonxcvii.turing.service.NimbusJwtService
 import com.simonvonxcvii.turing.utils.Constants
 import jakarta.servlet.http.HttpServletRequest
+import org.springframework.data.jpa.domain.Specification
 import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.data.redis.core.StringRedisTemplate
-import org.springframework.http.HttpHeaders
 import org.springframework.security.authentication.*
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames
 import org.springframework.stereotype.Component
-import org.springframework.util.DigestUtils
 import org.springframework.util.StringUtils
-import java.net.InetAddress
-import java.nio.charset.StandardCharsets
 
 /**
  * 该类用于验证在有账号登录时是否与数据库账号匹配
@@ -30,7 +27,7 @@ import java.nio.charset.StandardCharsets
  * @since 2022/12/19 15:31
  */
 @Component
-class UserDetailsServiceImpl(
+class CustomUserDetailsService(
     private val nimbusJwtService: NimbusJwtService,
     private val httpServletRequest: HttpServletRequest,
     private val redisTemplate: RedisTemplate<Any, Any>,
@@ -56,10 +53,12 @@ class UserDetailsServiceImpl(
             throw UsernameNotFoundException("用户账号不能为空")
         }
         // 获取用户数据
-        val user = userJpaRepository.findOne { root, query, builder ->
+        val spec = Specification<User> { root, query, builder ->
             val usernamePredicate = builder.equal(root.get<String>(User.USERNAME), username)
             query?.where(usernamePredicate)?.restriction
-        }.orElse(null) ?: throw UsernameNotFoundException("该用户账号不存在：$username")
+        }
+        val user = userJpaRepository.findOne(spec)
+            .orElse(null) ?: throw UsernameNotFoundException("该用户账号不存在：$username")
 
         if (!user.isAccountNonExpired) throw AccountExpiredException("账号已过期")
         if (!user.isAccountNonLocked) throw LockedException("账号已锁定")
@@ -72,10 +71,11 @@ class UserDetailsServiceImpl(
             roleJpaRepository.findAll().filterNotNull()
         } else {
             // 获取用户角色与用户关联记录表
-            val userRoleList = userRoleJpaRepository.findAll { root, query, builder ->
+            val spec = Specification<UserRole> { root, query, builder ->
                 val userId = builder.equal(root.get<String>(UserRole.USER_ID), user.id)
                 query?.where(userId)?.restriction
-            }.filterNotNull()
+            }
+            val userRoleList = userRoleJpaRepository.findAll(spec).filterNotNull()
                 .apply {
                     if (this.isEmpty()) throw BadCredentialsException("非法账号，该账号没有角色：$username")
                 }
@@ -88,28 +88,6 @@ class UserDetailsServiceImpl(
                     if (this.isEmpty()) throw BadCredentialsException("非法账号，该账号没有角色：$username")
                 }
         }
-
-        // 校验验证码
-        // 使用 md5 这种方式作为 key 的原因是 session id 总是会改变，同一个客户端的浏览器发送的请求的 session id 无法保持一致
-        val ipAddr = InetAddress.getByName(httpServletRequest.remoteAddr).hostAddress
-        val userAgent = httpServletRequest.getHeader(HttpHeaders.USER_AGENT)
-        val ipAddrUserAgentByte = (ipAddr + userAgent).toByteArray(StandardCharsets.UTF_8)
-        val md5DigestAsHex = DigestUtils.md5DigestAsHex(ipAddrUserAgentByte)
-        // 服务端验证码
-        val serverCaptcha = stringRedisTemplate.opsForValue().get(Constants.REDIS_CAPTCHA + md5DigestAsHex)
-        // 客户端验证码
-        val clientCaptcha = httpServletRequest.getParameter("captcha")
-
-        // TODO: 验证码有时候会出现过期提示，但实则并没有过期
-        println("serverCaptcha: $serverCaptcha")
-        println("clientCaptcha: $clientCaptcha")
-        if (!StringUtils.hasText(serverCaptcha)) throw BadCredentialsException("验证码已过期")
-        if (!StringUtils.hasText(clientCaptcha)) throw BadCredentialsException("请输入验证码")
-        if (!serverCaptcha.equals(clientCaptcha, true))
-            throw BadCredentialsException("验证码错误，请重新输入")
-
-        // 如果验证成功，则删除 Redis 中的验证码
-        stringRedisTemplate.opsForValue().getAndDelete(Constants.REDIS_CAPTCHA + md5DigestAsHex)
 
         // 缓存用户其他信息到实体类
         // 缓存当前用户的角色集合
@@ -131,7 +109,13 @@ class UserDetailsServiceImpl(
         user.cityName = organization.cityName
         user.districtName = organization.districtName
 
-        // 缓存用户信息
+        // 获取 md5DigestAsHex
+        val md5DigestAsHex: String = httpServletRequest.getAttribute(Constants.HEX_DIGEST) as String
+        // 删除属性（摘要字符串）
+        httpServletRequest.removeAttribute(md5DigestAsHex)
+        // 验证成功，删除 Redis 中的验证码
+        stringRedisTemplate.opsForValue().getAndDelete(Constants.REDIS_CAPTCHA + md5DigestAsHex)
+        // 缓存用户信息 TODO 是否该用 putIfAbsent
         redisTemplate.opsForHash<String, User>().put(User.REDIS_KEY_PREFIX, username, user)
         return user
     }

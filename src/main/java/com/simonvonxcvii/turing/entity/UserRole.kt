@@ -45,14 +45,14 @@ data class UserRole(
         /**
          * ES 索引名称
          */
-        const val ES_INDEX: String = "turing_user_role"
+        const val ES_INDEX = "turing_user_role"
 
         /**
          * Redis key 前缀
          */
-        const val REDIS_KEY_PREFIX: String = "$ES_INDEX:"
+        const val REDIS_KEY_PREFIX = "$ES_INDEX:"
 
-        const val USER_ID: String = "userId"
-        const val ROLE_ID: String = "roleId"
+        const val USER_ID = "userId"
+        const val ROLE_ID = "roleId"
     }
 }

@@ -1,5 +1,7 @@
 package com.simonvonxcvii.turing.utils
 
+import org.springframework.util.AntPathMatcher
+
 /**
  * 常量接口
  *
@@ -8,12 +10,17 @@ package com.simonvonxcvii.turing.utils
  */
 interface Constants {
     companion object {
-        const val AREA: String = "area"
+        const val CAPTCHA = "captcha"
+        const val REDIS_CAPTCHA = "$CAPTCHA:"
+        const val LOGIN_REQUEST = "/login"
+        const val HEX_DIGEST = "md5DigestAsHex"
 
-        const val REDIS_CAPTCHA: String = "captcha:"
+        val ANT_PATH_MATCHER = AntPathMatcher()
 
-        const val PATTERN: String = "%"
+        const val AREA = "area"
 
-        const val ESCAPE_CHAR: Char = '/'
+        const val PATTERN = "%"
+
+        const val ESCAPE_CHAR = '/'
     }
 }

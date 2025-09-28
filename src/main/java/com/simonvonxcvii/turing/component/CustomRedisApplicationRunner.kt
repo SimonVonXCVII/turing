@@ -5,6 +5,7 @@ import com.simonvonxcvii.turing.enums.DictTypeEnum
 import com.simonvonxcvii.turing.repository.jpa.DictJpaRepository
 import org.springframework.boot.ApplicationArguments
 import org.springframework.boot.ApplicationRunner
+import org.springframework.data.jpa.domain.Specification
 import org.springframework.data.redis.core.StringRedisTemplate
 import org.springframework.stereotype.Component
 import java.util.stream.Collectors
@@ -18,7 +19,7 @@ import java.util.stream.Collectors
  * @since 2023/7/16 14:00
  */
 @Component
-class RedisApplicationRunner(
+class CustomRedisApplicationRunner(
     private val stringRedisTemplate: StringRedisTemplate,
     private val dictJpaRepository: DictJpaRepository
 ) : ApplicationRunner {
@@ -28,10 +29,11 @@ class RedisApplicationRunner(
      * @param args incoming application arguments
      */
     override fun run(args: ApplicationArguments) {
-        val dictList = dictJpaRepository.findAll { root, query, builder ->
+        val spec = Specification<Dict> { root, query, builder ->
             val type = builder.equal(root.get<String>(Dict.TYPE), DictTypeEnum.AREA)
             query?.where(type)?.restriction
-        }.filterNotNull()
+        }
+        val dictList = dictJpaRepository.findAll(spec).filterNotNull()
         // TODO 考虑如果 Redis 中已经有上面这些数据了就不要执行下面的代码了，虽然数据只会覆盖掉，不会发生变化
         val toMap = Collectors.toMap({ dict -> Dict.REDIS_KEY_PREFIX + dict.value }, Dict::name)
         val collect = dictList.stream().collect(toMap)

@@ -15,12 +15,13 @@ import java.nio.charset.StandardCharsets
  * 用于处理失败的身份验证尝试的策略。
  * 典型的行为可能是将用户重定向到身份验证页面（在表单登录的情况下）以允许他们重试。根据异常的类型，可能会实现更复杂的逻辑。
  * 例如，CredentialsExpireException 可能会导致重定向到 Web 控制器，从而允许用户更改其密码。
+ * TODO 有问题，账号或者密码错了会到这里，并且没有给前端正确提示：Bad credentials
  *
  * @author Simon Von
  * @since 12/22/2022 8:46 PM
  */
 @Component
-class AuthenticationFailureHandlerImpl(private val objectMapper: ObjectMapper) : AuthenticationFailureHandler {
+class CustomAuthenticationFailureHandler(private val objectMapper: ObjectMapper) : AuthenticationFailureHandler {
     /**
      * 尝试身份验证失败时调用
      *

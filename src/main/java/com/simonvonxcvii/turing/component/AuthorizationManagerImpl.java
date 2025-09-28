@@ -1,5 +1,5 @@
-package com.simonvonxcvii.turing.component;
-
+//package com.simonvonxcvii.turing.component;
+//
 //import com.simonvonxcvii.turing.utils.UserUtils;
 //import org.springframework.security.authorization.AuthorizationDecision;
 //import org.springframework.security.authorization.AuthorizationManager;

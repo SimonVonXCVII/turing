@@ -1,7 +1,5 @@
 package com.simonvonxcvii.turing.enums
 
-import java.util.*
-
 /**
  * 质控类型枚举类
  *
@@ -18,23 +16,40 @@ enum class OrganizationBusinessQualityControlTypeEnum(val desc: String) {
     companion object {
         private val VALUES = entries.toTypedArray()
 
-        fun getValueByOrdinal(ordinal: Int): String? {
+        @JvmStatic
+        fun getDescByOrdinal(ordinal: Int): String? {
             // Use cached VALUES instead of values() to prevent array allocation.
             for (anEnum in VALUES)
                 if (anEnum.ordinal == ordinal)
                     return anEnum.desc
-
             return null
         }
 
         @JvmStatic
-        fun getEnumByDesc(desc: String?): Optional<OrganizationBusinessQualityControlTypeEnum> {
+        fun getOrdinalByDesc(desc: String): Int? {
             // Use cached VALUES instead of values() to prevent array allocation.
             for (anEnum in VALUES)
                 if (anEnum.desc == desc)
-                    return Optional.of<OrganizationBusinessQualityControlTypeEnum>(anEnum)
+                    return anEnum.ordinal
+            return null
+        }
 
-            return Optional.empty<OrganizationBusinessQualityControlTypeEnum>()
+        @JvmStatic
+        fun getByOrdinal(ordinal: Int): OrganizationBusinessQualityControlTypeEnum? {
+            // Use cached VALUES instead of values() to prevent array allocation.
+            for (anEnum in VALUES)
+                if (anEnum.ordinal == ordinal)
+                    return anEnum
+            return null
+        }
+
+        @JvmStatic
+        fun getByDesc(desc: String): OrganizationBusinessQualityControlTypeEnum? {
+            // Use cached VALUES instead of values() to prevent array allocation.
+            for (anEnum in VALUES)
+                if (anEnum.desc == desc)
+                    return anEnum
+            return null
         }
     }
 }

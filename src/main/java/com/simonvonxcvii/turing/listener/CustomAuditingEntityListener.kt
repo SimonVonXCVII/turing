@@ -71,8 +71,6 @@ class CustomAuditingEntityListener {
     }
 
     companion object {
-        private val log = LogFactory.getLog(
-            CustomAuditingEntityListener::class.java
-        )
+        private val log = LogFactory.getLog(CustomAuditingEntityListener::class.java)
     }
 }

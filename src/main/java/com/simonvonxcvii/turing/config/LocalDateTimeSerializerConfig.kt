@@ -10,7 +10,6 @@ import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilde
 import org.springframework.boot.autoconfigure.jackson.JacksonProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -32,7 +31,7 @@ class LocalDateTimeSerializerConfig {
      */
     @Bean
     fun customize(jacksonProperties: JacksonProperties): Jackson2ObjectMapperBuilderCustomizer {
-        return Jackson2ObjectMapperBuilderCustomizer { builder: Jackson2ObjectMapperBuilder ->
+        return Jackson2ObjectMapperBuilderCustomizer { builder ->
             // 格式
             val dateTimeFormatter = DateTimeFormatter.ofPattern(jacksonProperties.dateFormat)
             val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")

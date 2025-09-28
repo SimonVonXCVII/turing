@@ -23,7 +23,7 @@ import java.nio.charset.StandardCharsets
  * @since 12/22/2022 8:41 PM
  */
 @Component
-class AuthenticationSuccessHandlerImpl(private val objectMapper: ObjectMapper) : AuthenticationSuccessHandler {
+class CustomAuthenticationSuccessHandler(private val objectMapper: ObjectMapper) : AuthenticationSuccessHandler {
     /**
      * 当用户成功身份验证时调用。
      *
@@ -40,9 +40,11 @@ class AuthenticationSuccessHandlerImpl(private val objectMapper: ObjectMapper) :
         response.characterEncoding = StandardCharsets.UTF_8.name()
         response.contentType = MediaType.APPLICATION_JSON_VALUE
         response.status = HttpStatus.OK.value()
-        val map = mapOf(OAuth2ParameterNames.TOKEN to request.getAttribute(OAuth2ParameterNames.TOKEN))
+        val token: String = request.getAttribute(OAuth2ParameterNames.TOKEN) as String
+        val map = mapOf(OAuth2ParameterNames.TOKEN to token)
         val string = objectMapper.writeValueAsString(Result.ok(map))
         response.writer.write(string)
+        // 删除属性（token）
         request.removeAttribute(OAuth2ParameterNames.TOKEN)
     }
 }

@@ -45,14 +45,14 @@ data class RolePermission(
         /**
          * ES 索引名称
          */
-        const val ES_INDEX: String = "turing_role_permission"
+        const val ES_INDEX = "turing_role_permission"
 
         /**
          * Redis key 前缀
          */
-        const val REDIS_KEY_PREFIX: String = "$ES_INDEX:"
+        const val REDIS_KEY_PREFIX = "$ES_INDEX:"
 
-        const val ROLE_ID: String = "roleId"
-        const val PERMISSION_ID: String = "permissionId"
+        const val ROLE_ID = "roleId"
+        const val PERMISSION_ID = "permissionId"
     }
 }

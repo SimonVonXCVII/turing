@@ -72,19 +72,19 @@ data class Dict(
         /**
          * ES 索引名称
          */
-        const val INDEX: String = "turing_dict"
+        const val INDEX = "turing_dict"
 
         /**
          * Redis key 前缀
          */
-        const val REDIS_KEY_PREFIX: String = "$INDEX:"
+        const val REDIS_KEY_PREFIX = "$INDEX:"
 
-        const val TYPE: String = "type"
-        const val PID: String = "pid"
-        const val NAME: String = "name"
-        const val VALUE: String = "value"
-        const val DESCRIPTION: String = "description"
-        const val STATUS: String = "status"
-        const val SORT: String = "sort"
+        const val TYPE = "type"
+        const val PID = "pid"
+        const val NAME = "name"
+        const val VALUE = "value"
+        const val DESCRIPTION = "description"
+        const val STATUS = "status"
+        const val SORT = "sort"
     }
 }

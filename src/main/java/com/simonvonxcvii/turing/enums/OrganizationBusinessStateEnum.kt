@@ -15,13 +15,40 @@ enum class OrganizationBusinessStateEnum(val desc: String) {
     companion object {
         private val VALUES = entries.toTypedArray()
 
-        fun getValueByOrdinal(ordinal: Int): String {
+        @JvmStatic
+        fun getDescByOrdinal(ordinal: Int): String? {
             // Use cached VALUES instead of values() to prevent array allocation.
             for (anEnum in VALUES)
                 if (anEnum.ordinal == ordinal)
                     return anEnum.desc
+            return null
+        }
 
-            return ""
+        @JvmStatic
+        fun getOrdinalByDesc(desc: String): Int? {
+            // Use cached VALUES instead of values() to prevent array allocation.
+            for (anEnum in VALUES)
+                if (anEnum.desc == desc)
+                    return anEnum.ordinal
+            return null
+        }
+
+        @JvmStatic
+        fun getByOrdinal(ordinal: Int): OrganizationBusinessStateEnum? {
+            // Use cached VALUES instead of values() to prevent array allocation.
+            for (anEnum in VALUES)
+                if (anEnum.ordinal == ordinal)
+                    return anEnum
+            return null
+        }
+
+        @JvmStatic
+        fun getByDesc(desc: String): OrganizationBusinessStateEnum? {
+            // Use cached VALUES instead of values() to prevent array allocation.
+            for (anEnum in VALUES)
+                if (anEnum.desc == desc)
+                    return anEnum
+            return null
         }
     }
 }

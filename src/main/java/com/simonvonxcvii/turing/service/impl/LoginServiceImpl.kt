@@ -17,6 +17,7 @@ import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.beans.BeanUtils
 import org.springframework.data.domain.Sort
+import org.springframework.data.jpa.domain.Specification
 import org.springframework.data.redis.core.StringRedisTemplate
 import org.springframework.http.HttpHeaders
 import org.springframework.stereotype.Service
@@ -56,7 +57,7 @@ class LoginServiceImpl(
         val ipAddrUserAgentByte = (ipAddr + userAgent).toByteArray(StandardCharsets.UTF_8)
         val md5DigestAsHex = DigestUtils.md5DigestAsHex(ipAddrUserAgentByte)
         // 缓存当前用户标识生成的 md5 和验证码
-        // 验证码一分钟有效期
+        // 验证码一分钟有效期 TODO 是否该用 setIfAbsent
         stringRedisTemplate.opsForValue()
             .set(Constants.REDIS_CAPTCHA + md5DigestAsHex, captcha, Duration.ofMinutes(1))
     }
@@ -104,10 +105,11 @@ class LoginServiceImpl(
 
         // 获取所有角色的所有角色与权限中间表数据
         val roleIdList = user.authorities.stream().map(AbstractAuditable::id).toList()
-        val rolePermissionList = rolePermissionJpaRepository.findAll { root, query, builder ->
+        val spec = Specification<RolePermission> { root, query, builder ->
             val roleId = builder.`in`(root.get<String>(RolePermission.ROLE_ID)).`in`(roleIdList)
             query?.where(roleId)?.restriction
-        }.filterNotNull()
+        }
+        val rolePermissionList = rolePermissionJpaRepository.findAll(spec).filterNotNull()
         if (rolePermissionList.isEmpty()) {
             throw BizRuntimeException("无法获取菜单，因为当前用户的角色没有任何权限")
         }

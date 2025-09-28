@@ -58,15 +58,15 @@ data class Role(
         /**
          * ES 索引名称
          */
-        const val ES_INDEX: String = "turing_role"
+        const val ES_INDEX = "turing_role"
 
         /**
          * Redis key 前缀
          */
-        const val REDIS_KEY_PREFIX: String = "$ES_INDEX:"
+        const val REDIS_KEY_PREFIX = "$ES_INDEX:"
 
-        const val NAME: String = "name"
-        const val AUTHORITY: String = "authority"
-        const val DESCRIPTION: String = "description"
+        const val NAME = "name"
+        const val AUTHORITY = "authority"
+        const val DESCRIPTION = "description"
     }
 }

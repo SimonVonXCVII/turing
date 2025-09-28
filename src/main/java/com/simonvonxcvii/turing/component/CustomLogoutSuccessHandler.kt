@@ -18,7 +18,7 @@ import org.springframework.stereotype.Component
  * @since 12/27/2022 4:20 PM
  */
 @Component
-class LogoutSuccessHandlerImpl(
+class CustomLogoutSuccessHandler(
     private val nimbusJwtService: NimbusJwtService,
     private val redisTemplate: RedisTemplate<Any, Any>
 ) : LogoutSuccessHandler {

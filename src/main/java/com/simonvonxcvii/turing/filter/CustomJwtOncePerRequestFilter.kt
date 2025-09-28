@@ -3,6 +3,7 @@ package com.simonvonxcvii.turing.filter
 import com.simonvonxcvii.turing.entity.User
 import com.simonvonxcvii.turing.properties.SecurityProperties
 import com.simonvonxcvii.turing.service.NimbusJwtService
+import com.simonvonxcvii.turing.utils.Constants
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
@@ -12,24 +13,23 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames
 import org.springframework.stereotype.Component
-import org.springframework.util.AntPathMatcher
 import org.springframework.web.filter.OncePerRequestFilter
 
 /**
  * Jwt 请求调度的一次执行认证过滤器
- * TODO 查看各 Kotlin 文件生成的对应的字节码文件，看哪些地方的写法可以改进
  *
  * @author Simon Von
  * @since 11/22/2022 2:19 PM
  */
 @Component
-class JwtOncePerRequestFilter(
+class CustomJwtOncePerRequestFilter(
     private val nimbusJwtService: NimbusJwtService,
     private val securityProperties: SecurityProperties,
     private val redisTemplate: RedisTemplate<Any, Any>
 ) : OncePerRequestFilter() {
     /**
-     * 与 doFilter 的契约相同，但保证在单个请求线程中每个请求只调用一次。有关详细信息，请参阅 [shouldNotFilterAsyncDispatch]。
+     * 与 doFilter 的契约相同，但保证在单个请求线程中每个请求仅调用一次。详情请参阅 [shouldNotFilterAsyncDispatch]。
+     * 提供 HttpServletRequest 和 HttpServletResponse 参数，而不是默认的 ServletRequest 和 ServletResponse 参数。
      */
     override fun doFilterInternal(
         request: HttpServletRequest,
@@ -38,10 +38,10 @@ class JwtOncePerRequestFilter(
     ) {
         // 判断本次请求是否需要拦截
         for (path in securityProperties.whitelist) {
-            if (ANT_PATH_MATCHER.match(path, request.requestURI)) {
+            if (Constants.ANT_PATH_MATCHER.match(path, request.requestURI)) {
                 // 执行下一个 filter
                 filterChain.doFilter(request, response)
-                // return 是必须的
+                // return 是必须的，不然会执行下面的代码
                 return
             }
         }
@@ -52,14 +52,12 @@ class JwtOncePerRequestFilter(
         val user = redisTemplate.opsForHash<String, User>().get(User.REDIS_KEY_PREFIX, username)
             ?: throw AuthenticationServiceException("无法获取到用户信息")
         // TODO: 2023/8/31 在两个地方都设置了 user，如何才能只需要设置一次
-        val token = UsernamePasswordAuthenticationToken.authenticated(user, user.password, user.authorities)
+        val token = UsernamePasswordAuthenticationToken.authenticated(
+            user, user.password, user.authorities
+        )
 //        token.details = user
         SecurityContextHolder.getContext().authentication = token
         // 执行下一个 filter
         filterChain.doFilter(request, response)
-    }
-
-    companion object {
-        private val ANT_PATH_MATCHER = AntPathMatcher()
     }
 }

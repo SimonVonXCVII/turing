@@ -1,13 +1,13 @@
 package com.simonvonxcvii.turing.config
 
-import com.simonvonxcvii.turing.filter.JwtOncePerRequestFilter
+import com.simonvonxcvii.turing.filter.CustomCaptchaOncePerRequestFilter
+import com.simonvonxcvii.turing.filter.CustomJwtOncePerRequestFilter
 import com.simonvonxcvii.turing.properties.SecurityProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpMethod
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.configurers.*
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.crypto.factory.PasswordEncoderFactories
@@ -30,7 +30,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource
  * @since 2022/5/1 14:45
  */
 @Configuration
-@EnableWebSecurity
+//@EnableWebSecurity // TODO 该注解在 Spring boot 项目中可以省略？
 @EnableMethodSecurity
 class SecurityConfig {
     /**
@@ -125,7 +125,8 @@ class SecurityConfig {
         corsConfigurationSource: CorsConfigurationSource,
         authenticationSuccessHandler: AuthenticationSuccessHandler,
         authenticationFailureHandler: AuthenticationFailureHandler,
-        jwtOncePerRequestFilter: JwtOncePerRequestFilter,
+        customJwtOncePerRequestFilter: CustomJwtOncePerRequestFilter,
+        customCaptchaOncePerRequestFilter: CustomCaptchaOncePerRequestFilter,
         securityProperties: SecurityProperties,
         accessDeniedHandler: AccessDeniedHandler,
         authenticationEntryPoint: AuthenticationEntryPoint,
@@ -665,11 +666,11 @@ class SecurityConfig {
         // 将过滤器实例添加到指定过滤器类之后
         // 允许在已知筛选器类之一之后添加筛选器。
         // 已知的筛选器实例是 addFilter(Filter) 中列出的筛选器，或者是已使用 addFilterAfter(Filter, Class) 或 addFilterBefore(Filter, Class) 添加的筛选器。
-        http.addFilterAfter(jwtOncePerRequestFilter, UsernamePasswordAuthenticationFilter::class.java)
+        http.addFilterAfter(customJwtOncePerRequestFilter, UsernamePasswordAuthenticationFilter::class.java)
 
         // 允许在已知筛选器类之一之前添加筛选器。
         // 已知的筛选器实例是 addFilter（Filter） 中列出的筛选器，或者是已使用 addFilterAfter（Filter， Class） 或 addFilterBefore（Filter， Class） 添加的筛选器。
-//        http.addFilterBefore();
+        http.addFilterBefore(customCaptchaOncePerRequestFilter, UsernamePasswordAuthenticationFilter::class.java)
 
         // 添加一个筛选器，该筛选器必须是安全框架中提供的筛选器的实例或扩展其中一个筛选器。该方法可确保自动处理筛选器的顺序。
 //        http.addFilter();
