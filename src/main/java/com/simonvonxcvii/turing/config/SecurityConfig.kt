@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpMethod
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.configurers.*
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.crypto.factory.PasswordEncoderFactories
@@ -30,7 +31,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource
  * @since 2022/5/1 14:45
  */
 @Configuration
-//@EnableWebSecurity // TODO 该注解在 Spring boot 项目中可以省略？
+@EnableWebSecurity // TODO 该注解在 Spring boot 项目中可以省略？
 @EnableMethodSecurity
 class SecurityConfig {
     /**
@@ -132,7 +133,8 @@ class SecurityConfig {
         authenticationEntryPoint: AuthenticationEntryPoint,
         logoutSuccessHandler: LogoutSuccessHandler
     ): SecurityFilterChain {
-        // 将安全标头添加到响应中。使用 EnableWebSecurity 时默认激活。接受 EnableWebSecurity 提供的默认值或仅调用 headers() 而不对其调用其他方法
+        // 将安全标头添加到响应中。使用 EnableWebSecurity 时默认激活。
+        // 接受 EnableWebSecurity 提供的默认值或仅调用 headers() 而不对其调用其他方法
 //        http.headers { configurer: HeadersConfigurer<HttpSecurity> ->
 //            configurer
 //                // Adds a HeaderWriter instance
@@ -160,7 +162,8 @@ class SecurityConfig {
 //                // Content-Security-Policy
 //                // Content-Security-Policy-Report-Only
 //                .contentSecurityPolicy()
-//                // 从响应中清除所有默认标头。 这样做之后，可以添加标头。 例如，如果你只想使用 Spring Security 的缓存控制，你可以使用以下内容：
+//                // 从响应中清除所有默认标头。 这样做之后，可以添加标头。
+//                // 例如，如果你只想使用 Spring Security 的缓存控制，你可以使用以下内容：
 //                // http.headers().defaultsDisabled().cacheControl();
 //                .defaultsDisabled()
 //                // 允许配置 Referrer Policy。
@@ -199,24 +202,30 @@ class SecurityConfig {
 //                .invalidSessionUrl(null)
 //                // 设置这意味着需要显式调用 SessionAuthenticationStrategy。
 //                .requireExplicitAuthenticationStrategy(false)
-//                // 设置此属性会将提供的 invalidSessionStrategy 注入到 SessionManagementFilter 中。 当提交无效的会话 ID 时，将调用该策略，重定向到配置的 URL。
+//                // 设置此属性会将提供的 invalidSessionStrategy 注入到 SessionManagementFilter 中。
+//                // 当提交无效的会话 ID 时，将调用该策略，重定向到配置的 URL。
 //                .invalidSessionStrategy(null)
-//                // 定义在 SessionAuthenticationStrategy 引发异常时应显示的错误页面的 URL。 如果未设置，将向客户端返回未授权 (402) 错误代码。
+//                // 定义在 SessionAuthenticationStrategy 引发异常时应显示的错误页面的 URL。
+//                // 如果未设置，将向客户端返回未授权 (402) 错误代码。
 //                // 请注意，如果在基于表单的登录期间发生错误，则此属性不适用，其中身份验证失败的 URL 将优先。
 //                .sessionAuthenticationErrorUrl(null)
 //                // 定义将在 SessionAuthenticationStrategy 引发异常时使用的 AuthenticationFailureHandler。
-//                // 如果未设置，将向客户端返回未授权 (402) 错误代码。 请注意，如果在基于表单的登录期间发生错误，则此属性不适用，其中身份验证失败的 URL 将优先。
+//                // 如果未设置，将向客户端返回未授权 (402) 错误代码。
+//                // 请注意，如果在基于表单的登录期间发生错误，则此属性不适用，其中身份验证失败的 URL 将优先。
 //                .sessionAuthenticationFailureHandler(null)
-//                // 如果设置为 true，则允许在使用 HttpServletResponse.encodeRedirectURL(String) 或 HttpServletResponse.encodeURL(String) 时
+//                // 如果设置为 true，则允许在使用 HttpServletResponse.encodeRedirectURL(String)
+//                // 或 HttpServletResponse.encodeURL(String) 时
 //                // 在 URL 中重写 HTTP 会话，否则不允许在 URL 中包含 HTTP 会话。 这可以防止信息泄露到外部域。
 //                // 这是通过保护 HttpServletResponse.encodeURL 和 HttpServletResponse.encodeRedirectURL 调用来实现的。
-//                // 任何同时重写这两种方法中的任何一种的代码，如 org.springframework.web.servlet.resource.ResourceUrlEncodingFilter，
+//                // 任何同时重写这两种方法中的任何一种的代码，
+//                // 如 org.springframework.web.servlet.resource.ResourceUrlEncodingFilter，
 //                // 都需要位于安全过滤器链之后，否则就有被跳过的风险。
 //                .enableSessionUrlRewriting(false)
                 // 允许指定 SessionCreationPolicy
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             // 允许明确指定 SessionAuthenticationStrategy。 默认是使用 ChangeSessionIdAuthenticationStrategy。
-            // 如果配置了限制最大会话数，则 CompositeSessionAuthenticationStrategy 委托给 ConcurrentSessionControlAuthenticationStrategy，
+            // 如果配置了限制最大会话数，则 CompositeSessionAuthenticationStrategy
+            // 委托给 ConcurrentSessionControlAuthenticationStrategy，
             // 默认或提供的 SessionAuthenticationStrategy 和 RegisterSessionAuthenticationStrategy。
             // 注意：提供自定义 SessionAuthenticationStrategy 将覆盖默认会话固定策略。
 //                .sessionAuthenticationStrategy(ConcurrentSessionControlAuthenticationStrategy(SessionRegistryImpl()))
@@ -230,7 +239,8 @@ class SecurityConfig {
         // 允许配置可从 getSharedObject(Class) 获得的 PortMapper。
         // 当从 HTTP 重定向到 HTTPS 或从 HTTPS 重定向到 HTTP 时（例如，当与 requiresChannel() 结合使用时），
         // 其他提供的 SecurityConfigurer 对象使用此配置的 PortMapper 作为默认 PortMapper。
-        // 默认情况下，Spring Security 使用 PortMapperImpl 将 HTTP 端口 8080 映射到 HTTPS 端口 8443 和 HTTP 端口 80 到 HTTPS 端口 443。
+        // 默认情况下，Spring Security 使用 PortMapperImpl 将 HTTP 端口 8080
+        // 映射到 HTTPS 端口 8443 和 HTTP 端口 80 到 HTTPS 端口 443。
 //        http.portMapper(httpSecurityPortMapperConfigurer -> httpSecurityPortMapperConfigurer
 //                // 允许指定 PortMapper 实例。
 //                .portMapper(new PortMapperImpl())
@@ -258,20 +268,23 @@ class SecurityConfig {
 //                // 默认是 PreAuthenticatedGrantedAuthoritiesUserDetailsService。
 //                .authenticatedUserDetailsService(null)
 //                // 允许指定要使用的 J2eePreAuthenticatedProcessingFilter。
-//                // 如果提供了 J2eePreAuthenticatedProcessingFilter，则还必须手动配置其所有属性（即不使用 JeeConfigurer 中填充的所有属性）。
+//                // 如果提供了 J2eePreAuthenticatedProcessingFilter，
+//                // 则还必须手动配置其所有属性（即不使用 JeeConfigurer 中填充的所有属性）。
 //                .j2eePreAuthenticatedProcessingFilter(null)
 //                .disable()
 //        );
 
         // 配置基于 X509 的预身份验证。
 //        http.x509(httpSecurityX509Configurer -> httpSecurityX509Configurer
-//                // 允许指定整个 X509AuthenticationFilter。 如果已指定，则不会在 X509AuthenticationFilter 上填充 X509Configurer 上的属性。
+//                // 允许指定整个 X509AuthenticationFilter。
+//                // 如果已指定，则不会在 X509AuthenticationFilter 上填充 X509Configurer 上的属性。
 //                .x509AuthenticationFilter(null)
 //                // 指定 X509PrincipalExtractor
 //                .x509PrincipalExtractor(null)
 //                // 指定 AuthenticationDetailsSource
 //                .authenticationDetailsSource(null)
-//                // 使用 UserDetailsByNameServiceWrapper 调用 authenticationUserDetailsService(AuthenticationUserDetailsService) 的快捷方式。
+//                // 使用 UserDetailsByNameServiceWrapper
+//                // 调用 authenticationUserDetailsService(AuthenticationUserDetailsService) 的快捷方式。
 //                .userDetailsService(null)
 //                // 指定要使用的 AuthenticationUserDetailsService。 如果未指定，则默认使用 UserDetailsService bean。
 //                .authenticationUserDetailsService(null)
@@ -285,7 +298,8 @@ class SecurityConfig {
 //                // 允许指定令牌的有效期（以秒为单位）
 //                .tokenValiditySeconds(0)
 //                // cookie 是否应标记为安全。 安全 cookie 只能通过 HTTPS 连接发送，因此不会意外地通过 HTTP 提交，以免被拦截。
-//                // 默认情况下，如果请求是安全的，cookie 将是安全的。 如果您只想通过 HTTPS（推荐）使用 remember-me，您应该将此属性设置为 true。
+//                // 默认情况下，如果请求是安全的，cookie 将是安全的。
+//                // 如果您只想通过 HTTPS（推荐）使用 remember-me，您应该将此属性设置为 true。
 //                .useSecureCookie(false)
 //                // 指定用于在记住我令牌有效时查找 UserDetails 的 UserDetailsService。
 //                // 使用 org.springframework.security.web.SecurityFilterChain bean 时，默认是查找 UserDetailsService bean。
@@ -294,7 +308,8 @@ class SecurityConfig {
 //                // 指定要使用的 PersistentTokenRepository。 默认是使用 TokenBasedRememberMeServices 代替。
 //                .tokenRepository(null)
 //                // 设置密钥以识别为记住我身份验证而创建的令牌。 默认是一个安全的随机生成的密钥。
-//                // 如果指定了 rememberMeServices(RememberMeServices) 并且是 AbstractRememberMeServices 类型，则默认为 AbstractRememberMeServices 中设置的键。
+//                // 如果指定了 rememberMeServices(RememberMeServices) 并且是 AbstractRememberMeServices 类型，
+//                // 则默认为 AbstractRememberMeServices 中设置的键。
 //                .key(null)
 //                // 用于指示在登录时记住用户的 HTTP 参数。
 //                .rememberMeParameter(null)
@@ -335,7 +350,9 @@ class SecurityConfig {
                 .anyRequest()
                 // 指定任何经过身份验证的用户都允许使用 URL。
                 .authenticated()
-            // 允许指定自定义 AuthorizationManager。
+            // 创建未指定 HttpMethod 的 DispatcherTypeRequestMatcher 实例列表。
+//                .dispatcherTypeMatchers()
+//                // 允许指定自定义 AuthorizationManager。
 //                .access(AuthenticatedAuthorizationManager.authenticated())
         }
 
@@ -363,6 +380,7 @@ class SecurityConfig {
                 // 则将使用 defaultAuthenticationEntryPointFor(AuthenticationEntryPoint, RequestMatcher)。
                 // 如果未找到匹配项，则第一个 AuthenticationEntryPoint 将用作默认值。
                 // 如果未提供默认为 Http403ForbiddenEntryPoint。
+                // TODO 将下面这行注释后，启动时 filter 从 15 个变成了 18 个？？？！！！
                 .authenticationEntryPoint(authenticationEntryPoint)
             // 设置要使用的默认 AuthenticationEntryPoint，它更喜欢为提供的 RequestMatcher 调用。
             // 如果仅指定了一个默认的 AuthenticationEntryPoint，它将用于默认的 AuthenticationEntryPoint。
@@ -468,9 +486,11 @@ class SecurityConfig {
         // 指定支持基于表单的身份验证。 如果未指定 FormLoginConfigurer.loginPage(String)，将生成默认登录页面。
         http.formLogin { configurer: FormLoginConfigurer<HttpSecurity> ->
             configurer
-                // 指定如果用户在身份验证之前未访问安全页面，则在成功进行身份验证后将重定向到何处。这是调用 defaultSuccessUrl(String, boolean) 的快捷方式。
+                // 指定如果用户在身份验证之前未访问安全页面，则在成功进行身份验证后将重定向到何处。
+                // 这是调用 defaultSuccessUrl(String, boolean) 的快捷方式。
                 //                .defaultSuccessUrl(null)
-                //                // 指定如果用户在身份验证之前未访问安全页面或始终使用 true，则在成功进行身份验证后将重定向到何处。这是调用 successHandler(AuthenticationSuccessHandler) 的快捷方式。
+                //                // 指定如果用户在身份验证之前未访问安全页面或始终使用 true，则在成功进行身份验证后将重定向到何处。
+                //                // 这是调用 successHandler(AuthenticationSuccessHandler) 的快捷方式。
                 //                .defaultSuccessUrl(null, true)
                 //                // 指定用于验证凭据的 URL。
                 //                .loginProcessingUrl(null)
@@ -507,7 +527,8 @@ class SecurityConfig {
 //                .authenticationRequestResolver(null)
 //                // 自定义 SAML 身份验证请求将发送到的 URL。
 //                .authenticationRequestUri(null)
-//                // 指定用于验证凭据的 URL。如果指定了自定义 URL，请考虑通过 authenticationConverter（AuthenticationConverter）指定自定义 AuthenticationConverter，
+//                // 指定用于验证凭据的 URL。如果指定了自定义 URL，
+//                // 请考虑通过 authenticationConverter（AuthenticationConverter）指定自定义 AuthenticationConverter，
 //                // 因为默认的 AuthenticationConverter 实现依赖于 URL 中存在的 {registrationId} 路径变量
 //                .loginProcessingUrl(null)
 //                // 通过删除 AbstractHttpConfigurer 来禁用它。执行此操作后，可以应用新版本的配置。
@@ -584,6 +605,29 @@ class SecurityConfig {
 //                .disable()
 //        );
 
+        // OidcLogoutConfigurer<HttpSecurity>：用于 OIDC 注销流程的 AbstractHttpConfigurer
+        // OIDC 注销功能使应用程序能够让用户使用其在 OAuth 2.0 或 OpenID Connect 1.0 提供商处现有的帐户注销。
+//        http.oidcLogout { configurer: OidcLogoutConfigurer<HttpSecurity> ->
+//            configurer
+//                // 设置客户端注册的存储库。
+//                .clientRegistrationRepository { registrationId: String ->
+//                    ClientRegistration
+//                        // 返回一个新的 ClientRegistration.Builder，使用提供的注册标识符初始化。
+//                        .withRegistrationId(registrationId)
+//                        .build()
+//                }
+//                // 设置用于管理 OIDC 客户端-提供商会话链接的注册表
+//                .oidcSessionRegistry(InMemoryOidcSessionRegistry())
+//                // 使用提供的消费者配置 OIDC 反向通道注销
+//                .backChannel { configurer: OidcLogoutConfigurer<HttpSecurity>.BackChannelLogoutConfigurer ->
+//                    configurer
+//                        // 调用反向通道注销时使用此端点。
+//                        .logoutUri("/logout")
+//                        // 配置每个会话注销的执行内容和方式。
+//                        .logoutHandler(null)
+//                }
+//        }
+
         // 配置 OAuth 2.0 客服端支持
 //        http.oauth2Client(httpSecurityOAuth2ClientConfigurer -> httpSecurityOAuth2ClientConfigurer
 //                // 设置客服端注册仓库
@@ -613,21 +657,46 @@ class SecurityConfig {
 //                .disable()
 //        };
 
-        // 配置通道安全性。为了使此配置有用，必须至少提供一个到所需通道的映射。
-//        http.requiresChannel(channelRequestMatcherRegistry -> channelRequestMatcherRegistry
-//                // 为此类添加一个 ObjectPostProcessor
-//                .withObjectPostProcessor(null)
-//                // 设置要在 ChannelDecisionManagerImpl 中使用的 ChannelProcessor 实例
-//                .channelProcessors(null)
-//                // 设置要在 RetryWithHttpEntryPoint 和 RetryWithHttpsEntryPoint 中使用的 RedirectStrategy 实例
-//                .redirectStrategy(null)
-//        );
+        // 配置一次性令牌登录支持。todo
+//        http.oneTimeTokenLogin { configurer: OneTimeTokenLoginConfigurer<HttpSecurity> ->
+//            configurer
+//                // 指定在验证用户身份时使用的 AuthenticationProvider。
+//                .authenticationProvider(null)
+//                // 指定一次性令牌生成请求将被处理的 URL。默认为 /ott/generate。
+//                .tokenGeneratingUrl(null)
+//                // 指定用于处理生成的一次性令牌的策略。
+//                .tokenGenerationSuccessHandler(null)
+//                // 指定处理登录请求的 URL，默认为 /login/ott。仅处理 POST 请求，因此，如果启用了 CSRF 保护，请确保传递有效的 CSRF 令牌。
+//                .loginProcessingUrl("/login")
+//                // 指定需要登录时将用户引导至的 URL。如果与 EnableWebSecurity 一起使用，则在未指定此属性时将生成默认登录页面。
+//                .loginPage("/login")
+//                // 配置是否显示默认的一次性令牌提交页面。这将阻止配置 DefaultOneTimeTokenSubmitPageGeneratingFilter。
+//                .showDefaultSubmitPage(true)
+//                // 设置默认提交页面的 URL。默认为 /login/ott。如果您不想生成默认提交页面，可以使用 showDefaultSubmitPage(boolean)。
+//                // 请注意，此方法始终会调用 showDefaultSubmitPage(boolean) 并传递 true。
+//                .defaultSubmitPageUrl("/")
+//                // 配置用于生成和使用 OneTimeToken 的 OneTimeTokenService
+//                .tokenService(null)
+//                // 将传入请求转换为身份验证时，请使用此 AuthenticationConverter。默认情况下，使用 OneTimeTokenAuthenticationConverter。
+//                .authenticationConverter(null)
+//                // 从 HttpServletRequest 解析 GenerateOneTimeTokenRequest 时，请使用此 GenerateOneTimeTokenRequestResolver。
+//                // 默认情况下，使用 DefaultGenerateOneTimeTokenRequestResolver。
+//                .generateRequestResolver(null)
+//        }
 
-        // 配置 HTTP Basic 身份验证
+        // 配置通道安全性。为了使此配置有用，必须提供至少一个到所需通道的映射。
+//        http.redirectToHttps { configurer: HttpsRedirectConfigurer<HttpSecurity> ->
+//            configurer
+//                .requestMatchers()
+//        }
+
+        // 配置 HTTP Basic 身份验证 todo
 //        http.httpBasic(httpSecurityHttpBasicConfigurer -> httpSecurityHttpBasicConfigurer
-//                // 允许轻松更改领域，但保留剩余的默认值。如果已调用 authenticationEntryPoint（AuthenticationEntryPoint），则调用此方法将导致错误。
+//                // 允许轻松更改领域，但保留剩余的默认值。
+//                // 如果已调用 authenticationEntryPoint（AuthenticationEntryPoint），则调用此方法将导致错误。
 //                .realmName(null)
-//                // 身份验证入口点在身份验证失败时填充在 BasicAuthenticationFilter 上。默认将 BasicAuthenticationEntryPoint 与领域“Realm”一起使用。
+//                // 身份验证入口点在身份验证失败时填充在 BasicAuthenticationFilter 上。
+//                // 默认将 BasicAuthenticationEntryPoint 与领域“Realm”一起使用。
 //                .authenticationEntryPoint(authenticationEntryPoint)
 //                // 指定用于基本身份验证的自定义身份验证详细信息源。默认值为 WebAuthenticationDetailsSource。
 //                .authenticationDetailsSource(null)
@@ -645,25 +714,24 @@ class SecurityConfig {
 //                .disable()
 //        );
 
-        // 配置默认的 AuthenticationManager.
+        // 配置默认的 AuthenticationManager. todo
 //        http.authenticationManager(null);
 
-        // 设置由多个 SecurityConfigurer 共享的对象。
-//        http.setSharedObject(null, null);
-
-        // 允许添加额外的 AuthenticationProvider 以供使用
+        // 允许添加额外的 AuthenticationProvider 以供使用 todo
 //        http.authenticationProvider(null);
 
-        // 允许添加额外的 UserDetailsService 以供使用
+        // 允许添加额外的 UserDetailsService 以供使用 todo
 //        http.userDetailsService(null);
 
         // 将过滤器实例添加到指定过滤器类之后
         // 允许在已知筛选器类之一之后添加筛选器。
-        // 已知的筛选器实例是 addFilter(Filter) 中列出的筛选器，或者是已使用 addFilterAfter(Filter, Class) 或 addFilterBefore(Filter, Class) 添加的筛选器。
+        // 已知的筛选器实例是 addFilter(Filter) 中列出的筛选器，
+        // 或者是已使用 addFilterAfter(Filter, Class) 或 addFilterBefore(Filter, Class) 添加的筛选器。
         http.addFilterAfter(customJwtOncePerRequestFilter, UsernamePasswordAuthenticationFilter::class.java)
 
         // 允许在已知筛选器类之一之前添加筛选器。
-        // 已知的筛选器实例是 addFilter（Filter） 中列出的筛选器，或者是已使用 addFilterAfter（Filter， Class） 或 addFilterBefore（Filter， Class） 添加的筛选器。
+        // 已知的筛选器实例是 addFilter(Filter) 中列出的筛选器，
+        // 或者是已使用 addFilterAfter(Filter, Class) 或 addFilterBefore(Filter, Class) 添加的筛选器。
         http.addFilterBefore(customCaptchaOncePerRequestFilter, UsernamePasswordAuthenticationFilter::class.java)
 
         // 添加一个筛选器，该筛选器必须是安全框架中提供的筛选器的实例或扩展其中一个筛选器。该方法可确保自动处理筛选器的顺序。
@@ -691,6 +759,26 @@ class SecurityConfig {
         // 调用 securityMatcher（String...） 将覆盖之前对 securityMatcher（String...） 的调用（String）}}，
         // securityMatcher（RequestMatcher） （）}， securityMatchers（Customizer） （String）} and securityMatchers（） （String）}.
 //        http.securityMatcher((String) null);
+
+        // 指定基于 webAuthn/passkeys 的身份验证。todo
+//        http.webAuthn { configurer: WebAuthnConfigurer<HttpSecurity> ->
+//            configurer
+//                // 依赖方 ID。
+//                .rpId(null)
+//                // 设置依赖方名称
+//                .rpName(null)
+//                // allowedOrigins(Set) 的便捷方法
+//                .allowedOrigins(null as String?)
+//                // 设置允许的来源。
+//                .allowedOrigins(null as Set<String>?)
+//                // 配置是否禁用默认的 webauthn 注册。设置为 true 将阻止配置器注册 DefaultWebAuthnRegistrationPageGeneratingFilter。
+//                .disableDefaultRegistrationPage(false)
+//                // 设置用于 WebAuthn 的 HttpMessageConverter 来读取/写入 HTTP 请求/响应。
+//                .messageConverter(null)
+//                // 设置 PublicKeyCredentialCreationOptionsRepository
+//                .creationOptionsRepository(null)
+//        }
+
         return http.build()
     }
 }
