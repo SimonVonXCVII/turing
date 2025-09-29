@@ -69,6 +69,7 @@ class NimbusJwtServiceImpl(
 
     /**
      * 根据用户 id 和用户名进行编码并返回生成的 JWT
+     * todo 写法改进
      *
      * @param userId   用户 id，不能为空
      * @param username 用户名，不能为空
@@ -85,10 +86,10 @@ class NimbusJwtServiceImpl(
         val jwtClaimsSet = JwtClaimsSet.builder()
             // 设置颁发者 （iss） 声明，该声明标识颁发 JWT 的主体。
             // 形参: 颁发者 – 颁发者标识符
-            .issuer("https://" + securityProperties.address)
+            .issuer(securityProperties.host)
             // 设置主题（子）声明，该声明标识作为 JWT 主题的主体。
             // 形参: 主题 – 主题标识符
-            .subject(securityProperties.address)
+            .subject(securityProperties.host)
             // 设置受众 （aud） 声明，该声明标识 JWT 所针对的收件人。
             // 形参: 受众 – 此 JWT 所针对的受众
             .audience(listOf(username))

@@ -59,10 +59,10 @@ class SecurityConfig {
         // 用于 CORS 配置的容器以及用于检查给定请求的实际来源、HTTP 方法和标头的方法。
         // 默认情况下，新创建的 CorsConfiguration 不允许任何跨源请求，必须明确配置以指示应允许的内容。
         // 使用 applyPermitDefaultValues() 翻转初始化模型，以开放默认值开始，这些默认值允许 GET、HEAD 和 POST 请求的所有跨源请求。
-        val config = CorsConfiguration()
+        val config = CorsConfiguration().applyPermitDefaultValues()
         // 设置允许的来源
         // 允许跨源请求的源列表。默认情况下未设置，这意味着不允许任何来源
-        config.allowedOrigins = listOf("http://" + securityProperties.address)
+        config.allowedOrigins = listOf(securityProperties.host)
         // TODO 设置允许的原点模式
         // setAllowedOrigins 的替代方案，它支持更灵活的来源模式，除了端口列表之外，主机名中的任何位置都带有“*”。 例子：
         // https://*.domain1.com -- 以 domain1.com 结尾的域
@@ -86,7 +86,7 @@ class SecurityConfig {
         // 特殊值“*”允许实际请求发送任何标头。
         // 如果标头名称是以下之一，则不需要列出：Cache-Control、Content-Language、Expires、Last-Modified 或 Pragma。
         // 默认情况下未设置。
-        config.allowedHeaders = listOf(CorsConfiguration.ALL)
+//        config.allowedHeaders = listOf(CorsConfiguration.ALL)
         // TODO 设置暴露的请求头
         // 设置响应标头列表，而不是简单标头（即 Cache-Control、Content-Language、Content-Type、Expires、Last-Modified 或 Pragma）
         // 实际响应可能具有并且可以公开。
@@ -100,7 +100,7 @@ class SecurityConfig {
         // 设置最大有效期
         // 配置客户端可以缓存飞行前请求的响应多长时间（以秒为单位）。
         // 默认情况下未设置。
-        config.maxAge = 1800
+//        config.maxAge = 1800
         // CorsConfigurationSource 使用 URL 模式为请求选择 CorsConfiguration。
         val source = UrlBasedCorsConfigurationSource()
         // 注册 Cors 配置
@@ -133,7 +133,8 @@ class SecurityConfig {
         logoutSuccessHandler: LogoutSuccessHandler
     ): SecurityFilterChain {
         // 将安全标头添加到响应中。使用 EnableWebSecurity 时默认激活。接受 EnableWebSecurity 提供的默认值或仅调用 headers() 而不对其调用其他方法
-//        http.headers(httpSecurityHeadersConfigurer -> httpSecurityHeadersConfigurer
+//        http.headers { configurer: HeadersConfigurer<HttpSecurity> ->
+//            configurer
 //                // Adds a HeaderWriter instance
 //                .addHeaderWriter(null)
 //                // 配置插入 X-Content-Type-Options 的 XContentTypeOptionsHeaderWriter:
@@ -158,18 +159,15 @@ class SecurityConfig {
 //                // 向 ContentSecurityPolicyHeaderWriter 提供了配置，它支持编写 W3C 候选建议中详述的两个标头：
 //                // Content-Security-Policy
 //                // Content-Security-Policy-Report-Only
-//                .contentSecurityPolicy(contentSecurityPolicyConfig -> {
-//                })
+//                .contentSecurityPolicy()
 //                // 从响应中清除所有默认标头。 这样做之后，可以添加标头。 例如，如果你只想使用 Spring Security 的缓存控制，你可以使用以下内容：
 //                // http.headers().defaultsDisabled().cacheControl();
 //                .defaultsDisabled()
 //                // 允许配置 Referrer Policy。
 //                // 向 ReferrerPolicyHeaderWriter 提供了配置，它支持写入标头，如 W3C 技术报告中所述：
 //                // Referrer-Policy
-//                .referrerPolicy(referrerPolicyConfig -> {
-//                })
-//                .permissionsPolicy(permissionsPolicyConfig -> {
-//                })
+//                .referrerPolicy()
+//                .permissionsPolicy()
 //                .and()
 //                // 允许配置 Cross-Origin-Opener-Policy 标头。
 //                // 调用此方法会使用提供的策略在响应中自动启用（包括）Cross-Origin-Opener-Policy 标头。
@@ -178,28 +176,24 @@ class SecurityConfig {
 //                // 允许配置 Cross-Origin-Embedder-Policy 标头。
 //                // 调用此方法会使用提供的策略在响应中自动启用（包括）Cross-Origin-Embedder-Policy 标头。
 //                // 配置提供给负责编写标头的 CrossOriginEmbedderPolicyHeaderWriter。
-//                .crossOriginEmbedderPolicy(crossOriginEmbedderPolicyConfig -> {
-//                })
+//                .crossOriginEmbedderPolicy()
 //                // 允许配置 Cross-Origin-Resource-Policy 标头。
 //                // 调用此方法会使用提供的策略在响应中自动启用（包括）Cross-Origin-Resource-Policy 标头。
 //                // 配置提供给负责编写标头的 CrossOriginResourcePolicyHeaderWriter：
-//                .crossOriginResourcePolicy(crossOriginResourcePolicyConfig -> {
-//                })
+//                .crossOriginResourcePolicy()
 //                .disable()
-//        );
+//        }
 
         // 添加要使用的 CorsFilter。 如果提供了名为 corsFilter 的 bean，则使用该 CorsFilter。
         // 否则，如果定义了 corsConfigurationSource，则使用该 CorsConfiguration。
         // 否则，如果 Spring MVC 在类路径上，则使用 HandlerMappingIntrospector。
-        http.cors { httpSecurityCorsConfigurer: CorsConfigurer<HttpSecurity?> ->
-            httpSecurityCorsConfigurer.configurationSource(
-                corsConfigurationSource
-            )
+        http.cors { corsConfigurer: CorsConfigurer<HttpSecurity> ->
+            corsConfigurer.configurationSource(corsConfigurationSource)
         }
 
-        // 允许配置会话管理。
-        http.sessionManagement { httpSecuritySessionManagementConfigurer: SessionManagementConfigurer<HttpSecurity?> ->
-            httpSecuritySessionManagementConfigurer
+        // 允许配置会话管理。todo 尝试启用，看有哪些好处
+        http.sessionManagement { configurer: SessionManagementConfigurer<HttpSecurity> ->
+            configurer
                 // 设置此属性将向 SessionManagementFilter 注入配置有属性值的 SimpleRedirectInvalidSessionStrategy。
                 // 当提交无效的会话 ID 时，将调用该策略，重定向到配置的 URL。
 //                .invalidSessionUrl(null)
@@ -322,8 +316,8 @@ class SecurityConfig {
 
         // TODO: 2023/6/21 白名单里的请求路径居然直接跳过了跨域，不受跨域的限制！？
         // 允许使用 RequestMatcher 实现（即通过 URL 模式）基于 HttpServletRequest 限制访问。
-        http.authorizeHttpRequests { authorizationManagerRequestMatcherRegistry: AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry ->
-            authorizationManagerRequestMatcherRegistry
+        http.authorizeHttpRequests { registry: AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry ->
+            registry
                 // 如果 HandlerMappingIntrospector 在类路径中可用，则映射到不关心使用哪个 HttpMethod 的 MvcRequestMatcher。
                 // 这个匹配器将使用 Spring MVC 用于匹配的相同规则。 例如，路径“/path”的映射通常会匹配“/path”、“/path/”、“/path.html”等。
                 // 如果 HandlerMappingIntrospector 不可用，则映射到 AntPathRequestMatcher。
@@ -354,8 +348,8 @@ class SecurityConfig {
 //        );
 
         // 允许配置异常处理。 这在使用 EnableWebSecurity 时会自动应用。
-        http.exceptionHandling { httpSecurityExceptionHandlingConfigurer: ExceptionHandlingConfigurer<HttpSecurity?> ->
-            httpSecurityExceptionHandlingConfigurer
+        http.exceptionHandling { configurer: ExceptionHandlingConfigurer<HttpSecurity> ->
+            configurer
                 // 指定要使用的 AccessDeniedHandler 的快捷方式是特定的错误页面
                 //                .accessDeniedPage(null)
                 // 指定要使用的 AccessDeniedHandler
@@ -394,8 +388,8 @@ class SecurityConfig {
 
         // TODO: 2023/4/9 研究是否值得启用，可能是要前端配合的
         // 启用 CSRF 保护。 在使用 EnableWebSecurity 的默认构造函数时默认激活。
-        http.csrf { httpSecurityCsrfConfigurer: CsrfConfigurer<HttpSecurity> ->
-            httpSecurityCsrfConfigurer
+        http.csrf { configurer: CsrfConfigurer<HttpSecurity> ->
+            configurer
                 // 指定要使用的 CsrfTokenRepository。 默认是由 LazyCsrfTokenRepository 包装的 HttpSessionCsrfTokenRepository。
                 //                        .csrfTokenRepository(new HttpSessionCsrfTokenRepository())
                 // 指定 RequestMatcher 用于确定何时应应用 CSRF。 默认是忽略 GET、HEAD、TRACE、OPTIONS 并处理所有其他请求。
@@ -412,8 +406,8 @@ class SecurityConfig {
         // 提供注销支持。 这在使用 EnableWebSecurity 时会自动应用。
         // 默认情况下，访问 URL“/logout”将通过使 HTTP 会话无效、清除配置的任何 rememberMe() 身份验证、清除 SecurityContextHolder，
         // 然后重定向到“/login?success”来注销用户。
-        http.logout { httpSecurityLogoutConfigurer: LogoutConfigurer<HttpSecurity?> ->
-            httpSecurityLogoutConfigurer
+        http.logout { configurer: LogoutConfigurer<HttpSecurity> ->
+            configurer
                 // 添加一个注销处理程序。
                 // SecurityContextLogoutHandler 和 LogoutSuccessEventPublishingLogoutHandler 默认添加为最后一个 LogoutHandler 实例。
                 //                .addLogoutHandler(logoutHandler)
@@ -472,8 +466,8 @@ class SecurityConfig {
 //        );
 
         // 指定支持基于表单的身份验证。 如果未指定 FormLoginConfigurer.loginPage(String)，将生成默认登录页面。
-        http.formLogin { httpSecurityFormLoginConfigurer: FormLoginConfigurer<HttpSecurity?> ->
-            httpSecurityFormLoginConfigurer
+        http.formLogin { configurer: FormLoginConfigurer<HttpSecurity> ->
+            configurer
                 // 指定如果用户在身份验证之前未访问安全页面，则在成功进行身份验证后将重定向到何处。这是调用 defaultSuccessUrl(String, boolean) 的快捷方式。
                 //                .defaultSuccessUrl(null)
                 //                // 指定如果用户在身份验证之前未访问安全页面或始终使用 true，则在成功进行身份验证后将重定向到何处。这是调用 successHandler(AuthenticationSuccessHandler) 的快捷方式。

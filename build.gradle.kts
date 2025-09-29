@@ -9,14 +9,14 @@ plugins {
     /**
      * 添加对具有给定 id 的插件的依赖关系。
      */
-    id("org.springframework.boot") version libs.versions.springBoot.get()
-    id("io.spring.dependency-management") version libs.versions.springDependencyManagement.get()
-    id("org.graalvm.buildtools.native") version libs.versions.graalvmBuildtoolsNative.get()
+    alias(libs.plugins.org.springframework.boot)
+    alias(libs.plugins.io.spring.dependency.management)
+    alias(libs.plugins.org.graalvm.buildtools.native)
     /**
      * 应用给定的 Kotlin 插件模块。
      */
-    kotlin("jvm") version libs.versions.kotlin.get()
-    kotlin("plugin.spring") version libs.versions.kotlin.get()
+    kotlin("jvm") version libs.versions.org.jetbrains.kotlin
+    kotlin("plugin.spring") version libs.versions.org.jetbrains.kotlin
 }
 
 /**
@@ -44,7 +44,7 @@ java {
         /**
          * 工具链需要支持的 Java 语言的确切版本。
          */
-        languageVersion = JavaLanguageVersion.of(libs.versions.javaLanguage.get())
+        languageVersion = JavaLanguageVersion.of(libs.versions.java.language.get())
     }
 }
 
@@ -105,7 +105,7 @@ repositories {
  * 针对该项目的 DependencyHandlerScope 执行给定的配置块。
  */
 dependencies {
-    annotationProcessor("com.github.therapi:therapi-runtime-javadoc-scribe:${libs.versions.therapiRuntimeJavadoc.get()}")
+    annotationProcessor(libs.com.github.therapi.therapi.runtime.javadoc.scribe)
     annotationProcessor("org.projectlombok:lombok")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
@@ -116,27 +116,27 @@ dependencies {
 //    implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     // therapi
     // https://central.sonatype.com/artifact/com.github.therapi/therapi-runtime-javadoc
-    implementation("com.github.therapi:therapi-runtime-javadoc:${libs.versions.therapiRuntimeJavadoc.get()}")
+    implementation(libs.com.github.therapi.therapi.runtime.javadoc)
     // google
     // https://central.sonatype.com/artifact/com.google.guava/guava
-//    implementation("com.google.guava:guava:${libs.versions.googleGuava.get()}")
+//    implementation(libs.com.google.guava.guava)
     // https://central.sonatype.com/artifact/com.google.zxing/javase
-//    implementation("com.google.zxing:javase:${libs.versions.googleZxing.get()}")
+//    implementation(libs.com.google.zxing.javase)
     // thumbnailator
     // https://central.sonatype.com/artifact/net.coobird/thumbnailator
-//    implementation("net.coobird:thumbnailator:${libs.versions.thumbnailator.get()}")
+//    implementation(libs.net.coobird.thumbnailator)
     // apache
     // https://central.sonatype.com/artifact/org.apache.poi/poi
-    implementation("org.apache.poi:poi:${libs.versions.apachePoi.get()}")
+    implementation(libs.org.apache.poi.poi)
     // https://central.sonatype.com/artifact/org.apache.velocity/velocity-engine-core
-//    implementation("org.apache.velocity:velocity-engine-core:${libs.versions.apacheVelocity.get()}")
+//    implementation(libs.org.apache.velocity.velocity.engine.core)
     // kotlin 非必需
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     // springdoc
     // https://central.sonatype.com/namespace/org.springdoc
-    implementation("org.springdoc:springdoc-openapi-starter-common:${libs.versions.springdoc.get()}")
-    implementation("org.springdoc:springdoc-openapi-starter-webmvc-api:${libs.versions.springdoc.get()}")
-    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:${libs.versions.springdoc.get()}")
+    implementation(libs.org.springdoc.springdoc.openapi.starter.common)
+    implementation(libs.org.springdoc.springdoc.openapi.starter.webmvc.api)
+    implementation(libs.org.springdoc.springdoc.openapi.starter.webmvc.ui)
     // springframework
 //    developmentOnly("org.springframework.boot:spring-boot-docker-compose")
     implementation("org.springframework.boot:spring-boot-starter")
@@ -154,7 +154,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
     // PDF TODO 尝试换成 apache 的，或者试试 itext
     // https://central.sonatype.com/artifact/org.xhtmlrenderer/flying-saucer-pdf
-//    implementation("org.xhtmlrenderer:flying-saucer-pdf:${libs.versions.flyingSaucerPdf.get()}")
+//    implementation(libs.org.xhtmlrenderer.flying.saucer.pdf)
 //    implementation("org.apache.pdfbox:pdfbox:3.0.1")
 
     // postgresql

@@ -1,14 +1,32 @@
 [versions]
-springBoot = "3.5.6"
-springDependencyManagement = "1.1.7"
-graalvmBuildtoolsNative = "0.10.6"
-kotlin = "2.2.20"
-javaLanguage = "24"
-therapiRuntimeJavadoc = "0.15.0"
-googleGuava = "33.4.8-jre"
-googleZxing = "3.5.3"
-thumbnailator = "0.4.20"
-apachePoi = "5.4.1"
-apacheVelocity = "2.4.1"
-springdoc = "2.8.13"
-flyingSaucerPdf = "9.13.0"
+org-springframework-boot = "3.5.6"
+io-spring-dependency-management = "1.1.7"
+org-graalvm-buildtools-native = "0.10.6"
+org-jetbrains-kotlin = "2.2.20"
+java-language = "24"
+com-github-therapi-runtime-javadoc = "0.15.0"
+com-google-guava = "33.4.8-jre"
+com-google-zxing = "3.5.3"
+net-coobird = "0.4.20"
+org-apache-poi-poi = "5.4.1"
+org-apache-velocity-velocity-engine-core = "2.4.1"
+org-springdoc = "2.8.13"
+org-xhtmlrenderer-flying-saucer-pdf = "9.13.0"
+
+[libraries]
+com-github-therapi-therapi-runtime-javadoc-scribe = { module = "com.github.therapi:therapi-runtime-javadoc-scribe", version.ref = "com-github-therapi-runtime-javadoc" }
+com-github-therapi-therapi-runtime-javadoc = { module = "com.github.therapi:therapi-runtime-javadoc", version.ref = "com-github-therapi-runtime-javadoc" }
+com-google-guava-guava = { module = "com.google.guava:guava", version.ref = "com-google-guava" }
+com-google-zxing-javase = { module = "com.google.zxing:javase", version.ref = "com-google-zxing" }
+net-coobird-thumbnailator = { module = "net.coobird:thumbnailator", version.ref = "net-coobird" }
+org-apache-poi-poi = { module = "org.apache.poi:poi", version.ref = "org-apache-poi-poi" }
+org-apache-velocity-velocity-engine-core = { module = "org.apache.velocity:velocity-engine-core", version.ref = "org-apache-velocity-velocity-engine-core" }
+org-springdoc-springdoc-openapi-starter-common = { module = "org.springdoc:springdoc-openapi-starter-common", version.ref = "org-springdoc" }
+org-springdoc-springdoc-openapi-starter-webmvc-api = { module = "org.springdoc:springdoc-openapi-starter-webmvc-api", version.ref = "org-springdoc" }
+org-springdoc-springdoc-openapi-starter-webmvc-ui = { module = "org.springdoc:springdoc-openapi-starter-webmvc-ui", version.ref = "org-springdoc" }
+org-xhtmlrenderer-flying-saucer-pdf = { module = "org.xhtmlrenderer:flying-saucer-pdf", version.ref = "org-xhtmlrenderer-flying-saucer-pdf" }
+
+[plugins]
+org-springframework-boot = { id = "org.springframework.boot", version.ref = "org-springframework-boot" }
+io-spring-dependency-management = { id = "io.spring.dependency-management", version.ref = "io-spring-dependency-management" }
+org-graalvm-buildtools-native = { id = "org.graalvm.buildtools.native", version.ref = "org-graalvm-buildtools-native" }

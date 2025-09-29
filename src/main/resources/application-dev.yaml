@@ -5,7 +5,7 @@
 
 security:
   # 服务器网络地址
-  address: localhost
+  host: http://${HOST}
 
 spring:
   config:
@@ -14,12 +14,12 @@ spring:
   data:
     redis:
       # redis 服务器主机
-      host: ${security.address}
+      host: ${HOST}
       # redis 密码
       password: ${REDIS_PASSWORD}
   datasource:
     # 数据库的 JDBC URL。
-    url: jdbc:postgresql://${security.address}:5432/${POSTGRES_DB}?characterEncoding=utf-8&clientEncoding=utf-8
+    url: jdbc:postgresql://${HOST}:5432/${POSTGRES_DB}?characterEncoding=utf-8&clientEncoding=utf-8
     # 数据库的登录用户名。
     username: ${POSTGRES_USER}
     # 数据库的登录密码。

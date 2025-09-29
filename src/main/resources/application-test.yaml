@@ -5,7 +5,7 @@
 
 security:
   # 服务器网络地址
-  address: localhost
+  host: http://localhost
 
 spring:
   data:

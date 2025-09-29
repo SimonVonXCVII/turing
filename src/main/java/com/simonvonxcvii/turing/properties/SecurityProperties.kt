@@ -13,7 +13,7 @@ data class SecurityProperties(
     /**
      * 服务器网络地址
      */
-    var address: String,
+    var host: String,
 
     /**
      * jwt 有效期时长，单位秒
