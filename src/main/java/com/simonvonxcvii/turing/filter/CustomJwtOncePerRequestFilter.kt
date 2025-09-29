@@ -1,8 +1,8 @@
 package com.simonvonxcvii.turing.filter
 
+import com.simonvonxcvii.turing.component.CustomNimbusJwtProvider
 import com.simonvonxcvii.turing.entity.User
 import com.simonvonxcvii.turing.properties.SecurityProperties
-import com.simonvonxcvii.turing.service.NimbusJwtService
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
@@ -22,7 +22,7 @@ import org.springframework.web.filter.OncePerRequestFilter
  */
 @Component
 class CustomJwtOncePerRequestFilter(
-    private val nimbusJwtService: NimbusJwtService,
+    private val customNimbusJwtProvider: CustomNimbusJwtProvider,
     private val securityProperties: SecurityProperties,
     private val redisTemplate: RedisTemplate<Any, Any>
 ) : OncePerRequestFilter() {
@@ -42,12 +42,13 @@ class CustomJwtOncePerRequestFilter(
         // 如果不在白名单则拦截
         if (matched) {
             // 从请求中解析 username
-            val username = nimbusJwtService.getUsername(request)
+            val username = customNimbusJwtProvider.getUsername(request)
             // 根据 username 从 redis 获取 user
             val user = redisTemplate.opsForHash<String, User>().get(User.REDIS_KEY_PREFIX, username)
                 ?: throw AuthenticationServiceException("无法获取到用户信息")
             // 缓存用户信息到 SecurityContext
-            // TODO: 2023/8/31 在两个地方都设置了 user，如何才能只需要设置一次
+            // TODO 考虑是否仅当 SecurityContextHolder.getContext().authentication 为 null 时才赋值
+            // TODO 2023/8/31 在两个地方都设置了 user，如何才能只需要设置一次
             val token = UsernamePasswordAuthenticationToken.authenticated(
                 user, user.password, user.authorities
             )

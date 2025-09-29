@@ -6,7 +6,6 @@ import com.simonvonxcvii.turing.repository.jpa.OrganizationJpaRepository
 import com.simonvonxcvii.turing.repository.jpa.RoleJpaRepository
 import com.simonvonxcvii.turing.repository.jpa.UserJpaRepository
 import com.simonvonxcvii.turing.repository.jpa.UserRoleJpaRepository
-import com.simonvonxcvii.turing.service.NimbusJwtService
 import com.simonvonxcvii.turing.utils.Constants
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.data.jpa.domain.Specification
@@ -28,7 +27,7 @@ import org.springframework.util.StringUtils
  */
 @Component
 class CustomUserDetailsService(
-    private val nimbusJwtService: NimbusJwtService,
+    private val customNimbusJwtProvider: CustomNimbusJwtProvider,
     private val httpServletRequest: HttpServletRequest,
     private val redisTemplate: RedisTemplate<Any, Any>,
     private val stringRedisTemplate: StringRedisTemplate,
@@ -94,7 +93,7 @@ class CustomUserDetailsService(
         // 缓存当前用户的角色集合
         user.authorities = roleList
         // 缓存当前用户的 token
-        user.token = nimbusJwtService.encode(user.id, username).tokenValue
+        user.token = customNimbusJwtProvider.encode(user.id, username).tokenValue
         // 将 token 保存到 request 中，便于在 AuthenticationSuccessHandlerImpl#onAuthenticationSuccess 方法中获取
         httpServletRequest.setAttribute(OAuth2ParameterNames.TOKEN, user.token)
         val organization = organizationJpaRepository.findById(user.orgId)

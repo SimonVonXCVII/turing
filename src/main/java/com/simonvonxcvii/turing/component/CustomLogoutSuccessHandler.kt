@@ -1,7 +1,6 @@
 package com.simonvonxcvii.turing.component
 
 import com.simonvonxcvii.turing.entity.User
-import com.simonvonxcvii.turing.service.NimbusJwtService
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.data.redis.core.RedisTemplate
@@ -18,7 +17,7 @@ import org.springframework.stereotype.Component
  */
 @Component
 class CustomLogoutSuccessHandler(
-    private val nimbusJwtService: NimbusJwtService,
+    private val customNimbusJwtProvider: CustomNimbusJwtProvider,
     private val redisTemplate: RedisTemplate<Any, Any>
 ) : LogoutSuccessHandler {
     /**
@@ -34,7 +33,7 @@ class CustomLogoutSuccessHandler(
         authentication: Authentication?
     ) {
         // 从请求中解析 username
-        val username = nimbusJwtService.getUsername(request)
+        val username = customNimbusJwtProvider.getUsername(request)
         // 清除缓存的用户信息
         redisTemplate.opsForHash<String, User>().delete(User.REDIS_KEY_PREFIX, username)
     }

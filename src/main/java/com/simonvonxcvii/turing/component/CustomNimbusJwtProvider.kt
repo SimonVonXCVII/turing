@@ -1,4 +1,4 @@
-package com.simonvonxcvii.turing.service.impl
+package com.simonvonxcvii.turing.component
 
 import com.nimbusds.jose.JWSAlgorithm
 import com.nimbusds.jose.jwk.JWK
@@ -9,18 +9,18 @@ import com.nimbusds.jose.proc.JWSVerificationKeySelector
 import com.nimbusds.jose.proc.SecurityContext
 import com.nimbusds.jwt.proc.DefaultJWTProcessor
 import com.simonvonxcvii.turing.properties.SecurityProperties
-import com.simonvonxcvii.turing.service.NimbusJwtService
 import jakarta.servlet.http.HttpServletRequest
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.ssl.SslBundles
 import org.springframework.http.HttpHeaders
 import org.springframework.security.authentication.AuthenticationServiceException
 import org.springframework.security.oauth2.core.OAuth2AccessToken
 import org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames
 import org.springframework.security.oauth2.jwt.*
-import org.springframework.stereotype.Service
-import org.springframework.util.Assert
+import org.springframework.stereotype.Component
 import org.springframework.util.StringUtils
 import java.time.Instant
+import java.util.*
 
 /**
  * NimbusJwt 服务实现
@@ -29,11 +29,12 @@ import java.time.Instant
  * @author Simon Von
  * @since 2/20/2023 11:21 PM
  */
-@Service
-class NimbusJwtServiceImpl(
+@Component
+class CustomNimbusJwtProvider(
     sslBundles: SslBundles,
-    private val securityProperties: SecurityProperties
-) : NimbusJwtService {
+    private val securityProperties: SecurityProperties,
+    @param:Value($$"${spring.application.name}") private val applicationName: String
+) : JwtEncoder, JwtDecoder {
     /**
      * JwtEncoder：spring security jose 基于 Nimbus 的 JWT 加密类
      */
@@ -45,7 +46,7 @@ class NimbusJwtServiceImpl(
     private final val nimbusJwtDecoder: NimbusJwtDecoder
 
     init {
-        val bundle = sslBundles.getBundle("turing")
+        val bundle = sslBundles.getBundle(applicationName)
         val stores = bundle.stores
         val keyStore = stores.keyStore
         val rsaKey = JWK.load(keyStore, keyStore.aliases().nextElement(), null)
@@ -68,8 +69,21 @@ class NimbusJwtServiceImpl(
     }
 
     /**
+     * 将 JWT 编码为其紧凑的声明表示格式。
+     */
+    override fun encode(parameters: JwtEncoderParameters): Jwt {
+        return nimbusJwtEncoder.encode(parameters)
+    }
+
+    /**
+     * 从其紧凑声明表示格式解码 JWT 并返回 Jwt。
+     */
+    override fun decode(token: String): Jwt {
+        return nimbusJwtDecoder.decode(token)
+    }
+
+    /**
      * 根据用户 id 和用户名进行编码并返回生成的 JWT
-     * todo 写法改进
      *
      * @param userId   用户 id，不能为空
      * @param username 用户名，不能为空
@@ -77,9 +91,7 @@ class NimbusJwtServiceImpl(
      * @author Simon Von
      * @since 2/21/2023 12:06 PM
      */
-    override fun encode(userId: Int, username: String): Jwt {
-        Assert.notNull(userId, "userId cannot be bull")
-        Assert.hasText(username, "username cannot be blank")
+    fun encode(userId: Int, username: String): Jwt {
         // 重要：虽然 Instant.now() 获取的时间比我们本地时间少了八个小时，但是这不影响后续的解码操作。
         // 反而，如果是 .plus(8L, ChronoUnit.HOURS) 则会报错，提示使用的 JWT 在 notBefore 之前
         val now = Instant.now()
@@ -89,40 +101,27 @@ class NimbusJwtServiceImpl(
             .issuer(securityProperties.host)
             // 设置主题（子）声明，该声明标识作为 JWT 主题的主体。
             // 形参: 主题 – 主题标识符
-            .subject(securityProperties.host)
+            .subject(userId.toString())
             // 设置受众 （aud） 声明，该声明标识 JWT 所针对的收件人。
             // 形参: 受众 – 此 JWT 所针对的受众
-            .audience(listOf(username))
+            .audience(listOf(applicationName))
             // 设置过期时间 （exp） 声明，该声明标识不得接受 JWT 进行处理的时间或之后的时间。
             // 形参: expiresAt – 不得接受 JWT 进行处理的时间或之后的时间
             .expiresAt(now.plusSeconds(securityProperties.expires.toLong()))
             // 设置不早于 （nbf） 声明，该声明标识不得接受 JWT 进行处理的时间。
             // 形参: notBefore——不得接受 JWT 进行处理的时间
-            .notBefore(now)
+            .notBefore(now.plusNanos(1))
             // 设置颁发时间 （iat） 声明，该声明标识颁发 JWT 的时间。
             // 形参: 发布时间 – JWT 发布的时间
             .issuedAt(now)
             // 设置 JWT ID （jti） 声明，该声明为 JWT 提供唯一标识符。
             // 形参: JTI – JWT 的唯一标识符
-            .id(userId.toString())
+            .id(UUID.randomUUID().toString())
             .claim(OAuth2ParameterNames.USERNAME, username)
             .build()
         // 返回一个新的 JwtEncoderParameters，使用提供的 JwtClaimsSet 进行初始化。
         val jwtEncoderParameters = JwtEncoderParameters.from(jwtClaimsSet)
-        return nimbusJwtEncoder.encode(jwtEncoderParameters)
-    }
-
-    /**
-     * 从其紧凑的声明表示格式解码和验证 JWT
-     *
-     * @param token JWT 值，不能为空
-     * @return 经过验证的 JWT
-     * @author Simon Von
-     * @since 2/21/2023 12:54 PM
-     */
-    override fun decode(token: String): Jwt {
-        Assert.hasText(token, "token cannot be blank")
-        return nimbusJwtDecoder.decode(token)
+        return encode(jwtEncoderParameters)
     }
 
     /**
@@ -133,8 +132,7 @@ class NimbusJwtServiceImpl(
      * @author Simon Von
      * @since 2023/6/17 20:23
      */
-    override fun resolve(request: HttpServletRequest): Jwt {
-        Assert.notNull(request, "request cannot be null")
+    fun resolve(request: HttpServletRequest): Jwt {
         val authorization = request.getHeader(HttpHeaders.AUTHORIZATION)
         if (!StringUtils.hasText(authorization)) {
             throw AuthenticationServiceException("令牌缺失")
@@ -165,7 +163,7 @@ class NimbusJwtServiceImpl(
      * @author Simon Von
      * @since 9/29/25 1:20 AM
      */
-    override fun getUsername(request: HttpServletRequest): String {
+    fun getUsername(request: HttpServletRequest): String {
         // 校验请求是否正确携带 token
         val jwt = resolve(request)
         return jwt.getClaim(OAuth2ParameterNames.USERNAME)

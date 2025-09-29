@@ -643,19 +643,22 @@ class SecurityConfig {
 //        );
 
         // 配置 OAuth 2.0 资源服务器支持
-//        http.oauth2ResourceServer { httpSecurityOAuth2ResourceServerConfigurer ->
-//            httpSecurityOAuth2ResourceServerConfigurer
+//        http.oauth2ResourceServer { configurer: OAuth2ResourceServerConfigurer<HttpSecurity> ->
+//            configurer
 //                .accessDeniedHandler(accessDeniedHandler)
 //                .authenticationEntryPoint(authenticationEntryPoint)
 //                .authenticationManagerResolver(null)
 //                .bearerTokenResolver(null)
 //                // 启用 JWT 编码的持有者令牌支持。
-//                .jwt(null)
+//                .jwt { configurer: OAuth2ResourceServerConfigurer<HttpSecurity>.JwtConfigurer ->
+//                    configurer.authenticationManager(null)
+//                        .decoder(null)
+//                        .jwkSetUri(null)
+//                        .jwtAuthenticationConverter(null)
+//                }
 //                // 启用不透明持有者令牌支持。
 //                .opaqueToken(null)
-//                // 通过删除 AbstractHttpConfigurer 来禁用它。执行此操作后，可以应用新版本的配置。
-//                .disable()
-//        };
+//        }
 
         // 配置一次性令牌登录支持。todo
 //        http.oneTimeTokenLogin { configurer: OneTimeTokenLoginConfigurer<HttpSecurity> ->

@@ -30,7 +30,7 @@ version = "0.0.1-SNAPSHOT"
 /**
  * 设置此项目的描述。
  */
-description = "turing-backend 项目后端脚手架-单体应用"
+description = "turing 项目后端脚手架"
 
 /**
  * 配置 java 扩展。
