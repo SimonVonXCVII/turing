@@ -30,3 +30,5 @@ org-xhtmlrenderer-flying-saucer-pdf = { module = "org.xhtmlrenderer:flying-sauce
 org-springframework-boot = { id = "org.springframework.boot", version.ref = "org-springframework-boot" }
 io-spring-dependency-management = { id = "io.spring.dependency-management", version.ref = "io-spring-dependency-management" }
 org-graalvm-buildtools-native = { id = "org.graalvm.buildtools.native", version.ref = "org-graalvm-buildtools-native" }
+org-jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "org-jetbrains-kotlin" }
+org-jetbrains-kotlin-plugin-spring = { id = "org.jetbrains.kotlin.plugin.spring", version.ref = "org-jetbrains-kotlin" }

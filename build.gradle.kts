@@ -15,8 +15,8 @@ plugins {
     /**
      * 应用给定的 Kotlin 插件模块。
      */
-    kotlin("jvm") version libs.versions.org.jetbrains.kotlin
-    kotlin("plugin.spring") version libs.versions.org.jetbrains.kotlin
+    alias(libs.plugins.org.jetbrains.kotlin.jvm)
+    alias(libs.plugins.org.jetbrains.kotlin.plugin.spring)
 }
 
 /**
