@@ -26,6 +26,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 
 /**
  * Spring Boot Security 用于用户操作验证
+ * todo 考虑将项目的安全、认证、授权等服务集成到另外一个模块（或者子项目）
  *
  * @author Simon Von
  * @since 2022/5/1 14:45
@@ -128,10 +129,12 @@ class SecurityConfig {
         authenticationFailureHandler: AuthenticationFailureHandler,
         customJwtOncePerRequestFilter: CustomJwtOncePerRequestFilter,
         customCaptchaOncePerRequestFilter: CustomCaptchaOncePerRequestFilter,
+//        customNimbusJwtProvider: CustomNimbusJwtProvider,
         securityProperties: SecurityProperties,
         accessDeniedHandler: AccessDeniedHandler,
         authenticationEntryPoint: AuthenticationEntryPoint,
-        logoutSuccessHandler: LogoutSuccessHandler
+        logoutSuccessHandler: LogoutSuccessHandler,
+//        httpServletRequest: HttpServletRequest
     ): SecurityFilterChain {
         // 将安全标头添加到响应中。使用 EnableWebSecurity 时默认激活。
         // 接受 EnableWebSecurity 提供的默认值或仅调用 headers() 而不对其调用其他方法
@@ -642,17 +645,27 @@ class SecurityConfig {
 //                .disable()
 //        );
 
-        // 配置 OAuth 2.0 资源服务器支持
+
+//        val jwtIssuerAuthenticationManagerResolver = JwtIssuerAuthenticationManagerResolver<HttpServletRequest>
+//            .fromTrustedIssuers(securityProperties.host)
+//        // 配置 OAuth 2.0 资源服务器支持
 //        http.oauth2ResourceServer { configurer: OAuth2ResourceServerConfigurer<HttpSecurity> ->
 //            configurer
 //                .accessDeniedHandler(accessDeniedHandler)
 //                .authenticationEntryPoint(authenticationEntryPoint)
-//                .authenticationManagerResolver(null)
-//                .bearerTokenResolver(null)
+//                .authenticationManagerResolver { context: HttpServletRequest ->
+//                    jwtIssuerAuthenticationManagerResolver.resolve(context)
+//                }
+//                .bearerTokenResolver { request: HttpServletRequest ->
+//                    DefaultBearerTokenResolver().resolve(request)
+//                }
 //                // 启用 JWT 编码的持有者令牌支持。
 //                .jwt { configurer: OAuth2ResourceServerConfigurer<HttpSecurity>.JwtConfigurer ->
-//                    configurer.authenticationManager(null)
-//                        .decoder(null)
+//                    configurer
+//                        .authenticationManager(
+//                            jwtIssuerAuthenticationManagerResolver.resolve(httpServletRequest)
+//                        )
+//                        .decoder(customNimbusJwtProvider)
 //                        .jwkSetUri(null)
 //                        .jwtAuthenticationConverter(null)
 //                }

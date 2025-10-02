@@ -45,11 +45,18 @@ class CustomNimbusJwtProvider(
      */
     private final val nimbusJwtDecoder: NimbusJwtDecoder
 
+    // todo 尝试优化，使用 NimbusJwtDecoder.withIssuerLocation(String issuer) 等
     init {
+        // 返回具有所提供名称的 SslBundle。
         val bundle = sslBundles.getBundle(applicationName)
+        // 返回可用于访问此 bundle 的密钥和信任存储的 SslStoreBundle。
         val stores = bundle.stores
+        // 返回由信任材料生成的密钥库或 null。
         val keyStore = stores.keyStore
+        // 从指定的 JCE 密钥库加载 JWK。JWK 可以是 RSA 公钥/私钥、EC 公钥/私钥或密钥。需要 BouncyCastle。
+        // 重要提示：X.509 证书未经验证！
         val rsaKey = JWK.load(keyStore, keyStore.aliases().nextElement(), null)
+        // 使用单个键创建一个新的 JWK 集。
         val jwkSet = JWKSet(rsaKey)
         val securityContextJWKSource: JWKSource<SecurityContext> = ImmutableJWKSet(jwkSet)
 
@@ -57,12 +64,12 @@ class CustomNimbusJwtProvider(
         nimbusJwtEncoder = NimbusJwtEncoder(securityContextJWKSource)
 
         // decode
-        // 不安全（纯）、签名和加密的 JSON Web 令牌 （JWT） 的默认处理器。
-        val defaultJWTProcessor = DefaultJWTProcessor<SecurityContext>()
         // 创建新的 JWS 验证密钥选择器。
         // 形参: jwsAlg – 允许要验证的对象 JWS 算法。不得为空。
         //      jwkSource – JWK source。不得为空。
         val selector = JWSVerificationKeySelector(JWSAlgorithm.RS256, securityContextJWKSource)
+        // 不安全（纯）、签名和加密的 JSON Web 令牌 （JWT） 的默认处理器。
+        val defaultJWTProcessor = DefaultJWTProcessor<SecurityContext>()
         defaultJWTProcessor.jwsKeySelector = selector
         // 使用给定参数配置 NimbusJwtDecoder
         nimbusJwtDecoder = NimbusJwtDecoder(defaultJWTProcessor)
@@ -117,6 +124,7 @@ class CustomNimbusJwtProvider(
             // 设置 JWT ID （jti） 声明，该声明为 JWT 提供唯一标识符。
             // 形参: JTI – JWT 的唯一标识符
             .id(UUID.randomUUID().toString())
+            // 设置声明。
             .claim(OAuth2ParameterNames.USERNAME, username)
             .build()
         // 返回一个新的 JwtEncoderParameters，使用提供的 JwtClaimsSet 进行初始化。
@@ -133,6 +141,8 @@ class CustomNimbusJwtProvider(
      * @since 2023/6/17 20:23
      */
     fun resolve(request: HttpServletRequest): Jwt {
+        // todo 更合理更准确的情况下，HttpHeaders.AUTHORIZATION 是否应该为
+        //  org.springframework.security.oauth2.server.resource.web.DefaultBearerTokenResolver.ACCESS_TOKEN_PARAMETER_NAME
         val authorization = request.getHeader(HttpHeaders.AUTHORIZATION)
         if (!StringUtils.hasText(authorization)) {
             throw AuthenticationServiceException("令牌缺失")
