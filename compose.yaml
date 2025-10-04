@@ -44,6 +44,7 @@ services:
       - ./docker/postgresql/data:/var/lib/postgresql/data
 
   # todo 有没有比 keycloak 更好的选择，OIDC Provider（例如 Keycloak、Auth0、Azure AD 等）
+  # todo 创建的 89 张表直接在 turing 里了，如何设置下，使其存在另外一个 schema（数据库）中？
   turing-keycloak:
     # 指定自定义容器名称，而不是生成的默认名称。
     container_name: turing-keycloak
@@ -133,6 +134,7 @@ services:
     volumes:
       - ./docker/redis/data:/data
       - ./docker/redis/sh/healthcheck.sh:/usr/local/bin/healthcheck.sh
+
   turing-backend:
     # 指定用于从源创建容器映像的构建配置。
     build:
@@ -174,6 +176,7 @@ services:
       - "8080:8080"
     # 定义平台在容器终止时应用的策略。
   #    restart: always
+
   # todo 有没有比 nginx 更好的选择
   # todo Try using Pingora
   turing-nginx:
@@ -212,6 +215,7 @@ services:
     volumes:
       - ./docker/nginx/conf/nginx.conf:/etc/nginx/nginx.conf
       - ./docker/nginx/html:/usr/share/nginx/html
+
   # todo 有没有比 portainer 更好的选择
   turing-portainer:
     # 指定自定义容器名称，而不是生成的默认名称。

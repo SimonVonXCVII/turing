@@ -24,7 +24,7 @@ public class UserDTO extends PageQuery {
      * 用户手机号
      */
     @NotBlank(message = "用户手机号不能为空")
-    public String mobile;
+    public Long mobile;
     /**
      * 用户性别
      */
@@ -71,7 +71,7 @@ public class UserDTO extends PageQuery {
     /**
      * 是否需要重新设置密码
      */
-    public Boolean needSetPassword;
+    public Boolean needResetPassword;
     /**
      * 用户角色
      */
