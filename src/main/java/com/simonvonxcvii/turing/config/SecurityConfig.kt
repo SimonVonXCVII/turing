@@ -10,7 +10,6 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.configurers.*
-import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.crypto.factory.PasswordEncoderFactories
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.AuthenticationEntryPoint
@@ -198,10 +197,10 @@ class SecurityConfig {
         }
 
         // 允许配置会话管理。todo 尝试启用，看有哪些好处
-        http.sessionManagement { configurer: SessionManagementConfigurer<HttpSecurity> ->
-            configurer
-                // 设置此属性将向 SessionManagementFilter 注入配置有属性值的 SimpleRedirectInvalidSessionStrategy。
-                // 当提交无效的会话 ID 时，将调用该策略，重定向到配置的 URL。
+//        http.sessionManagement { configurer: SessionManagementConfigurer<HttpSecurity> ->
+//            configurer
+        // 设置此属性将向 SessionManagementFilter 注入配置有属性值的 SimpleRedirectInvalidSessionStrategy。
+        // 当提交无效的会话 ID 时，将调用该策略，重定向到配置的 URL。
 //                .invalidSessionUrl(null)
 //                // 设置这意味着需要显式调用 SessionAuthenticationStrategy。
 //                .requireExplicitAuthenticationStrategy(false)
@@ -224,20 +223,20 @@ class SecurityConfig {
 //                // 如 org.springframework.web.servlet.resource.ResourceUrlEncodingFilter，
 //                // 都需要位于安全过滤器链之后，否则就有被跳过的风险。
 //                .enableSessionUrlRewriting(false)
-                // 允许指定 SessionCreationPolicy
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-            // 允许明确指定 SessionAuthenticationStrategy。 默认是使用 ChangeSessionIdAuthenticationStrategy。
-            // 如果配置了限制最大会话数，则 CompositeSessionAuthenticationStrategy
-            // 委托给 ConcurrentSessionControlAuthenticationStrategy，
-            // 默认或提供的 SessionAuthenticationStrategy 和 RegisterSessionAuthenticationStrategy。
-            // 注意：提供自定义 SessionAuthenticationStrategy 将覆盖默认会话固定策略。
+        // 允许指定 SessionCreationPolicy
+//                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+        // 允许明确指定 SessionAuthenticationStrategy。 默认是使用 ChangeSessionIdAuthenticationStrategy。
+        // 如果配置了限制最大会话数，则 CompositeSessionAuthenticationStrategy
+        // 委托给 ConcurrentSessionControlAuthenticationStrategy，
+        // 默认或提供的 SessionAuthenticationStrategy 和 RegisterSessionAuthenticationStrategy。
+        // 注意：提供自定义 SessionAuthenticationStrategy 将覆盖默认会话固定策略。
 //                .sessionAuthenticationStrategy(ConcurrentSessionControlAuthenticationStrategy(SessionRegistryImpl()))
 //                // 允许配置会话固定保护。
 //                .sessionFixation(Customizer.withDefaults())
 //                // 控制用户的最大会话数。 默认是允许任意数量的用户。
 //                .sessionConcurrency(null)
 //                .disable()
-        }
+//        }
 
         // 允许配置可从 getSharedObject(Class) 获得的 PortMapper。
         // 当从 HTTP 重定向到 HTTPS 或从 HTTPS 重定向到 HTTP 时（例如，当与 requiresChannel() 结合使用时），

@@ -1,15 +1,10 @@
 package com.simonvonxcvii.turing.filter
 
 import com.simonvonxcvii.turing.component.CustomNimbusJwtProvider
-import com.simonvonxcvii.turing.entity.User
 import com.simonvonxcvii.turing.properties.CustomSecurityProperties
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
-import org.springframework.data.redis.core.RedisTemplate
-import org.springframework.security.authentication.AuthenticationServiceException
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
-import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Component
 import org.springframework.util.AntPathMatcher
 import org.springframework.web.filter.OncePerRequestFilter
@@ -22,9 +17,8 @@ import org.springframework.web.filter.OncePerRequestFilter
  */
 @Component
 class CustomJwtOncePerRequestFilter(
-    private val customNimbusJwtProvider: CustomNimbusJwtProvider,
     private val customSecurityProperties: CustomSecurityProperties,
-    private val redisTemplate: RedisTemplate<Any, Any>
+    private val customNimbusJwtProvider: CustomNimbusJwtProvider
 ) : OncePerRequestFilter() {
     /**
      * 与 doFilter 的契约相同，但保证在单个请求线程中每个请求仅调用一次。详情请参阅 [shouldNotFilterAsyncDispatch]。
@@ -41,19 +35,8 @@ class CustomJwtOncePerRequestFilter(
         val matched = customSecurityProperties.whitelist.none { antPathMatcher.match(it, request.requestURI) }
         // 如果不在白名单则拦截
         if (matched) {
-            // 从请求中解析 username
-            val username = customNimbusJwtProvider.getUsername(request)
-            // 根据 username 从 redis 获取 user
-            val user = redisTemplate.opsForHash<String, User>().get(User.REDIS_KEY_PREFIX, username)
-                ?: throw AuthenticationServiceException("无法获取到用户信息")
-            // 缓存用户信息到 SecurityContext
-            // TODO 考虑是否仅当 SecurityContextHolder.getContext().authentication 为 null 时才赋值
-            // TODO 2023/8/31 在两个地方都设置了 user，如何才能只需要设置一次
-            val token = UsernamePasswordAuthenticationToken.authenticated(
-                user, user.password, user.authorities
-            )
-//        token.details = user
-            SecurityContextHolder.getContext().authentication = token
+            // 从请求中解析校验 token 合法性
+            customNimbusJwtProvider.resolve(request)
         }
         // 执行下一个 filter
         filterChain.doFilter(request, response)

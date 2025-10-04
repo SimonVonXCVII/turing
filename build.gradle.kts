@@ -152,6 +152,8 @@ dependencies {
 //    implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.springframework.boot:spring-boot-starter-web")
+    // 用于保存 session，作用在于即使后端重启，前端依然可以在不重新登录的情况下正常刷新网页
+    implementation("org.springframework.session:spring-session-data-redis")
     // PDF TODO 尝试换成 apache 的，或者试试 itext
     // https://central.sonatype.com/artifact/org.xhtmlrenderer/flying-saucer-pdf
 //    implementation(libs.org.xhtmlrenderer.flying.saucer.pdf)
