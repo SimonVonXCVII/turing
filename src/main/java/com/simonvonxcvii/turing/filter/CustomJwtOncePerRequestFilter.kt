@@ -2,7 +2,7 @@ package com.simonvonxcvii.turing.filter
 
 import com.simonvonxcvii.turing.component.CustomNimbusJwtProvider
 import com.simonvonxcvii.turing.entity.User
-import com.simonvonxcvii.turing.properties.SecurityProperties
+import com.simonvonxcvii.turing.properties.CustomSecurityProperties
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
@@ -23,7 +23,7 @@ import org.springframework.web.filter.OncePerRequestFilter
 @Component
 class CustomJwtOncePerRequestFilter(
     private val customNimbusJwtProvider: CustomNimbusJwtProvider,
-    private val securityProperties: SecurityProperties,
+    private val customSecurityProperties: CustomSecurityProperties,
     private val redisTemplate: RedisTemplate<Any, Any>
 ) : OncePerRequestFilter() {
     /**
@@ -38,7 +38,7 @@ class CustomJwtOncePerRequestFilter(
         // TODO AntPathMatcher 到底是否线程安全？如果是就恢复成常量
         val antPathMatcher = AntPathMatcher()
         // 判断本次请求是否需要拦截
-        val matched = securityProperties.whitelist.none { antPathMatcher.match(it, request.requestURI) }
+        val matched = customSecurityProperties.whitelist.none { antPathMatcher.match(it, request.requestURI) }
         // 如果不在白名单则拦截
         if (matched) {
             // 从请求中解析 username

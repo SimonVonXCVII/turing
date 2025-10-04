@@ -8,7 +8,7 @@ import com.nimbusds.jose.jwk.source.JWKSource
 import com.nimbusds.jose.proc.JWSVerificationKeySelector
 import com.nimbusds.jose.proc.SecurityContext
 import com.nimbusds.jwt.proc.DefaultJWTProcessor
-import com.simonvonxcvii.turing.properties.SecurityProperties
+import com.simonvonxcvii.turing.properties.CustomSecurityProperties
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.ssl.SslBundles
@@ -32,7 +32,7 @@ import java.util.*
 @Component
 class CustomNimbusJwtProvider(
     sslBundles: SslBundles,
-    private val securityProperties: SecurityProperties,
+    private val customSecurityProperties: CustomSecurityProperties,
     @param:Value($$"${spring.application.name}") private val applicationName: String
 ) : JwtEncoder, JwtDecoder {
     /**
@@ -58,6 +58,7 @@ class CustomNimbusJwtProvider(
         val rsaKey = JWK.load(keyStore, keyStore.aliases().nextElement(), null)
         // 使用单个键创建一个新的 JWK 集。
         val jwkSet = JWKSet(rsaKey)
+        // 创建由不可变的 JWK 集支持的新 JWK 源。
         val securityContextJWKSource: JWKSource<SecurityContext> = ImmutableJWKSet(jwkSet)
 
         // encode
@@ -105,7 +106,7 @@ class CustomNimbusJwtProvider(
         val jwtClaimsSet = JwtClaimsSet.builder()
             // 设置颁发者 （iss） 声明，该声明标识颁发 JWT 的主体。
             // 形参: 颁发者 – 颁发者标识符
-            .issuer(securityProperties.host)
+            .issuer(customSecurityProperties.host)
             // 设置主题（子）声明，该声明标识作为 JWT 主题的主体。
             // 形参: 主题 – 主题标识符
             .subject(userId.toString())
@@ -114,7 +115,7 @@ class CustomNimbusJwtProvider(
             .audience(listOf(applicationName))
             // 设置过期时间 （exp） 声明，该声明标识不得接受 JWT 进行处理的时间或之后的时间。
             // 形参: expiresAt – 不得接受 JWT 进行处理的时间或之后的时间
-            .expiresAt(now.plusSeconds(securityProperties.expires.toLong()))
+            .expiresAt(now.plusSeconds(customSecurityProperties.expires.toLong()))
             // 设置不早于 （nbf） 声明，该声明标识不得接受 JWT 进行处理的时间。
             // 形参: notBefore——不得接受 JWT 进行处理的时间
             .notBefore(now.plusNanos(1))
