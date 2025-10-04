@@ -11,6 +11,7 @@ import org.springframework.web.filter.OncePerRequestFilter
 
 /**
  * Jwt 请求调度的一次执行认证过滤器
+ * 因为 Spring security 内部并没有做校验 token 合法性的操作，所以必须自己校验
  *
  * @author Simon Von
  * @since 11/22/2022 2:19 PM
@@ -32,7 +33,9 @@ class CustomJwtOncePerRequestFilter(
         // TODO AntPathMatcher 到底是否线程安全？如果是就恢复成常量
         val antPathMatcher = AntPathMatcher()
         // 判断本次请求是否需要拦截
-        val matched = customSecurityProperties.whitelist.none { antPathMatcher.match(it, request.requestURI) }
+        val matched = customSecurityProperties.whitelist.none {
+            antPathMatcher.match(it, request.requestURI)
+        }
         // 如果不在白名单则拦截
         if (matched) {
             // 从请求中解析校验 token 合法性
