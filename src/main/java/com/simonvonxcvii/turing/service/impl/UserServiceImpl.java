@@ -58,10 +58,10 @@ public class UserServiceImpl implements IUserService {
         dto.setCredentialsNonExpired(Boolean.TRUE);
         dto.setEnabled(Boolean.TRUE);
         dto.setManager(Boolean.FALSE);
-        dto.setNeedSetPassword(Boolean.TRUE);
+        dto.setNeedResetPassword(Boolean.TRUE);
         BeanUtils.copyProperties(dto, user, AbstractAuditable.CREATED_DATE);
         // 密码
-        user.setPassword(passwordEncoder.encode(dto.getMobile().substring(3)));
+        user.setPassword(passwordEncoder.encode(dto.getMobile().toString().substring(3)));
         // 单位名称
         Organization organization = organizationJpaRepository.findById(dto.getOrgId())
                 .orElseThrow(() -> BizRuntimeException.from("无法查找到单位数据"));
@@ -95,7 +95,7 @@ public class UserServiceImpl implements IUserService {
                     predicateList.add(builder.like(root.get(User.NAME),
                             "%" + dto.getName() + "%", '/'));
                 }
-                if (StringUtils.hasText(dto.getMobile())) {
+                if (dto.getMobile() != null) {
                     predicateList.add(builder.like(root.get(User.MOBILE),
                             "%" + dto.getMobile() + "%", '/'));
                 }
@@ -143,8 +143,8 @@ public class UserServiceImpl implements IUserService {
                 if (dto.getManager() != null) {
                     predicateList.add(builder.equal(root.get(User.MANAGER), dto.getManager()));
                 }
-                if (dto.getNeedSetPassword() != null) {
-                    predicateList.add(builder.equal(root.get(User.NEED_RESET_PASSWORD), dto.getNeedSetPassword()));
+                if (dto.getNeedResetPassword() != null) {
+                    predicateList.add(builder.equal(root.get(User.NEED_RESET_PASSWORD), dto.getNeedResetPassword()));
                 }
                 Predicate predicate = builder.and(predicateList.toArray(Predicate[]::new));
                 return query.where(predicate).getRestriction();

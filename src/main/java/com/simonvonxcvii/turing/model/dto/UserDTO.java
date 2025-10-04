@@ -3,6 +3,7 @@ package com.simonvonxcvii.turing.model.dto;
 import com.simonvonxcvii.turing.model.query.PageQuery;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -23,7 +24,7 @@ public class UserDTO extends PageQuery {
     /**
      * 用户手机号
      */
-    @NotBlank(message = "用户手机号不能为空")
+    @NotNull(message = "用户手机号不能为空")
     public Long mobile;
     /**
      * 用户性别
