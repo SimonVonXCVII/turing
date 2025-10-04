@@ -3,13 +3,13 @@ package com.simonvonxcvii.turing.properties
 import org.springframework.boot.context.properties.ConfigurationProperties
 
 /**
- * 项目安全参数配置类
+ * 自定义项目安全参数配置类
  *
  * @author Simon Von
  * @since 3/4/2023 12:57 AM
  */
-@ConfigurationProperties(prefix = "security")
-data class SecurityProperties(
+@ConfigurationProperties(prefix = "custom.security")
+data class CustomSecurityProperties(
     /**
      * 服务器网络地址
      */

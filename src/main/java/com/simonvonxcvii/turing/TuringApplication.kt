@@ -1,6 +1,6 @@
 package com.simonvonxcvii.turing
 
-import com.simonvonxcvii.turing.properties.SecurityProperties
+import com.simonvonxcvii.turing.properties.CustomSecurityProperties
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.boot.runApplication
@@ -12,7 +12,7 @@ import org.springframework.data.web.config.EnableSpringDataWebSupport
 //  考虑解构项目
 //  考虑写一个脚本还是什么，自动观测 Kotlin、Gradle、Nginx 等最新版本，and upgrade the local version to the latest version
 //  可以尝试换成 latest，或者取消 version
-@EnableConfigurationProperties(SecurityProperties::class)
+@EnableConfigurationProperties(CustomSecurityProperties::class)
 // 清晰化 jpa 包路径
 @EnableJpaRepositories("com.simonvonxcvii.turing.repository.jpa")
 // 默认情况下不支持按原样序列化 PageImpl 实例，这意味着无法保证生成的 JSON 结构的稳定性

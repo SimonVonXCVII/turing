@@ -1,6 +1,7 @@
-security:
-  # 服服务器网络地址
-  address:
+custom:
+  security:
+    # 服服务器网络地址
+    address:
 
 spring:
   data:

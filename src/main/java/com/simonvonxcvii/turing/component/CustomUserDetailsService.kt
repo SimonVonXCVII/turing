@@ -37,15 +37,21 @@ class CustomUserDetailsService(
     private val organizationJpaRepository: OrganizationJpaRepository,
 ) : UserDetailsService {
     /**
-     * 根据用户名定位用户。在实际实现中，搜索可能区分大小写或不区分大小写，具体取决于实现实例的配置方式。
-     * 在这种情况下，返回的 UserDetails 对象的用户名可能与实际请求的用户名不同。
-     * 根据用户账号获取用户信息，并将账号、密码、角色、是否锁定、是否禁用赋予 UserDetails
-     * 只校验账号是否存在，不校验密码是否正确，并将认证信息保存到安全上下文中。
+     * 根据用户名定位用户。在实际实现中，搜索可能区分大小写，也可能不区分大小写，具体取决于实现实例的配置方式。
+     * 在这种情况下，返回的 UserDetails 对象的用户名可能与实际请求的用户名大小写不同。
      *
-     * @param username 标识需要其数据的用户的用户名。
-     * @return 完全填充的用户记录 (never `null`)
+     * 注意：流程是 AbstractUserDetailsAuthenticationProvider
+     *  1. 调用其 authenticate(Authentication authentication)
+     *   A. 调用其 retrieveUser(String username, UsernamePasswordAuthenticationToken authentication)
+     *    a. 该方法的实现会调用 UserDetailsService.loadUserByUsername(String username) 返回 UserDetails
+     *   B. 调用其 additionalAuthenticationChecks(UserDetails userDetails, UsernamePasswordAuthenticationToken authentication)
+     *    b. 该方法的实现会调用 PasswordEncoder.matches(CharSequence rawPassword, String encodedPassword) 对比密码是否匹配
+     *  所以是先验证 username 后验证 password
+     *
+     * @param username 用于标识所需数据的用户的用户名。
+     * @return 完整填充的用户记录（永不为 null）
      * @throws UsernameNotFoundException 如果找不到用户或用户没有授权权限
-     * @see org.springframework.security.authentication.dao.AbstractUserDetailsAuthenticationProvider
+     * @see org.springframework.security.authentication.dao.DaoAuthenticationProvider.additionalAuthenticationChecks
      */
     override fun loadUserByUsername(username: String): UserDetails {
         if (!StringUtils.hasText(username)) {

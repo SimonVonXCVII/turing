@@ -3,9 +3,10 @@
 #    # root：根记录器，用于分配默认日志记录级别。
 #    root: debug
 
-security:
-  # 服务器网络地址
-  host: http://localhost
+custom:
+  security:
+    # 服务器网络地址
+    host: http://localhost
 
 spring:
   data:

@@ -2,7 +2,7 @@ package com.simonvonxcvii.turing.config
 
 import com.simonvonxcvii.turing.filter.CustomCaptchaOncePerRequestFilter
 import com.simonvonxcvii.turing.filter.CustomJwtOncePerRequestFilter
-import com.simonvonxcvii.turing.properties.SecurityProperties
+import com.simonvonxcvii.turing.properties.CustomSecurityProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpMethod
@@ -57,14 +57,14 @@ class SecurityConfig {
      * @since 2022/10/4 19:46
      */
     @Bean
-    fun corsConfigurationSource(securityProperties: SecurityProperties): CorsConfigurationSource {
+    fun corsConfigurationSource(customSecurityProperties: CustomSecurityProperties): CorsConfigurationSource {
         // 用于 CORS 配置的容器以及用于检查给定请求的实际来源、HTTP 方法和标头的方法。
         // 默认情况下，新创建的 CorsConfiguration 不允许任何跨源请求，必须明确配置以指示应允许的内容。
         // 使用 applyPermitDefaultValues() 翻转初始化模型，以开放默认值开始，这些默认值允许 GET、HEAD 和 POST 请求的所有跨源请求。
         val config = CorsConfiguration().applyPermitDefaultValues()
         // 设置允许的来源
         // 允许跨源请求的源列表。默认情况下未设置，这意味着不允许任何来源
-        config.allowedOrigins = listOf(securityProperties.host)
+        config.allowedOrigins = listOf(customSecurityProperties.host)
         // TODO 设置允许的原点模式
         // setAllowedOrigins 的替代方案，它支持更灵活的来源模式，除了端口列表之外，主机名中的任何位置都带有“*”。 例子：
         // https://*.domain1.com -- 以 domain1.com 结尾的域
@@ -130,7 +130,7 @@ class SecurityConfig {
         customJwtOncePerRequestFilter: CustomJwtOncePerRequestFilter,
         customCaptchaOncePerRequestFilter: CustomCaptchaOncePerRequestFilter,
 //        customNimbusJwtProvider: CustomNimbusJwtProvider,
-        securityProperties: SecurityProperties,
+        customSecurityProperties: CustomSecurityProperties,
         accessDeniedHandler: AccessDeniedHandler,
         authenticationEntryPoint: AuthenticationEntryPoint,
         logoutSuccessHandler: LogoutSuccessHandler,
@@ -339,7 +339,7 @@ class SecurityConfig {
                 // 如果 HandlerMappingIntrospector 在类路径中可用，则映射到不关心使用哪个 HttpMethod 的 MvcRequestMatcher。
                 // 这个匹配器将使用 Spring MVC 用于匹配的相同规则。 例如，路径“/path”的映射通常会匹配“/path”、“/path/”、“/path.html”等。
                 // 如果 HandlerMappingIntrospector 不可用，则映射到 AntPathRequestMatcher。
-                .requestMatchers(*securityProperties.whitelist.toTypedArray())
+                .requestMatchers(*customSecurityProperties.whitelist.toTypedArray())
                 // 指定任何人都允许使用 URL。
                 .permitAll()
                 // 如果 HandlerMappingIntrospector 在类路径中可用，则映射到与特定 HttpMethod 匹配的 MvcRequestMatcher。

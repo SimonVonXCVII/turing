@@ -1,10 +1,25 @@
+custom:
+  security:
+    # jwt 有效期时长，单位秒，默认一周
+    expires: 604800
+    # 放行白名单配置
+    whitelist:
+      - /actuator/**
+      - /error
+      - /swagger-ui/**
+      - /v3/api-docs/**
+      - /webjars/**
+      - /api/register
+      - /api/login/getCaptcha
+      - /api/dict/getAreaByCode
+      - /api/appFile/**
+
 #logging:
 #  level:
 #    # sql：SQL 日志记录组，包括 Hibernate SQL 记录器。
 #    sql: debug
 #    # web：Web 日志记录组，包括编解码器。
 #    web: debug
-# todo 研究其它 sll
 
 management:
   endpoint:
@@ -16,27 +31,13 @@ management:
       exposure:
         # 应包含的端点 ID 或全部为 '*'。
         include: '*'
+# todo 研究其它 ssl
 #  info:
 #    ssl:
 #      enabled: true
 #  server:
 #    ssl:
 #      bundle:
-
-security:
-  # 放行白名单配置
-  whitelist:
-    - /actuator/**
-    - /error
-    - /swagger-ui/**
-    - /v3/api-docs/**
-    - /webjars/**
-    - /api/register
-    - /api/login/getCaptcha
-    - /api/dict/getAreaByCode
-    - /api/appFile/**
-  # jwt 有效期时长，单位秒，默认一周
-  expires: 604800
 
 #server:
 #  address:

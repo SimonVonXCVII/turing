@@ -6,6 +6,9 @@ import java.io.Serializable;
 import java.util.Objects;
 
 // TODO: 2023/4/12 是否能够改用为 ResponseEntity
+//  例如：Kotlin 的 kotlin.Result
+//  fun <T> Result<T>.onFailure(action: (exception: Throwable) -> Unit): Result<T>
+//  fun <T> Result<T>.onSuccess(action: (value: T) -> Unit): Result<T>
 
 /**
  * 标准的 Restful 请求响应实体。
