@@ -73,17 +73,16 @@ class CustomDatabaseInitializingBean(
         // 创建地区数据
         log.info("开始初始化区域字典")
         val classPathResourceAreaCsv = ClassPathResource("/dict/area.csv")
-        classPathResourceAreaCsv.exists()
-            .run {
-                if (!this) {
-                    log.warn("区域文件不存在，无法初始化")
-                    return
-                }
+        classPathResourceAreaCsv.exists().run {
+            if (!this) {
+                log.warn("区域文件不存在，无法初始化")
+                return
             }
+        }
 
         val areaList = ArrayList<Area>()
         val provinceMap = TreeMap<String, Area>()
-        classPathResourceAreaCsv.getInputStream().use { inputStream ->
+        classPathResourceAreaCsv.inputStream.use { inputStream ->
             InputStreamReader(inputStream).use { inputStreamReader ->
                 BufferedReader(inputStreamReader).use { bufferedReader ->
                     var line: String?
@@ -260,13 +259,7 @@ class CustomDatabaseInitializingBean(
         val permission106 = Permission(pid = permission100.id, name = "设备终端授权管理", sort = 106)
         val permission107 = Permission(pid = permission100.id, name = "平台用户新增维护", sort = 107)
         val permission100List = listOfNotNull(
-            permission101,
-            permission102,
-            permission103,
-            permission104,
-            permission105,
-            permission106,
-            permission107
+            permission101, permission102, permission103, permission104, permission105, permission106, permission107
         )
         permissionJpaRepository.saveAll(permission100List)
         val permission200 = Permission(name = "用户单位管理", sort = 200)
@@ -301,12 +294,7 @@ class CustomDatabaseInitializingBean(
         val permission305 = Permission(pid = permission300.id, name = "监管对象信息查询", sort = 305)
         val permission306 = Permission(pid = permission300.id, name = "技术单位任务执行", sort = 306)
         val permission300List = listOfNotNull(
-            permission301,
-            permission302,
-            permission303,
-            permission304,
-            permission305,
-            permission306
+            permission301, permission302, permission303, permission304, permission305, permission306
         )
         permissionJpaRepository.saveAll(permission300List)
         val permission400 = Permission(name = "点位布设管理", sort = 400)
@@ -319,13 +307,7 @@ class CustomDatabaseInitializingBean(
         val permission406 = Permission(pid = permission400.id, name = "布点方案数据查询", sort = 406)
         val permission407 = Permission(pid = permission400.id, name = "新增测试项目审核", sort = 407)
         val permission400List = listOfNotNull(
-            permission401,
-            permission402,
-            permission403,
-            permission404,
-            permission405,
-            permission406,
-            permission407
+            permission401, permission402, permission403, permission404, permission405, permission406, permission407
         )
         permissionJpaRepository.saveAll(permission400List)
         val permission500 = Permission(name = "点位布设", sort = 500)
@@ -334,9 +316,7 @@ class CustomDatabaseInitializingBean(
         val permission502 = Permission(pid = permission500.id, name = "布点方案数据维护", sort = 502)
         val permission503 = Permission(pid = permission500.id, name = "布点方案信息查询", sort = 503)
         val permission500List = listOfNotNull(
-            permission501,
-            permission502,
-            permission503
+            permission501, permission502, permission503
         )
         permissionJpaRepository.saveAll(permission500List)
         val permission600 = Permission(name = "布点质控管理", sort = 600)
@@ -398,10 +378,7 @@ class CustomDatabaseInitializingBean(
         val permission803 = Permission(pid = permission800.id, name = "严重问题申诉记录", sort = 803)
         val permission804 = Permission(pid = permission800.id, name = "重采样品信息明细", sort = 804)
         val permission800List = listOfNotNull(
-            permission801,
-            permission802,
-            permission803,
-            permission804
+            permission801, permission802, permission803, permission804
         )
         permissionJpaRepository.saveAll(permission800List)
         val permission900 = Permission(name = "采样质控管理", sort = 900)
@@ -467,12 +444,7 @@ class CustomDatabaseInitializingBean(
         val permission1105 = Permission(pid = permission1100.id, name = "检测质控意见反馈", sort = 1105)
         val permission1106 = Permission(pid = permission1100.id, name = "质控退改批次查询", sort = 1106)
         val permission1100List = listOfNotNull(
-            permission1101,
-            permission1102,
-            permission1103,
-            permission1104,
-            permission1105,
-            permission1106
+            permission1101, permission1102, permission1103, permission1104, permission1105, permission1106
         )
         permissionJpaRepository.saveAll(permission1100List)
         val permission1200 = Permission(name = "数据统计分析", sort = 1200)
@@ -492,12 +464,7 @@ class CustomDatabaseInitializingBean(
         val permission1505 = Permission(pid = permission1500.id, name = "菜单管理", sort = 1505)
         val permission1506 = Permission(pid = permission1500.id, name = "字典管理", sort = 1506)
         val permission1500List = listOfNotNull(
-            permission1501,
-            permission1502,
-            permission1503,
-            permission1504,
-            permission1505,
-            permission1506
+            permission1501, permission1502, permission1503, permission1504, permission1505, permission1506
         )
         permissionJpaRepository.saveAll(permission1500List)
 
@@ -594,12 +561,7 @@ class CustomDatabaseInitializingBean(
             external = false
         )
         val menu100List = listOfNotNull(
-            menu101,
-            menu102,
-            menu103,
-            menu104,
-            menu105,
-            menu106
+            menu101, menu102, menu103, menu104, menu105, menu106
         )
         menuJpaRepository.saveAll(menu100List)
         val menu200 = Menu(
@@ -733,15 +695,7 @@ class CustomDatabaseInitializingBean(
             external = false
         )
         val menu200List = listOfNotNull(
-            menu201,
-            menu202,
-            menu203,
-            menu204,
-            menu205,
-            menu206,
-            menu207,
-            menu208,
-            menu209
+            menu201, menu202, menu203, menu204, menu205, menu206, menu207, menu208, menu209
         )
         menuJpaRepository.saveAll(menu200List)
         val menu300 = Menu(
@@ -836,12 +790,7 @@ class CustomDatabaseInitializingBean(
             external = false
         )
         val menu300List = listOfNotNull(
-            menu301,
-            menu302,
-            menu303,
-            menu304,
-            menu305,
-            menu306
+            menu301, menu302, menu303, menu304, menu305, menu306
         )
         menuJpaRepository.saveAll(menu300List)
         val menu400 = Menu(
@@ -951,13 +900,7 @@ class CustomDatabaseInitializingBean(
             external = false
         )
         val menu400List = listOfNotNull(
-            menu401,
-            menu402,
-            menu403,
-            menu404,
-            menu405,
-            menu406,
-            menu407
+            menu401, menu402, menu403, menu404, menu405, menu406, menu407
         )
         menuJpaRepository.saveAll(menu400List)
         val menu500 = Menu(
@@ -1013,9 +956,7 @@ class CustomDatabaseInitializingBean(
             external = false
         )
         val menu500List = listOfNotNull(
-            menu501,
-            menu502,
-            menu503
+            menu501, menu502, menu503
         )
         menuJpaRepository.saveAll(menu500List)
         val menu600 = Menu(
@@ -1136,14 +1077,7 @@ class CustomDatabaseInitializingBean(
             external = false
         )
         val menu600List = listOfNotNull(
-            menu601,
-            menu602,
-            menu603,
-            menu604,
-            menu605,
-            menu606,
-            menu607,
-            menu608
+            menu601, menu602, menu603, menu604, menu605, menu606, menu607, menu608
         )
         menuJpaRepository.saveAll(menu600List)
         val menu700 = Menu(
@@ -1319,18 +1253,7 @@ class CustomDatabaseInitializingBean(
             external = false
         )
         val menu700List = listOfNotNull(
-            menu701,
-            menu702,
-            menu703,
-            menu704,
-            menu705,
-            menu706,
-            menu707,
-            menu708,
-            menu709,
-            menu710,
-            menu711,
-            menu712
+            menu701, menu702, menu703, menu704, menu705, menu706, menu707, menu708, menu709, menu710, menu711, menu712
         )
         menuJpaRepository.saveAll(menu700List)
         val menu800 = Menu(
@@ -1399,10 +1322,7 @@ class CustomDatabaseInitializingBean(
             external = false
         )
         val menu800List = listOfNotNull(
-            menu801,
-            menu802,
-            menu803,
-            menu804
+            menu801, menu802, menu803, menu804
         )
         menuJpaRepository.saveAll(menu800List)
         val menu900 = Menu(
@@ -1523,14 +1443,7 @@ class CustomDatabaseInitializingBean(
             external = false
         )
         val menu900List = listOfNotNull(
-            menu901,
-            menu902,
-            menu903,
-            menu904,
-            menu905,
-            menu906,
-            menu907,
-            menu908
+            menu901, menu902, menu903, menu904, menu905, menu906, menu907, menu908
         )
         menuJpaRepository.saveAll(menu900List)
         val menu1000 = Menu(
@@ -1837,12 +1750,7 @@ class CustomDatabaseInitializingBean(
             external = false
         )
         val menu1100List = listOfNotNull(
-            menu1101,
-            menu1102,
-            menu1103,
-            menu1104,
-            menu1105,
-            menu1106
+            menu1101, menu1102, menu1103, menu1104, menu1105, menu1106
         )
         menuJpaRepository.saveAll(menu1100List)
         val menu1200 = Menu(
@@ -1990,12 +1898,7 @@ class CustomDatabaseInitializingBean(
             external = false
         )
         val menu1500List = listOfNotNull(
-            menu1501,
-            menu1502,
-            menu1503,
-            menu1504,
-            menu1505,
-            menu1506
+            menu1501, menu1502, menu1503, menu1504, menu1505, menu1506
         )
         menuJpaRepository.saveAll(menu1500List)
     }
@@ -2005,11 +1908,7 @@ class CustomDatabaseInitializingBean(
      */
     private fun saveArea(parent: Dict?, child: Area, dictList: MutableList<Dict>) {
         val dict = Dict(
-            value = child.adCode,
-            name = child.name,
-            type = DictTypeEnum.AREA,
-            sort = areaSort++,
-            pid = parent?.id
+            value = child.adCode, name = child.name, type = DictTypeEnum.AREA, sort = areaSort++, pid = parent?.id
         )
         dictList.add(dict)
         // 保存下级区域

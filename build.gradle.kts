@@ -1,4 +1,5 @@
 /**
+ * todo 尝试 nativeCompile、bootBuildImage
  * 配置该项目的插件依赖项。
  */
 plugins {
@@ -30,7 +31,7 @@ version = "0.0.1-SNAPSHOT"
 /**
  * 设置此项目的描述。
  */
-description = "turing 项目后端脚手架"
+description = "turing backend"
 
 /**
  * 配置 java 扩展。
@@ -152,6 +153,8 @@ dependencies {
 //    implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.springframework.boot:spring-boot-starter-web")
+    // todo 使用它
+//    developmentOnly("org.springframework.boot:spring-boot-devtools")
     // PDF TODO 尝试换成 apache 的，或者试试 itext
     // https://central.sonatype.com/artifact/org.xhtmlrenderer/flying-saucer-pdf
 //    implementation(libs.org.xhtmlrenderer.flying.saucer.pdf)
@@ -166,6 +169,10 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-testcontainers")
     testImplementation("org.testcontainers:junit-jupiter")
     testImplementation("org.testcontainers:postgresql")
+    // todo 使用它
+//    runtimeOnly("org.springframework.boot:spring-boot-docker-compose")
+//    runtimeOnly("io.spring.javaformat:spring-javaformat-maven-plugin")
+//    checkstyle("io.spring.javaformat:spring-javaformat-checkstyle:${javaFormatVersion}")
 
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
