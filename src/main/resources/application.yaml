@@ -14,12 +14,18 @@ custom:
       - /api/dict/getAreaByCode
       - /api/appFile/**
 
-#logging:
-#  level:
-#    # sql：SQL 日志记录组，包括 Hibernate SQL 记录器。
-#    sql: debug
-#    # web：Web 日志记录组，包括编解码器。
-#    web: debug
+logging:
+  level:
+    # todo 这有什么特别的作用
+    org:
+      springframework:
+        web: DEBUG
+        security: DEBUG
+        security.oauth2: DEBUG
+    # sql：SQL 日志记录组，包括 Hibernate SQL 记录器。
+    sql: debug
+    # web：Web 日志记录组，包括编解码器。
+    web: debug
 
 management:
   endpoint:
@@ -95,6 +101,51 @@ spring:
   profiles:
     # 指定起作用的配置文件
     active: dev
+  security:
+    oauth2:
+      authorizationserver:
+        # 授权服务器的注册客户端。
+        #        client:
+        #          client-1:
+        #            jwk-set-uri:
+        #            require-authorization-consent:
+        #            require-proof-key:
+        #            token-endpoint-authentication-signing-algorithm:
+        #          client-2:
+        #            jwk-set-uri:
+        #            require-authorization-consent:
+        #            require-proof-key:
+        #            token-endpoint-authentication-signing-algorithm:
+        # 授权服务器发行者标识符的 URL。
+        issuer: "http://localhost:8081/realms/turing-realm"
+      client:
+        registration:
+          keycloak:
+            client-id: confidential-client
+            client-secret: NGOH4PRxBePJeKSew4xEiXG4eS6siiVh
+            authorization-grant-type: password
+            scope: openid,profile,email
+        #            client-authentication-method:
+        #            client-name:
+        #            provider:
+        #            redirect-uri:
+        provider:
+          keycloak:
+            token-uri: http://localhost:8081/realms/turing-realm/protocol/openid-connect/token
+            authorization-uri: http://localhost:8081/realms/turing-realm/protocol/openid-connect/auth
+            user-info-uri: http://localhost:8081/realms/turing-realm/protocol/openid-connect/userinfo
+            user-name-attribute: preferred_username
+      #            issuer-uri:
+      #            jwk-set-uri:
+      #            user-info-authentication-method:
+      resourceserver:
+        jwt:
+          # URI 可以是 OpenID Connect 发现端点，也可以是 RFC 8414 定义的 OAuth 2.0 授权服务器元数据端点。
+          issuer-uri: "http://localhost:8081/realms/turing-realm"
+          # 用于验证 JWT 令牌的 JSON Web Key URI。
+          #          jwk-set-uri: "http://localhost:8081/realms/turing-realm/protocol/openid-connect/certs"
+          # 包含用于验证 JWT 的公钥的文件的位置。
+  #          public-key-location:
   #  rabbitmq:
   #    ssl:
   #      algorithm:
@@ -108,20 +159,20 @@ spring:
       max-file-size: 1GB
       # 支持的每次请求中最大的多个文件的大小
       max-request-size: 10GB
-  ssl:
-    bundle:
-      # PEM 编码的 SSL 信任材料。
-      pem:
-        turing:
-          # 是否重新加载 SSL 捆绑包。
-          #          reload-on-update: true
-          keystore:
-            # PEM 格式的证书或证书链的位置或内容。
-            certificate: "classpath:certs/turing.crt"
-            # PEM 格式的私钥的位置或内容。
-            private-key: "classpath:certs/turing.key"
-            # 是否验证私钥与公钥是否匹配。
-            verify-keys: true
+      #  ssl:
+      #    bundle:
+      #      # PEM 编码的 SSL 信任材料。
+      #      pem:
+      #        turing:
+      # 是否重新加载 SSL 捆绑包。
+      #          reload-on-update: true
+  #          keystore:
+  #            # PEM 格式的证书或证书链的位置或内容。
+  #            certificate: "classpath:certs/turing.crt"
+  #            # PEM 格式的私钥的位置或内容。
+  #            private-key: "classpath:certs/turing.key"
+  #            # 是否验证私钥与公钥是否匹配。
+  #            verify-keys: true
   #      jks:
   #        server:
   #          key:

@@ -2,8 +2,10 @@ package com.simonvonxcvii.turing.component
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.simonvonxcvii.turing.common.result.Result
+import com.simonvonxcvii.turing.utils.Constants
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
+import org.springframework.data.redis.core.StringRedisTemplate
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.security.core.Authentication
@@ -23,7 +25,11 @@ import java.nio.charset.StandardCharsets
  * @since 12/22/2022 8:41 PM
  */
 @Component
-class CustomAuthenticationSuccessHandler(private val objectMapper: ObjectMapper) : AuthenticationSuccessHandler {
+class CustomAuthenticationSuccessHandler(
+    private val objectMapper: ObjectMapper,
+    private val stringRedisTemplate: StringRedisTemplate,
+//    private val keycloakTokenService: KeycloakTokenService,
+) : AuthenticationSuccessHandler {
     /**
      * 当用户成功身份验证时调用。
      *
@@ -37,14 +43,53 @@ class CustomAuthenticationSuccessHandler(private val objectMapper: ObjectMapper)
         response: HttpServletResponse,
         authentication: Authentication
     ) {
+//        val token = keycloakTokenService.getToken("turing-user", "password")
+//        println(token)
+//        val token2 = keycloakTokenService.getToken("admin", "123456")
+//        println(token2)
+
+//        val context1 = SecurityContextHolder.getContext()
+//        val authentication1 = context1.authentication
+//        println(authentication1)
+//
+//        val body = LinkedMultiValueMap<String, String>()
+//        // todo client_id 居然可以是其他的，至少可以同一个 realm 下，并且是可以没有 credentials 的
+//        body.add("client_id", "confidential-client")
+//        body.add("client_secret", "NGOH4PRxBePJeKSew4xEiXG4eS6siiVh")
+//        // todo username 与 password 居然是 keycloak 中创建的 user，
+//        //  难道不应该填前端登录用户的信息吗？这样的话前端不是每个用户登录获取的 token 都相同？
+//        body.add("username", "turing-user")
+//        body.add("password", "password")
+//        body.add("grant_type", "password")
+//        val httpHeaders = HttpHeaders().apply {
+//            contentType = MediaType.APPLICATION_FORM_URLENCODED
+//        }
+//        val httpEntity = HttpEntity(body, httpHeaders)
+//        val responseEntity = RestTemplate().postForEntity(
+//            "http://localhost:8081/realms/turing-realm/protocol/openid-connect/token",
+//            httpEntity,
+//            Map::class.java
+//        )
+//        val accessToken = responseEntity.body?.get(OAuth2ParameterNames.ACCESS_TOKEN)
         response.characterEncoding = StandardCharsets.UTF_8.name()
         response.contentType = MediaType.APPLICATION_JSON_VALUE
         response.status = HttpStatus.OK.value()
-        val token: String = request.getAttribute(OAuth2ParameterNames.TOKEN) as String
-        val map = mapOf(OAuth2ParameterNames.TOKEN to token)
+//        val token: String = request.getAttribute(OAuth2ParameterNames.TOKEN) as String
+        // todo 改成 OAuth2ParameterNames.ACCESS_TOKEN
+        //  后期可以将整个 body 返回
+        //  再后期可以不在后端这里获取 token 了，直接将以上代码由前端发送
+        val map = mapOf(OAuth2ParameterNames.TOKEN to "")
         val string = objectMapper.writeValueAsString(Result.ok(map))
         response.writer.write(string)
         // 删除属性（token）
         request.removeAttribute(OAuth2ParameterNames.TOKEN)
+
+        // 删除 Redis 中的验证码
+        // 获取 md5DigestAsHex
+        val md5DigestAsHex: String = request.getAttribute(Constants.HEX_DIGEST) as String
+        // 删除属性（摘要字符串）
+        request.removeAttribute(md5DigestAsHex)
+        // 验证成功，删除 Redis 中的验证码
+        stringRedisTemplate.opsForValue().getAndDelete(Constants.REDIS_CAPTCHA + md5DigestAsHex)
     }
 }

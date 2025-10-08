@@ -1,16 +1,16 @@
 package com.simonvonxcvii.turing.config
 
 import com.simonvonxcvii.turing.filter.CustomCaptchaOncePerRequestFilter
-import com.simonvonxcvii.turing.filter.CustomJwtOncePerRequestFilter
 import com.simonvonxcvii.turing.properties.CustomSecurityProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpMethod
+import org.springframework.security.authorization.AuthenticatedAuthorizationManager
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.configurers.*
-import org.springframework.security.config.http.SessionCreationPolicy
+import org.springframework.security.config.annotation.web.invoke
 import org.springframework.security.crypto.factory.PasswordEncoderFactories
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.AuthenticationEntryPoint
@@ -20,6 +20,13 @@ import org.springframework.security.web.authentication.AuthenticationFailureHand
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler
+import org.springframework.security.web.header.HeaderWriter
+import org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher
+import org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher.pathPattern
+import org.springframework.security.web.util.matcher.AndRequestMatcher
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher
+import org.springframework.security.web.util.matcher.OrRequestMatcher
+import org.springframework.security.web.util.matcher.RequestMatcher
 import org.springframework.web.cors.CorsConfiguration
 import org.springframework.web.cors.CorsConfigurationSource
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource
@@ -127,81 +134,176 @@ class SecurityConfig {
         corsConfigurationSource: CorsConfigurationSource,
         authenticationSuccessHandler: AuthenticationSuccessHandler,
         authenticationFailureHandler: AuthenticationFailureHandler,
-        customJwtOncePerRequestFilter: CustomJwtOncePerRequestFilter,
         customCaptchaOncePerRequestFilter: CustomCaptchaOncePerRequestFilter,
-//        customNimbusJwtProvider: CustomNimbusJwtProvider,
         customSecurityProperties: CustomSecurityProperties,
         accessDeniedHandler: AccessDeniedHandler,
         authenticationEntryPoint: AuthenticationEntryPoint,
         logoutSuccessHandler: LogoutSuccessHandler,
-//        httpServletRequest: HttpServletRequest
     ): SecurityFilterChain {
-        // 将安全标头添加到响应中。使用 EnableWebSecurity 时默认激活。
-        // 接受 EnableWebSecurity 提供的默认值或仅调用 headers() 而不对其调用其他方法
-//        http.headers { configurer: HeadersConfigurer<HttpSecurity> ->
+        http {
+            // 允许配置 HttpSecurity 仅在匹配提供的模式时调用。
+            // 如果 Spring MVC 位于 Classpath 中，它将使用 MVC 匹配器。如果 Spring MVC 不在 Classpath 中，它将使用 Ant 匹配器。
+            securityMatcher("")
+
+            // 允许配置 HttpSecurity 仅在匹配提供的 RequestMatcher 时调用。
+            securityMatcher(pathPattern("/private/&ast;&ast;"))
+
+            // 启用基于表单的身份验证。
+            formLogin {
+                // 如果需要身份验证则重定向到登录页面（即“/login”）
+//                loginPage = "/login"
+                // 身份验证成功后使用的 AuthenticationSuccessHandler
+                this.authenticationSuccessHandler = authenticationSuccessHandler
+                // 身份验证失败后使用的 AuthenticationFailureHandler
+                this.authenticationFailureHandler = authenticationFailureHandler
+                // 身份验证失败时发送给用户的 URL
+//                failureUrl = null
+                // 用于验证凭证的 URL
+//                loginProcessingUrl = null
+                // 是否授予每个用户对 failureUrl 以及 HttpSecurityBuilder、loginPage 和 loginProcessingUrl 的访问权限
+//                permitAll = true
+                // 为给定的 Web 请求提供 org.springframework.security.core.Authentication.getDetails() 对象。
+//                authenticationDetailsSource = null
+                // 执行身份验证时查找用户名的 HTTP 参数
+//                usernameParameter = null
+                // 执行身份验证时查找密码的 HTTP 参数
+//                passwordParameter = null
+                // 如果用户在身份验证之前没有访问过安全页面或者 alwaysUse 为真，则指定用户身份验证成功后将被重定向到哪里。
+//                defaultSuccessUrl("", true)
+            }
+
+            // TODO: 2023/6/21 白名单里的请求路径居然直接跳过了跨域，不受跨域的限制！？
+            // 允许根据 HttpServletRequest 限制访问
+            authorizeHttpRequests {
+                customSecurityProperties.whitelist
+                val list: RequestMatcher = AndRequestMatcher()
+                println(list)
+                val matches: RequestMatcher = customSecurityProperties.whitelist.map { AndRequestMatcher(it) }
+                customSecurityProperties.whitelist.map { ::AndRequestMatcher }
+                OrRequestMatcher(
+                    *customSecurityProperties.whitelist.map { AntPathRequestMatcher(it) }.toTypedArray()
+                )
+                AndRequestMatcher(
+                    *customSecurityProperties.whitelist
+                        .map { PathPatternRequestMatcher.withDefaults().matcher(it) }
+                        .toTypedArray()
+                )
+                OrRequestMatcher(
+                    *customSecurityProperties.whitelist
+                        .map { PathPatternRequestMatcher.withDefaults().matcher(it) }
+                        .toTypedArray()
+                )
+                authorize(matches, permitAll)
+                authorize(HttpMethod.OPTIONS, "/**", permitAll)
+                authorize(anyRequest, authenticated)
+                // 为与指定模式匹配的端点添加请求授权规则。如果 Spring MVC 位于 Classpath 中，它将使用 MVC 匹配器。
+                // 如果 Spring MVC 不在 Classpath 中，它将使用 Ant 匹配器。MVC 将使用与 Spring MVC 相同的匹配规则。
+                // 例如，路径“/path”的映射通常会匹配“/path”、“/path/”、“/path.html”等。
+                // 如果 Spring MVC 不处理当前请求，则将使用合理的默认值，即使用 Ant 模式。
+                authorize(AndRequestMatcher(), authenticated)
+                authorize("", authenticated)
+                authorize(HttpMethod.OPTIONS, "", authenticated)
+                authorize("", "", authenticated)
+                authorize(HttpMethod.OPTIONS, "", "", authenticated)
+                hasAuthority("ROLE_ADMIN")
+                hasAnyAuthority("ROLE_ADMIN")
+                hasAllAuthorities("ROLE_ADMIN")
+                hasRole("ROLE_ADMIN")
+                hasAnyRole("ROLE_ADMIN")
+                hasAllRoles("ROLE_ADMIN")
+                hasIpAddress("ROLE_ADMIN")
+                // 如果 HandlerMappingIntrospector 在类路径中可用，则映射到不关心使用哪个 HttpMethod 的 MvcRequestMatcher。
+                // 这个匹配器将使用 Spring MVC 用于匹配的相同规则。 例如，路径“/path”的映射通常会匹配“/path”、“/path/”、“/path.html”等。
+                // 如果 HandlerMappingIntrospector 不可用，则映射到 AntPathRequestMatcher。
+                requestMatchers(*customSecurityProperties.whitelist.toTypedArray())
+                // 指定任何人都允许使用 URL。
+                permitAll()
+                // 如果 HandlerMappingIntrospector 在类路径中可用，则映射到与特定 HttpMethod 匹配的 MvcRequestMatcher。
+                // 这个匹配器将使用 Spring MVC 用于匹配的相同规则。 例如，路径“/path”的映射通常会匹配“/path”、“/path/”、“/path.html”等。
+                // 如果 HandlerMappingIntrospector 不可用，则映射到 AntPathRequestMatcher。
+                // 如果必须指定特定的 RequestMatcher，请改用 requestMatchers(RequestMatcher...)
+                requestMatchers(HttpMethod.OPTIONS)
+                // 指定任何人都允许使用 URL。
+                permitAll()
+                // 映射任何请求。
+                anyRequest()
+                // 指定任何经过身份验证的用户都允许使用 URL。
+                authenticated()
+                // 创建未指定 HttpMethod 的 DispatcherTypeRequestMatcher 实例列表。
+                dispatcherTypeMatchers()
+                // 允许指定自定义 AuthorizationManager。
+                access(AuthenticatedAuthorizationManager.authenticated())
+            }
+
+            // 将安全标头添加到响应中。使用 EnableWebSecurity 时默认激活。
+            // 接受 EnableWebSecurity 提供的默认值或仅调用 headers() 而不对其调用其他方法
+            headers {
+                // Adds a HeaderWriter instance
+                addHeaderWriter(headerWriter = HeaderWriter { request, response ->
+
+                })
+                // 配置插入 X-Content-Type-Options 的 XContentTypeOptionsHeaderWriter:
+                // X-Content-Type-Options: nosniff
+                contentTypeOptions {
+                    disable()
+                }
+                    // 请注意，这不是全面的 XSS 保护！
+                    // 允许自定义 XXssProtectionHeaderWriter 添加 X-XSS-Protection 标头
+                    .xssProtection(null)
+                    // 允许自定义 CacheControlHeadersWriter。 具体来说，它添加了以下标头：
+                    // Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+                    // Pragma: no-cache
+                    // Expires: 0
+                    .cacheControl(null)
+                    // 允许自定义为 HTTP 严格传输安全 (HSTS) 提供支持的 HstsHeaderWriter
+                    .httpStrictTransportSecurity(null)
+                    // 允许自定义 XFrameOptionsHeaderWriter。
+                    .frameOptions(null)
+                    // 允许自定义 HpkpHeaderWriter，它提供对 HTTP 公钥固定 (HPKP) 的支持
+                    .httpPublicKeyPinning(null)
+                    // 允许配置内容安全策略 (CSP) 级别 2。
+                    // 调用此方法会使用提供的安全策略指令在响应中自动启用（包括）Content-Security-Policy 标头。
+                    // 向 ContentSecurityPolicyHeaderWriter 提供了配置，它支持编写 W3C 候选建议中详述的两个标头：
+                    // Content-Security-Policy
+                    // Content-Security-Policy-Report-Only
+                    .contentSecurityPolicy()
+                    // 从响应中清除所有默认标头。 这样做之后，可以添加标头。
+                    // 例如，如果你只想使用 Spring Security 的缓存控制，你可以使用以下内容：
+                    // http.headers().defaultsDisabled().cacheControl();
+                    .defaultsDisabled()
+                    // 允许配置 Referrer Policy。
+                    // 向 ReferrerPolicyHeaderWriter 提供了配置，它支持写入标头，如 W3C 技术报告中所述：
+                    // Referrer-Policy
+                    .referrerPolicy()
+                    .permissionsPolicy()
+                    .and()
+                    // 允许配置 Cross-Origin-Opener-Policy 标头。
+                    // 调用此方法会使用提供的策略在响应中自动启用（包括）Cross-Origin-Opener-Policy 标头。
+                    // 配置提供给负责编写标头的 CrossOriginOpenerPolicyHeaderWriter。
+                    .crossOriginOpenerPolicy(Customizer.withDefaults())
+                    // 允许配置 Cross-Origin-Embedder-Policy 标头。
+                    // 调用此方法会使用提供的策略在响应中自动启用（包括）Cross-Origin-Embedder-Policy 标头。
+                    // 配置提供给负责编写标头的 CrossOriginEmbedderPolicyHeaderWriter。
+                    .crossOriginEmbedderPolicy()
+                    // 允许配置 Cross-Origin-Resource-Policy 标头。
+                    // 调用此方法会使用提供的策略在响应中自动启用（包括）Cross-Origin-Resource-Policy 标头。
+                    // 配置提供给负责编写标头的 CrossOriginResourcePolicyHeaderWriter：
+                    .crossOriginResourcePolicy()
+                    .disable()
+            }
+
+            // 添加要使用的 CorsFilter。 如果提供了名为 corsFilter 的 bean，则使用该 CorsFilter。
+            // 否则，如果定义了 corsConfigurationSource，则使用该 CorsConfiguration。
+            // 否则，如果 Spring MVC 在类路径上，则使用 HandlerMappingIntrospector。
+            cors {
+                configurationSource = corsConfigurationSource
+            }
+
+            // 允许配置会话管理。todo 尝试启用，看有哪些好处
+//        http.sessionManagement { configurer: SessionManagementConfigurer<HttpSecurity> ->
 //            configurer
-//                // Adds a HeaderWriter instance
-//                .addHeaderWriter(null)
-//                // 配置插入 X-Content-Type-Options 的 XContentTypeOptionsHeaderWriter:
-//                // X-Content-Type-Options: nosniff
-//                .contentTypeOptions(null)
-//                // 请注意，这不是全面的 XSS 保护！
-//                // 允许自定义 XXssProtectionHeaderWriter 添加 X-XSS-Protection 标头
-//                .xssProtection(null)
-//                // 允许自定义 CacheControlHeadersWriter。 具体来说，它添加了以下标头：
-//                // Cache-Control: no-cache, no-store, max-age=0, must-revalidate
-//                // Pragma: no-cache
-//                // Expires: 0
-//                .cacheControl(null)
-//                // 允许自定义为 HTTP 严格传输安全 (HSTS) 提供支持的 HstsHeaderWriter
-//                .httpStrictTransportSecurity(null)
-//                // 允许自定义 XFrameOptionsHeaderWriter。
-//                .frameOptions(null)
-//                // 允许自定义 HpkpHeaderWriter，它提供对 HTTP 公钥固定 (HPKP) 的支持
-//                .httpPublicKeyPinning(null)
-//                // 允许配置内容安全策略 (CSP) 级别 2。
-//                // 调用此方法会使用提供的安全策略指令在响应中自动启用（包括）Content-Security-Policy 标头。
-//                // 向 ContentSecurityPolicyHeaderWriter 提供了配置，它支持编写 W3C 候选建议中详述的两个标头：
-//                // Content-Security-Policy
-//                // Content-Security-Policy-Report-Only
-//                .contentSecurityPolicy()
-//                // 从响应中清除所有默认标头。 这样做之后，可以添加标头。
-//                // 例如，如果你只想使用 Spring Security 的缓存控制，你可以使用以下内容：
-//                // http.headers().defaultsDisabled().cacheControl();
-//                .defaultsDisabled()
-//                // 允许配置 Referrer Policy。
-//                // 向 ReferrerPolicyHeaderWriter 提供了配置，它支持写入标头，如 W3C 技术报告中所述：
-//                // Referrer-Policy
-//                .referrerPolicy()
-//                .permissionsPolicy()
-//                .and()
-//                // 允许配置 Cross-Origin-Opener-Policy 标头。
-//                // 调用此方法会使用提供的策略在响应中自动启用（包括）Cross-Origin-Opener-Policy 标头。
-//                // 配置提供给负责编写标头的 CrossOriginOpenerPolicyHeaderWriter。
-//                .crossOriginOpenerPolicy(Customizer.withDefaults())
-//                // 允许配置 Cross-Origin-Embedder-Policy 标头。
-//                // 调用此方法会使用提供的策略在响应中自动启用（包括）Cross-Origin-Embedder-Policy 标头。
-//                // 配置提供给负责编写标头的 CrossOriginEmbedderPolicyHeaderWriter。
-//                .crossOriginEmbedderPolicy()
-//                // 允许配置 Cross-Origin-Resource-Policy 标头。
-//                // 调用此方法会使用提供的策略在响应中自动启用（包括）Cross-Origin-Resource-Policy 标头。
-//                // 配置提供给负责编写标头的 CrossOriginResourcePolicyHeaderWriter：
-//                .crossOriginResourcePolicy()
-//                .disable()
-//        }
-
-        // 添加要使用的 CorsFilter。 如果提供了名为 corsFilter 的 bean，则使用该 CorsFilter。
-        // 否则，如果定义了 corsConfigurationSource，则使用该 CorsConfiguration。
-        // 否则，如果 Spring MVC 在类路径上，则使用 HandlerMappingIntrospector。
-        http.cors { corsConfigurer: CorsConfigurer<HttpSecurity> ->
-            corsConfigurer.configurationSource(corsConfigurationSource)
-        }
-
-        // 允许配置会话管理。todo 尝试启用，看有哪些好处
-        http.sessionManagement { configurer: SessionManagementConfigurer<HttpSecurity> ->
-            configurer
-                // 设置此属性将向 SessionManagementFilter 注入配置有属性值的 SimpleRedirectInvalidSessionStrategy。
-                // 当提交无效的会话 ID 时，将调用该策略，重定向到配置的 URL。
+            // 设置此属性将向 SessionManagementFilter 注入配置有属性值的 SimpleRedirectInvalidSessionStrategy。
+            // 当提交无效的会话 ID 时，将调用该策略，重定向到配置的 URL。
 //                .invalidSessionUrl(null)
 //                // 设置这意味着需要显式调用 SessionAuthenticationStrategy。
 //                .requireExplicitAuthenticationStrategy(false)
@@ -224,8 +326,8 @@ class SecurityConfig {
 //                // 如 org.springframework.web.servlet.resource.ResourceUrlEncodingFilter，
 //                // 都需要位于安全过滤器链之后，否则就有被跳过的风险。
 //                .enableSessionUrlRewriting(false)
-                // 允许指定 SessionCreationPolicy
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            // 允许指定 SessionCreationPolicy
+//                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             // 允许明确指定 SessionAuthenticationStrategy。 默认是使用 ChangeSessionIdAuthenticationStrategy。
             // 如果配置了限制最大会话数，则 CompositeSessionAuthenticationStrategy
             // 委托给 ConcurrentSessionControlAuthenticationStrategy，
@@ -237,20 +339,20 @@ class SecurityConfig {
 //                // 控制用户的最大会话数。 默认是允许任意数量的用户。
 //                .sessionConcurrency(null)
 //                .disable()
-        }
+//        }
 
-        // 允许配置可从 getSharedObject(Class) 获得的 PortMapper。
-        // 当从 HTTP 重定向到 HTTPS 或从 HTTPS 重定向到 HTTP 时（例如，当与 requiresChannel() 结合使用时），
-        // 其他提供的 SecurityConfigurer 对象使用此配置的 PortMapper 作为默认 PortMapper。
-        // 默认情况下，Spring Security 使用 PortMapperImpl 将 HTTP 端口 8080
-        // 映射到 HTTPS 端口 8443 和 HTTP 端口 80 到 HTTPS 端口 443。
+            // 允许配置可从 getSharedObject(Class) 获得的 PortMapper。
+            // 当从 HTTP 重定向到 HTTPS 或从 HTTPS 重定向到 HTTP 时（例如，当与 requiresChannel() 结合使用时），
+            // 其他提供的 SecurityConfigurer 对象使用此配置的 PortMapper 作为默认 PortMapper。
+            // 默认情况下，Spring Security 使用 PortMapperImpl 将 HTTP 端口 8080
+            // 映射到 HTTPS 端口 8443 和 HTTP 端口 80 到 HTTPS 端口 443。
 //        http.portMapper(httpSecurityPortMapperConfigurer -> httpSecurityPortMapperConfigurer
 //                // 允许指定 PortMapper 实例。
 //                .portMapper(new PortMapperImpl())
 //                .disable()
 //        );
 
-        // 配置基于容器的预认证。 在这种情况下，身份验证由 Servlet 容器管理。
+            // 配置基于容器的预认证。 在这种情况下，身份验证由 Servlet 容器管理。
 //        http.jee(httpSecurityJeeConfigurer -> httpSecurityJeeConfigurer
 //                // 指定角色以使用从 HttpServletRequest 到 UserDetails 的映射。
 //                // 如果 HttpServletRequest.isUserInRole(String) 返回 true，角色将添加到 UserDetails。
@@ -277,7 +379,7 @@ class SecurityConfig {
 //                .disable()
 //        );
 
-        // 配置基于 X509 的预身份验证。
+            // 配置基于 X509 的预身份验证。
 //        http.x509(httpSecurityX509Configurer -> httpSecurityX509Configurer
 //                // 允许指定整个 X509AuthenticationFilter。
 //                // 如果已指定，则不会在 X509AuthenticationFilter 上填充 X509Configurer 上的属性。
@@ -296,7 +398,7 @@ class SecurityConfig {
 //                .disable()
 //        );
 
-        // 允许配置记住我身份验证。
+            // 允许配置记住我身份验证。
 //        http.rememberMe(httpSecurityRememberMeConfigurer -> httpSecurityRememberMeConfigurer
 //                // 允许指定令牌的有效期（以秒为单位）
 //                .tokenValiditySeconds(0)
@@ -332,67 +434,40 @@ class SecurityConfig {
 //                .disable()
 //        );
 
-        // TODO: 2023/6/21 白名单里的请求路径居然直接跳过了跨域，不受跨域的限制！？
-        // 允许使用 RequestMatcher 实现（即通过 URL 模式）基于 HttpServletRequest 限制访问。
-        http.authorizeHttpRequests { registry: AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry ->
-            registry
-                // 如果 HandlerMappingIntrospector 在类路径中可用，则映射到不关心使用哪个 HttpMethod 的 MvcRequestMatcher。
-                // 这个匹配器将使用 Spring MVC 用于匹配的相同规则。 例如，路径“/path”的映射通常会匹配“/path”、“/path/”、“/path.html”等。
-                // 如果 HandlerMappingIntrospector 不可用，则映射到 AntPathRequestMatcher。
-                .requestMatchers(*customSecurityProperties.whitelist.toTypedArray())
-                // 指定任何人都允许使用 URL。
-                .permitAll()
-                // 如果 HandlerMappingIntrospector 在类路径中可用，则映射到与特定 HttpMethod 匹配的 MvcRequestMatcher。
-                // 这个匹配器将使用 Spring MVC 用于匹配的相同规则。 例如，路径“/path”的映射通常会匹配“/path”、“/path/”、“/path.html”等。
-                // 如果 HandlerMappingIntrospector 不可用，则映射到 AntPathRequestMatcher。
-                // 如果必须指定特定的 RequestMatcher，请改用 requestMatchers(RequestMatcher...)
-                .requestMatchers(HttpMethod.OPTIONS)
-                // 指定任何人都允许使用 URL。
-                .permitAll()
-                // 映射任何请求。
-                .anyRequest()
-                // 指定任何经过身份验证的用户都允许使用 URL。
-                .authenticated()
-            // 创建未指定 HttpMethod 的 DispatcherTypeRequestMatcher 实例列表。
-//                .dispatcherTypeMatchers()
-//                // 允许指定自定义 AuthorizationManager。
-//                .access(AuthenticatedAuthorizationManager.authenticated())
-        }
-
-        // 允许配置请求缓存。 例如，在身份验证之前可能会请求受保护的页面 (/protected)。 该应用程序会将用户重定向到登录页面。
-        // 身份验证后，Spring Security 会将用户重定向到最初请求的受保护页面（/protected）。 这在使用 EnableWebSecurity 时会自动应用。
+            // 允许配置请求缓存。 例如，在身份验证之前可能会请求受保护的页面 (/protected)。 该应用程序会将用户重定向到登录页面。
+            // 身份验证后，Spring Security 会将用户重定向到最初请求的受保护页面（/protected）。 这在使用 EnableWebSecurity 时会自动应用。
 //        http.requestCache(httpSecurityRequestCacheConfigurer -> httpSecurityRequestCacheConfigurer
 //                // 允许显式配置要使用的 RequestCache。 默认尝试将 RequestCache 查找为共享对象。 然后退回到 HttpSessionRequestCache。
 //                .requestCache(null)
 //                .disable()
 //        );
 
-        // 允许配置异常处理。 这在使用 EnableWebSecurity 时会自动应用。
-        http.exceptionHandling { configurer: ExceptionHandlingConfigurer<HttpSecurity> ->
-            configurer
-                // 指定要使用的 AccessDeniedHandler 的快捷方式是特定的错误页面
-                //                .accessDeniedPage(null)
-                // 指定要使用的 AccessDeniedHandler
-                .accessDeniedHandler(accessDeniedHandler)
-                // 设置要使用的默认 AccessDeniedHandler，它更喜欢为提供的 RequestMatcher 调用。
-                // 如果仅指定了一个默认的 AccessDeniedHandler，它将用于默认的 AccessDeniedHandler。
-                // 如果配置了多个默认的 AccessDeniedHandler 实例，则将使用 RequestMatcherDelegatingAccessDeniedHandler。
-                //                .defaultAccessDeniedHandlerFor(accessDeniedHandler, null)
-                // 设置要使用的 AuthenticationEntryPoint。
-                // 如果未指定 authenticationEntryPoint(AuthenticationEntryPoint)，
-                // 则将使用 defaultAuthenticationEntryPointFor(AuthenticationEntryPoint, RequestMatcher)。
-                // 如果未找到匹配项，则第一个 AuthenticationEntryPoint 将用作默认值。
-                // 如果未提供默认为 Http403ForbiddenEntryPoint。
-                // TODO 将下面这行注释后，启动时 filter 从 15 个变成了 18 个？？？！！！
-                .authenticationEntryPoint(authenticationEntryPoint)
-            // 设置要使用的默认 AuthenticationEntryPoint，它更喜欢为提供的 RequestMatcher 调用。
-            // 如果仅指定了一个默认的 AuthenticationEntryPoint，它将用于默认的 AuthenticationEntryPoint。
-            // 如果配置了多个默认 AuthenticationEntryPoint 实例，则将使用 DelegatingAuthenticationEntryPoint。
-            //                .defaultAuthenticationEntryPointFor(authenticationEntryPoint, null)
-        }
+            // 允许配置异常处理。 这在使用 EnableWebSecurity 时会自动应用。
+            http.exceptionHandling { configurer: ExceptionHandlingConfigurer<HttpSecurity> ->
+                configurer
+                    // 指定要使用的 AccessDeniedHandler 的快捷方式是特定的错误页面
+                    //                .accessDeniedPage(null)
+                    // 指定要使用的 AccessDeniedHandler
+                    .accessDeniedHandler(accessDeniedHandler)
+                    // 设置要使用的默认 AccessDeniedHandler，它更喜欢为提供的 RequestMatcher 调用。
+                    // 如果仅指定了一个默认的 AccessDeniedHandler，它将用于默认的 AccessDeniedHandler。
+                    // 如果配置了多个默认的 AccessDeniedHandler 实例，则将使用 RequestMatcherDelegatingAccessDeniedHandler。
+                    //                .defaultAccessDeniedHandlerFor(accessDeniedHandler, null)
+                    // 设置要使用的 AuthenticationEntryPoint。
+                    // 如果未指定 authenticationEntryPoint(AuthenticationEntryPoint)，
+                    // 则将使用 defaultAuthenticationEntryPointFor(AuthenticationEntryPoint, RequestMatcher)。
+                    // 如果未找到匹配项，则第一个 AuthenticationEntryPoint 将用作默认值。
+                    // 如果未提供默认为 Http403ForbiddenEntryPoint。
+                    // TODO 将下面这行注释后，启动时 filter 从 15 个变成了 18 个？？？！！！
+                    .authenticationEntryPoint(authenticationEntryPoint)
+                // 设置要使用的默认 AuthenticationEntryPoint，它更喜欢为提供的 RequestMatcher 调用。
+                // 如果仅指定了一个默认的 AuthenticationEntryPoint，它将用于默认的 AuthenticationEntryPoint。
+                // 如果配置了多个默认 AuthenticationEntryPoint 实例，则将使用 DelegatingAuthenticationEntryPoint。
+                //                .defaultAuthenticationEntryPointFor(authenticationEntryPoint, null)
+            }
 
-        // TODO: 2023/4/15 研究这里的作用
-        // 在 HttpServletRequest 之间的 SecurityContextHolder 上设置 SecurityContext 的管理。 这在使用 EnableWebSecurity 时会自动应用。
+            // TODO: 2023/4/15 研究这里的作用
+            // 在 HttpServletRequest 之间的 SecurityContextHolder 上设置 SecurityContext 的管理。 这在使用 EnableWebSecurity 时会自动应用。
 //        http.securityContext(httpSecuritySecurityContextConfigurer -> httpSecuritySecurityContextConfigurer
 //                // 指定要使用的共享 SecurityContextRepository
 //                .securityContextRepository(null)
@@ -401,75 +476,75 @@ class SecurityConfig {
 //                .disable()
 //        );
 
-        // 将 HttpServletRequest 方法与在 SecurityContext 上找到的值集成。 这在使用 EnableWebSecurity 时会自动应用。
+            // 将 HttpServletRequest 方法与在 SecurityContext 上找到的值集成。 这在使用 EnableWebSecurity 时会自动应用。
 //        http.servletApi(httpSecurityServletApiConfigurer -> httpSecurityServletApiConfigurer
 //                .rolePrefix(null)
 //                .disable()
 //        );
 
-        // TODO: 2023/4/9 研究是否值得启用，可能是要前端配合的
-        // 启用 CSRF 保护。 在使用 EnableWebSecurity 的默认构造函数时默认激活。
-        http.csrf { configurer: CsrfConfigurer<HttpSecurity> ->
-            configurer
-                // 指定要使用的 CsrfTokenRepository。 默认是由 LazyCsrfTokenRepository 包装的 HttpSessionCsrfTokenRepository。
-                //                        .csrfTokenRepository(new HttpSessionCsrfTokenRepository())
-                // 指定 RequestMatcher 用于确定何时应应用 CSRF。 默认是忽略 GET、HEAD、TRACE、OPTIONS 并处理所有其他请求。
-                //                        .requireCsrfProtectionMatcher(CsrfFilter.DEFAULT_CSRF_MATCHER)
-                // 指定 CsrfTokenRequestHandler 以用于使 CsrfToken 可用作请求属性。
-                //                        .csrfTokenRequestHandler(new CsrfTokenRequestAttributeHandler())
-                // 允许指定不应使用 CSRF 保护的 HttpServletRequests，即使它们匹配 requireCsrfProtectionMatcher(RequestMatcher)。
-                .ignoringRequestMatchers("/getCaptcha")
-                // 指定要使用的 SessionAuthenticationStrategy。 默认是 CsrfAuthenticationStrategy。
-                //                        .sessionAuthenticationStrategy(new ConcurrentSessionControlAuthenticationStrategy(new SessionRegistryImpl()))
-                .disable()
-        }
+            // TODO: 2023/4/9 研究是否值得启用，可能是要前端配合的
+            // 启用 CSRF 保护。 在使用 EnableWebSecurity 的默认构造函数时默认激活。
+            http.csrf { configurer: CsrfConfigurer<HttpSecurity> ->
+                configurer
+                    // 指定要使用的 CsrfTokenRepository。 默认是由 LazyCsrfTokenRepository 包装的 HttpSessionCsrfTokenRepository。
+                    //                        .csrfTokenRepository(new HttpSessionCsrfTokenRepository())
+                    // 指定 RequestMatcher 用于确定何时应应用 CSRF。 默认是忽略 GET、HEAD、TRACE、OPTIONS 并处理所有其他请求。
+                    //                        .requireCsrfProtectionMatcher(CsrfFilter.DEFAULT_CSRF_MATCHER)
+                    // 指定 CsrfTokenRequestHandler 以用于使 CsrfToken 可用作请求属性。
+                    //                        .csrfTokenRequestHandler(new CsrfTokenRequestAttributeHandler())
+                    // 允许指定不应使用 CSRF 保护的 HttpServletRequests，即使它们匹配 requireCsrfProtectionMatcher(RequestMatcher)。
+                    .ignoringRequestMatchers("/getCaptcha")
+                    // 指定要使用的 SessionAuthenticationStrategy。 默认是 CsrfAuthenticationStrategy。
+                    //                        .sessionAuthenticationStrategy(new ConcurrentSessionControlAuthenticationStrategy(new SessionRegistryImpl()))
+                    .disable()
+            }
 
-        // 提供注销支持。 这在使用 EnableWebSecurity 时会自动应用。
-        // 默认情况下，访问 URL“/logout”将通过使 HTTP 会话无效、清除配置的任何 rememberMe() 身份验证、清除 SecurityContextHolder，
-        // 然后重定向到“/login?success”来注销用户。
-        http.logout { configurer: LogoutConfigurer<HttpSecurity> ->
-            configurer
-                // 添加一个注销处理程序。
-                // SecurityContextLogoutHandler 和 LogoutSuccessEventPublishingLogoutHandler 默认添加为最后一个 LogoutHandler 实例。
-                //                .addLogoutHandler(logoutHandler)
-                // 指定 SecurityContextLogoutHandler 是否应在注销时清除身份验证。
-                // 默认 true
-                //                .clearAuthentication(true)
-                // 配置 SecurityContextLogoutHandler 以在注销时使 HttpSession 无效。
-                // 默认 true
-                //                .invalidateHttpSession(true)
-                // 触发注销的 URL（默认为“/logout”）。
-                // 如果启用 CSRF 保护（默认），则请求也必须是 POST。 这意味着默认情况下需要 POST "/logout" 来触发注销。
-                // 如果禁用 CSRF 保护，则允许使用任何 HTTP 方法。
-                // 对任何更改状态（即注销）的操作使用 HTTP POST 以防止 CSRF 攻击被认为是最佳实践。
-                // 如果你真的想使用 HTTP GET，你可以使用 logoutRequestMatcher(new AntPathRequestMatcher(logoutUrl, "GET"));
-                //                .logoutUrl("/api/logout")
-                // 触发注销发生的 RequestMatcher。 在大多数情况下，用户将使用 logoutUrl(String) 这有助于实施良好做法。
-                //                .logoutRequestMatcher(AntPathRequestMatcher.antMatcher(HttpMethod.POST, "/logout"))
-                // 注销后重定向到的 URL。 默认值为“/login?logout”。
-                // 这是使用 SimpleUrlLogoutSuccessHandler 调用 logoutSuccessHandler(LogoutSuccessHandler) 的快捷方式。
-                //                .logoutSuccessUrl(null)
-                // 以 true 作为参数的 permitAll(boolean) 的快捷方式。
-                //                .permitAll()
-                // 允许指定在注销成功时要删除的 cookie 的名称。
-                // 这是使用 CookieClearingLogoutHandler 轻松调用 addLogoutHandler(LogoutHandler) 的快捷方式。
-                .deleteCookies(
-                    "Idea-2a3d4c",
-                    "JSESSIONID",
-                    "XSRF-TOKEN"
-                )
-                // 设置要使用的 LogoutSuccessHandler。 如果指定，则忽略 logoutSuccessUrl(String)。
-                .logoutSuccessHandler(logoutSuccessHandler)
-            // 设置要使用的默认 LogoutSuccessHandler，它更喜欢为提供的 RequestMatcher 调用。
-            // 如果未指定 LogoutSuccessHandler，将使用 SimpleUrlLogoutSuccessHandler。
-            // 如果配置了任何默认的 LogoutSuccessHandler 实例，则将使用默认为 SimpleUrlLogoutSuccessHandler 的 DelegatingLogoutSuccessHandler。
-            //                .defaultLogoutSuccessHandlerFor(logoutSuccessHandler, null)
-            // 授予每个用户对 logoutSuccessUrl(String) 和 logoutUrl(String) 的访问权限。
-            //                .permitAll(false)
-        }
+            // 提供注销支持。 这在使用 EnableWebSecurity 时会自动应用。
+            // 默认情况下，访问 URL“/logout”将通过使 HTTP 会话无效、清除配置的任何 rememberMe() 身份验证、清除 SecurityContextHolder，
+            // 然后重定向到“/login?success”来注销用户。
+            http.logout { configurer: LogoutConfigurer<HttpSecurity> ->
+                configurer
+                    // 添加一个注销处理程序。
+                    // SecurityContextLogoutHandler 和 LogoutSuccessEventPublishingLogoutHandler 默认添加为最后一个 LogoutHandler 实例。
+                    //                .addLogoutHandler(logoutHandler)
+                    // 指定 SecurityContextLogoutHandler 是否应在注销时清除身份验证。
+                    // 默认 true
+                    //                .clearAuthentication(true)
+                    // 配置 SecurityContextLogoutHandler 以在注销时使 HttpSession 无效。
+                    // 默认 true
+                    //                .invalidateHttpSession(true)
+                    // 触发注销的 URL（默认为“/logout”）。
+                    // 如果启用 CSRF 保护（默认），则请求也必须是 POST。 这意味着默认情况下需要 POST "/logout" 来触发注销。
+                    // 如果禁用 CSRF 保护，则允许使用任何 HTTP 方法。
+                    // 对任何更改状态（即注销）的操作使用 HTTP POST 以防止 CSRF 攻击被认为是最佳实践。
+                    // 如果你真的想使用 HTTP GET，你可以使用 logoutRequestMatcher(new AntPathRequestMatcher(logoutUrl, "GET"));
+                    //                .logoutUrl("/api/logout")
+                    // 触发注销发生的 RequestMatcher。 在大多数情况下，用户将使用 logoutUrl(String) 这有助于实施良好做法。
+                    //                .logoutRequestMatcher(AntPathRequestMatcher.antMatcher(HttpMethod.POST, "/logout"))
+                    // 注销后重定向到的 URL。 默认值为“/login?logout”。
+                    // 这是使用 SimpleUrlLogoutSuccessHandler 调用 logoutSuccessHandler(LogoutSuccessHandler) 的快捷方式。
+                    //                .logoutSuccessUrl(null)
+                    // 以 true 作为参数的 permitAll(boolean) 的快捷方式。
+                    //                .permitAll()
+                    // 允许指定在注销成功时要删除的 cookie 的名称。
+                    // 这是使用 CookieClearingLogoutHandler 轻松调用 addLogoutHandler(LogoutHandler) 的快捷方式。
+                    .deleteCookies(
+                        "Idea-2a3d4c",
+                        "JSESSIONID",
+                        "XSRF-TOKEN"
+                    )
+                    // 设置要使用的 LogoutSuccessHandler。 如果指定，则忽略 logoutSuccessUrl(String)。
+                    .logoutSuccessHandler(logoutSuccessHandler)
+                // 设置要使用的默认 LogoutSuccessHandler，它更喜欢为提供的 RequestMatcher 调用。
+                // 如果未指定 LogoutSuccessHandler，将使用 SimpleUrlLogoutSuccessHandler。
+                // 如果配置了任何默认的 LogoutSuccessHandler 实例，则将使用默认为 SimpleUrlLogoutSuccessHandler 的 DelegatingLogoutSuccessHandler。
+                //                .defaultLogoutSuccessHandlerFor(logoutSuccessHandler, null)
+                // 授予每个用户对 logoutSuccessUrl(String) 和 logoutUrl(String) 的访问权限。
+                //                .permitAll(false)
+            }
 
-        // 允许配置匿名用户的表示方式。 这在与 EnableWebSecurity 结合使用时会自动应用。
-        // 默认情况下，匿名用户将使用 org.springframework.security.authentication.AnonymousAuthenticationToken 表示并包含角色“ROLE_ANONYMOUS”。
+            // 允许配置匿名用户的表示方式。 这在与 EnableWebSecurity 结合使用时会自动应用。
+            // 默认情况下，匿名用户将使用 org.springframework.security.authentication.AnonymousAuthenticationToken 表示并包含角色“ROLE_ANONYMOUS”。
 //        http.anonymous(httpSecurityAnonymousConfigurer -> httpSecurityAnonymousConfigurer
 //                // 设置密钥以识别为匿名身份验证创建的令牌。 默认是一个安全的随机生成的密钥。
 //                .key(null)
@@ -486,37 +561,13 @@ class SecurityConfig {
 //                .disable()
 //        );
 
-        // 指定支持基于表单的身份验证。 如果未指定 FormLoginConfigurer.loginPage(String)，将生成默认登录页面。
-        http.formLogin { configurer: FormLoginConfigurer<HttpSecurity> ->
-            configurer
-                // 指定如果用户在身份验证之前未访问安全页面，则在成功进行身份验证后将重定向到何处。
-                // 这是调用 defaultSuccessUrl(String, boolean) 的快捷方式。
-                //                .defaultSuccessUrl(null)
-                //                // 指定如果用户在身份验证之前未访问安全页面或始终使用 true，则在成功进行身份验证后将重定向到何处。
-                //                // 这是调用 successHandler(AuthenticationSuccessHandler) 的快捷方式。
-                //                .defaultSuccessUrl(null, true)
-                //                // 指定用于验证凭据的 URL。
-                //                .loginProcessingUrl(null)
-                //                // 指定用于在请求之间持久化安全上下文的策略。
-                //                .securityContextRepository(null)
-                //                // 指定自定义身份验证详细信息源。默认值为 WebAuthenticationDetailsSource。
-                //                .authenticationDetailsSource(null)
-                // 指定要使用的身份验证成功处理程序。默认值为 SavedRequestAwareAuthenticationSuccessHandler，未设置其他属性。
-                .successHandler(authenticationSuccessHandler)
-                // 身份验证失败时向用户发送的 URL。这是调用 failureHandler（AuthenticationFailureHandler）的快捷方式。默认值为“/login？error”。
-                //                .failureUrl(null)
-                // 指定身份验证失败时要使用的 AuthenticationFailureHandler。
-                // 默认使用 SimpleUrlAuthenticationFailureHandler 重定向到“/login?error”
-                .failureHandler(authenticationFailureHandler)
-        }
-
-        // 使用 SAML 2.0 服务提供程序配置身份验证支持。 “身份验证流程”是使用 Web 浏览器 SSO 配置文件、POST 和重定向绑定实现的，
-        // 如 SAML V2.0 核心、配置文件和绑定规范中所述。 使用此功能的先决条件是，您具有 SAML v2.0 身份提供程序来提供断言。
-        // 服务提供商、信赖方和远程身份提供程序（断言方）的表示形式包含在信赖方注册中。
-        // RelyingPartyRegistration（s）由RelyingPartyRegistrationRepository组成，该存储库是必需的，
-        // 必须向ApplicationContext注册或通过saml2Login（）.relyingPartyRegistrationRepository（..）进行配置。
-        // 默认配置在“/login”处提供自动生成的登录页面，并在发生身份验证错误时重定向到“/login？error”。
-        // 登录页面将显示每个身份提供程序，其中包含一个能够启动“身份验证流”的链接。
+            // 使用 SAML 2.0 服务提供程序配置身份验证支持。 “身份验证流程”是使用 Web 浏览器 SSO 配置文件、POST 和重定向绑定实现的，
+            // 如 SAML V2.0 核心、配置文件和绑定规范中所述。 使用此功能的先决条件是，您具有 SAML v2.0 身份提供程序来提供断言。
+            // 服务提供商、信赖方和远程身份提供程序（断言方）的表示形式包含在信赖方注册中。
+            // RelyingPartyRegistration（s）由RelyingPartyRegistrationRepository组成，该存储库是必需的，
+            // 必须向ApplicationContext注册或通过saml2Login（）.relyingPartyRegistrationRepository（..）进行配置。
+            // 默认配置在“/login”处提供自动生成的登录页面，并在发生身份验证错误时重定向到“/login？error”。
+            // 登录页面将显示每个身份提供程序，其中包含一个能够启动“身份验证流”的链接。
 //        http.saml2Login(httpSecuritySaml2LoginConfigurer -> httpSecuritySaml2LoginConfigurer
 //                // 在将传入请求转换为身份验证时使用此身份验证转换器。默认情况下，使用 Saml2AuthenticationTokenConverter。
 //                .authenticationConverter(null)
@@ -538,11 +589,11 @@ class SecurityConfig {
 //                .disable()
 //        );
 
-        // 图 SAML 2.0 信赖方的注销支持。 使用 POST 和重定向绑定实现单注销配置文件，如 SAML V2.0 核心、配置文件和绑定规范中所述。
-        // 作为使用此功能的先决条件，您必须有一个 SAML v2.0 断言方向其发送注销请求。信赖方和主张方的表示包含在信赖方注册中。
-        // RelyingPartyRegistration（s）由RelyingPartyRegistrationRepository组成，该存储库是必需的，
-        // 必须向ApplicationContext注册或通过saml2Login（Customizer）进行配置。
-        // 默认配置在“/logout”处提供自动生成的注销端点，并在注销完成后重定向到 /login？logout。
+            // 图 SAML 2.0 信赖方的注销支持。 使用 POST 和重定向绑定实现单注销配置文件，如 SAML V2.0 核心、配置文件和绑定规范中所述。
+            // 作为使用此功能的先决条件，您必须有一个 SAML v2.0 断言方向其发送注销请求。信赖方和主张方的表示包含在信赖方注册中。
+            // RelyingPartyRegistration（s）由RelyingPartyRegistrationRepository组成，该存储库是必需的，
+            // 必须向ApplicationContext注册或通过saml2Login（Customizer）进行配置。
+            // 默认配置在“/logout”处提供自动生成的注销端点，并在注销完成后重定向到 /login？logout。
 //        http.saml2Logout(httpSecuritySaml2LogoutConfigurer -> httpSecuritySaml2LogoutConfigurer
 //                // 信赖方或断言方可通过其触发注销的 URL。
 //                // 信赖方通过发布到终结点来触发注销。
@@ -558,9 +609,9 @@ class SecurityConfig {
 //                .disable()
 //        );
 
-        // 配置 SAML 2.0 元数据终结点，该终结点在 <md：EntityDescriptor> 有效负载中显示信赖方配置。
-        // 默认情况下，端点是 /saml2/metadata 和 /saml2/metadata/{registrationId}，
-        // 但请注意，出于向后兼容性目的，还会识别 /saml2/service-provider-metadata/{registrationId}。
+            // 配置 SAML 2.0 元数据终结点，该终结点在 <md：EntityDescriptor> 有效负载中显示信赖方配置。
+            // 默认情况下，端点是 /saml2/metadata 和 /saml2/metadata/{registrationId}，
+            // 但请注意，出于向后兼容性目的，还会识别 /saml2/service-provider-metadata/{registrationId}。
 //        http.saml2Metadata(httpSecuritySaml2MetadataConfigurer -> httpSecuritySaml2MetadataConfigurer
 //                // 使用此终结点请求信赖方元数据。
 //                // 如果在 URL 中指定 registrationId 占位符，则筛选器将使用该占位符查找 RelyingPartyRegistration。
@@ -575,16 +626,16 @@ class SecurityConfig {
 //                .disable()
 //        );
 
-        // 使用 OAuth 2.0 和/或 OpenID Connect 1.0 提供程序配置身份验证支持。
-        // 正如 OAuth 2.0 授权框架和 OpenID Connect Core 1.0 规范中所指定的那样，“身份验证流程”是使用授权码授予来实现的。
-        // 作为使用此功能的先决条件，您必须向提供商注册客户端。
-        // 客户端注册信息然后可以用于使用 org.springframework.security.oauth2.client.registration.ClientRegistration.Builder
-        // 配置 org.springframework.security.oauth2.client.registration.ClientRegistration。
-        // org.springframework.security.oauth2.client.registration.ClientRegistration(s)
-        // 由 org.springframework.security.oauth2.client.registration.ClientRegistrationRepository 组成，
-        // 它是必需的并且必须在 ApplicationContext 中注册或通过 oauth2Login() 配置 .clientRegistrationRepository(..)。
-        // 默认配置在“/login”提供一个自动生成的登录页面，并在发生身份验证错误时重定向到“/login?error”。
-        // 登录页面将向每个客户端显示一个能够启动“身份验证流程”的链接。
+            // 使用 OAuth 2.0 和/或 OpenID Connect 1.0 提供程序配置身份验证支持。
+            // 正如 OAuth 2.0 授权框架和 OpenID Connect Core 1.0 规范中所指定的那样，“身份验证流程”是使用授权码授予来实现的。
+            // 作为使用此功能的先决条件，您必须向提供商注册客户端。
+            // 客户端注册信息然后可以用于使用 org.springframework.security.oauth2.client.registration.ClientRegistration.Builder
+            // 配置 org.springframework.security.oauth2.client.registration.ClientRegistration。
+            // org.springframework.security.oauth2.client.registration.ClientRegistration(s)
+            // 由 org.springframework.security.oauth2.client.registration.ClientRegistrationRepository 组成，
+            // 它是必需的并且必须在 ApplicationContext 中注册或通过 oauth2Login() 配置 .clientRegistrationRepository(..)。
+            // 默认配置在“/login”提供一个自动生成的登录页面，并在发生身份验证错误时重定向到“/login?error”。
+            // 登录页面将向每个客户端显示一个能够启动“身份验证流程”的链接。
 //        http.oauth2Login(httpSecurityOAuth2LoginConfigurer -> httpSecurityOAuth2LoginConfigurer
 //                // 设置客户端注册的存储库。
 //                .clientRegistrationRepository(null)
@@ -608,8 +659,8 @@ class SecurityConfig {
 //                .disable()
 //        );
 
-        // OidcLogoutConfigurer<HttpSecurity>：用于 OIDC 注销流程的 AbstractHttpConfigurer
-        // OIDC 注销功能使应用程序能够让用户使用其在 OAuth 2.0 或 OpenID Connect 1.0 提供商处现有的帐户注销。
+            // OidcLogoutConfigurer<HttpSecurity>：用于 OIDC 注销流程的 AbstractHttpConfigurer
+            // OIDC 注销功能使应用程序能够让用户使用其在 OAuth 2.0 或 OpenID Connect 1.0 提供商处现有的帐户注销。
 //        http.oidcLogout { configurer: OidcLogoutConfigurer<HttpSecurity> ->
 //            configurer
 //                // 设置客户端注册的存储库。
@@ -631,10 +682,54 @@ class SecurityConfig {
 //                }
 //        }
 
-        // 配置 OAuth 2.0 客服端支持
-//        http.oauth2Client(httpSecurityOAuth2ClientConfigurer -> httpSecurityOAuth2ClientConfigurer
+            // 配置 OAuth 2.0 客服端支持
+//        http.oauth2Client { configurer: OAuth2ClientConfigurer<HttpSecurity> ->
+//            configurer
 //                // 设置客服端注册仓库
-//                .clientRegistrationRepository(null)
+//                .clientRegistrationRepository { registrationId ->
+//                    ClientRegistration
+//                        // 设置注册 ID。
+//                        .withRegistrationId(registrationId)
+//                        // 设置客户端标识符。
+//                        .clientId(null)
+//                        // 设置客户端机密。
+//                        .clientSecret(null)
+//                        // 设置向授权服务器验证客户端身份时使用的验证方法。
+//                        .clientAuthenticationMethod(null)
+//                        // 设置客户端使用的授权授予类型。
+//                        .authorizationGrantType(null)
+//                        // 设置重定向端点的 URI（或 URI 模板）。
+//                        // 支持的 URI 模板变量包括：{baseScheme}、{baseHost}、{basePort}、{basePath} 和 {registrationId}。
+//                        // 注意：{baseUrl} 也受支持，它与 {baseScheme}://{baseHost}{basePort}{basePath} 相同。
+//                        // 当客户端运行在代理服务器后面时，配置 URI 模板变量尤其有用。
+//                        // 这可确保在扩展重定向 URI 时使用 X-Forwarded-* 标头。
+//                        .redirectUri(null)
+//                        // 设置客户端使用的范围。
+//                        .scope()
+//                        // 设置客户端使用的范围。
+////                        .scope(null as Collection<String>)
+//                        // 设置授权端点的 uri。
+//                        .authorizationUri(null)
+//                        // 设置令牌端点的 uri。
+//                        .tokenUri(null)
+//                        // 设置用户信息端点的 uri。
+//                        .userInfoUri(null)
+//                        // 设置用户信息端点的身份验证方法。
+//                        .userInfoAuthenticationMethod(null)
+//                        // 设置用于从用户信息响应中访问用户姓名的属性名称。
+//                        .userNameAttributeName(null)
+//                        // 设置 JSON Web Key (JWK) Set 端点的 uri。
+//                        .jwkSetUri(null)
+//                        // 为 OpenID Connect 1.0 提供商或 OAuth 2.0 授权服务器设置发行者标识符 uri。
+//                        .issuerUri(null)
+//                        // 设置描述提供商配置的元数据。
+//                        .providerConfigurationMetadata(null)
+//                        // 设置客户端或注册的逻辑名称。
+//                        .clientName(null)
+//                        // 设置客户端配置设置。
+//                        .clientSettings(null)
+//                        .build()
+//                }
 //                // 设置授权客户端的存储库。
 //                .authorizedClientRepository(null)
 //                // 设置授权客服端的服务
@@ -643,37 +738,39 @@ class SecurityConfig {
 //                .authorizationCodeGrant(null)
 //                // 通过删除 AbstractHttpConfigurer 来禁用它。执行此操作后，可以应用新版本的配置。
 //                .disable()
-//        );
+//        }
 
 
 //        val jwtIssuerAuthenticationManagerResolver = JwtIssuerAuthenticationManagerResolver<HttpServletRequest>
-//            .fromTrustedIssuers(securityProperties.host)
+//            .fromTrustedIssuers("http://localhost:8081/realms/turing-realm")
 //        // 配置 OAuth 2.0 资源服务器支持
 //        http.oauth2ResourceServer { configurer: OAuth2ResourceServerConfigurer<HttpSecurity> ->
 //            configurer
 //                .accessDeniedHandler(accessDeniedHandler)
 //                .authenticationEntryPoint(authenticationEntryPoint)
+//                // 如果配置了 authenticationManagerResolver()，则它优先于任何 jwt() 或 opaqueToken() 配置。
 //                .authenticationManagerResolver { context: HttpServletRequest ->
 //                    jwtIssuerAuthenticationManagerResolver.resolve(context)
 //                }
+            // 不配置默认也会创建一个 DefaultBearerTokenResolver
 //                .bearerTokenResolver { request: HttpServletRequest ->
 //                    DefaultBearerTokenResolver().resolve(request)
 //                }
-//                // 启用 JWT 编码的持有者令牌支持。
+            // 启用 JWT 编码的持有者令牌支持。
 //                .jwt { configurer: OAuth2ResourceServerConfigurer<HttpSecurity>.JwtConfigurer ->
 //                    configurer
 //                        .authenticationManager(
 //                            jwtIssuerAuthenticationManagerResolver.resolve(httpServletRequest)
 //                        )
-//                        .decoder(customNimbusJwtProvider)
-//                        .jwkSetUri(null)
-//                        .jwtAuthenticationConverter(null)
+//                        .decoder(jwtDecoder)
+////                        .jwkSetUri("http://localhost:8081/realms/turing-realm/protocol/openid-connect/certs")
+////                        .jwtAuthenticationConverter(null)
 //                }
-//                // 启用不透明持有者令牌支持。
+            // 启用不透明持有者令牌支持。
 //                .opaqueToken(null)
 //        }
 
-        // 配置一次性令牌登录支持。todo
+            // 配置一次性令牌登录支持。todo
 //        http.oneTimeTokenLogin { configurer: OneTimeTokenLoginConfigurer<HttpSecurity> ->
 //            configurer
 //                // 指定在验证用户身份时使用的 AuthenticationProvider。
@@ -700,13 +797,13 @@ class SecurityConfig {
 //                .generateRequestResolver(null)
 //        }
 
-        // 配置通道安全性。为了使此配置有用，必须提供至少一个到所需通道的映射。
+            // 配置通道安全性。为了使此配置有用，必须提供至少一个到所需通道的映射。
 //        http.redirectToHttps { configurer: HttpsRedirectConfigurer<HttpSecurity> ->
 //            configurer
 //                .requestMatchers()
 //        }
 
-        // 配置 HTTP Basic 身份验证 todo
+            // 配置 HTTP Basic 身份验证 todo
 //        http.httpBasic(httpSecurityHttpBasicConfigurer -> httpSecurityHttpBasicConfigurer
 //                // 允许轻松更改领域，但保留剩余的默认值。
 //                // 如果已调用 authenticationEntryPoint（AuthenticationEntryPoint），则调用此方法将导致错误。
@@ -722,7 +819,7 @@ class SecurityConfig {
 //                .disable()
 //        );
 
-        // 添加对密码管理的支持。
+            // 添加对密码管理的支持。
 //        http.passwordManagement(httpSecurityPasswordManagementConfigurer -> httpSecurityPasswordManagementConfigurer
 //                // 设置更改密码页面。默认为 DEFAULT_CHANGE_PASSWORD_PAGE。
 //                .changePasswordPage("/change-password")
@@ -730,53 +827,42 @@ class SecurityConfig {
 //                .disable()
 //        );
 
-        // 配置默认的 AuthenticationManager. todo
+            // 配置默认的 AuthenticationManager. todo
 //        http.authenticationManager(null);
 
-        // 允许添加额外的 AuthenticationProvider 以供使用 todo
+            // 允许添加额外的 AuthenticationProvider 以供使用 todo
 //        http.authenticationProvider(null);
 
-        // 允许添加额外的 UserDetailsService 以供使用 todo
+            // 允许添加额外的 UserDetailsService 以供使用 todo
 //        http.userDetailsService(null);
 
-        // 将过滤器实例添加到指定过滤器类之后
-        // 允许在已知筛选器类之一之后添加筛选器。
-        // 已知的筛选器实例是 addFilter(Filter) 中列出的筛选器，
-        // 或者是已使用 addFilterAfter(Filter, Class) 或 addFilterBefore(Filter, Class) 添加的筛选器。
-        http.addFilterAfter(customJwtOncePerRequestFilter, UsernamePasswordAuthenticationFilter::class.java)
+            // 将过滤器实例添加到指定过滤器类之后
+            // 允许在已知筛选器类之一之后添加筛选器。
+            // 已知的筛选器实例是 addFilter(Filter) 中列出的筛选器，
+            // 或者是已使用 addFilterAfter(Filter, Class) 或 addFilterBefore(Filter, Class) 添加的筛选器。
+//        http.addFilterAfter(customJwtOncePerRequestFilter, UsernamePasswordAuthenticationFilter::class.java)
 
-        // 允许在已知筛选器类之一之前添加筛选器。
-        // 已知的筛选器实例是 addFilter(Filter) 中列出的筛选器，
-        // 或者是已使用 addFilterAfter(Filter, Class) 或 addFilterBefore(Filter, Class) 添加的筛选器。
-        http.addFilterBefore(customCaptchaOncePerRequestFilter, UsernamePasswordAuthenticationFilter::class.java)
+            // 允许在已知筛选器类之一之前添加筛选器。
+            // 已知的筛选器实例是 addFilter(Filter) 中列出的筛选器，
+            // 或者是已使用 addFilterAfter(Filter, Class) 或 addFilterBefore(Filter, Class) 添加的筛选器。
+            http.addFilterBefore(customCaptchaOncePerRequestFilter, UsernamePasswordAuthenticationFilter::class.java)
 
-        // 添加一个筛选器，该筛选器必须是安全框架中提供的筛选器的实例或扩展其中一个筛选器。该方法可确保自动处理筛选器的顺序。
+            // 添加一个筛选器，该筛选器必须是安全框架中提供的筛选器的实例或扩展其中一个筛选器。该方法可确保自动处理筛选器的顺序。
 //        http.addFilter();
 
-        // 在指定筛选器类的位置添加筛选器。例如，如果您希望筛选器 CustomFilter 注册到与 UsernamePasswordAuthenticationFilter 相同的位置，则可以调用：
-        // addFilterAt（new CustomFilter（）， UsernamePasswordAuthenticationFilter.class）
-        // 在同一位置注册多个筛选器意味着它们的排序不是确定的。更具体地说，在同一位置注册多个筛选器不会覆盖现有筛选器。相反，不要注册您不想使用的筛选器。
+            // 在指定筛选器类的位置添加筛选器。例如，如果您希望筛选器 CustomFilter 注册到与 UsernamePasswordAuthenticationFilter 相同的位置，则可以调用：
+            // addFilterAt（new CustomFilter（）， UsernamePasswordAuthenticationFilter.class）
+            // 在同一位置注册多个筛选器意味着它们的排序不是确定的。更具体地说，在同一位置注册多个筛选器不会覆盖现有筛选器。相反，不要注册您不想使用的筛选器。
 //        http.addFilterAt();
 
-        // 允许指定将在哪些 HttpServletRequest 实例上调用此 HttpSecurity。
-        // 此方法允许为多个不同的 RequestMatcher 实例轻松调用 HttpSecurity。
-        // 如果只需要一个 RequestMatcher，请考虑使用 securityMatcher（String...） 或 securityMatcher（RequestMatcher）。
-        // 调用 securityMatchers（Customizer） 不会覆盖以前对 securityMatchers（）、
-        // securityMatchers（Customizer） securityMatcher（String...） 和 securityMatcher（RequestMatcher） 的调用
+            // 允许指定将在哪些 HttpServletRequest 实例上调用此 HttpSecurity。
+            // 此方法允许为多个不同的 RequestMatcher 实例轻松调用 HttpSecurity。
+            // 如果只需要一个 RequestMatcher，请考虑使用 securityMatcher（String...） 或 securityMatcher（RequestMatcher）。
+            // 调用 securityMatchers（Customizer） 不会覆盖以前对 securityMatchers（）、
+            // securityMatchers（Customizer） securityMatcher（String...） 和 securityMatcher（RequestMatcher） 的调用
 //        http.securityMatchers(AbstractRequestMatcherRegistry::dispatcherTypeMatchers);
 
-        // 允许将 HttpSecurity 配置为仅在匹配提供的 RequestMatch 时调用。如果需要更高级的配置，请考虑使用 securityMatchers（Customizer） （）。
-        // 调用 securityMatcher（RequestMatcher） 将覆盖之前对 securityMatcher（RequestMatcher）、securityMatcher（String...）、
-        // securityMatchers（Customizer） 和 securityMatchers（） 的调用
-//        http.securityMatcher((RequestMatcher) null);
-
-        // 允许将 HttpSecurity 配置为仅在匹配提供的模式时调用。如果 Spring MVC 在类路径中，则此方法创建一个 MvcRequestMatcher，如果没有，
-        // 则创建 AntPathRequestMatcher。如果需要更高级的配置，请考虑使用 securityMatchers（Customizer） 或 securityMatcher（RequestMatcher）。
-        // 调用 securityMatcher（String...） 将覆盖之前对 securityMatcher（String...） 的调用（String）}}，
-        // securityMatcher（RequestMatcher） （）}， securityMatchers（Customizer） （String）} and securityMatchers（） （String）}.
-//        http.securityMatcher((String) null);
-
-        // 指定基于 webAuthn/passkeys 的身份验证。todo
+            // 指定基于 webAuthn/passkeys 的身份验证。todo
 //        http.webAuthn { configurer: WebAuthnConfigurer<HttpSecurity> ->
 //            configurer
 //                // 依赖方 ID。
@@ -794,6 +880,7 @@ class SecurityConfig {
 //                // 设置 PublicKeyCredentialCreationOptionsRepository
 //                .creationOptionsRepository(null)
 //        }
+        }
 
         return http.build()
     }
