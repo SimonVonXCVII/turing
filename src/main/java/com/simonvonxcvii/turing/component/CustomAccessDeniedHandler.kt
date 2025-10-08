@@ -1,9 +1,10 @@
 package com.simonvonxcvii.turing.component
 
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.simonvonxcvii.turing.common.exception.BizRuntimeException
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.apache.commons.logging.LogFactory
-import org.springframework.http.HttpStatus
 import org.springframework.security.access.AccessDeniedException
 import org.springframework.security.web.access.AccessDeniedHandler
 import org.springframework.stereotype.Component
@@ -20,7 +21,7 @@ import org.springframework.stereotype.Component
  * @since 2023/3/9 16:21
  */
 @Component
-class CustomAccessDeniedHandler : AccessDeniedHandler {
+class CustomAccessDeniedHandler(private val objectMapper: ObjectMapper) : AccessDeniedHandler {
     /**
      * 处理拒绝访问失败。
      */
@@ -29,8 +30,16 @@ class CustomAccessDeniedHandler : AccessDeniedHandler {
         response: HttpServletResponse,
         accessDeniedException: AccessDeniedException
     ) {
-        logger.debug("Responding with 403 status code")
-        response.sendError(HttpStatus.FORBIDDEN.value(), HttpStatus.FORBIDDEN.reasonPhrase)
+        println(accessDeniedException.message)
+        println(accessDeniedException.localizedMessage)
+        println(response.characterEncoding)
+        println(response.contentType)
+        println(response.status)
+//        response.characterEncoding = StandardCharsets.UTF_8.name()
+//        response.contentType = MediaType.APPLICATION_JSON_VALUE
+//        response.status = HttpStatus.UNAUTHORIZED.value()
+        val string = objectMapper.writeValueAsString(BizRuntimeException(accessDeniedException.message))
+        response.writer.write(string)
     }
 
     companion object {

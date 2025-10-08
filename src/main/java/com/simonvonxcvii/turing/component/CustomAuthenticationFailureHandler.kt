@@ -4,12 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.simonvonxcvii.turing.common.exception.BizRuntimeException
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
-import org.springframework.http.HttpStatus
-import org.springframework.http.MediaType
 import org.springframework.security.core.AuthenticationException
 import org.springframework.security.web.authentication.AuthenticationFailureHandler
 import org.springframework.stereotype.Component
-import java.nio.charset.StandardCharsets
 
 /**
  * 用于处理失败的身份验证尝试的策略。
@@ -34,10 +31,15 @@ class CustomAuthenticationFailureHandler(private val objectMapper: ObjectMapper)
         response: HttpServletResponse,
         exception: AuthenticationException
     ) {
-        response.characterEncoding = StandardCharsets.UTF_8.name()
-        response.contentType = MediaType.APPLICATION_JSON_VALUE
-        response.status = HttpStatus.OK.value()
-        val string = objectMapper.writeValueAsString(BizRuntimeException(exception.localizedMessage))
+        println(exception.message)
+        println(exception.localizedMessage)
+        println(response.characterEncoding)
+        println(response.contentType)
+        println(response.status)
+//        response.characterEncoding = StandardCharsets.UTF_8.name()
+//        response.contentType = MediaType.APPLICATION_JSON_VALUE
+//        response.status = HttpStatus.OK.value()
+        val string = objectMapper.writeValueAsString(BizRuntimeException(exception.message))
         response.writer.write(string)
     }
 }

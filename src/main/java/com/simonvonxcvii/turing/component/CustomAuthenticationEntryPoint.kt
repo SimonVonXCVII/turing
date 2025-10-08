@@ -4,8 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.simonvonxcvii.turing.common.exception.BizRuntimeException
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
-import org.springframework.http.HttpStatus
-import org.springframework.http.MediaType
 import org.springframework.security.authentication.*
 import org.springframework.security.authentication.ott.InvalidOneTimeTokenException
 import org.springframework.security.authentication.password.CompromisedPasswordException
@@ -22,7 +20,6 @@ import org.springframework.security.web.authentication.rememberme.RememberMeAuth
 import org.springframework.security.web.authentication.session.SessionAuthenticationException
 import org.springframework.security.web.authentication.www.NonceExpiredException
 import org.springframework.stereotype.Component
-import java.nio.charset.StandardCharsets
 
 /**
  * 由 ExceptionTranslationFilter 用于启动身份验证方案。
@@ -73,9 +70,14 @@ class CustomAuthenticationEntryPoint(private val objectMapper: ObjectMapper) : A
             is UsernameNotFoundException -> "无法通过用户名找到用户"
             else -> authException.message
         }
-        response.characterEncoding = StandardCharsets.UTF_8.name()
-        response.contentType = MediaType.APPLICATION_JSON_VALUE
-        response.status = HttpStatus.UNAUTHORIZED.value()
+        println(authException.message)
+        println(authException.localizedMessage)
+        println(response.characterEncoding)
+        println(response.contentType)
+        println(response.status)
+//        response.characterEncoding = StandardCharsets.UTF_8.name()
+//        response.contentType = MediaType.APPLICATION_JSON_VALUE
+//        response.status = HttpStatus.UNAUTHORIZED.value()
         val string = objectMapper.writeValueAsString(BizRuntimeException(massage))
         response.writer.write(string)
     }

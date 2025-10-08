@@ -1,5 +1,6 @@
 package com.simonvonxcvii.turing.config
 
+import com.simonvonxcvii.turing.component.CustomNimbusJwtProvider
 import com.simonvonxcvii.turing.filter.CustomCaptchaOncePerRequestFilter
 import com.simonvonxcvii.turing.filter.CustomJwtOncePerRequestFilter
 import com.simonvonxcvii.turing.properties.CustomSecurityProperties
@@ -19,6 +20,8 @@ import org.springframework.security.web.authentication.AuthenticationFailureHand
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository
+import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler
 import org.springframework.web.cors.CorsConfiguration
 import org.springframework.web.cors.CorsConfigurationSource
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource
@@ -128,7 +131,7 @@ class SecurityConfig {
         authenticationFailureHandler: AuthenticationFailureHandler,
         customJwtOncePerRequestFilter: CustomJwtOncePerRequestFilter,
         customCaptchaOncePerRequestFilter: CustomCaptchaOncePerRequestFilter,
-//        customNimbusJwtProvider: CustomNimbusJwtProvider,
+        customNimbusJwtProvider: CustomNimbusJwtProvider,
         customSecurityProperties: CustomSecurityProperties,
         accessDeniedHandler: AccessDeniedHandler,
         authenticationEntryPoint: AuthenticationEntryPoint,
@@ -411,15 +414,16 @@ class SecurityConfig {
         http.csrf { configurer: CsrfConfigurer<HttpSecurity> ->
             configurer
                 // 指定要使用的 CsrfTokenRepository。 默认是由 LazyCsrfTokenRepository 包装的 HttpSessionCsrfTokenRepository。
-                //                        .csrfTokenRepository(new HttpSessionCsrfTokenRepository())
+//                .csrfTokenRepository(HttpSessionCsrfTokenRepository())
+                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
                 // 指定 RequestMatcher 用于确定何时应应用 CSRF。 默认是忽略 GET、HEAD、TRACE、OPTIONS 并处理所有其他请求。
-                //                        .requireCsrfProtectionMatcher(CsrfFilter.DEFAULT_CSRF_MATCHER)
+//                .requireCsrfProtectionMatcher(CsrfFilter.DEFAULT_CSRF_MATCHER)
                 // 指定 CsrfTokenRequestHandler 以用于使 CsrfToken 可用作请求属性。
-                //                        .csrfTokenRequestHandler(new CsrfTokenRequestAttributeHandler())
+                .csrfTokenRequestHandler(CsrfTokenRequestAttributeHandler())
                 // 允许指定不应使用 CSRF 保护的 HttpServletRequests，即使它们匹配 requireCsrfProtectionMatcher(RequestMatcher)。
-                .ignoringRequestMatchers("/getCaptcha")
+                .ignoringRequestMatchers("/login")
                 // 指定要使用的 SessionAuthenticationStrategy。 默认是 CsrfAuthenticationStrategy。
-                //                        .sessionAuthenticationStrategy(new ConcurrentSessionControlAuthenticationStrategy(new SessionRegistryImpl()))
+//                .sessionAuthenticationStrategy(ConcurrentSessionControlAuthenticationStrategy(SessionRegistryImpl()))
                 .disable()
         }
 
