@@ -41,7 +41,7 @@ services:
     restart: always
     # 定义服务容器必须可以访问的挂载主机路径或命名卷。todo logging
     volumes:
-      - ./docker/postgresql/data:/var/lib/postgresql/data
+      - ./docker/postgresql/data:/var/lib/postgresql/18/docker
 
   # todo 有没有比 keycloak 更好的选择，OIDC Provider（例如 Keycloak、Auth0、Azure AD 等）
   # todo 创建的 89 张表直接在 turing 里了，如何设置下，使其存在另外一个 schema（数据库）中？
