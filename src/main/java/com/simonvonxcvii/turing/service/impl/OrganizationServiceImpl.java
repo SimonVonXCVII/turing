@@ -14,6 +14,8 @@ import jakarta.persistence.criteria.Predicate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.domain.DeleteSpecification;
+import org.springframework.data.jpa.domain.PredicateSpecification;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
@@ -161,13 +163,10 @@ public class OrganizationServiceImpl implements IOrganizationService {
     public void deleteById(Integer id) {
         // 逻辑删除用户-角色关联数据
         // TODO: 2023/9/7 是否能实现查询指定列
-        Specification<User> spec = (root, query, builder) -> {
-            Predicate predicate = builder.equal(root.get(User.ORG_ID), id);
-            return query.where(predicate).getRestriction();
-        };
+        PredicateSpecification<User> spec = (root, builder) -> builder.equal(root.get(User.ORG_ID), id);
         List<User> userList = userJpaRepository.findAll(spec);
         List<Integer> userIdList = userList.stream().map(AbstractAuditable::getId).toList();
-        Specification<UserRole> userRoleSpec = (root, query, builder) -> {
+        DeleteSpecification<UserRole> userRoleSpec = (root, query, builder) -> {
             Predicate predicate = builder.in(root.get(UserRole.USER_ID)).in(userIdList);
             return query.where(predicate).getRestriction();
         };

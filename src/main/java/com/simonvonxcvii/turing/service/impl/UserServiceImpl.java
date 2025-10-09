@@ -13,6 +13,7 @@ import jakarta.persistence.criteria.Predicate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.domain.DeleteSpecification;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -69,7 +70,7 @@ public class UserServiceImpl implements IUserService {
         userJpaRepository.save(user);
         // 更新用户角色表
         // TODO 可以优化成只添加需要添加的，只删除需要删除的
-        Specification<UserRole> spec = (root, query, builder) -> {
+        DeleteSpecification<UserRole> spec = (root, query, builder) -> {
             Predicate predicate = builder.equal(root.get(UserRole.USER_ID), dto.getId());
             return query.where(predicate).getRestriction();
         };
@@ -186,7 +187,7 @@ public class UserServiceImpl implements IUserService {
     @Transactional(rollbackFor = Exception.class)
     public void deleteById(Integer id) {
         // 逻辑删除用户-角色关联数据
-        Specification<UserRole> spec = (root, query, builder) -> {
+        DeleteSpecification<UserRole> spec = (root, query, builder) -> {
             Predicate predicate = builder.equal(root.get(UserRole.USER_ID), id);
             return query.where(predicate).getRestriction();
         };

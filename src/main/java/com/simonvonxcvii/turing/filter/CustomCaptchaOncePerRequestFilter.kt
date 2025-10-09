@@ -52,7 +52,7 @@ class CustomCaptchaOncePerRequestFilter(
             // TODO: 验证码有时候会出现过期提示，但实则并没有过期
             println("serverCaptcha: $serverCaptcha")
             println("clientCaptcha: $clientCaptcha")
-            if (!StringUtils.hasText(serverCaptcha)) throw BadCredentialsException("验证码已过期")
+            if (!StringUtils.hasText(serverCaptcha)) throw BadCredentialsException("验证码已过期或已失效")
             if (!StringUtils.hasText(clientCaptcha)) throw BadCredentialsException("请输入验证码")
             if (!serverCaptcha.equals(clientCaptcha, true))
                 throw BadCredentialsException("验证码错误，请重新输入")

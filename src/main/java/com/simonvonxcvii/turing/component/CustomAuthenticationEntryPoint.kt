@@ -1,6 +1,5 @@
 package com.simonvonxcvii.turing.component
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.simonvonxcvii.turing.common.exception.BizRuntimeException
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
@@ -22,6 +21,7 @@ import org.springframework.security.web.authentication.rememberme.RememberMeAuth
 import org.springframework.security.web.authentication.session.SessionAuthenticationException
 import org.springframework.security.web.authentication.www.NonceExpiredException
 import org.springframework.stereotype.Component
+import tools.jackson.databind.ObjectMapper
 import java.nio.charset.StandardCharsets
 
 /**
