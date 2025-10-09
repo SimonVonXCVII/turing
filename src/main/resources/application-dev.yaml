@@ -25,13 +25,8 @@ spring:
     username: ${POSTGRES_USER}
     # 数据库的登录密码。
     password: ${POSTGRES_PASSWORD}
-#    hikari:
-#      # 连接最大生命时间。用于防止远程数据库连接关闭。
-#      max-lifetime: 30000
-#  elasticsearch:
-#    # 要使用的 Elasticsearch 实例的逗号分隔列表。
-#    uris: ${spring.data.redis.host}:9200
-#    # 用于 Elasticsearch 身份验证的用户名。
-#    username: elastic
-#    # Elasticsearch 身份验证的密码。
-#    password: ${ELASTIC_PASSWORD}
+  jpa:
+    hibernate:
+      # DDL 模式。这实际上是“hibernate.hbm2ddl.auto”属性的快捷方式。
+      # 当使用嵌入式数据库且未检测到模式管理器时，默认为“create-drop”。否则，默认为“none”。
+      ddl-auto: update
