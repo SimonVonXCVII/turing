@@ -13,7 +13,6 @@ services:
     # 定义容器中设置的环境变量。
     environment:
       POSTGRES_DB: ${POSTGRES_DB}
-      POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     # 声明运行以确定该服务的容器是否“健康”的检查。
     healthcheck:
