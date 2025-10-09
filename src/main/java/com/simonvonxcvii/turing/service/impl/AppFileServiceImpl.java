@@ -12,6 +12,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jspecify.annotations.NonNull;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpHeaders;
@@ -94,7 +95,7 @@ public class AppFileServiceImpl implements IAppFileService {
         // 生成 md5
         String md5 = DigestUtils.md5DigestAsHex(bytes);
         // 通过 md5 查询文件
-        Specification<AppFile> spec = (root, query, builder) -> {
+        Specification<@NonNull AppFile> spec = (root, query, builder) -> {
             Predicate md5Predicate = builder.equal(root.get(AppFile.MD5), md5);
             return query.where(md5Predicate).getRestriction();
         };
@@ -158,7 +159,7 @@ public class AppFileServiceImpl implements IAppFileService {
     public void getFileById(Integer id, HttpServletResponse response) throws IOException {
         AppFile appFile = appFileJpaRepository.findById(id).orElseThrow(() -> BizRuntimeException.from("没有找到该文件"));
         String appFilePath = appFile.getPath();
-        if (appFilePath == null) {
+        if (appFilePath.isBlank()) {
             throw BizRuntimeException.from("文件路径为空");
         }
         File file = new File(appFilePath);

@@ -4,7 +4,6 @@ import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.Table
 import jakarta.persistence.UniqueConstraint
-import org.hibernate.annotations.Comment
 import org.hibernate.annotations.SQLDelete
 import org.hibernate.annotations.SQLRestriction
 
@@ -21,7 +20,8 @@ import org.hibernate.annotations.SQLRestriction
     name = "turing_user_role",
     uniqueConstraints = [
         UniqueConstraint(name = "con_public_turing_user_role_constraint_1", columnNames = arrayOf("id"))
-    ]
+    ],
+    comment = "角色与用户关联记录表"
 )
 // @SQLDelete 只支持 delete(T entity) 和 deleteById(ID id)
 @SQLDelete(sql = "UPDATE turing_user_role SET deleted = TRUE WHERE id = ? AND version = ? AND deleted = FALSE")
@@ -30,15 +30,13 @@ data class UserRole(
     /**
      * 用户 id
      */
-    @Column(nullable = false, columnDefinition = "INTEGER")
-    @Comment("用户 id")
+    @Column(nullable = false, columnDefinition = "INTEGER", comment = "用户 id")
     var userId: Int = 0,
 
     /**
      * 角色 id
      */
-    @Column(nullable = false, columnDefinition = "INTEGER")
-    @Comment("角色 id")
+    @Column(nullable = false, columnDefinition = "INTEGER", comment = "角色 id")
     var roleId: Int = 0
 ) : AbstractAuditable() {
     companion object {

@@ -15,6 +15,7 @@ import com.simonvonxcvii.turing.service.IRoleService;
 import com.simonvonxcvii.turing.utils.UserUtils;
 import jakarta.persistence.criteria.Predicate;
 import lombok.RequiredArgsConstructor;
+import org.jspecify.annotations.NonNull;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -64,10 +65,11 @@ public class RoleServiceImpl implements IRoleService {
 
         // 更新角色权限表
         // TODO 可以优化成只添加需要添加的，只删除需要删除的
-        DeleteSpecification<RolePermission> spec = (root, delete, builder) -> {
-            Predicate predicate = builder.equal(root.get(RolePermission.ROLE_ID), dto.getId());
-            return delete.where(predicate).getRestriction();
-        };
+        DeleteSpecification<@NonNull RolePermission> spec =
+                (root, delete, builder) -> {
+                    Predicate predicate = builder.equal(root.get(RolePermission.ROLE_ID), dto.getId());
+                    return delete.where(predicate).getRestriction();
+                };
         rolePermissionJpaRepository.delete(spec);
         List<RolePermission> rolePermissionList = new LinkedList<>();
         dto.getPermissionIdList()
@@ -81,8 +83,8 @@ public class RoleServiceImpl implements IRoleService {
     }
 
     @Override
-    public Page<RoleDTO> selectPage(RoleDTO dto) {
-        Specification<Role> spec = (root, query, builder) -> {
+    public Page<@NonNull RoleDTO> selectPage(RoleDTO dto) {
+        Specification<@NonNull Role> spec = (root, query, builder) -> {
             List<Predicate> predicateList = new LinkedList<>();
             if (StringUtils.hasText(dto.getName())) {
                 Predicate name = builder.like(root.get(Role.NAME), "%" + dto.getName() + "%", '/');
@@ -113,7 +115,7 @@ public class RoleServiceImpl implements IRoleService {
 
     @Override
     public List<RoleDTO> selectList(RoleDTO dto) {
-        Specification<Role> spec = (root, query, builder) -> {
+        Specification<@NonNull Role> spec = (root, query, builder) -> {
             List<Predicate> predicateList = new LinkedList<>();
             if (StringUtils.hasText(dto.getName())) {
                 Predicate name = builder.like(root.get(Role.NAME), "%" + dto.getName() + "%", '/');
@@ -148,7 +150,7 @@ public class RoleServiceImpl implements IRoleService {
         RoleDTO roleDTO = new RoleDTO();
         BeanUtils.copyProperties(role, roleDTO);
         // 查询该角色具有的权限
-        Specification<RolePermission> spec = (root, query, builder) -> {
+        Specification<@NonNull RolePermission> spec = (root, query, builder) -> {
             Predicate predicate = builder.equal(root.get(RolePermission.ROLE_ID), role.getId());
             return query.where(predicate).getRestriction();
         };
@@ -163,7 +165,7 @@ public class RoleServiceImpl implements IRoleService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void deleteById(Integer id) {
-        Specification<UserRole> spec = (root, query, builder) -> {
+        Specification<@NonNull UserRole> spec = (root, query, builder) -> {
             Predicate predicate = builder.equal(root.get(UserRole.ROLE_ID), id);
             return query.where(predicate).getRestriction();
         };
@@ -172,7 +174,7 @@ public class RoleServiceImpl implements IRoleService {
             throw BizRuntimeException.from("该角色已关联用户");
         }
         // 删除角色-权限关联数据
-        DeleteSpecification<RolePermission> deleteSpecification =
+        DeleteSpecification<@NonNull RolePermission> deleteSpecification =
                 (root, delete, builder) -> {
                     Predicate predicate = builder.equal(root.get(RolePermission.ROLE_ID), id);
                     return delete.where(predicate).getRestriction();
@@ -188,7 +190,7 @@ public class RoleServiceImpl implements IRoleService {
      */
     public List<RoleDTO> selectListForBusinessOrg() {
         // 获取所有已通过的业务申请
-        Specification<OrganizationBusiness> spec = (root, query, builder) -> {
+        Specification<@NonNull OrganizationBusiness> spec = (root, query, builder) -> {
             Predicate orgId = builder.equal(root.get(OrganizationBusiness.ORG_ID), UserUtils.getOrgId());
             Predicate state = builder.equal(root.get(OrganizationBusiness.STATE), OrganizationBusinessStateEnum.PASSES);
             Predicate predicate = builder.and(orgId, state);
@@ -254,7 +256,7 @@ public class RoleServiceImpl implements IRoleService {
         Collection<? extends GrantedAuthority> authorities = UserUtils.getAuthorities();
         assert authorities != null;
         if (authorities.contains(new SimpleGrantedAuthority("ROLE_ADMIN_PROVINCE_GOV"))) {
-            Specification<Role> spec = (root, query, builder) -> {
+            Specification<@NonNull Role> spec = (root, query, builder) -> {
                 Predicate predicate = builder.equal(root.get(Role.AUTHORITY), "STAFF_PROVINCE_GOV");
                 return query.where(predicate).getRestriction();
             };
@@ -263,7 +265,7 @@ public class RoleServiceImpl implements IRoleService {
                     .map(role -> new RoleDTO().setId(role.getId()).setName(role.getName()))
                     .toList();
         } else if (authorities.contains(new SimpleGrantedAuthority("ROLE_ADMIN_CITY_GOV"))) {
-            Specification<Role> spec = (root, query, builder) -> {
+            Specification<@NonNull Role> spec = (root, query, builder) -> {
                 Predicate predicate = builder.equal(root.get(Role.AUTHORITY), "STAFF_CITY_GOV");
                 return query.where(predicate).getRestriction();
             };
@@ -272,7 +274,7 @@ public class RoleServiceImpl implements IRoleService {
                     .map(role -> new RoleDTO().setId(role.getId()).setName(role.getName()))
                     .toList();
         } else if (authorities.contains(new SimpleGrantedAuthority("ROLE_ADMIN_DISTRICT_GOV"))) {
-            Specification<Role> spec = (root, query, builder) -> {
+            Specification<@NonNull Role> spec = (root, query, builder) -> {
                 Predicate predicate = builder.equal(root.get(Role.AUTHORITY), "STAFF_DISTRICT_GOV");
                 return query.where(predicate).getRestriction();
             };

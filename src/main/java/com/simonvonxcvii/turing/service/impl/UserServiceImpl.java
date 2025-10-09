@@ -11,7 +11,9 @@ import com.simonvonxcvii.turing.repository.jpa.UserRoleJpaRepository;
 import com.simonvonxcvii.turing.service.IUserService;
 import jakarta.persistence.criteria.Predicate;
 import lombok.RequiredArgsConstructor;
+import org.jspecify.annotations.NonNull;
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.DeleteSpecification;
 import org.springframework.data.jpa.domain.Specification;
@@ -62,7 +64,9 @@ public class UserServiceImpl implements IUserService {
         dto.setNeedResetPassword(Boolean.TRUE);
         BeanUtils.copyProperties(dto, user, AbstractAuditable.CREATED_DATE);
         // 密码
-        user.setPassword(passwordEncoder.encode(dto.getMobile().toString().substring(3)));
+        String password = passwordEncoder.encode(dto.getMobile().toString().substring(3));
+        assert password != null;
+        user.setPassword(password);
         // 单位名称
         Organization organization = organizationJpaRepository.findById(dto.getOrgId())
                 .orElseThrow(() -> BizRuntimeException.from("无法查找到单位数据"));
@@ -70,7 +74,7 @@ public class UserServiceImpl implements IUserService {
         userJpaRepository.save(user);
         // 更新用户角色表
         // TODO 可以优化成只添加需要添加的，只删除需要删除的
-        DeleteSpecification<UserRole> spec = (root, query, builder) -> {
+        DeleteSpecification<@NonNull UserRole> spec = (root, query, builder) -> {
             Predicate predicate = builder.equal(root.get(UserRole.USER_ID), dto.getId());
             return query.where(predicate).getRestriction();
         };
@@ -87,10 +91,10 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    public org.springframework.data.domain.Page<UserDTO> selectPage(UserDTO dto) {
-        org.springframework.data.domain.Page<User> userPage;
+    public Page<@NonNull UserDTO> selectPage(UserDTO dto) {
+        Page<@NonNull User> userPage;
         try {
-            Specification<User> spec = (root, query, builder) -> {
+            Specification<@NonNull User> spec = (root, query, builder) -> {
                 List<Predicate> predicateList = new LinkedList<>();
                 if (StringUtils.hasText(dto.getName())) {
                     predicateList.add(builder.like(root.get(User.NAME),
@@ -116,10 +120,11 @@ public class UserServiceImpl implements IUserService {
                             "%" + dto.getUsername() + "%", '/'));
                 }
                 if (!CollectionUtils.isEmpty(dto.getRoleList())) {
-                    Specification<UserRole> userRoleSpec = (root1, query1, builder1) -> {
-                        Predicate predicate = builder1.in(root1.get(UserRole.ROLE_ID)).in(dto.getRoleList());
-                        return query1.where(predicate).getRestriction();
-                    };
+                    Specification<@NonNull UserRole> userRoleSpec =
+                            (root1, query1, builder1) -> {
+                                Predicate predicate = builder1.in(root1.get(UserRole.ROLE_ID)).in(dto.getRoleList());
+                                return query1.where(predicate).getRestriction();
+                            };
                     List<UserRole> userRoleList = userRoleJpaRepository.findAll(userRoleSpec);
                     if (userRoleList.isEmpty()) {
                         // todo
@@ -154,12 +159,12 @@ public class UserServiceImpl implements IUserService {
             PageRequest pageRequest = PageRequest.of(dto.getNumber() - 1, dto.getSize());
             userPage = userJpaRepository.findAll(spec, pageRequest);
         } catch (Exception e) {
-            return org.springframework.data.domain.Page.empty();
+            return Page.empty();
         }
         return userPage.map(user -> {
             UserDTO userDTO = new UserDTO();
             BeanUtils.copyProperties(user, userDTO);
-            Specification<UserRole> spec = (root, query, builder) -> {
+            Specification<@NonNull UserRole> spec = (root, query, builder) -> {
                 Predicate predicate = builder.equal(root.get(UserRole.USER_ID), user.getId());
                 return query.where(predicate).getRestriction();
             };
@@ -187,7 +192,7 @@ public class UserServiceImpl implements IUserService {
     @Transactional(rollbackFor = Exception.class)
     public void deleteById(Integer id) {
         // 逻辑删除用户-角色关联数据
-        DeleteSpecification<UserRole> spec = (root, query, builder) -> {
+        DeleteSpecification<@NonNull UserRole> spec = (root, query, builder) -> {
             Predicate predicate = builder.equal(root.get(UserRole.USER_ID), id);
             return query.where(predicate).getRestriction();
         };

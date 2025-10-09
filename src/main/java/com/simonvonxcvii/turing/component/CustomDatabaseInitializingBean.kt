@@ -44,7 +44,7 @@ class CustomDatabaseInitializingBean(
         // 判断是否需要初始化，如果表数据存在说明不需要
         val spec = Specification<Dict> { root, query, builder ->
             val type = builder.equal(root.get<String>(Dict.TYPE), DictTypeEnum.AREA)
-            query?.where(type)?.restriction
+            query.where(type)?.restriction
         }
         val exists = dictJpaRepository.exists(spec)
         if (exists) {

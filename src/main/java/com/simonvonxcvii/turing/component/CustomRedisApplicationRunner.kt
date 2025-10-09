@@ -31,7 +31,7 @@ class CustomRedisApplicationRunner(
     override fun run(args: ApplicationArguments) {
         val spec = Specification<Dict> { root, query, builder ->
             val type = builder.equal(root.get<String>(Dict.TYPE), DictTypeEnum.AREA)
-            query?.where(type)?.restriction
+            query.where(type)?.restriction
         }
         val dictList = dictJpaRepository.findAll(spec).filterNotNull()
         // TODO 考虑如果 Redis 中已经有上面这些数据了就不要执行下面的代码了，虽然数据只会覆盖掉，不会发生变化

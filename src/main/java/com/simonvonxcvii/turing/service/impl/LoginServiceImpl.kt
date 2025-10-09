@@ -107,7 +107,7 @@ class LoginServiceImpl(
         val roleIdList = user.authorities.stream().map(AbstractAuditable::id).toList()
         val spec = Specification<RolePermission> { root, query, builder ->
             val roleId = builder.`in`(root.get<String>(RolePermission.ROLE_ID)).`in`(roleIdList)
-            query?.where(roleId)?.restriction
+            query.where(roleId)?.restriction
         }
         val rolePermissionList = rolePermissionJpaRepository.findAll(spec).filterNotNull()
         if (rolePermissionList.isEmpty()) {

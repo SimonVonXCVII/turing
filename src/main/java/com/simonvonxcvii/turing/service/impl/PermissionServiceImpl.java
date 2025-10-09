@@ -11,6 +11,7 @@ import com.simonvonxcvii.turing.repository.jpa.RolePermissionJpaRepository;
 import com.simonvonxcvii.turing.service.IPermissionService;
 import jakarta.persistence.criteria.Predicate;
 import lombok.RequiredArgsConstructor;
+import org.jspecify.annotations.NonNull;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
@@ -80,7 +81,8 @@ public class PermissionServiceImpl implements IPermissionService {
                 .filter(permission -> !StringUtils.hasText(dto.getName()) ||
                         (permission.getName().contains(dto.getName()) || dto.getName().contains(permission.getName())))
                 .filter(permission -> !StringUtils.hasText(dto.getCode()) ||
-                        (permission.getCode().contains(dto.getCode()) || dto.getCode().contains(permission.getCode())))
+                        (StringUtils.hasText(permission.getCode()) &&
+                                (permission.getCode().contains(dto.getCode()) || dto.getCode().contains(permission.getCode()))))
                 .filter(permission -> dto.getSort() == null || Objects.equals(permission.getSort(), dto.getSort()))
                 .toList();
         if (permissionList1.isEmpty()) {
@@ -130,7 +132,7 @@ public class PermissionServiceImpl implements IPermissionService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void deleteById(Integer id) {
-        Specification<RolePermission> spec = (root, query, builder) -> {
+        Specification<@NonNull RolePermission> spec = (root, query, builder) -> {
             Predicate predicate = builder.equal(root.get(RolePermission.PERMISSION_ID), id);
             return query.where(predicate).getRestriction();
         };
@@ -138,7 +140,7 @@ public class PermissionServiceImpl implements IPermissionService {
         if (exists) {
             throw BizRuntimeException.from("该权限已关联角色");
         }
-        Specification<Menu> menuSpec = (root, query, builder) -> {
+        Specification<@NonNull Menu> menuSpec = (root, query, builder) -> {
             Predicate predicate = builder.equal(root.get(Menu.PERMISSION_ID), id);
             return query.where(predicate).getRestriction();
         };

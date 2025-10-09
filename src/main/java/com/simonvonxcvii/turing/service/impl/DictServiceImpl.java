@@ -9,6 +9,7 @@ import com.simonvonxcvii.turing.service.IDictService;
 import jakarta.persistence.criteria.Order;
 import jakarta.persistence.criteria.Predicate;
 import lombok.RequiredArgsConstructor;
+import org.jspecify.annotations.NonNull;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -56,8 +57,8 @@ public class DictServiceImpl implements IDictService {
     }
 
     @Override
-    public Page<DictDTO> selectPage(DictDTO dto) {
-        Specification<Dict> spec = (root, query, builder) -> {
+    public Page<@NonNull DictDTO> selectPage(DictDTO dto) {
+        Specification<@NonNull Dict> spec = (root, query, builder) -> {
             List<Predicate> predicateList = new LinkedList<>();
             if (StringUtils.hasText(dto.getType())) {
                 Predicate type = builder.like(root.get(Dict.TYPE), "%" + dto.getType() + "%", '/');
@@ -97,7 +98,7 @@ public class DictServiceImpl implements IDictService {
     public DictDTO getAreaByCode(Integer code) {
         if (code == null) {
             DictDTO dictDTO = new DictDTO();
-            Specification<Dict> spec = (root, query, builder) -> {
+            Specification<@NonNull Dict> spec = (root, query, builder) -> {
                 Predicate pid = builder.isNull(root.get(Dict.PID));
                 Predicate type = builder.equal(root.get(Dict.TYPE), DictTypeEnum.AREA);
                 Predicate predicate = builder.and(pid, type);
@@ -110,7 +111,7 @@ public class DictServiceImpl implements IDictService {
             }
             return dictDTO;
         }
-        Specification<Dict> spec = (root, query, builder) -> {
+        Specification<@NonNull Dict> spec = (root, query, builder) -> {
             Predicate value = builder.equal(root.get(Dict.VALUE), code.toString());
             Predicate type = builder.equal(root.get(Dict.TYPE), DictTypeEnum.AREA);
             Predicate predicate = builder.and(value, type);
@@ -119,7 +120,7 @@ public class DictServiceImpl implements IDictService {
         Dict dict = dictJpaRepository.findOne(spec)
                 .orElseThrow(() -> BizRuntimeException.from("没有找到区域编码：" + code));
         DictDTO dictDTO = convertToDictDTO(dict);
-        Specification<Dict> spec2 = (root, query, builder) -> {
+        Specification<@NonNull Dict> spec2 = (root, query, builder) -> {
             Predicate pid = builder.equal(root.get(Dict.PID), dict.getId());
             Predicate type = builder.equal(root.get(Dict.TYPE), DictTypeEnum.AREA);
             Predicate predicate = builder.and(pid, type);

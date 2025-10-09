@@ -1,11 +1,5 @@
 package com.simonvonxcvii.turing.service.impl;
 
-//import co.elastic.clients.elasticsearch.ElasticsearchClient;
-//import co.elastic.clients.elasticsearch.core.CreateRequest;
-//import co.elastic.clients.elasticsearch.core.GetRequest;
-//import co.elastic.clients.elasticsearch.core.GetResponse;
-//import co.elastic.clients.elasticsearch.core.SearchResponse;
-
 import com.simonvonxcvii.turing.common.exception.BizRuntimeException;
 import com.simonvonxcvii.turing.entity.Dict;
 import com.simonvonxcvii.turing.entity.Organization;
@@ -14,11 +8,14 @@ import com.simonvonxcvii.turing.entity.User;
 import com.simonvonxcvii.turing.enums.OrganizationBusinessLevelEnum;
 import com.simonvonxcvii.turing.enums.OrganizationBusinessStateEnum;
 import com.simonvonxcvii.turing.model.dto.OrganizationBusinessDTO;
-import com.simonvonxcvii.turing.repository.jpa.*;
+import com.simonvonxcvii.turing.repository.jpa.OrganizationBusinessJpaRepository;
+import com.simonvonxcvii.turing.repository.jpa.OrganizationJpaRepository;
+import com.simonvonxcvii.turing.repository.jpa.UserJpaRepository;
 import com.simonvonxcvii.turing.service.IOrganizationBusinessService;
 import com.simonvonxcvii.turing.utils.UserUtils;
 import jakarta.persistence.criteria.Predicate;
 import lombok.RequiredArgsConstructor;
+import org.jspecify.annotations.NonNull;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.domain.Specification;
@@ -44,8 +41,8 @@ public class OrganizationBusinessServiceImpl implements IOrganizationBusinessSer
 
     private final OrganizationBusinessJpaRepository organizationBusinessJpaRepository;
     private final OrganizationJpaRepository organizationJpaRepository;
-    private final UserRoleJpaRepository userRoleJpaRepository;
-    private final RoleJpaRepository roleJpaRepository;
+    //    private final UserRoleJpaRepository userRoleJpaRepository;
+//    private final RoleJpaRepository roleJpaRepository;
     private final UserJpaRepository userJpaRepository;
     private final StringRedisTemplate stringRedisTemplate;
 //    private final ElasticsearchClient elasticsearchClient;
@@ -59,7 +56,7 @@ public class OrganizationBusinessServiceImpl implements IOrganizationBusinessSer
      * @since 1/5/2023 10:15 AM
      */
     @Override
-    public Page<OrganizationBusinessDTO> selectPage(OrganizationBusinessDTO dto) throws IOException {
+    public Page<@NonNull OrganizationBusinessDTO> selectPage(OrganizationBusinessDTO dto) throws IOException {
 //        SearchResponse<OrganizationBusiness> searchResponse = elasticsearchClient.search(searchRequest -> {
 //                    searchRequest.index(OrganizationBusiness.INDEX)
 //                            // 首页默认从 0 开始
@@ -158,7 +155,7 @@ public class OrganizationBusinessServiceImpl implements IOrganizationBusinessSer
     @Transactional(rollbackFor = Exception.class)
     public void insert(OrganizationBusinessDTO dto) throws IOException {
         // TODO 需要检验生成的 sql
-        Specification<OrganizationBusiness> spec = (root, query, builder) -> {
+        Specification<@NonNull OrganizationBusiness> spec = (root, query, builder) -> {
             List<Predicate> predicateList = new LinkedList<>();
             // 本单位
             Predicate orgId = builder.equal(root.get(OrganizationBusiness.ORG_ID), UserUtils.getOrgId());
@@ -316,7 +313,7 @@ public class OrganizationBusinessServiceImpl implements IOrganizationBusinessSer
 //                OrganizationBusiness.class);
 
         // TODO 需要检验生成的 sql
-        Specification<User> spec = (root, query, builder) -> {
+        Specification<@NonNull User> spec = (root, query, builder) -> {
             Predicate orgId = builder.equal(root.get(User.ORG_ID), organizationBusiness.getOrgId());
             Predicate manager = builder.equal(root.get(User.MANAGER), Boolean.TRUE);
             Predicate predicate = builder.and(orgId, manager);

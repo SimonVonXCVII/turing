@@ -12,7 +12,9 @@ import com.simonvonxcvii.turing.repository.jpa.UserRoleJpaRepository;
 import com.simonvonxcvii.turing.service.IOrganizationService;
 import jakarta.persistence.criteria.Predicate;
 import lombok.RequiredArgsConstructor;
+import org.jspecify.annotations.NonNull;
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.DeleteSpecification;
 import org.springframework.data.jpa.domain.PredicateSpecification;
@@ -53,7 +55,8 @@ public class OrganizationServiceImpl implements IOrganizationService {
         }
         // 修改
         else {
-            organization = organizationJpaRepository.findById(dto.getId()).orElseThrow(() -> BizRuntimeException.from("无法查找到该数据"));
+            organization = organizationJpaRepository.findById(dto.getId())
+                    .orElseThrow(() -> BizRuntimeException.from("无法查找到该数据"));
         }
         BeanUtils.copyProperties(dto, organization, AbstractAuditable.CREATED_DATE);
         // 获取省市县名称
@@ -67,8 +70,8 @@ public class OrganizationServiceImpl implements IOrganizationService {
     }
 
     @Override
-    public org.springframework.data.domain.Page<OrganizationDTO> selectPage(OrganizationDTO dto) {
-        Specification<Organization> spec = (root, query, builder) -> {
+    public Page<@NonNull OrganizationDTO> selectPage(OrganizationDTO dto) {
+        Specification<@NonNull Organization> spec = (root, query, builder) -> {
             List<Predicate> predicateList = new LinkedList<>();
             if (StringUtils.hasText(dto.getName())) {
                 Predicate name = builder.like(root.get(Organization.NAME), "%" + dto.getName() + "%", '/');
@@ -136,16 +139,17 @@ public class OrganizationServiceImpl implements IOrganizationService {
      */
     @Override
     public List<OrganizationDTO> selectList(String name) {
-        Specification<OrganizationBusiness> spec = (root, query, builder) -> {
-            Predicate linkPredicate = builder.like(root.get(OrganizationBusiness.LINK),
-                    "%" + OrganizationBusinessBusinessLinksEnum.SAMPLE_TESTING.getDesc() + "%", '/');
-            Predicate statePredicate = builder.like(root.get(OrganizationBusiness.STATE),
-                    "%" + OrganizationBusinessStateEnum.PASSES + "%", '/');
-            Predicate namePredicate = builder.like(root.get(OrganizationBusiness.ORG_NAME),
-                    "%" + name + "%", '/');
-            Predicate predicate = builder.and(linkPredicate, statePredicate, namePredicate);
-            return query.where(predicate).getRestriction();
-        };
+        Specification<@NonNull OrganizationBusiness> spec =
+                (root, query, builder) -> {
+                    Predicate linkPredicate = builder.like(root.get(OrganizationBusiness.LINK),
+                            "%" + OrganizationBusinessBusinessLinksEnum.SAMPLE_TESTING.getDesc() + "%", '/');
+                    Predicate statePredicate = builder.like(root.get(OrganizationBusiness.STATE),
+                            "%" + OrganizationBusinessStateEnum.PASSES + "%", '/');
+                    Predicate namePredicate = builder.like(root.get(OrganizationBusiness.ORG_NAME),
+                            "%" + name + "%", '/');
+                    Predicate predicate = builder.and(linkPredicate, statePredicate, namePredicate);
+                    return query.where(predicate).getRestriction();
+                };
         return organizationBusinessJpaRepository.findAll(spec)
                 .stream()
                 .map(organizationBusiness -> {
@@ -163,13 +167,15 @@ public class OrganizationServiceImpl implements IOrganizationService {
     public void deleteById(Integer id) {
         // 逻辑删除用户-角色关联数据
         // TODO: 2023/9/7 是否能实现查询指定列
-        PredicateSpecification<User> spec = (root, builder) -> builder.equal(root.get(User.ORG_ID), id);
+        PredicateSpecification<@NonNull User> spec =
+                (root, builder) -> builder.equal(root.get(User.ORG_ID), id);
         List<User> userList = userJpaRepository.findAll(spec);
         List<Integer> userIdList = userList.stream().map(AbstractAuditable::getId).toList();
-        DeleteSpecification<UserRole> userRoleSpec = (root, query, builder) -> {
-            Predicate predicate = builder.in(root.get(UserRole.USER_ID)).in(userIdList);
-            return query.where(predicate).getRestriction();
-        };
+        DeleteSpecification<@NonNull UserRole> userRoleSpec =
+                (root, query, builder) -> {
+                    Predicate predicate = builder.in(root.get(UserRole.USER_ID)).in(userIdList);
+                    return query.where(predicate).getRestriction();
+                };
         userRoleJpaRepository.delete(userRoleSpec);
         // 删除单位下的所有用户
         userJpaRepository.delete(spec);

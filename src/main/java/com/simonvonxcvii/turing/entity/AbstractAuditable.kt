@@ -7,7 +7,6 @@ import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer
 import com.simonvonxcvii.turing.listener.CustomAuditingEntityListener
 import jakarta.persistence.*
-import org.hibernate.annotations.Comment
 import org.springframework.data.annotation.CreatedBy
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedBy
@@ -32,16 +31,14 @@ abstract class AbstractAuditable(
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(nullable = false, columnDefinition = "INTEGER")
-    @Comment("表主键 id")
+    @Column(nullable = false, columnDefinition = "INTEGER", comment = "表主键 id")
     open var id: Int = 0,
 
     /**
      * 创建主体
      */
     @CreatedBy
-    @Column(columnDefinition = "INTEGER")
-    @Comment("创建主体")
+    @Column(columnDefinition = "INTEGER", comment = "创建主体")
     open var createdBy: Int? = null,
 
     /**
@@ -51,16 +48,14 @@ abstract class AbstractAuditable(
     @field:JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @field:JsonSerialize(using = LocalDateTimeSerializer::class)
     @CreatedDate
-    @Column(nullable = false, columnDefinition = "TIMESTAMP")
-    @Comment("创建时间")
+    @Column(nullable = false, columnDefinition = "TIMESTAMP", comment = "创建时间")
     open var createdDate: LocalDateTime = LocalDateTime.now(),
 
     /**
      * 最后修改主体
      */
     @LastModifiedBy
-    @Column(columnDefinition = "INTEGER")
-    @Comment("更新主体")
+    @Column(columnDefinition = "INTEGER", comment = "更新主体")
     open var lastModifiedBy: Int? = null,
 
     /**
@@ -70,23 +65,20 @@ abstract class AbstractAuditable(
     @field:JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @field:JsonSerialize(using = LocalDateTimeSerializer::class)
     @LastModifiedDate
-    @Column(nullable = false, columnDefinition = "TIMESTAMP")
-    @Comment("更新时间")
+    @Column(nullable = false, columnDefinition = "TIMESTAMP", comment = "更新时间")
     open var lastModifiedDate: LocalDateTime = LocalDateTime.now(),
 
     /**
      * 乐观锁版本
      */
     @Version
-    @Column(nullable = false, columnDefinition = "INTEGER")
-    @Comment("乐观锁版本")
+    @Column(nullable = false, columnDefinition = "INTEGER", comment = "乐观锁版本")
     open var version: Int = 0,
 
     /**
      * 逻辑删除标记
      */
-    @Column(nullable = false, columnDefinition = "BOOLEAN")
-    @Comment("逻辑删除")
+    @Column(nullable = false, columnDefinition = "BOOLEAN", comment = "逻辑删除")
     open var deleted: Boolean = false
 ) : Serializable {
     companion object {

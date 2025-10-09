@@ -2,7 +2,6 @@ package com.simonvonxcvii.turing.entity
 
 import com.simonvonxcvii.turing.enums.OrganizationTypeEnum
 import jakarta.persistence.*
-import org.hibernate.annotations.Comment
 import org.hibernate.annotations.SQLDelete
 import org.hibernate.annotations.SQLRestriction
 
@@ -25,7 +24,8 @@ import org.hibernate.annotations.SQLRestriction
     name = "turing_organization",
     uniqueConstraints = [
         UniqueConstraint(name = "con_public_turing_organization_constraint_1", columnNames = arrayOf("id"))
-    ]
+    ],
+    comment = "单位表"
 )
 // @SQLDelete 只支持 delete(T entity) 和 deleteById(ID id)
 @SQLDelete(sql = "UPDATE turing_organization SET deleted = TRUE WHERE id = ? AND version = ? AND deleted = FALSE")
@@ -34,93 +34,80 @@ data class Organization(
     /**
      * 上级单位 id
      */
-    @Column(columnDefinition = "INTEGER")
-    @Comment("上级单位 id")
+    @Column(columnDefinition = "INTEGER", comment = "上级单位 id")
     var pid: Int? = null,
 
     /**
      * 单位名称
      */
-    @Column(unique = true, nullable = false, columnDefinition = "VARCHAR(64)")
-    @Comment("单位名称")
+    @Column(unique = true, nullable = false, columnDefinition = "VARCHAR(64)", comment = "单位名称")
     var name: String = "",
 
     /**
      * 信用代码
      */
-    @Column(unique = true, nullable = false, columnDefinition = "VARCHAR(18)")
-    @Comment("单位名称")
+    @Column(unique = true, nullable = false, columnDefinition = "VARCHAR(18)", comment = "单位名称")
     var code: String = "",
 
     /**
      * 单位法人
      */
-    @Column(nullable = false, columnDefinition = "VARCHAR(32)")
-    @Comment("单位地址详情")
+    @Column(nullable = false, columnDefinition = "VARCHAR(32)", comment = "单位地址详情")
     var legalPerson: String = "",
 
     /**
      * 单位联系电话
      */
-    @Column(unique = true, nullable = false, columnDefinition = "VARCHAR(32)")
-    @Comment("单位联系电话")
+    @Column(unique = true, nullable = false, columnDefinition = "VARCHAR(32)", comment = "单位联系电话")
     var phone: String = "",
 
     /**
      * 单位类型
      */
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, columnDefinition = "VARCHAR(64)")
-    @Comment("单位类型")
+    @Column(nullable = false, columnDefinition = "VARCHAR(64)", comment = "单位类型")
     var type: OrganizationTypeEnum = OrganizationTypeEnum.PLATFORM,
 
     /**
      * 单位所在省（市、区）编码
      */
-    @Column(nullable = false, columnDefinition = "INTEGER")
-    @Comment("单位所在省（市、区）编码")
+    @Column(nullable = false, columnDefinition = "INTEGER", comment = "单位所在省（市、区）编码")
     var provinceCode: Int = 0,
 
     /**
      * 单位所在市（州、盟）编码
      */
-    @Column(nullable = false, columnDefinition = "INTEGER")
-    @Comment("单位所在市（州、盟）编码")
+    @Column(nullable = false, columnDefinition = "INTEGER", comment = "单位所在市（州、盟）编码")
     var cityCode: Int = 0,
 
     /**
      * 单位所在县（市、旗）编码
      */
-    @Column(nullable = false, columnDefinition = "INTEGER")
-    @Comment("单位所在区县（市、旗）编码")
+    @Column(nullable = false, columnDefinition = "INTEGER", comment = "单位所在区县（市、旗）编码")
     var districtCode: Int = 0,
 
     /**
      * 单位所在省（市、区）名称
      */
-    @Column(nullable = false, columnDefinition = "VARCHAR(16)")
-    @Comment("单位所在省（市、区）名称")
+    @Column(nullable = false, columnDefinition = "VARCHAR(16)", comment = "单位所在省（市、区）名称")
     var provinceName: String = "",
 
     /**
      * 单位所在市（州、盟）名称
      */
-    @Column(nullable = false, columnDefinition = "VARCHAR(16)")
-    @Comment("单位所在市（州、盟）名称")
+    @Column(nullable = false, columnDefinition = "VARCHAR(16)", comment = "单位所在市（州、盟）名称")
     var cityName: String = "",
 
     /**
      * 单位所在县（市、旗）名称
      */
-    @Column(nullable = false, columnDefinition = "VARCHAR(16)")
-    @Comment("单位所在区县（市、旗）名称")
+    @Column(nullable = false, columnDefinition = "VARCHAR(16)", comment = "单位所在区县（市、旗）名称")
     var districtName: String = "",
 
     /**
      * 单位地址详情
      */
-    @Column(nullable = false, columnDefinition = "VARCHAR(128)")
-    @Comment("单位地址详情")
+    @Column(nullable = false, columnDefinition = "VARCHAR(128)", comment = "单位地址详情")
     var address: String = "",
 
     /**

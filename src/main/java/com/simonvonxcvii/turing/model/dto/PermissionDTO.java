@@ -36,7 +36,7 @@ public class PermissionDTO extends PageQuery {
      * 排序编号
      */
     @NotNull(message = "排序编号不能为空")
-    private Integer sort;
+    private Short sort;
     /**
      * 子级权限集合
      */

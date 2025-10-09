@@ -5,6 +5,7 @@ import com.simonvonxcvii.turing.model.dto.RoleDTO;
 import com.simonvonxcvii.turing.service.IRoleService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.jspecify.annotations.NonNull;
 import org.springframework.data.domain.Page;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -40,7 +41,7 @@ public class RoleController {
 
     @Operation(summary = "分页查询")
     @PostMapping("/selectPage")
-    public Result<Page<RoleDTO>> selectPage(@RequestBody RoleDTO dto) {
+    public Result<Page<@NonNull RoleDTO>> selectPage(@RequestBody RoleDTO dto) {
         return Result.ok(service.selectPage(dto));
     }
 

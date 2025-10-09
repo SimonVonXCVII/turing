@@ -4,6 +4,7 @@ import com.simonvonxcvii.turing.common.result.Result;
 import com.simonvonxcvii.turing.model.dto.UserDTO;
 import com.simonvonxcvii.turing.service.IUserService;
 import io.swagger.v3.oas.annotations.Operation;
+import org.jspecify.annotations.NonNull;
 import org.springframework.data.domain.Page;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -35,7 +36,7 @@ public class UserController {
 
     @Operation(summary = "分页查询")
     @PostMapping("/selectPage")
-    public Result<Page<UserDTO>> selectPage(@RequestBody UserDTO dto) {
+    public Result<Page<@NonNull UserDTO>> selectPage(@RequestBody UserDTO dto) {
         return Result.ok(service.selectPage(dto));
     }
 

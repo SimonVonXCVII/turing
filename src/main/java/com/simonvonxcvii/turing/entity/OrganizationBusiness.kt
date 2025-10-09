@@ -5,7 +5,6 @@ import com.simonvonxcvii.turing.enums.OrganizationBusinessLevelEnum
 import com.simonvonxcvii.turing.enums.OrganizationBusinessQualityControlTypeEnum
 import com.simonvonxcvii.turing.enums.OrganizationBusinessStateEnum
 import jakarta.persistence.*
-import org.hibernate.annotations.Comment
 import org.hibernate.annotations.SQLDelete
 import org.hibernate.annotations.SQLRestriction
 
@@ -22,7 +21,8 @@ import org.hibernate.annotations.SQLRestriction
     name = "turing_organization_business",
     uniqueConstraints = [
         UniqueConstraint(name = "con_public_turing_organization_business_constraint_1", columnNames = arrayOf("id"))
-    ]
+    ],
+    comment = "单位业务表"
 )
 // @SQLDelete 只支持 delete(T entity) 和 deleteById(ID id)
 @SQLDelete(sql = "UPDATE turing_organization_business SET deleted = TRUE WHERE id = ? AND version = ? AND deleted = FALSE")
@@ -31,89 +31,77 @@ data class OrganizationBusiness(
     /**
      * 单位 id
      */
-    @Column(nullable = false, columnDefinition = "INTEGER")
-    @Comment("单位 id")
+    @Column(nullable = false, columnDefinition = "INTEGER", comment = "单位 id")
     var orgId: Int = 0,
 
     /**
      * 单位名称
      */
-    @Column(nullable = false, columnDefinition = "VARCHAR(128)")
-    @Comment("单位名称")
+    @Column(nullable = false, columnDefinition = "VARCHAR(128)", comment = "单位名称")
     var orgName: String = "",
 
     /**
      * 业务环节
      */
     @Enumerated(EnumType.STRING)
-    @Column(columnDefinition = "VARCHAR[]")
-    @Comment("业务环节")
+    @Column(columnDefinition = "VARCHAR[]", comment = "业务环节")
     var link: MutableSet<OrganizationBusinessBusinessLinksEnum>? = null,
 
     /**
      * 质控类型
      */
     @Enumerated(EnumType.STRING)
-    @Column(columnDefinition = "VARCHAR[]")
-    @Comment("质控类型")
+    @Column(columnDefinition = "VARCHAR[]", comment = "质控类型")
     var type: MutableSet<OrganizationBusinessQualityControlTypeEnum>? = null,
 
     /**
      * 业务申请所在省（市、区）编码
      */
-    @Column(nullable = false, columnDefinition = "INTEGER")
-    @Comment("业务申请所在省（市、区）编码")
+    @Column(nullable = false, columnDefinition = "INTEGER", comment = "业务申请所在省（市、区）编码")
     var provinceCode: Int = 0,
 
     /**
      * 业务申请所在市（州、盟）编码
      */
-    @Column(columnDefinition = "INTEGER")
-    @Comment("业务申请所在市（州、盟）编码")
+    @Column(columnDefinition = "INTEGER", comment = "业务申请所在市（州、盟）编码")
     var cityCode: Int? = null,
 
     /**
      * 业务申请所在县（市、旗）编码
      */
-    @Column(columnDefinition = "INTEGER")
-    @Comment("业务申请所在区县（市、旗）编码")
+    @Column(columnDefinition = "INTEGER", comment = "业务申请所在区县（市、旗）编码")
     var districtCode: Int? = null,
 
     /**
      * 业务申请所在省（市、区）名称
      */
-    @Column(nullable = false, columnDefinition = "VARCHAR(16)")
-    @Comment("业务申请所在省（市、区）名称")
+    @Column(nullable = false, columnDefinition = "VARCHAR(16)", comment = "业务申请所在省（市、区）名称")
     var provinceName: String = "",
 
     /**
      * 业务申请所在市（州、盟）名称
      */
-    @Column(columnDefinition = "VARCHAR(16)")
-    @Comment("业务申请所在市（州、盟）名称")
+    @Column(columnDefinition = "VARCHAR(16)", comment = "业务申请所在市（州、盟）名称")
     var cityName: String? = null,
 
     /**
      * 业务申请所在县（市、旗）名称
      */
-    @Column(columnDefinition = "VARCHAR(16)")
-    @Comment("业务申请所在区县（市、旗）名称")
+    @Column(columnDefinition = "VARCHAR(16)", comment = "业务申请所在区县（市、旗）名称")
     var districtName: String? = null,
 
     /**
      * 业务申请状态
      */
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, columnDefinition = "VARCHAR(64)")
-    @Comment("业务申请状态")
+    @Column(nullable = false, columnDefinition = "VARCHAR(64)", comment = "业务申请状态")
     var state: OrganizationBusinessStateEnum = OrganizationBusinessStateEnum.AWAITING_CHECK,
 
     /**
      * 申请业务级别
      */
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, columnDefinition = "VARCHAR(64)")
-    @Comment("申请业务级别")
+    @Column(nullable = false, columnDefinition = "VARCHAR(64)", comment = "申请业务级别")
     var businessLevel: OrganizationBusinessLevelEnum = OrganizationBusinessLevelEnum.DISTRICT
 ) : AbstractAuditable() {
     companion object {

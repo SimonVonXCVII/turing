@@ -58,7 +58,7 @@ class CustomUserDetailsService(
         // 获取用户数据
         val spec = Specification<User> { root, query, builder ->
             val usernamePredicate = builder.equal(root.get<String>(User.USERNAME), username)
-            query?.where(usernamePredicate)?.restriction
+            query.where(usernamePredicate)?.restriction
         }
         val user = userJpaRepository.findOne(spec)
             .orElse(null) ?: throw UsernameNotFoundException("该用户账号不存在：$username")
@@ -76,7 +76,7 @@ class CustomUserDetailsService(
             // 获取用户角色与用户关联记录表
             val spec = Specification<UserRole> { root, query, builder ->
                 val userId = builder.equal(root.get<String>(UserRole.USER_ID), user.id)
-                query?.where(userId)?.restriction
+                query.where(userId)?.restriction
             }
             val userRoleList = userRoleJpaRepository.findAll(spec)
                 .filterNotNull()

@@ -4,7 +4,6 @@ import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.Table
 import jakarta.persistence.UniqueConstraint
-import org.hibernate.annotations.Comment
 import org.hibernate.annotations.SQLDelete
 import org.hibernate.annotations.SQLRestriction
 
@@ -21,7 +20,8 @@ import org.hibernate.annotations.SQLRestriction
     name = "turing_permission",
     uniqueConstraints = [
         UniqueConstraint(name = "con_public_turing_permission_constraint_1", columnNames = arrayOf("id"))
-    ]
+    ],
+    comment = "权限表"
 )
 // @SQLDelete 只支持 delete(T entity) 和 deleteById(ID id)
 @SQLDelete(sql = "UPDATE turing_permission SET deleted = TRUE WHERE id = ? AND version = ? AND deleted = FALSE")
@@ -30,29 +30,25 @@ data class Permission(
     /**
      * 上级权限 id
      */
-    @Column(columnDefinition = "INTEGER")
-    @Comment("上级权限 id")
+    @Column(columnDefinition = "INTEGER", comment = "上级权限 id")
     var pid: Int? = null,
 
     /**
      * 权限名称
      */
-    @Column(unique = true, nullable = false, columnDefinition = "VARCHAR(32)")
-    @Comment("权限名称")
+    @Column(unique = true, nullable = false, columnDefinition = "VARCHAR(32)", comment = "权限名称")
     var name: String = "",
 
     /**
      * 权限编码
      */
-    @Column(unique = true, columnDefinition = "VARCHAR(32)")
-    @Comment("权限编码")
+    @Column(unique = true, columnDefinition = "VARCHAR(32)", comment = "权限编码")
     var code: String? = null,
 
     /**
      * 排序编号
      */
-    @Column(unique = true, nullable = false, columnDefinition = "SMALLINT")
-    @Comment("排序编号")
+    @Column(unique = true, nullable = false, columnDefinition = "SMALLINT", comment = "排序编号")
     var sort: Short = 0,
 ) : AbstractAuditable() {
     companion object {
