@@ -10,7 +10,7 @@ FROM amazoncorretto:24.0.2-al2023-headless
 LABEL MAINTAINER="g1672943850@gmail.com"
 
 # 从路径复制新文件或目录并将它们添加到容器的文件系统。
-COPY ./jar/turing-backend-0.0.1-SNAPSHOT.jar ./
+COPY ./jar/turing-0.0.1-SNAPSHOT.jar ./
 
 # 为正在执行的容器提供默认值。如果未指定可执行文件，则还必须指定入口点。Dockerfile 中只能有一个 CMD 指令。
-CMD java -jar turing-backend-0.0.1-SNAPSHOT.jar
+CMD java -jar turing-0.0.1-SNAPSHOT.jar

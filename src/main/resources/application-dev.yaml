@@ -20,9 +20,9 @@ spring:
       password: ${REDIS_PASSWORD}
   datasource:
     # 数据库的 JDBC URL。
-    url: jdbc:postgresql://${HOST}:5432/${POSTGRES_DB}?characterEncoding=utf-8&clientEncoding=utf-8
+    url: jdbc:postgresql://${HOST}:5432/turing
     # 数据库的登录用户名。
-    username: ${POSTGRES_USER}
+    username: turing
     # 数据库的登录密码。
     password: ${POSTGRES_PASSWORD}
   jpa:

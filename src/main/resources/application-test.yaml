@@ -17,9 +17,9 @@ spring:
       password: password
   datasource:
     # 数据库的 JDBC URL。
-    url: jdbc:postgresql://turing-db:5432/turing?characterEncoding=utf-8&clientEncoding=utf-8
+    url: jdbc:postgresql://turing-db:5432/turing
     # 数据库的登录用户名。
-    username: postgres
+    username: turing
     # 数据库的登录密码。
     password: password
   jpa:

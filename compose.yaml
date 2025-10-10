@@ -12,12 +12,11 @@ services:
     container_name: turing-db
     # 定义容器中设置的环境变量。
     environment:
-      POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     # 声明运行以确定该服务的容器是否“健康”的检查。
     healthcheck:
       # 定义 Compose 运行以检查容器健康状况的命令。
-      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}" ]
+      test: [ "CMD-SHELL", "pg_isready -U postgres -d postgres" ]
       # 运行状况检查将在容器启动后首先运行间隔秒，然后在之前的每个检查完成后再次运行间隔秒。
       interval: 10s
       # 如果单次运行检查花费的时间超过超时秒数，则检查被视为失败。
@@ -152,7 +151,7 @@ services:
     # 声明运行以确定该服务的容器是否“健康”的检查。
     healthcheck:
       # 定义 Compose 运行以检查容器健康状况的命令。
-      test: [ "CMD-SHELL", "curl http://localhost:8080/actuator/health | grep -q '^{\"status\":\"UP\"'" ]
+      test: [ "CMD-SHELL", "curl http://localhost:8080/actuator/health | grep -q '\"status\":\"UP\"'" ]
       # 运行状况检查将在容器启动后首先运行间隔秒，然后在之前的每个检查完成后再次运行间隔秒。
       interval: 10s
       # 如果单次运行检查花费的时间超过超时秒数，则检查被视为失败。
