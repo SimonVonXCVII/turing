@@ -171,10 +171,10 @@ services:
     ports:
       - "8080:8080"
     # 定义平台在容器终止时应用的策略。
-  #    restart: always
+    restart: always
+    # todo logging
 
-  # todo 有没有比 nginx 更好的选择
-  # todo Try using Pingora
+  # todo 有没有比 nginx 更好的选择，Try using Pingora
   turing-nginx:
     # 指定自定义容器名称，而不是生成的默认名称。
     container_name: turing-nginx
