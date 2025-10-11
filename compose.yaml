@@ -48,7 +48,6 @@ services:
     container_name: turing-keycloak
     # 覆盖容器镜像声明的默认命令（即 Dockerfile 的 CMD）。
     command:
-      - start-dev
       - --http-port=8081
       - --log-level=DEBUG
     #      - --tracing-enabled=true
@@ -136,8 +135,6 @@ services:
     build:
       # 包含 Dockerfile 的目录的路径，或 git 存储库的 url。
       context: ./docker/turing-backend
-      # Compose 使用备用文件进行构建。 还必须指定构建路径。
-      dockerfile: Dockerfile
     # 指定自定义容器名称，而不是生成的默认名称。
     container_name: turing-backend
     # 表示服务之间的启动和关闭依赖关系。

@@ -122,8 +122,6 @@ class SecurityConfig {
     /**
      * 对登录、退出、页面的访问权限、静态资源的管理
      *
-     * @param http HttpSecurity
-     * @throws Exception 未知异常
      * @author Simon Von
      * @since 2022/5/1 14:50
      */

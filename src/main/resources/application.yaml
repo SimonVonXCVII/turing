@@ -16,12 +16,12 @@ custom:
 
 logging:
   level:
-    # todo 这有什么特别的作用
     org:
       springframework:
         web: DEBUG
         security: DEBUG
         security.oauth2: DEBUG
+    #        boot.autoconfigure: DEBUG
     # sql：SQL 日志记录组，包括 Hibernate SQL 记录器。
     sql: debug
     # web：Web 日志记录组，包括编解码器。

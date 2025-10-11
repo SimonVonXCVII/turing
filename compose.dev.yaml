@@ -1,0 +1,5 @@
+services:
+  turing-keycloak:
+    # 覆盖容器镜像声明的默认命令（即 Dockerfile 的 CMD）。
+    command:
+      - start-dev

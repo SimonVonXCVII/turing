@@ -15,9 +15,9 @@ import org.springframework.data.web.config.EnableSpringDataWebSupport
 // todo 可以加一个密码拦截器，前端将 password 加密，然后在 UsernamePasswordAuthenticationFilter 之前解密
 // todo Reformat code
 // todo 尝试将 dto 改成 spring-data-jpa 一样的 record 类。IXxProjection 投影类。@org.hibernate.envers.Audited 类
-// todo 朝着 oidc 发展，或许也是朝着多模块甚至是为服务方向发展
+// todo 朝着 oidc 发展，或许也是朝着多模块甚至是微服务方向发展
 // todo 是否需要 Role（角色表）添加前缀“ROLE_”
-// todo docker 安装了那些容器，能否启动它们的图形化界面？比如数据库？
+// todo docker 运行的那些容器，能否启动它们的默认图形化界面？比如数据库？
 @EnableConfigurationProperties(CustomSecurityProperties::class)
 // 清晰化 jpa 包路径
 @EnableJpaRepositories("com.simonvonxcvii.turing.repository.jpa")

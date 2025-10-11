@@ -13,7 +13,9 @@ import java.io.IOException;
 import java.util.Random;
 
 /**
- * 随机数值工具类 TODO 有没有哪个框架中有类似源码，直接使用
+ * 随机数值工具类
+ * TODO 有没有现成框架？有 Kaptcha，但是早已没有更新，reCAPTCHA？
+ *  使用 OIDC 模式就没有必要使用这种验证码了吧？
  *
  * @author Simon Von
  * @since 2022/6/14 11:56 周二
