@@ -138,12 +138,15 @@ services:
     ports:
       - "8080:8080"
 
-  # todo 有没有比 nginx 更好的选择，Try using Pingora
+  # todo 有没有比 nginx 更好的选择，Try using pingora, httpd, tomcat, caddy
   turing-nginx:
     # 合并映射，引用锚点，公共配置
     <<: *commons
     # 指定自定义容器名称，而不是生成的默认名称。
     container_name: turing-nginx
+    # 表示服务之间的启动和关闭依赖关系。
+    depends_on:
+      turing-backend: *condition
     # 声明运行以确定该服务的容器是否“健康”的检查。
     healthcheck:
       # 定义 Compose 运行以检查容器健康状况的命令。
