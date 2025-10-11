@@ -1,6 +1,5 @@
 package com.simonvonxcvii.turing.service.impl;
 
-import com.simonvonxcvii.turing.common.exception.BizRuntimeException;
 import com.simonvonxcvii.turing.entity.AppFile;
 import com.simonvonxcvii.turing.enums.FileTypeEnum;
 import com.simonvonxcvii.turing.model.dto.UploadFileDTO;
@@ -90,7 +89,7 @@ public class AppFileServiceImpl implements IAppFileService {
             }
             bytes = os.toByteArray();
         } catch (IOException e) {
-            throw BizRuntimeException.from("上传文件失败：" + e.getMessage());
+            throw new RuntimeException("上传文件失败：" + e.getMessage());
         }
         // 生成 md5
         String md5 = DigestUtils.md5DigestAsHex(bytes);
@@ -157,14 +156,14 @@ public class AppFileServiceImpl implements IAppFileService {
      */
     @Override
     public void getFileById(Integer id, HttpServletResponse response) throws IOException {
-        AppFile appFile = appFileJpaRepository.findById(id).orElseThrow(() -> BizRuntimeException.from("没有找到该文件"));
+        AppFile appFile = appFileJpaRepository.findById(id).orElseThrow(() -> new RuntimeException("没有找到该文件"));
         String appFilePath = appFile.getPath();
         if (appFilePath.isBlank()) {
-            throw BizRuntimeException.from("文件路径为空");
+            throw new RuntimeException("文件路径为空");
         }
         File file = new File(appFilePath);
         if (!file.isFile()) {
-            throw BizRuntimeException.from("无法获取该文件，当前所在路径中没有该文件");
+            throw new RuntimeException("无法获取该文件，当前所在路径中没有该文件");
         }
         // 设置发送到客户端的响应的内容类型（如果尚未提交响应）
         response.setContentType(appFile.getContentType());
@@ -197,14 +196,14 @@ public class AppFileServiceImpl implements IAppFileService {
      */
     @Override
     public void getOriginalImageById(Integer id, HttpServletResponse response) throws IOException {
-        AppFile appFile = appFileJpaRepository.findById(id).orElseThrow(() -> BizRuntimeException.from("没有找到该图片"));
+        AppFile appFile = appFileJpaRepository.findById(id).orElseThrow(() -> new RuntimeException("没有找到该图片"));
         String appFilePath = appFile.getPath();
         if (!StringUtils.hasText(appFilePath)) {
-            throw BizRuntimeException.from("图片路径为空");
+            throw new RuntimeException("图片路径为空");
         }
         File file = new File(appFilePath);
         if (!file.isFile()) {
-            throw BizRuntimeException.from("无法获取该图片，当前所在路径中没有该图片");
+            throw new RuntimeException("无法获取该图片，当前所在路径中没有该图片");
         }
         // 设置发送到客户端的响应的内容类型（如果尚未提交响应）
         response.setContentType(appFile.getContentType());

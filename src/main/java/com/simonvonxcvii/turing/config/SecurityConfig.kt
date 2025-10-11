@@ -1,6 +1,5 @@
 package com.simonvonxcvii.turing.config
 
-import com.simonvonxcvii.turing.filter.CustomCaptchaOncePerRequestFilter
 import com.simonvonxcvii.turing.properties.CustomSecurityProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -17,7 +16,6 @@ import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.access.AccessDeniedHandler
 import org.springframework.security.web.authentication.AuthenticationFailureHandler
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler
 import org.springframework.security.web.authentication.session.ConcurrentSessionControlAuthenticationStrategy
 import org.springframework.security.web.csrf.CsrfFilter
@@ -70,7 +68,7 @@ class SecurityConfig {
         val config = CorsConfiguration().applyPermitDefaultValues()
         // 设置允许的来源
         // 允许跨源请求的源列表。默认情况下未设置，这意味着不允许任何来源
-        config.allowedOrigins = listOf(customSecurityProperties.host)
+        config.allowedOrigins = listOf(customSecurityProperties.host + ":5666")
         // TODO 设置允许的原点模式
         // setAllowedOrigins 的替代方案，它支持更灵活的来源模式，除了端口列表之外，主机名中的任何位置都带有“*”。 例子：
         // https://*.domain1.com -- 以 domain1.com 结尾的域
@@ -131,7 +129,7 @@ class SecurityConfig {
         corsConfigurationSource: CorsConfigurationSource,
         authenticationSuccessHandler: AuthenticationSuccessHandler,
         authenticationFailureHandler: AuthenticationFailureHandler,
-        customCaptchaOncePerRequestFilter: CustomCaptchaOncePerRequestFilter,
+//        customCaptchaOncePerRequestFilter: CustomCaptchaOncePerRequestFilter,
         customSecurityProperties: CustomSecurityProperties,
         accessDeniedHandler: AccessDeniedHandler,
         authenticationEntryPoint: AuthenticationEntryPoint,
@@ -148,7 +146,7 @@ class SecurityConfig {
             // 启用基于表单的身份验证。
             formLogin {
                 // 如果需要身份验证则重定向到登录页面（即“/login”）
-//                loginPage = "/login"
+                loginPage = "/api/auth/login"
                 // 身份验证成功后使用的 AuthenticationSuccessHandler
                 this.authenticationSuccessHandler = authenticationSuccessHandler
                 // 身份验证失败后使用的 AuthenticationFailureHandler
@@ -406,9 +404,9 @@ class SecurityConfig {
                 // 要使用的 AuthenticationEntryPoint
                 this.authenticationEntryPoint = authenticationEntryPoint
                 // 设置要使用的默认 AccessDeniedHandler，该默认 AccessDeniedHandler 优先为提供的 RequestMatcher 调用。
-//                defaultAccessDeniedHandlerFor(accessDeniedHandler)
+//                defaultAccessDeniedHandlerFor(accessDeniedHandler, AnyRequestMatcher.INSTANCE)
 //                // 设置要使用的默认 AuthenticationEntryPoint，该默认 AuthenticationEntryPoint 优先为提供的 RequestMatcher 调用。
-//                defaultAuthenticationEntryPointFor(authenticationEntryPoint)
+//                defaultAuthenticationEntryPointFor(authenticationEntryPoint, AnyRequestMatcher.INSTANCE)
 //                // 禁用异常处理。
 //                disable()
             }
@@ -744,7 +742,7 @@ class SecurityConfig {
 //            addFilterAfter<UsernamePasswordAuthenticationFilter>(customCaptchaOncePerRequestFilter)
 
             // 在指定 Filter 类的位置之前添加 Filter。此变体利用了 Kotlin 具体化的类型参数。
-            addFilterBefore<UsernamePasswordAuthenticationFilter>(customCaptchaOncePerRequestFilter)
+//            addFilterBefore<UsernamePasswordAuthenticationFilter>(customCaptchaOncePerRequestFilter)
 
             // TODO: 2023/4/15 研究这里的作用
             // 启用安全上下文配置。

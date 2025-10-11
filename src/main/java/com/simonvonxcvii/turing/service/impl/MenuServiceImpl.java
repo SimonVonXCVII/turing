@@ -1,6 +1,5 @@
 package com.simonvonxcvii.turing.service.impl;
 
-import com.simonvonxcvii.turing.common.exception.BizRuntimeException;
 import com.simonvonxcvii.turing.entity.Menu;
 import com.simonvonxcvii.turing.entity.Permission;
 import com.simonvonxcvii.turing.model.dto.MenuDTO;
@@ -37,7 +36,7 @@ public class MenuServiceImpl implements IMenuService {
     @Transactional(rollbackFor = Exception.class)
     public void insertOrUpdate(MenuDTO dto) {
         if (dto.getPid() == null && dto.getSort() % 100 != 0) {
-            throw BizRuntimeException.from("父级权限的排序编号必须是一百的整数倍");
+            throw new RuntimeException("父级权限的排序编号必须是一百的整数倍");
         }
         Menu menu;
         // 新增
@@ -46,7 +45,7 @@ public class MenuServiceImpl implements IMenuService {
         }
         // 修改
         else {
-            menu = menuJpaRepository.findById(dto.getId()).orElseThrow(() -> BizRuntimeException.from("无法查找到该数据"));
+            menu = menuJpaRepository.findById(dto.getId()).orElseThrow(() -> new RuntimeException("无法查找到该数据"));
         }
         BeanUtils.copyProperties(dto, menu);
         menuJpaRepository.save(menu);
@@ -96,7 +95,7 @@ public class MenuServiceImpl implements IMenuService {
                     MenuDTO parentDTO = new MenuDTO();
                     BeanUtils.copyProperties(parent, parentDTO);
                     Permission permission = permissionJpaRepository.findById(parent.getPermissionId())
-                            .orElseThrow(() -> BizRuntimeException.from("无法查询到相应的权限数据"));
+                            .orElseThrow(() -> new RuntimeException("无法查询到相应的权限数据"));
                     parentDTO.setPermission(permission.getName());
                     childList.stream()
                             .filter(child -> Objects.equals(parent.getId(), child.getPid()))
@@ -104,7 +103,7 @@ public class MenuServiceImpl implements IMenuService {
                                 MenuDTO childDTO = new MenuDTO();
                                 BeanUtils.copyProperties(child, childDTO);
                                 Permission permission1 = permissionJpaRepository.findById(child.getPermissionId())
-                                        .orElseThrow(() -> BizRuntimeException.from("无法查询到相应的权限数据"));
+                                        .orElseThrow(() -> new RuntimeException("无法查询到相应的权限数据"));
                                 childDTO.setPermission(permission1.getName());
                                 parentDTO.getChildren().add(childDTO);
                             });

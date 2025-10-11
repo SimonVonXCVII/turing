@@ -1,6 +1,5 @@
 package com.simonvonxcvii.turing.service.impl;
 
-import com.simonvonxcvii.turing.common.exception.BizRuntimeException;
 import com.simonvonxcvii.turing.entity.Dict;
 import com.simonvonxcvii.turing.entity.Organization;
 import com.simonvonxcvii.turing.entity.OrganizationBusiness;
@@ -183,7 +182,7 @@ public class OrganizationBusinessServiceImpl implements IOrganizationBusinessSer
         };
         boolean exists = organizationBusinessJpaRepository.exists(spec);
         if (exists) {
-            throw BizRuntimeException.from("已申请该地区业务，请重新选择");
+            throw new RuntimeException("已申请该地区业务，请重新选择");
         }
         OrganizationBusiness organizationBusiness = new OrganizationBusiness();
         // 因为新增时没有主键 id，所以在 copy 时不需要排除 id 字段
@@ -203,7 +202,7 @@ public class OrganizationBusinessServiceImpl implements IOrganizationBusinessSer
 //        organizationBusiness.setLink(dto.getLink());
 //        organizationBusiness.setType(dto.getType());
         Organization organization = organizationJpaRepository.findById(UserUtils.getOrgId())
-                .orElseThrow(() -> BizRuntimeException.from("无法查询到该单位数据"));
+                .orElseThrow(() -> new RuntimeException("无法查询到该单位数据"));
         organizationBusiness.setOrgId(organization.getId());
         organizationBusiness.setOrgName(organization.getName());
         // 业务申请状态
@@ -232,7 +231,7 @@ public class OrganizationBusinessServiceImpl implements IOrganizationBusinessSer
     @Transactional(rollbackFor = Exception.class)
     public void applyUpdate(OrganizationBusinessDTO dto) throws IOException {
         OrganizationBusiness organizationBusiness = organizationBusinessJpaRepository.findById(dto.getId())
-                .orElseThrow(() -> BizRuntimeException.from("没有找到该业务记录"));
+                .orElseThrow(() -> new RuntimeException("没有找到该业务记录"));
         // TODO 晚些时候修改！
 //        organizationBusiness.setLink(dto.getLink());
 //        organizationBusiness.setType(dto.getType());
@@ -301,7 +300,7 @@ public class OrganizationBusinessServiceImpl implements IOrganizationBusinessSer
     @Transactional(rollbackFor = Exception.class)
     public void checkUpdate(OrganizationBusinessDTO dto) throws IOException {
         OrganizationBusiness organizationBusiness = organizationBusinessJpaRepository.findById(dto.getId())
-                .orElseThrow(() -> BizRuntimeException.from("没有找到该业务记录"));
+                .orElseThrow(() -> new RuntimeException("没有找到该业务记录"));
         // TODO 不知道使用 OrganizationBusinessStateEnum.valueOf(dto.getState()) 对不对
         organizationBusiness.setState(OrganizationBusinessStateEnum.valueOf(dto.getState()));
         organizationBusinessJpaRepository.save(organizationBusiness);
@@ -320,14 +319,14 @@ public class OrganizationBusinessServiceImpl implements IOrganizationBusinessSer
             return query.where(predicate).getRestriction();
         };
         User user = userJpaRepository.findOne(spec)
-                .orElseThrow(() -> BizRuntimeException.from("没有找到该业务的单位管理员"));
+                .orElseThrow(() -> new RuntimeException("没有找到该业务的单位管理员"));
 
         // TODO 晚些时候修改！
 //        for (String link : StringUtils.commaDelimitedListToStringArray(organizationBusiness.getLink())) {
 //            OrganizationBusinessBusinessLinksEnum.getEnumByDesc(link).ifPresent(anEnum -> {
 //                Role role = roleJpaRepository.findOne((root, _, _) ->
 //                                root.get(Role.AUTHORITY).in("ADMIN_" + anEnum.name()))
-//                        .orElseThrow(() -> BizRuntimeException.from("没有找到对应角色"));
+//                        .orElseThrow(() -> new RuntimeException("没有找到对应角色"));
 //                if ("已通过".equals(dto.getState())) {
 //                    // 如果当前用户没有当前角色才进行添加操作
 //                    boolean exists = userRoleJpaRepository.exists((root, _, criteriaBuilder) ->

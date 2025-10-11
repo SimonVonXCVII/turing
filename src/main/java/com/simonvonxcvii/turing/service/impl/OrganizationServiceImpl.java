@@ -1,6 +1,5 @@
 package com.simonvonxcvii.turing.service.impl;
 
-import com.simonvonxcvii.turing.common.exception.BizRuntimeException;
 import com.simonvonxcvii.turing.entity.*;
 import com.simonvonxcvii.turing.enums.OrganizationBusinessBusinessLinksEnum;
 import com.simonvonxcvii.turing.enums.OrganizationBusinessStateEnum;
@@ -56,7 +55,7 @@ public class OrganizationServiceImpl implements IOrganizationService {
         // 修改
         else {
             organization = organizationJpaRepository.findById(dto.getId())
-                    .orElseThrow(() -> BizRuntimeException.from("无法查找到该数据"));
+                    .orElseThrow(() -> new RuntimeException("无法查找到该数据"));
         }
         BeanUtils.copyProperties(dto, organization, AbstractAuditable.CREATED_DATE);
         // 获取省市县名称

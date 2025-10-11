@@ -1,5 +1,6 @@
 package com.simonvonxcvii.turing.component
 
+import com.simonvonxcvii.turing.entity.Role
 import com.simonvonxcvii.turing.entity.User
 import com.simonvonxcvii.turing.entity.UserRole
 import com.simonvonxcvii.turing.repository.jpa.OrganizationJpaRepository
@@ -96,6 +97,7 @@ class CustomUserDetailsService(
         // 缓存用户其他信息到实体类
         // 缓存当前用户的角色集合
         user.authorities = roleList
+        user.roles = roleList.map(Role::authority).toSet()
         val organization = organizationJpaRepository.findById(user.orgId)
             .orElse(null) ?: throw BadCredentialsException("无法找到当前用户的单位信息")
         // 用户所处的单位级别

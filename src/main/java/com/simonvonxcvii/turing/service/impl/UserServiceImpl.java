@@ -1,6 +1,5 @@
 package com.simonvonxcvii.turing.service.impl;
 
-import com.simonvonxcvii.turing.common.exception.BizRuntimeException;
 import com.simonvonxcvii.turing.entity.*;
 import com.simonvonxcvii.turing.model.dto.RoleDTO;
 import com.simonvonxcvii.turing.model.dto.UserDTO;
@@ -9,6 +8,7 @@ import com.simonvonxcvii.turing.repository.jpa.RoleJpaRepository;
 import com.simonvonxcvii.turing.repository.jpa.UserJpaRepository;
 import com.simonvonxcvii.turing.repository.jpa.UserRoleJpaRepository;
 import com.simonvonxcvii.turing.service.IUserService;
+import com.simonvonxcvii.turing.utils.UserUtils;
 import jakarta.persistence.criteria.Predicate;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NonNull;
@@ -44,6 +44,21 @@ public class UserServiceImpl implements IUserService {
     private final UserRoleJpaRepository userRoleJpaRepository;
     private final RoleJpaRepository roleJpaRepository;
 
+    /**
+     * 获取用户登录成功后所需要的信息
+     *
+     * @author Simon Von
+     * @since 12/17/2022 8:19 PM
+     */
+    @Override
+    public UserDTO info() {
+        User user = UserUtils.getUser();
+        UserDTO userDTO = new UserDTO();
+        BeanUtils.copyProperties(user, userDTO);
+        userDTO.setRealName(user.getName());
+        return userDTO;
+    }
+
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void insertOrUpdate(UserDTO dto) {
@@ -54,7 +69,7 @@ public class UserServiceImpl implements IUserService {
         }
         // 修改
         else {
-            user = userJpaRepository.findById(dto.getId()).orElseThrow(() -> BizRuntimeException.from("无法查找到用户数据"));
+            user = userJpaRepository.findById(dto.getId()).orElseThrow(() -> new RuntimeException("无法查找到用户数据"));
         }
         dto.setAccountNonExpired(Boolean.TRUE);
         dto.setAccountNonLocked(Boolean.TRUE);
@@ -69,7 +84,7 @@ public class UserServiceImpl implements IUserService {
         user.setPassword(password);
         // 单位名称
         Organization organization = organizationJpaRepository.findById(dto.getOrgId())
-                .orElseThrow(() -> BizRuntimeException.from("无法查找到单位数据"));
+                .orElseThrow(() -> new RuntimeException("无法查找到单位数据"));
         user.setOrgName(organization.getName());
         userJpaRepository.save(user);
         // 更新用户角色表
@@ -170,11 +185,11 @@ public class UserServiceImpl implements IUserService {
             };
             List<UserRole> userRoleList = userRoleJpaRepository.findAll(spec);
             if (userRoleList.isEmpty()) {
-                throw BizRuntimeException.from("数据异常，该用户没有角色：" + user.getUsername());
+                throw new RuntimeException("数据异常，该用户没有角色：" + user.getUsername());
             }
             List<Role> roleList = roleJpaRepository.findAllById(userRoleList.stream().map(AbstractAuditable::getId).toList());
             if (roleList.isEmpty()) {
-                throw BizRuntimeException.from("数据异常，该用户没有角色：" + user.getUsername());
+                throw new RuntimeException("数据异常，该用户没有角色：" + user.getUsername());
             }
             List<RoleDTO> roleDTOList = roleList.stream()
                     .map(role -> {

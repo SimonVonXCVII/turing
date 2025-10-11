@@ -1,6 +1,5 @@
 package com.simonvonxcvii.turing.service.impl;
 
-import com.simonvonxcvii.turing.common.exception.BizRuntimeException;
 import com.simonvonxcvii.turing.entity.Organization;
 import com.simonvonxcvii.turing.entity.User;
 import com.simonvonxcvii.turing.entity.UserRole;
@@ -50,7 +49,7 @@ public class RegisterServiceImpl implements RegisterService {
         };
         boolean exists = organizationJpaRepository.exists(spec);
         if (exists) {
-            throw new BizRuntimeException("该单位名称已经注册，请重新输入");
+            throw new RuntimeException("该单位名称已经注册，请重新输入");
         }
 
         Specification<@NonNull Organization> spec2 = (root, query, builder) -> {
@@ -59,7 +58,7 @@ public class RegisterServiceImpl implements RegisterService {
         };
         exists = organizationJpaRepository.exists(spec2);
         if (exists) {
-            throw new BizRuntimeException("该信用代码已经注册，请重新输入");
+            throw new RuntimeException("该信用代码已经注册，请重新输入");
         }
 
         Specification<@NonNull Organization> spec3 = (root, query, builder) -> {
@@ -68,7 +67,7 @@ public class RegisterServiceImpl implements RegisterService {
         };
         exists = organizationJpaRepository.exists(spec3);
         if (exists) {
-            throw new BizRuntimeException("该联系电话已被使用，请重新输入");
+            throw new RuntimeException("该联系电话已被使用，请重新输入");
         }
 
         Specification<@NonNull User> userSpec = (root, query, builder) -> {
@@ -77,7 +76,7 @@ public class RegisterServiceImpl implements RegisterService {
         };
         exists = userJpaRepository.exists(userSpec);
         if (exists) {
-            throw new BizRuntimeException("该手机号码已被使用，请重新输入");
+            throw new RuntimeException("该手机号码已被使用，请重新输入");
         }
 
         Specification<@NonNull User> userSpec2 = (root, query, builder) -> {
@@ -86,7 +85,7 @@ public class RegisterServiceImpl implements RegisterService {
         };
         exists = userJpaRepository.exists(userSpec2);
         if (exists) {
-            throw new BizRuntimeException("该登录账号已被使用，请重新输入");
+            throw new RuntimeException("该登录账号已被使用，请重新输入");
         }
 
         // 单位信息

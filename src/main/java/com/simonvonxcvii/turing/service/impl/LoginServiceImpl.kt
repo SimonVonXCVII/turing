@@ -1,6 +1,5 @@
 package com.simonvonxcvii.turing.service.impl
 
-import com.simonvonxcvii.turing.common.exception.BizRuntimeException
 import com.simonvonxcvii.turing.entity.AbstractAuditable
 import com.simonvonxcvii.turing.entity.Menu
 import com.simonvonxcvii.turing.entity.RolePermission
@@ -111,7 +110,7 @@ class LoginServiceImpl(
         }
         val rolePermissionList = rolePermissionJpaRepository.findAll(spec).filterNotNull()
         if (rolePermissionList.isEmpty()) {
-            throw BizRuntimeException("无法获取菜单，因为当前用户的角色没有任何权限")
+            throw RuntimeException("无法获取菜单，因为当前用户的角色没有任何权限")
         }
 
         // 该用户权限对应的所有子级菜单
@@ -126,7 +125,7 @@ class LoginServiceImpl(
             .map { menu -> menuConvertToDTO(menu) }
             .toList()
         if (menuDTOList.isEmpty()) {
-            throw BizRuntimeException("当前用户没有任何菜单")
+            throw RuntimeException("当前用户没有任何菜单")
         }
 
         // 匹配父级和子级菜单

@@ -27,6 +27,12 @@ public class UserController {
         this.service = service;
     }
 
+    @GetMapping("/info")
+    @Operation(summary = "获取用户登录成功后所需要的信息")
+    public Result<UserDTO> info() {
+        return Result.ok(service.info());
+    }
+
     @Operation(summary = "单个新增或修改")
     @PostMapping("/insertOrUpdate")
     public Result<Object> insertOrUpdate(@RequestBody @Validated UserDTO dto) {

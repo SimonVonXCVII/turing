@@ -1,6 +1,5 @@
 package com.simonvonxcvii.turing.controller;
 
-import com.simonvonxcvii.turing.common.exception.BizRuntimeException;
 import com.simonvonxcvii.turing.common.result.Result;
 import com.simonvonxcvii.turing.enums.FileTypeEnum;
 import com.simonvonxcvii.turing.model.dto.UploadFileDTO;
@@ -48,7 +47,7 @@ public class AppFileController {
         if (!Pattern.matches("^\\.(?i)pdf$", multipartFile.suffix()) &&
                 !Pattern.matches("^\\.(?i)docx?$", multipartFile.suffix()) &&
                 !Pattern.matches("^\\.(?i)xlsx?$", multipartFile.suffix())) {
-            throw BizRuntimeException.from("暂时只支持上传 .pdf、.doc、.docx、.xls 和 .xlsx 格式的文件");
+            return Result.error("暂时只支持上传 .pdf、.doc、.docx、.xls 和 .xlsx 格式的文件");
         }
         return Result.ok(service.uploadFile(file, multipartFile.originalFilename(), multipartFile.suffix(), FileTypeEnum.getByOrdinal(bizType), remark, false, false));
     }
@@ -65,7 +64,7 @@ public class AppFileController {
         if (!Pattern.matches("^\\.(?i)jpe?g$", multipartFile.suffix()) &&
                 !Pattern.matches("^\\.(?i)png$", multipartFile.suffix()) &&
                 !Pattern.matches("^\\.(?i)webp$", multipartFile.suffix())) {
-            throw BizRuntimeException.from("暂时只支持上传 .jpg、.jpeg、.png 和 .webp 格式的图片");
+            return Result.error("暂时只支持上传 .jpg、.jpeg、.png 和 .webp 格式的图片");
         }
         return Result.ok(service.uploadFile(file, multipartFile.originalFilename(), multipartFile.suffix(), FileTypeEnum.getByOrdinal(bizType), remark, isCompress, false));
     }
@@ -81,7 +80,7 @@ public class AppFileController {
         if (!Pattern.matches("^\\.(?i)pdf$", multipartFile.suffix()) &&
                 !Pattern.matches("^\\.(?i)docx?$", multipartFile.suffix()) &&
                 !Pattern.matches("^\\.(?i)xlsx?$", multipartFile.suffix())) {
-            throw BizRuntimeException.from("暂时只支持上传 .pdf、.doc、.docx、.xls 和 .xlsx 格式的文件");
+            return Result.error("暂时只支持上传 .pdf、.doc、.docx、.xls 和 .xlsx 格式的文件");
         }
         return Result.ok(service.uploadFile(file, multipartFile.originalFilename(), multipartFile.suffix(), FileTypeEnum.getByOrdinal(bizType), remark, false, true));
     }
@@ -98,7 +97,7 @@ public class AppFileController {
         if (!Pattern.matches("^\\.(?i)jpe?g$", multipartFile.suffix()) &&
                 !Pattern.matches("^\\.(?i)png$", multipartFile.suffix()) &&
                 !Pattern.matches("^\\.(?i)webp$", multipartFile.suffix())) {
-            throw BizRuntimeException.from("暂时只支持上传 .jpg、.jpeg、.png 和 .webp 格式的图片");
+            return Result.error("暂时只支持上传 .jpg、.jpeg、.png 和 .webp 格式的图片");
         }
         return Result.ok(service.uploadFile(file, multipartFile.originalFilename(), multipartFile.suffix(), FileTypeEnum.getByOrdinal(bizType), remark, isCompress, true));
     }
@@ -135,20 +134,20 @@ public class AppFileController {
      */
     private CheckMultipartFile getCheckMultipartFile(MultipartFile file) {
         if (file == null) {
-            throw BizRuntimeException.from("文件不可为空，请选择文件");
+            throw new RuntimeException("文件不可为空，请选择文件");
         }
         if (file.isEmpty()) {
-            throw BizRuntimeException.from("没有选择文件或者选择的文件没有内容");
+            throw new RuntimeException("没有选择文件或者选择的文件没有内容");
         }
         // 原文件名
         String originalFilename = file.getOriginalFilename();
         if (!StringUtils.hasText(originalFilename)) {
-            throw BizRuntimeException.from("原文件名不能为空");
+            throw new RuntimeException("原文件名不能为空");
         }
         // 文件后缀 todo 使用 apache 或者 spring 中的 FileNameUtils 替换，还有 AppFileServiceImpl 中
         String suffix = originalFilename.substring(originalFilename.lastIndexOf("."));
         if (!StringUtils.hasText(suffix)) {
-            throw BizRuntimeException.from("文件后缀不能为空");
+            throw new RuntimeException("文件后缀不能为空");
         }
         return new CheckMultipartFile(originalFilename, suffix);
     }

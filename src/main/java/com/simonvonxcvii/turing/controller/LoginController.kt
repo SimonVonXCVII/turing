@@ -33,13 +33,13 @@ class LoginController(private val service: LoginService) {
 
     @GetMapping("/getUserInfo")
     @Operation(summary = "获取用户登录成功后所需要的信息")
-    fun userInfo(): Result<UserDTO> {
+    fun getUserInfo(): Result<UserDTO> {
         return Result.ok(service.getUserInfo())
     }
 
     @GetMapping("/getMenuList")
     @Operation(summary = "获取用户登录成功后的菜单集合")
-    fun menuList(): Result<List<MenuDTO>> {
+    fun getMenuList(): Result<List<MenuDTO>> {
         return Result.ok(service.getMenuList())
     }
 

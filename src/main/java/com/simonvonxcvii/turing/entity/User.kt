@@ -131,6 +131,12 @@ data class User(
     var authorities: Collection<Role> = mutableListOf(),
 
     /**
+     * 用户角色编码
+     */
+    @Transient
+    var roles: Set<String> = mutableSetOf(),
+
+    /**
      * 是否是超级管理员
      */
     @Transient

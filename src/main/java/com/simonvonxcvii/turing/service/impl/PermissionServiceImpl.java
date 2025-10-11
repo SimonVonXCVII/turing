@@ -1,6 +1,5 @@
 package com.simonvonxcvii.turing.service.impl;
 
-import com.simonvonxcvii.turing.common.exception.BizRuntimeException;
 import com.simonvonxcvii.turing.entity.Menu;
 import com.simonvonxcvii.turing.entity.Permission;
 import com.simonvonxcvii.turing.entity.RolePermission;
@@ -49,7 +48,7 @@ public class PermissionServiceImpl implements IPermissionService {
     @Transactional(rollbackFor = Exception.class)
     public void insertOrUpdate(PermissionDTO dto) {
         if (dto.getPid() == null && dto.getSort() % 100 != 0) {
-            throw BizRuntimeException.from("父级权限的排序编号必须是一百的整数倍");
+            throw new RuntimeException("父级权限的排序编号必须是一百的整数倍");
         }
         Permission permission;
         // 新增
@@ -59,7 +58,7 @@ public class PermissionServiceImpl implements IPermissionService {
         // 修改
         else {
             permission = permissionJpaRepository.findById(dto.getId())
-                    .orElseThrow(() -> BizRuntimeException.from("无法查找到该数据"));
+                    .orElseThrow(() -> new RuntimeException("无法查找到该数据"));
         }
         BeanUtils.copyProperties(dto, permission);
         permissionJpaRepository.save(permission);
@@ -138,7 +137,7 @@ public class PermissionServiceImpl implements IPermissionService {
         };
         boolean exists = rolePermissionJpaRepository.exists(spec);
         if (exists) {
-            throw BizRuntimeException.from("该权限已关联角色");
+            throw new RuntimeException("该权限已关联角色");
         }
         Specification<@NonNull Menu> menuSpec = (root, query, builder) -> {
             Predicate predicate = builder.equal(root.get(Menu.PERMISSION_ID), id);
@@ -146,7 +145,7 @@ public class PermissionServiceImpl implements IPermissionService {
         };
         exists = menuJpaRepository.exists(menuSpec);
         if (exists) {
-            throw BizRuntimeException.from("该权限已关联菜单");
+            throw new RuntimeException("该权限已关联菜单");
         }
         permissionJpaRepository.deleteById(id);
     }

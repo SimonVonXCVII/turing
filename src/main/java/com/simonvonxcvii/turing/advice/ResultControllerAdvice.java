@@ -1,8 +1,6 @@
 package com.simonvonxcvii.turing.advice;
 
-import com.simonvonxcvii.turing.common.exception.BizRuntimeException;
 import com.simonvonxcvii.turing.common.result.Result;
-import com.simonvonxcvii.turing.common.result.ResultCode;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.core.env.Environment;
@@ -33,34 +31,28 @@ public class ResultControllerAdvice {
         return ResponseEntity.ok(Result.error("上传的文件超过限制，当前最大允许: " + environment.getProperty("spring.servlet.multipart.max-file-size")));
     }
 
-    @ExceptionHandler(BizRuntimeException.class)
-    public ResponseEntity<Result<Object>> bizRuntimeException(BizRuntimeException e) {
-        log.error("@ExceptionHandler(BizRuntimeException.class): ", e);
-        return ResponseEntity.ok(Result.error(e.getCode(), e.getLocalizedMessage(), e.getData()));
-    }
-
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<Result<Object>> illegalArgumentException(IllegalArgumentException e) {
         log.error("@ExceptionHandler(IllegalArgumentException.class): ", e);
-        return ResponseEntity.ok(Result.error(ResultCode.BAD_REQUEST.code(), e.getLocalizedMessage()));
+        return ResponseEntity.ok(Result.error(e.getLocalizedMessage()));
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<Result<Object>> httpMessageNotReadableException(HttpMessageNotReadableException e) {
         log.error("@ExceptionHandler(HttpMessageNotReadableException.class): ", e);
-        return ResponseEntity.ok(Result.error(ResultCode.BAD_REQUEST.code(), e.getMessage()));
+        return ResponseEntity.ok(Result.error(e.getLocalizedMessage()));
     }
 
     @ExceptionHandler(MissingServletRequestParameterException.class)
     public ResponseEntity<Result<Object>> missingServletRequestParameterException(MissingServletRequestParameterException e) {
         log.error("@ExceptionHandler(MissingServletRequestParameterException.class): ", e);
-        return ResponseEntity.ok(Result.error(ResultCode.BAD_REQUEST.code(), e.getLocalizedMessage()));
+        return ResponseEntity.ok(Result.error(e.getLocalizedMessage()));
     }
 
     @ExceptionHandler(NullPointerException.class)
     public ResponseEntity<Result<Object>> nullPointerException(NullPointerException e) {
         log.error("@ExceptionHandler(NullPointerException.class): ", e);
-        return ResponseEntity.ok(Result.error(ResultCode.ERROR.code(), "目标对象或值为空: " + e.getLocalizedMessage()));
+        return ResponseEntity.ok(Result.error("目标对象或值为空: " + e.getLocalizedMessage()));
     }
 
     @ExceptionHandler(Throwable.class)

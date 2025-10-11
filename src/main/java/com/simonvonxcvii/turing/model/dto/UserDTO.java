@@ -11,6 +11,7 @@ import lombok.experimental.Accessors;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 @Accessors(chain = true)
 @Getter
@@ -21,6 +22,11 @@ public class UserDTO extends PageQuery {
      */
     @NotBlank(message = "用户姓名不能为空")
     public String name;
+    /**
+     * 用户姓名
+     */
+    @NotBlank(message = "用户姓名不能为空")
+    public String realName;
     /**
      * 用户手机号
      */
@@ -77,6 +83,10 @@ public class UserDTO extends PageQuery {
      * 用户角色
      */
     public Collection<RoleDTO> authorities;
+    /**
+     * 用户角色编码
+     */
+    public Set<String> roles;
     /**
      * 用户 id
      */

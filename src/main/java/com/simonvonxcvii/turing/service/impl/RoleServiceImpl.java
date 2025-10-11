@@ -1,6 +1,5 @@
 package com.simonvonxcvii.turing.service.impl;
 
-import com.simonvonxcvii.turing.common.exception.BizRuntimeException;
 import com.simonvonxcvii.turing.entity.OrganizationBusiness;
 import com.simonvonxcvii.turing.entity.Role;
 import com.simonvonxcvii.turing.entity.RolePermission;
@@ -58,7 +57,7 @@ public class RoleServiceImpl implements IRoleService {
         }
         // 修改
         else {
-            role = roleJpaRepository.findById(dto.getId()).orElseThrow(() -> BizRuntimeException.from("无法查找到该数据"));
+            role = roleJpaRepository.findById(dto.getId()).orElseThrow(() -> new RuntimeException("无法查找到该数据"));
         }
         BeanUtils.copyProperties(dto, role);
         roleJpaRepository.save(role);
@@ -146,7 +145,7 @@ public class RoleServiceImpl implements IRoleService {
 
     @Override
     public RoleDTO selectById(Integer id) {
-        Role role = roleJpaRepository.findById(id).orElseThrow(() -> BizRuntimeException.from("没有查询到该角色"));
+        Role role = roleJpaRepository.findById(id).orElseThrow(() -> new RuntimeException("没有查询到该角色"));
         RoleDTO roleDTO = new RoleDTO();
         BeanUtils.copyProperties(role, roleDTO);
         // 查询该角色具有的权限
@@ -171,7 +170,7 @@ public class RoleServiceImpl implements IRoleService {
         };
         boolean exists = userRoleJpaRepository.exists(spec);
         if (exists) {
-            throw BizRuntimeException.from("该角色已关联用户");
+            throw new RuntimeException("该角色已关联用户");
         }
         // 删除角色-权限关联数据
         DeleteSpecification<@NonNull RolePermission> deleteSpecification =

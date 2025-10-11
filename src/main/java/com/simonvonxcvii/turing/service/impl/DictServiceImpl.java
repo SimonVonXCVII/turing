@@ -1,6 +1,5 @@
 package com.simonvonxcvii.turing.service.impl;
 
-import com.simonvonxcvii.turing.common.exception.BizRuntimeException;
 import com.simonvonxcvii.turing.entity.Dict;
 import com.simonvonxcvii.turing.enums.DictTypeEnum;
 import com.simonvonxcvii.turing.model.dto.DictDTO;
@@ -46,7 +45,7 @@ public class DictServiceImpl implements IDictService {
         }
         // 修改
         else {
-            dict = dictJpaRepository.findById(dto.getId()).orElseThrow(() -> BizRuntimeException.from("无法查找到该数据"));
+            dict = dictJpaRepository.findById(dto.getId()).orElseThrow(() -> new RuntimeException("无法查找到该数据"));
         }
         if (dto.getSort() == null) {
             BeanUtils.copyProperties(dto, dict, Dict.SORT);
@@ -118,7 +117,7 @@ public class DictServiceImpl implements IDictService {
             return query.where(predicate).getRestriction();
         };
         Dict dict = dictJpaRepository.findOne(spec)
-                .orElseThrow(() -> BizRuntimeException.from("没有找到区域编码：" + code));
+                .orElseThrow(() -> new RuntimeException("没有找到区域编码：" + code));
         DictDTO dictDTO = convertToDictDTO(dict);
         Specification<@NonNull Dict> spec2 = (root, query, builder) -> {
             Predicate pid = builder.equal(root.get(Dict.PID), dict.getId());
