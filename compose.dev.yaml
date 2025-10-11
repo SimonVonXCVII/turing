@@ -19,6 +19,9 @@ services:
     # 覆盖容器镜像声明的默认命令（即 Dockerfile 的 CMD）。
     command:
       - start-dev
+      - --http-port=8081
+      - --log-level=DEBUG
+    #      - --tracing-enabled=true
   turing-redis: *logging
   turing-backend: *logging
   turing-nginx: *logging
