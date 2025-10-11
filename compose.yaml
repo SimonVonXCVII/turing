@@ -37,7 +37,7 @@ services:
       - "5432:5432"
     # 定义平台在容器终止时应用的策略。
     restart: always
-    # 定义服务容器必须可以访问的挂载主机路径或命名卷。todo logging
+    # 定义服务容器必须可以访问的挂载主机路径或命名卷。
     volumes:
       - ./docker/postgresql/data:/var/lib/postgresql/18/docker
       - ./docker/postgresql/sh/init-user-db.sh:/docker-entrypoint-initdb.d/init-user-db.sh
@@ -85,7 +85,7 @@ services:
       - "8081:8081"
     # 定义平台在容器终止时应用的策略。
     restart: always
-    # 定义服务容器必须可以访问的挂载主机路径或命名卷。todo logging
+    # 定义服务容器必须可以访问的挂载主机路径或命名卷。
     volumes:
       - ./docker/keycloak/data:/opt/keycloak/data
       - ./docker/keycloak/conf/keycloak.conf:/opt/keycloak/conf/keycloak.conf
@@ -125,7 +125,7 @@ services:
       - "6379:6379"
     # 定义平台在容器终止时应用的策略。
     restart: always
-    # 定义服务容器必须可以访问的挂载主机路径或命名卷。todo logging
+    # 定义服务容器必须可以访问的挂载主机路径或命名卷。
     volumes:
       - ./docker/redis/data:/data
       - ./docker/redis/sh/healthcheck.sh:/usr/local/bin/healthcheck.sh
@@ -169,7 +169,7 @@ services:
       - "8080:8080"
     # 定义平台在容器终止时应用的策略。
     restart: always
-    # todo logging
+    #
 
   # todo 有没有比 nginx 更好的选择，Try using Pingora
   turing-nginx:
@@ -204,7 +204,7 @@ services:
       - "80:80"
     # 定义平台在容器终止时应用的策略。
     restart: always
-    # 定义服务容器必须可以访问的挂载主机路径或命名卷。todo logging
+    # 定义服务容器必须可以访问的挂载主机路径或命名卷。
     volumes:
       - ./docker/nginx/conf/nginx.conf:/etc/nginx/nginx.conf
       - ./docker/nginx/html:/usr/share/nginx/html
@@ -243,6 +243,6 @@ services:
       - "9443:9443"
     # 定义平台在容器终止时应用的策略。
     restart: always
-    # 定义服务容器必须可以访问的挂载主机路径或命名卷。todo logging
+    # 定义服务容器必须可以访问的挂载主机路径或命名卷。
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
