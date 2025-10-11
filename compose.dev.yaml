@@ -1,33 +1,25 @@
-# 定义全局日志配置
-x-logging: &default-logging
-  # 指定服务容器的日志记录驱动程序。默认值和可用值因平台而异。
-  driver: json-file
-  # 驱动程序特定选项作为键值对。
-  options:
-    # 单个日志文件最大 10MB
-    max-size: "8m"
-    # 保留最多 3 个日志文件
-    max-file: "4"
+# 定义锚点：公共日志配置
+x-logging: &logging
+  # 定义服务的日志配置。
+  logging:
+    # 指定服务容器的日志记录驱动程序。默认值和可用值因平台而异。
+    driver: json-file
+    # 驱动程序特定选项作为键值对。
+    options:
+      # 单个日志文件最大 10MB
+      max-size: "8m"
+      # 保留最多 3 个日志文件
+      max-file: "4"
 
 services:
-  turing-db:
-    # 定义服务的日志配置。
-    logging: *default-logging
+  turing-db: *logging
   turing-keycloak:
+    # 合并映射，引用锚点，公共日志配置
+    <<: *logging
     # 覆盖容器镜像声明的默认命令（即 Dockerfile 的 CMD）。
     command:
       - start-dev
-    # 定义服务的日志配置。
-    logging: *default-logging
-  turing-redis:
-    # 定义服务的日志配置。
-    logging: *default-logging
-  turing-backend:
-    # 定义服务的日志配置。
-    logging: *default-logging
-  turing-nginx:
-    # 定义服务的日志配置。
-    logging: *default-logging
-  turing-portainer:
-    # 定义服务的日志配置。
-    logging: *default-logging
+  turing-redis: *logging
+  turing-backend: *logging
+  turing-nginx: *logging
+  turing-portainer: *logging
