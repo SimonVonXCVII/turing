@@ -5,10 +5,7 @@ import com.simonvonxcvii.turing.entity.User
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.data.redis.core.StringRedisTemplate
-import org.springframework.http.HttpEntity
-import org.springframework.http.HttpHeaders
-import org.springframework.http.HttpStatus
-import org.springframework.http.MediaType
+import org.springframework.http.*
 import org.springframework.security.core.Authentication
 import org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler
@@ -89,6 +86,9 @@ class CustomAuthenticationSuccessHandler(
                 "roles" to principal.roles,
             )
             val string = objectMapper.writeValueAsString(Result.ok(map))
+            objectMapper.writeValueAsString(kotlin.Result.success(map))
+//            val string3 = objectMapper.writeValueAsString(HttpExchange.Response.success(map))
+            objectMapper.writeValueAsString(ResponseEntity.ok(map))
             response.writer.write(string)
         }
 //        val string = objectMapper.writeValueAsString(ResponseEntity(map, HttpStatus.OK))

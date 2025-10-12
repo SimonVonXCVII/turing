@@ -31,14 +31,14 @@ class LoginController(private val service: LoginService) {
         service.getCaptcha(request, response)
     }
 
-    @GetMapping("/getUserInfo")
     @Operation(summary = "获取用户登录成功后所需要的信息")
+    @GetMapping("/getUserInfo")
     fun getUserInfo(): Result<UserDTO> {
         return Result.ok(service.getUserInfo())
     }
 
-    @GetMapping("/getMenuList")
     @Operation(summary = "获取用户登录成功后的菜单集合")
+    @GetMapping("/getMenuList")
     fun getMenuList(): Result<List<MenuDTO>> {
         return Result.ok(service.getMenuList())
     }

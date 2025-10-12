@@ -8,6 +8,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Set;
+
 /**
  * <p>
  * 权限表 前端控制器
@@ -19,13 +21,19 @@ import org.springframework.web.bind.annotation.*;
  */
 @Tag(name = "PermissionController", description = "权限表 前端控制器")
 @RestController
-@RequestMapping("/api/permission")
+@RequestMapping({"/api/permission", "/api/auth"})
 public class PermissionController {
 
     private final IPermissionService service;
 
     public PermissionController(IPermissionService service) {
         this.service = service;
+    }
+
+    @Operation(summary = "获取权限码")
+    @GetMapping("/codes")
+    public Result<Set<String>> codes() {
+        return Result.ok(service.codes());
     }
 
     @Operation(summary = "单个新增或修改")

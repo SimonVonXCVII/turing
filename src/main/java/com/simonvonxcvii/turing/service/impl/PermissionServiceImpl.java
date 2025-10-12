@@ -21,6 +21,8 @@ import org.springframework.util.StringUtils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -37,6 +39,20 @@ public class PermissionServiceImpl implements IPermissionService {
     private final PermissionJpaRepository permissionJpaRepository;
     private final RolePermissionJpaRepository rolePermissionJpaRepository;
     private final MenuJpaRepository menuJpaRepository;
+
+    /**
+     * 获取权限码
+     * 这个接口用于获取用户的权限码，权限码用于控制用户的权限
+     *
+     * @return 用户的权限码
+     * @author Simon Von
+     * @since 10/12/2025 7:56 AM
+     */
+    @Override
+    public Set<String> codes() {
+        List<Permission> permissionList = permissionJpaRepository.findAll(Sort.by(Permission.SORT));
+        return permissionList.stream().map(Permission::getCode).collect(Collectors.toSet());
+    }
 
     /**
      * 单个新增或修改

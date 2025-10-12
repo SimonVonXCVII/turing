@@ -14,7 +14,7 @@ import org.springframework.data.domain.Page;
 public interface IUserService {
 
     /**
-     * 获取用户登录成功后所需要的信息
+     * 获取用户信息
      *
      * @author Simon Von
      * @since 12/17/2022 8:19 PM

@@ -436,7 +436,7 @@ class SecurityConfig {
                 // 注销时是否使 HttpSession 无效。
 //                invalidateHttpSession = true
                 // 触发注销的 URL。
-//                logoutUrl = "/logout"
+                logoutUrl = "/api/auth/logout"
                 // 触发注销发生的 RequestMatcher。
 //                logoutRequestMatcher = OrRequestMatcher()
                 // 注销后重定向到的 URL。

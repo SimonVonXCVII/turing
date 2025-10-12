@@ -27,8 +27,8 @@ public class UserController {
         this.service = service;
     }
 
+    @Operation(summary = "获取用户信息")
     @GetMapping("/info")
-    @Operation(summary = "获取用户登录成功后所需要的信息")
     public Result<UserDTO> info() {
         return Result.ok(service.info());
     }
