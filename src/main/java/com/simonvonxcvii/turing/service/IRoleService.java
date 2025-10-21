@@ -1,6 +1,7 @@
 package com.simonvonxcvii.turing.service;
 
 import com.simonvonxcvii.turing.model.dto.RoleDTO;
+import org.jspecify.annotations.NonNull;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
@@ -23,7 +24,7 @@ public interface IRoleService {
     /**
      * 分页查询
      */
-    Page<RoleDTO> selectPage(RoleDTO dto);
+    Page<@NonNull RoleDTO> selectPage(RoleDTO dto);
 
     /**
      * 列表查询

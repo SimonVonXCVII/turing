@@ -1,6 +1,7 @@
 package com.simonvonxcvii.turing.service;
 
 import com.simonvonxcvii.turing.model.dto.OrganizationDTO;
+import org.jspecify.annotations.NonNull;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
@@ -23,7 +24,7 @@ public interface IOrganizationService {
     /**
      * 分页查询
      */
-    Page<OrganizationDTO> selectPage(OrganizationDTO dto);
+    Page<@NonNull OrganizationDTO> selectPage(OrganizationDTO dto);
 
     /**
      * 查询单位 id 和单位名称列表
