@@ -1,8 +1,8 @@
 [versions]
-org-springframework-boot = "4.0.0-M3"
+org-springframework-boot = "4.0.0-RC1"
 io-spring-dependency-management = "1.1.7"
 org-graalvm-buildtools-native = "0.11.0"
-org-jetbrains-kotlin = "2.2.20"
+org-jetbrains-kotlin = "2.2.21"
 java-language = "24"
 com-github-therapi-runtime-javadoc = "0.15.0"
 com-google-guava = "33.4.8-jre"

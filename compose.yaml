@@ -75,7 +75,7 @@ services:
     # 声明用于服务容器的自定义主机名。
     hostname: turing-keycloak
     # 指定启动容器的图像。
-    image: quay.io/keycloak/keycloak:26.4.1
+    image: quay.io/keycloak/keycloak:26.4.2
     # 暴露端口。 指定两个端口 (HOST:CONTAINER)，或仅指定容器端口（选择临时主机端口）。
     ports:
       - "8081:8081"
@@ -176,7 +176,7 @@ services:
     # 声明用于服务容器的自定义主机名。
     hostname: turing-portainer
     # 指定启动容器的图像。
-    image: portainer/portainer-ce:2.34.0
+    image: portainer/portainer-ce:2.35.0
     # 暴露端口。 指定两个端口 (HOST:CONTAINER)，或仅指定容器端口（选择临时主机端口）。
     ports:
       - "9000:9000"
