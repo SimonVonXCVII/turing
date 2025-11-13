@@ -77,7 +77,7 @@ public class OrganizationDTO extends PageQuery {
     @NotBlank(message = "联系电话不能为空")
     private String phone;
     /**
-     * 创建日期
+     * 创建时间
      */
     private LocalDateTime createdDate;
 }

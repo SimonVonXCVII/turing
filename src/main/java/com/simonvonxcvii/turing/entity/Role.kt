@@ -42,10 +42,16 @@ data class Role(
     var name: String = "",
 
     /**
-     * 角色说明
+     * 备注
      */
-    @Column(columnDefinition = "VARCHAR(128)", comment = "角色说明")
-    var description: String? = null
+    @Column(columnDefinition = "VARCHAR(128)", comment = "备注")
+    var remark: String? = null,
+
+    /**
+     * 角色状态
+     */
+    @Column(nullable = false, columnDefinition = "SMALLINT", comment = "角色状态")
+    var status: Short = 1
 ) : AbstractAuditable(), GrantedAuthority {
     override fun getAuthority(): String {
         return authority

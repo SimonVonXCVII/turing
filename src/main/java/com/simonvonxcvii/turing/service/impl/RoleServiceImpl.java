@@ -94,16 +94,16 @@ public class RoleServiceImpl implements IRoleService {
                         "%" + dto.getAuthority().toLowerCase() + "%", '/');
                 predicateList.add(code);
             }
-            if (StringUtils.hasText(dto.getDescription())) {
+            if (StringUtils.hasText(dto.getRemark())) {
                 Predicate description = builder.like(root.get(Role.DESCRIPTION),
-                        "%" + dto.getDescription() + "%", '/');
+                        "%" + dto.getRemark() + "%", '/');
                 predicateList.add(description);
             }
             Predicate predicate = builder.and(predicateList.toArray(Predicate[]::new));
             return query.where(predicate).getRestriction();
         };
         // TODO: 2023/8/29 设置前端 number 默认从 0 开始，或许就不需要减一了
-        PageRequest pageRequest = PageRequest.of(dto.getNumber() - 1, dto.getSize());
+        PageRequest pageRequest = PageRequest.of(dto.getPage() - 1, dto.getPageSize());
         return roleJpaRepository.findAll(spec, pageRequest)
                 .map(role -> {
                     RoleDTO roleDTO = new RoleDTO();
@@ -125,9 +125,9 @@ public class RoleServiceImpl implements IRoleService {
                         "%" + dto.getAuthority().toLowerCase() + "%", '/');
                 predicateList.add(authority);
             }
-            if (StringUtils.hasText(dto.getDescription())) {
+            if (StringUtils.hasText(dto.getRemark())) {
                 Predicate description = builder.like(root.get(Role.DESCRIPTION),
-                        "%" + dto.getDescription() + "%", '/');
+                        "%" + dto.getRemark() + "%", '/');
                 predicateList.add(description);
             }
             Predicate predicate = builder.and(predicateList.toArray(Predicate[]::new));

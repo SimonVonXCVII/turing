@@ -3,10 +3,12 @@ package com.simonvonxcvii.turing.model.dto;
 import com.simonvonxcvii.turing.model.query.PageQuery;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Accessors(chain = true)
@@ -28,10 +30,19 @@ public class RoleDTO extends PageQuery {
     @NotBlank(message = "角色编码不能为空")
     private String authority;
     /**
-     * 角色说明
+     * 备注
      */
-    @NotBlank(message = "角色说明不能为空")
-    private String description;
+    @NotBlank(message = "备注不能为空")
+    private String remark;
+    /**
+     * 角色状态
+     */
+    @NotNull(message = "角色状态")
+    private Short status;
+    /**
+     * 创建时间
+     */
+    private LocalDateTime createdDate;
     /**
      * 权限 id 集合
      */

@@ -1,5 +1,5 @@
 [versions]
-org-springframework-boot = "4.0.0-RC1"
+org-springframework-boot = "4.0.0-RC2"
 io-spring-dependency-management = "1.1.7"
 org-graalvm-buildtools-native = "0.11.0"
 org-jetbrains-kotlin = "2.2.21"
@@ -10,7 +10,7 @@ com-google-zxing = "3.5.3"
 net-coobird = "0.4.20"
 org-apache-poi-poi = "5.4.1"
 org-apache-velocity-velocity-engine-core = "2.4.1"
-org-springdoc = "3.0.0-M1"
+org-springdoc = "3.0.0-RC1"
 org-xhtmlrenderer-flying-saucer-pdf = "9.13.0"
 
 [libraries]

@@ -45,7 +45,7 @@ services:
     # 声明用于服务容器的自定义主机名。
     hostname: turing-db
     # 指定启动容器的图像。
-    image: postgres:18.0
+    image: postgres:18.1
     # 暴露端口。 指定两个端口 (HOST:CONTAINER)，或仅指定容器端口（选择临时主机端口）。
     ports:
       - "5432:5432"
@@ -75,7 +75,7 @@ services:
     # 声明用于服务容器的自定义主机名。
     hostname: turing-keycloak
     # 指定启动容器的图像。
-    image: quay.io/keycloak/keycloak:26.4.2
+    image: quay.io/keycloak/keycloak:26.4.5
     # 暴露端口。 指定两个端口 (HOST:CONTAINER)，或仅指定容器端口（选择临时主机端口）。
     ports:
       - "8081:8081"
@@ -99,7 +99,7 @@ services:
     # 声明用于服务容器的自定义主机名。
     hostname: turing-redis
     # 指定启动容器的图像。
-    image: redis:8.2.2
+    image: redis:8.2.3
     # 暴露端口。 指定两个端口 (HOST:CONTAINER)，或仅指定容器端口（选择临时主机端口）。
     ports:
       - "6379:6379"
@@ -149,7 +149,7 @@ services:
     # 声明用于服务容器的自定义主机名。
     hostname: turing-nginx
     # 指定启动容器的图像。
-    image: nginx:1.29.2
+    image: nginx:1.29.3
     # 暴露端口。 指定两个端口 (HOST:CONTAINER)，或仅指定容器端口（选择临时主机端口）。
     ports:
       - "80:80"

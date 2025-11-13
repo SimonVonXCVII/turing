@@ -239,7 +239,7 @@ class CustomDatabaseInitializingBean(
             Role(
                 authority = "DEFAULT_TECHNICAL",
                 name = "技术单位管理员的默认角色",
-                description = "注册技术单位时赋予管理员的默认角色，仅有【技术单位业务申请】权限"
+                remark = "注册技术单位时赋予管理员的默认角色，仅有【技术单位业务申请】权限"
             )
         )
         roleJpaRepository.saveAll(roleList)

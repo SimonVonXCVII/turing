@@ -13,6 +13,7 @@ custom:
       - /api/login/getCaptcha
       - /api/dict/getAreaByCode
       - /api/appFile/**
+#      - /foo/bar
 
 logging:
   level:
@@ -198,3 +199,21 @@ springdoc:
     operationsSorter: alpha
     # 按字母顺序对标签进行排序
     tagsSorter: alpha
+
+#keycloak:
+#  # 声明客户端所在的realm
+#  realm: turing-realm
+#  # keycloak授权服务器的地址
+#  auth-server-url: http://localhost:8081/auth
+#  # 客户端名称
+#  resource: confidential-client
+#  # 声明这是一个公开的客户端，否则不能在keycloak外部环境使用，会403
+#  public-client: true
+#  # 这里就是配置客户端的安全约束，就是那些角色映射那些资源
+#  security-constraints:
+#    # 角色和资源的映射关系。下面是多对多的配置方式 ，这里只配置base_user才能访问 /foo/bar
+#    - auth-roles:
+#        - base_user
+#      security-collections:
+#        - patterns:
+#            - '/foo/bar'

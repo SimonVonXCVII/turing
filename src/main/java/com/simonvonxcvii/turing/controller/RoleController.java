@@ -22,7 +22,7 @@ import java.util.List;
  * @since 2022-12-22 16:22:50
  */
 @RestController
-@RequestMapping("/api/role")
+@RequestMapping({"/api/role", "/api/system/role"})
 @Tag(name = "RoleController", description = "角色表 前端控制器")
 public class RoleController {
 
@@ -40,7 +40,7 @@ public class RoleController {
     }
 
     @Operation(summary = "分页查询")
-    @PostMapping("/selectPage")
+    @PostMapping({"/selectPage", "/list"})
     public Result<Page<@NonNull RoleDTO>> selectPage(@RequestBody RoleDTO dto) {
         return Result.ok(service.selectPage(dto));
     }

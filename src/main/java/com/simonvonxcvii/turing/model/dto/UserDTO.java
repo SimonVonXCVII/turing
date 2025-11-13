@@ -92,7 +92,7 @@ public class UserDTO extends PageQuery {
      */
     private Integer id;
     /**
-     * 创建日期
+     * 创建时间
      */
     private LocalDateTime createdDate;
     /**

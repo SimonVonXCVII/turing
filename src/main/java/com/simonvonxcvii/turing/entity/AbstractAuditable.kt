@@ -35,14 +35,14 @@ abstract class AbstractAuditable(
     open var id: Int = 0,
 
     /**
-     * 创建主体
+     * 创建者
      */
     @CreatedBy
-    @Column(columnDefinition = "INTEGER", comment = "创建主体")
+    @Column(columnDefinition = "INTEGER", comment = "创建者")
     open var createdBy: Int? = null,
 
     /**
-     * 创建日期 TODO 通过字节码发现 @field: 才是对的，那么到底是使用 @param: 更好还是 @field: 更好
+     * 创建时间 TODO 通过字节码发现 @field: 才是对的，那么到底是使用 @param: 更好还是 @field: 更好
      */
     @field:JsonDeserialize(using = LocalDateTimeDeserializer::class)
     @field:JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
@@ -52,20 +52,20 @@ abstract class AbstractAuditable(
     open var createdDate: LocalDateTime = LocalDateTime.now(),
 
     /**
-     * 最后修改主体
+     * 最后修改者
      */
     @LastModifiedBy
-    @Column(columnDefinition = "INTEGER", comment = "更新主体")
+    @Column(columnDefinition = "INTEGER", comment = "最后修改者")
     open var lastModifiedBy: Int? = null,
 
     /**
-     * 最后修改日期
+     * 最后修改时间
      */
     @field:JsonDeserialize(using = LocalDateTimeDeserializer::class)
     @field:JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @field:JsonSerialize(using = LocalDateTimeSerializer::class)
     @LastModifiedDate
-    @Column(nullable = false, columnDefinition = "TIMESTAMP", comment = "更新时间")
+    @Column(nullable = false, columnDefinition = "TIMESTAMP", comment = "最后修改时间")
     open var lastModifiedDate: LocalDateTime = LocalDateTime.now(),
 
     /**

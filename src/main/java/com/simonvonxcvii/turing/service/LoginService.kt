@@ -2,9 +2,6 @@ package com.simonvonxcvii.turing.service
 
 import com.simonvonxcvii.turing.model.dto.MenuDTO
 import com.simonvonxcvii.turing.model.dto.UserDTO
-import jakarta.servlet.http.HttpServletRequest
-import jakarta.servlet.http.HttpServletResponse
-import java.io.IOException
 
 /**
  * 登录 服务类
@@ -19,8 +16,8 @@ interface LoginService {
      * @author Simon Von
      * @since 12/16/2022 4:09 PM
      */
-    @Throws(IOException::class)
-    fun getCaptcha(request: HttpServletRequest, response: HttpServletResponse)
+//    @Throws(IOException::class)
+//    fun getCaptcha(request: HttpServletRequest, response: HttpServletResponse)
 
     /**
      * 获取用户登录成功后所需要的信息

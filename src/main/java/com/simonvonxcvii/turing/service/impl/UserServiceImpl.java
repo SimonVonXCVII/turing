@@ -171,7 +171,7 @@ public class UserServiceImpl implements IUserService {
                 return query.where(predicate).getRestriction();
             };
             // TODO: 2023/8/29 设置前端 number 默认从 0 开始，或许就不需要减一了
-            PageRequest pageRequest = PageRequest.of(dto.getNumber() - 1, dto.getSize());
+            PageRequest pageRequest = PageRequest.of(dto.getPage() - 1, dto.getPageSize());
             userPage = userJpaRepository.findAll(spec, pageRequest);
         } catch (Exception e) {
             return Page.empty();

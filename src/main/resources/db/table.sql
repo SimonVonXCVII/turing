@@ -46,13 +46,13 @@ COMMENT ON COLUMN public.turing_app_file.biz_type IS '业务类型';
 
 COMMENT ON COLUMN public.turing_app_file.remark IS '备注';
 
-COMMENT ON COLUMN public.turing_app_file.created_by IS '创建主体';
+COMMENT ON COLUMN public.turing_app_file.created_by IS '创建者';
 
 COMMENT ON COLUMN public.turing_app_file.created_date IS '创建时间';
 
-COMMENT ON COLUMN public.turing_app_file.last_modified_by IS '更新主体';
+COMMENT ON COLUMN public.turing_app_file.last_modified_by IS '最后修改者';
 
-COMMENT ON COLUMN public.turing_app_file.last_modified_date IS '更新时间';
+COMMENT ON COLUMN public.turing_app_file.last_modified_date IS '最后修改时间';
 
 COMMENT ON COLUMN public.turing_app_file.version IS '乐观锁版本';
 
@@ -96,13 +96,13 @@ COMMENT ON COLUMN public.turing_dict.description IS '说明';
 
 COMMENT ON COLUMN public.turing_dict.sort IS '排序';
 
-COMMENT ON COLUMN public.turing_dict.created_by IS '创建主体';
+COMMENT ON COLUMN public.turing_dict.created_by IS '创建者';
 
 COMMENT ON COLUMN public.turing_dict.created_date IS '创建时间';
 
-COMMENT ON COLUMN public.turing_dict.last_modified_by IS '修改主体';
+COMMENT ON COLUMN public.turing_dict.last_modified_by IS '最后修改者';
 
-COMMENT ON COLUMN public.turing_dict.last_modified_date IS '修改时间';
+COMMENT ON COLUMN public.turing_dict.last_modified_date IS '最后修改时间';
 
 COMMENT ON COLUMN public.turing_dict.version IS '乐观锁版本';
 
@@ -169,13 +169,13 @@ COMMENT ON COLUMN public.turing_menu.cached IS '是否缓存';
 
 COMMENT ON COLUMN public.turing_menu.external IS '是否为外部链接';
 
-COMMENT ON COLUMN public.turing_menu.created_by IS '创建主体';
+COMMENT ON COLUMN public.turing_menu.created_by IS '创建者';
 
 COMMENT ON COLUMN public.turing_menu.created_date IS '创建时间';
 
-COMMENT ON COLUMN public.turing_menu.last_modified_by IS '更新主体';
+COMMENT ON COLUMN public.turing_menu.last_modified_by IS '最后修改者';
 
-COMMENT ON COLUMN public.turing_menu.last_modified_date IS '更新时间';
+COMMENT ON COLUMN public.turing_menu.last_modified_date IS '最后修改时间';
 
 COMMENT ON COLUMN public.turing_menu.version IS '乐观锁版本';
 
@@ -243,13 +243,13 @@ COMMENT ON COLUMN public.turing_organization.district_name IS '单位所在区�
 
 COMMENT ON COLUMN public.turing_organization.address IS '单位地址详情';
 
-COMMENT ON COLUMN public.turing_organization.created_by IS '创建主体';
+COMMENT ON COLUMN public.turing_organization.created_by IS '创建者';
 
 COMMENT ON COLUMN public.turing_organization.created_date IS '创建时间';
 
-COMMENT ON COLUMN public.turing_organization.last_modified_by IS '更新主体';
+COMMENT ON COLUMN public.turing_organization.last_modified_by IS '最后修改者';
 
-COMMENT ON COLUMN public.turing_organization.last_modified_date IS '更新时间';
+COMMENT ON COLUMN public.turing_organization.last_modified_date IS '最后修改时间';
 
 COMMENT ON COLUMN public.turing_organization.version IS '乐观锁版本';
 
@@ -311,13 +311,13 @@ COMMENT ON COLUMN public.turing_organization_business.state IS '业务申请状�
 
 COMMENT ON COLUMN public.turing_organization_business.business_level IS '申请业务级别';
 
-COMMENT ON COLUMN public.turing_organization_business.created_by IS '创建主体';
+COMMENT ON COLUMN public.turing_organization_business.created_by IS '创建者';
 
 COMMENT ON COLUMN public.turing_organization_business.created_date IS '创建时间';
 
-COMMENT ON COLUMN public.turing_organization_business.last_modified_by IS '更新主体';
+COMMENT ON COLUMN public.turing_organization_business.last_modified_by IS '最后修改者';
 
-COMMENT ON COLUMN public.turing_organization_business.last_modified_date IS '更新时间';
+COMMENT ON COLUMN public.turing_organization_business.last_modified_date IS '最后修改时间';
 
 COMMENT ON COLUMN public.turing_organization_business.version IS '乐观锁版本';
 
@@ -358,13 +358,13 @@ COMMENT ON COLUMN public.turing_permission.code IS '权限编码';
 
 COMMENT ON COLUMN public.turing_permission.sort IS '排序编号';
 
-COMMENT ON COLUMN public.turing_permission.created_by IS '创建主体';
+COMMENT ON COLUMN public.turing_permission.created_by IS '创建者';
 
 COMMENT ON COLUMN public.turing_permission.created_date IS '创建时间';
 
-COMMENT ON COLUMN public.turing_permission.last_modified_by IS '更新主体';
+COMMENT ON COLUMN public.turing_permission.last_modified_by IS '最后修改者';
 
-COMMENT ON COLUMN public.turing_permission.last_modified_date IS '更新时间';
+COMMENT ON COLUMN public.turing_permission.last_modified_date IS '最后修改时间';
 
 COMMENT ON COLUMN public.turing_permission.version IS '乐观锁版本';
 
@@ -382,7 +382,8 @@ CREATE TABLE IF NOT EXISTS public.turing_role
         UNIQUE,
     authority          VARCHAR(64)                         NOT NULL
         UNIQUE,
-    description        VARCHAR(128),
+    remark             VARCHAR(128),
+    status             SMALLINT                            NOT NULL,
     created_by         INTEGER,
     created_date       TIMESTAMP                           NOT NULL,
     last_modified_by   INTEGER,
@@ -399,15 +400,17 @@ COMMENT ON COLUMN public.turing_role.name IS '角色名称';
 
 COMMENT ON COLUMN public.turing_role.authority IS '角色编码';
 
-COMMENT ON COLUMN public.turing_role.description IS '角色说明';
+COMMENT ON COLUMN public.turing_role.remark IS '备注';
 
-COMMENT ON COLUMN public.turing_role.created_by IS '创建主体';
+COMMENT ON COLUMN public.turing_role.status IS '角色状态';
+
+COMMENT ON COLUMN public.turing_role.created_by IS '创建者';
 
 COMMENT ON COLUMN public.turing_role.created_date IS '创建时间';
 
-COMMENT ON COLUMN public.turing_role.last_modified_by IS '更新主体';
+COMMENT ON COLUMN public.turing_role.last_modified_by IS '最后修改者';
 
-COMMENT ON COLUMN public.turing_role.last_modified_date IS '更新时间';
+COMMENT ON COLUMN public.turing_role.last_modified_date IS '最后修改时间';
 
 COMMENT ON COLUMN public.turing_role.version IS '乐观锁版本';
 
@@ -439,13 +442,13 @@ COMMENT ON COLUMN public.turing_role_permission.role_id IS '角色 id';
 
 COMMENT ON COLUMN public.turing_role_permission.permission_id IS '权限 id';
 
-COMMENT ON COLUMN public.turing_role_permission.created_by IS '创建主体';
+COMMENT ON COLUMN public.turing_role_permission.created_by IS '创建者';
 
 COMMENT ON COLUMN public.turing_role_permission.created_date IS '创建时间';
 
-COMMENT ON COLUMN public.turing_role_permission.last_modified_by IS '更新主体';
+COMMENT ON COLUMN public.turing_role_permission.last_modified_by IS '最后修改者';
 
-COMMENT ON COLUMN public.turing_role_permission.last_modified_date IS '更新时间';
+COMMENT ON COLUMN public.turing_role_permission.last_modified_date IS '最后修改时间';
 
 COMMENT ON COLUMN public.turing_role_permission.version IS '乐观锁版本';
 
@@ -514,13 +517,13 @@ COMMENT ON COLUMN public.turing_user.manager IS '是否单位管理员';
 
 COMMENT ON COLUMN public.turing_user.need_reset_password IS '是否需要重新设置密码';
 
-COMMENT ON COLUMN public.turing_user.created_by IS '创建主体';
+COMMENT ON COLUMN public.turing_user.created_by IS '创建者';
 
 COMMENT ON COLUMN public.turing_user.created_date IS '创建时间';
 
-COMMENT ON COLUMN public.turing_user.last_modified_by IS '更新主体';
+COMMENT ON COLUMN public.turing_user.last_modified_by IS '最后修改者';
 
-COMMENT ON COLUMN public.turing_user.last_modified_date IS '更新时间';
+COMMENT ON COLUMN public.turing_user.last_modified_date IS '最后修改时间';
 
 COMMENT ON COLUMN public.turing_user.version IS '乐观锁版本';
 
@@ -552,13 +555,13 @@ COMMENT ON COLUMN public.turing_user_role.user_id IS '用户 id';
 
 COMMENT ON COLUMN public.turing_user_role.role_id IS '角色 id';
 
-COMMENT ON COLUMN public.turing_user_role.created_by IS '创建主体';
+COMMENT ON COLUMN public.turing_user_role.created_by IS '创建者';
 
 COMMENT ON COLUMN public.turing_user_role.created_date IS '创建时间';
 
-COMMENT ON COLUMN public.turing_user_role.last_modified_by IS '更新主体';
+COMMENT ON COLUMN public.turing_user_role.last_modified_by IS '最后修改者';
 
-COMMENT ON COLUMN public.turing_user_role.last_modified_date IS '更新时间';
+COMMENT ON COLUMN public.turing_user_role.last_modified_date IS '最后修改时间';
 
 COMMENT ON COLUMN public.turing_user_role.version IS '乐观锁版本';
 

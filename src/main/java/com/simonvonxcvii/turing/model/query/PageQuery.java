@@ -10,10 +10,10 @@ public class PageQuery {
     /**
      * 当前页数
      */
-    private int number;
+    private int page;
     /**
      * 当前页数大小
      */
-    private int size;
+    private int pageSize;
 
 }
