@@ -99,7 +99,7 @@ services:
     # 声明用于服务容器的自定义主机名。
     hostname: turing-redis
     # 指定启动容器的图像。
-    image: redis:8.2.3
+    image: redis:8.4.0
     # 暴露端口。 指定两个端口 (HOST:CONTAINER)，或仅指定容器端口（选择临时主机端口）。
     ports:
       - "6379:6379"
