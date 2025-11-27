@@ -1,10 +1,5 @@
 package com.simonvonxcvii.turing.entity
 
-import com.fasterxml.jackson.annotation.JsonFormat
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize
-import com.fasterxml.jackson.databind.annotation.JsonSerialize
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer
 import com.simonvonxcvii.turing.listener.CustomAuditingEntityListener
 import jakarta.persistence.*
 import org.hibernate.annotations.Comment
@@ -47,9 +42,9 @@ abstract class AbstractAuditable(
     /**
      * 创建日期 TODO 通过字节码发现 @field: 才是对的，那么到底是使用 @param: 更好还是 @field: 更好
      */
-    @field:JsonDeserialize(using = LocalDateTimeDeserializer::class)
-    @field:JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @field:JsonSerialize(using = LocalDateTimeSerializer::class)
+//    @field:JsonDeserialize(using = LocalDateTimeDeserializer::class)
+//    @field:JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+//    @field:JsonSerialize(using = LocalDateTimeSerializer::class)
     @CreatedDate
     @Column(nullable = false, columnDefinition = "TIMESTAMP")
     @Comment("创建时间")
@@ -66,9 +61,9 @@ abstract class AbstractAuditable(
     /**
      * 最后修改日期
      */
-    @field:JsonDeserialize(using = LocalDateTimeDeserializer::class)
-    @field:JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @field:JsonSerialize(using = LocalDateTimeSerializer::class)
+//    @field:JsonDeserialize(using = LocalDateTimeDeserializer::class)
+//    @field:JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+//    @field:JsonSerialize(using = LocalDateTimeSerializer::class)
     @LastModifiedDate
     @Column(nullable = false, columnDefinition = "TIMESTAMP")
     @Comment("更新时间")

@@ -10,9 +10,6 @@ import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilde
 import org.springframework.boot.autoconfigure.jackson.JacksonProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import java.time.LocalDate
-import java.time.LocalDateTime
-import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 
 /**
@@ -38,14 +35,14 @@ class LocalDateTimeSerializerConfig {
             val timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss")
 
             // 序列化
-            builder.serializerByType(LocalDateTime::class.java, LocalDateTimeSerializer(dateTimeFormatter))
-            builder.serializerByType(LocalDate::class.java, LocalDateSerializer(dateFormatter))
-            builder.serializerByType(LocalTime::class.java, LocalTimeSerializer(timeFormatter))
+            builder.serializers(LocalDateTimeSerializer(dateTimeFormatter))
+            builder.serializers(LocalDateSerializer(dateFormatter))
+            builder.serializers(LocalTimeSerializer(timeFormatter))
 
             // 反序列化
-            builder.deserializerByType(LocalDateTime::class.java, LocalDateTimeDeserializer(dateTimeFormatter))
-            builder.deserializerByType(LocalDate::class.java, LocalDateDeserializer(dateFormatter))
-            builder.deserializerByType(LocalTime::class.java, LocalTimeDeserializer(timeFormatter))
+            builder.deserializers(LocalDateTimeDeserializer(dateTimeFormatter))
+            builder.deserializers(LocalDateDeserializer(dateFormatter))
+            builder.deserializers(LocalTimeDeserializer(timeFormatter))
         }
     }
 }
