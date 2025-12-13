@@ -18,6 +18,7 @@ import org.springframework.data.web.config.EnableSpringDataWebSupport
 // todo 朝着 oidc 发展，或许也是朝着多模块甚至是微服务方向发展
 // todo 是否需要 Role（角色表）添加前缀“ROLE_”
 // todo docker 运行的那些容器，能否启动它们的默认图形化界面？比如数据库？
+// todo Spring boot 4 JPA 项目，如何全局设置数据库所有查询出的数据，统一按照它们（实体类）的公共父类的 id 排序？
 @EnableConfigurationProperties(CustomSecurityProperties::class)
 // 清晰化 jpa 包路径
 @EnableJpaRepositories("com.simonvonxcvii.turing.repository.jpa")

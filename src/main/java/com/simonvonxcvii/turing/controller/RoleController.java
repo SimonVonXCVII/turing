@@ -5,7 +5,6 @@ import com.simonvonxcvii.turing.model.dto.RoleDTO;
 import com.simonvonxcvii.turing.service.IRoleService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.jspecify.annotations.NonNull;
 import org.springframework.data.domain.Page;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -22,7 +21,7 @@ import java.util.List;
  * @since 2022-12-22 16:22:50
  */
 @RestController
-@RequestMapping({"/api/role", "/api/system/role"})
+@RequestMapping("/api/system/role")
 @Tag(name = "RoleController", description = "角色表 前端控制器")
 public class RoleController {
 
@@ -40,9 +39,17 @@ public class RoleController {
     }
 
     @Operation(summary = "分页查询")
-    @PostMapping({"/selectPage", "/list"})
-    public Result<Page<@NonNull RoleDTO>> selectPage(@RequestBody RoleDTO dto) {
-        return Result.ok(service.selectPage(dto));
+    @PostMapping("/list")
+    public Result<Page<RoleDTO>> list(@RequestBody RoleDTO dto) {
+        return Result.ok(service.list(dto));
+    }
+
+    // todo 验证 status 字段的值的有效性，还有其他
+    @Operation(summary = "状态切换")
+    @PutMapping("/{id}")
+    public Result<Object> statusSwitching(@PathVariable Integer id, @RequestBody RoleDTO dto) {
+        service.statusSwitching(id, dto);
+        return Result.ok();
     }
 
     @Operation(summary = "列表查询")

@@ -14,7 +14,6 @@ import com.simonvonxcvii.turing.service.IOrganizationBusinessService;
 import com.simonvonxcvii.turing.utils.UserUtils;
 import jakarta.persistence.criteria.Predicate;
 import lombok.RequiredArgsConstructor;
-import org.jspecify.annotations.NonNull;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.domain.Specification;
@@ -55,7 +54,7 @@ public class OrganizationBusinessServiceImpl implements IOrganizationBusinessSer
      * @since 1/5/2023 10:15 AM
      */
     @Override
-    public Page<@NonNull OrganizationBusinessDTO> selectPage(OrganizationBusinessDTO dto) throws IOException {
+    public Page<OrganizationBusinessDTO> selectPage(OrganizationBusinessDTO dto) throws IOException {
 //        SearchResponse<OrganizationBusiness> searchResponse = elasticsearchClient.search(searchRequest -> {
 //                    searchRequest.index(OrganizationBusiness.INDEX)
 //                            // 首页默认从 0 开始
@@ -154,7 +153,7 @@ public class OrganizationBusinessServiceImpl implements IOrganizationBusinessSer
     @Transactional(rollbackFor = Exception.class)
     public void insert(OrganizationBusinessDTO dto) throws IOException {
         // TODO 需要检验生成的 sql
-        Specification<@NonNull OrganizationBusiness> spec = (root, query, builder) -> {
+        Specification<OrganizationBusiness> spec = (root, query, builder) -> {
             List<Predicate> predicateList = new LinkedList<>();
             // 本单位
             Predicate orgId = builder.equal(root.get(OrganizationBusiness.ORG_ID), UserUtils.getOrgId());
@@ -312,7 +311,7 @@ public class OrganizationBusinessServiceImpl implements IOrganizationBusinessSer
 //                OrganizationBusiness.class);
 
         // TODO 需要检验生成的 sql
-        Specification<@NonNull User> spec = (root, query, builder) -> {
+        Specification<User> spec = (root, query, builder) -> {
             Predicate orgId = builder.equal(root.get(User.ORG_ID), organizationBusiness.getOrgId());
             Predicate manager = builder.equal(root.get(User.MANAGER), Boolean.TRUE);
             Predicate predicate = builder.and(orgId, manager);

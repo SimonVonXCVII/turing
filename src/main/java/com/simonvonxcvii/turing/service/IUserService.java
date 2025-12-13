@@ -1,7 +1,6 @@
 package com.simonvonxcvii.turing.service;
 
 import com.simonvonxcvii.turing.model.dto.UserDTO;
-import org.jspecify.annotations.NonNull;
 import org.springframework.data.domain.Page;
 
 /**
@@ -30,7 +29,7 @@ public interface IUserService {
     /**
      * 分页查询
      */
-    Page<@NonNull UserDTO> selectPage(UserDTO dto);
+    Page<UserDTO> selectPage(UserDTO dto);
 
     /**
      * 根据用户 id 逻辑删除用户

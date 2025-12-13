@@ -9,7 +9,7 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Set;
 
 @Accessors(chain = true)
 @Getter
@@ -47,5 +47,5 @@ public class RoleDTO extends PageQuery {
      * 权限 id 集合
      */
     @NotEmpty(message = "权限 id 集合不能为空")
-    private List<Integer> permissionIdList;
+    private Set<Integer> permissions;
 }

@@ -20,7 +20,7 @@ import java.util.List;
  */
 @Tag(name = "MenuController", description = "菜单表 前端控制器")
 @RestController
-@RequestMapping("/api/menu")
+@RequestMapping("/api/system/menu")
 public class MenuController {
 
     private final IMenuService service;
@@ -37,9 +37,15 @@ public class MenuController {
     }
 
     @Operation(summary = "获取菜单集合")
-    @PostMapping("/selectList")
-    public Result<List<MenuDTO>> selectList(@RequestBody MenuDTO dto) {
-        return Result.ok(service.selectList(dto));
+    @PostMapping("/list")
+    public Result<List<MenuDTO>> list(@RequestBody MenuDTO dto) {
+        return Result.ok(service.list(dto));
+    }
+
+    @Operation(summary = "用于角色管理页面修改操作时获取菜单集合")
+    @GetMapping("/list")
+    public Result<List<MenuDTO>> list() {
+        return Result.ok(service.list());
     }
 
     @Operation(summary = "根据主键 id 逻辑删除")

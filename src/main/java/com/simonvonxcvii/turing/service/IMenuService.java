@@ -22,7 +22,12 @@ public interface IMenuService {
     /**
      * 获取菜单集合
      */
-    List<MenuDTO> selectList(MenuDTO dto);
+    List<MenuDTO> list(MenuDTO dto);
+
+    /**
+     * 用于角色管理页面修改操作时获取菜单集合
+     */
+    List<MenuDTO> list();
 
     /**
      * 根据主键 id 逻辑删除

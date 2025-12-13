@@ -11,7 +11,6 @@ import com.simonvonxcvii.turing.repository.jpa.UserRoleJpaRepository;
 import com.simonvonxcvii.turing.service.IOrganizationService;
 import jakarta.persistence.criteria.Predicate;
 import lombok.RequiredArgsConstructor;
-import org.jspecify.annotations.NonNull;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -69,8 +68,8 @@ public class OrganizationServiceImpl implements IOrganizationService {
     }
 
     @Override
-    public Page<@NonNull OrganizationDTO> selectPage(OrganizationDTO dto) {
-        Specification<@NonNull Organization> spec = (root, query, builder) -> {
+    public Page<OrganizationDTO> selectPage(OrganizationDTO dto) {
+        Specification<Organization> spec = (root, query, builder) -> {
             List<Predicate> predicateList = new LinkedList<>();
             if (StringUtils.hasText(dto.getName())) {
                 Predicate name = builder.like(root.get(Organization.NAME), "%" + dto.getName() + "%", '/');
@@ -138,7 +137,7 @@ public class OrganizationServiceImpl implements IOrganizationService {
      */
     @Override
     public List<OrganizationDTO> selectList(String name) {
-        Specification<@NonNull OrganizationBusiness> spec =
+        Specification<OrganizationBusiness> spec =
                 (root, query, builder) -> {
                     Predicate linkPredicate = builder.like(root.get(OrganizationBusiness.LINK),
                             "%" + OrganizationBusinessBusinessLinksEnum.SAMPLE_TESTING.getDesc() + "%", '/');
@@ -166,11 +165,11 @@ public class OrganizationServiceImpl implements IOrganizationService {
     public void deleteById(Integer id) {
         // 逻辑删除用户-角色关联数据
         // TODO: 2023/9/7 是否能实现查询指定列
-        PredicateSpecification<@NonNull User> spec =
+        PredicateSpecification<User> spec =
                 (root, builder) -> builder.equal(root.get(User.ORG_ID), id);
         List<User> userList = userJpaRepository.findAll(spec);
         List<Integer> userIdList = userList.stream().map(AbstractAuditable::getId).toList();
-        DeleteSpecification<@NonNull UserRole> userRoleSpec =
+        DeleteSpecification<UserRole> userRoleSpec =
                 (root, query, builder) -> {
                     Predicate predicate = builder.in(root.get(UserRole.USER_ID)).in(userIdList);
                     return query.where(predicate).getRestriction();

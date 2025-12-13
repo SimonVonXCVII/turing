@@ -9,7 +9,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.NotNull;
-import org.jspecify.annotations.NonNull;
 import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -39,7 +38,7 @@ public class OrganizationBusinessController {
     @PreAuthorize("hasAnyRole('TECHNICAL_DEFAULT', 'ADMIN_PROVINCE_GOV', 'STAFF_PROVINCE_GOV', 'ADMIN_CITY_GOV', 'STAFF_CITY_GOV', 'ADMIN_DISTRICT_GOV', 'STAFF_DISTRICT_GOV')")
     @Operation(summary = "单位管理员查询本单位已申请业务或者审核人员查询")
     @PostMapping("/selectPage")
-    public Result<Page<@NonNull OrganizationBusinessDTO>> selectPage(@RequestBody OrganizationBusinessDTO dto) throws IOException {
+    public Result<Page<OrganizationBusinessDTO>> selectPage(@RequestBody OrganizationBusinessDTO dto) throws IOException {
         return Result.ok(service.selectPage(dto));
     }
 

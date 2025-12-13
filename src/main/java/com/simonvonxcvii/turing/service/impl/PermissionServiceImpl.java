@@ -10,7 +10,6 @@ import com.simonvonxcvii.turing.repository.jpa.RolePermissionJpaRepository;
 import com.simonvonxcvii.turing.service.IPermissionService;
 import jakarta.persistence.criteria.Predicate;
 import lombok.RequiredArgsConstructor;
-import org.jspecify.annotations.NonNull;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
@@ -147,7 +146,7 @@ public class PermissionServiceImpl implements IPermissionService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void deleteById(Integer id) {
-        Specification<@NonNull RolePermission> spec = (root, query, builder) -> {
+        Specification<RolePermission> spec = (root, query, builder) -> {
             Predicate predicate = builder.equal(root.get(RolePermission.PERMISSION_ID), id);
             return query.where(predicate).getRestriction();
         };
@@ -155,7 +154,7 @@ public class PermissionServiceImpl implements IPermissionService {
         if (exists) {
             throw new RuntimeException("该权限已关联角色");
         }
-        Specification<@NonNull Menu> menuSpec = (root, query, builder) -> {
+        Specification<Menu> menuSpec = (root, query, builder) -> {
             Predicate predicate = builder.equal(root.get(Menu.PERMISSION_ID), id);
             return query.where(predicate).getRestriction();
         };

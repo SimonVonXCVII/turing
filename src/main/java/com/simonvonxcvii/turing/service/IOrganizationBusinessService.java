@@ -1,7 +1,6 @@
 package com.simonvonxcvii.turing.service;
 
 import com.simonvonxcvii.turing.model.dto.OrganizationBusinessDTO;
-import org.jspecify.annotations.NonNull;
 import org.springframework.data.domain.Page;
 
 import java.io.IOException;
@@ -24,7 +23,7 @@ public interface IOrganizationBusinessService {
      * @author Simon Von
      * @since 1/5/2023 10:15 AM
      */
-    Page<@NonNull OrganizationBusinessDTO> selectPage(OrganizationBusinessDTO dto) throws IOException;
+    Page<OrganizationBusinessDTO> selectPage(OrganizationBusinessDTO dto) throws IOException;
 
     /**
      * 单位管理员在点击编辑前查询单条数据

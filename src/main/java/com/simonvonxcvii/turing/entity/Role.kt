@@ -68,8 +68,9 @@ data class Role(
          */
         const val REDIS_KEY_PREFIX = "$ES_INDEX:"
 
-        const val NAME = "name"
         const val AUTHORITY = "authority"
-        const val DESCRIPTION = "description"
+        const val NAME = "name"
+        const val REMARK = "remark"
+        const val STATUS = "status"
     }
 }

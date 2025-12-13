@@ -5,7 +5,6 @@ import com.simonvonxcvii.turing.model.dto.DictDTO;
 import com.simonvonxcvii.turing.service.IDictService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.jspecify.annotations.NonNull;
 import org.springframework.data.domain.Page;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -38,7 +37,7 @@ public class DictController {
 
     @Operation(summary = "分页查询")
     @PostMapping("/selectPage")
-    public Result<Page<@NonNull DictDTO>> selectPage(@RequestBody DictDTO dto) {
+    public Result<Page<DictDTO>> selectPage(@RequestBody DictDTO dto) {
         return Result.ok(service.selectPage(dto));
     }
 

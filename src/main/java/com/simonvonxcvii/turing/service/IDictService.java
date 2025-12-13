@@ -1,7 +1,6 @@
 package com.simonvonxcvii.turing.service;
 
 import com.simonvonxcvii.turing.model.dto.DictDTO;
-import org.jspecify.annotations.NonNull;
 import org.springframework.data.domain.Page;
 
 /**
@@ -28,7 +27,7 @@ public interface IDictService {
      * @author Simon Von
      * @since 2023/9/7 15:48
      */
-    Page<@NonNull DictDTO> selectPage(DictDTO dto);
+    Page<DictDTO> selectPage(DictDTO dto);
 
     /**
      * 根据区域行政编码获取区域数据

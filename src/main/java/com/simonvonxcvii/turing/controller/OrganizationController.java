@@ -5,7 +5,6 @@ import com.simonvonxcvii.turing.model.dto.OrganizationDTO;
 import com.simonvonxcvii.turing.service.IOrganizationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.jspecify.annotations.NonNull;
 import org.springframework.data.domain.Page;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -40,7 +39,7 @@ public class OrganizationController {
 
     @Operation(summary = "分页查询")
     @PostMapping("/selectPage")
-    public Result<Page<@NonNull OrganizationDTO>> selectPage(@RequestBody OrganizationDTO dto) {
+    public Result<Page<OrganizationDTO>> selectPage(@RequestBody OrganizationDTO dto) {
         return Result.ok(service.selectPage(dto));
     }
 
