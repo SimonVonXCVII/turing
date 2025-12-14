@@ -65,9 +65,9 @@ public class RoleController {
         return Result.ok(service.selectById(id));
     }
 
-    @Operation(summary = "删除")
-    @DeleteMapping("/deleteById/{id}")
-    public Result<Object> deleteById(@PathVariable Integer id) {
+    @Operation(summary = "逻辑删除")
+    @DeleteMapping("/{id}")
+    public Result<Object> deleteById(@PathVariable @NonNull Integer id) {
         service.deleteById(id);
         return Result.ok();
     }

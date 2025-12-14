@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Set;
 
@@ -46,4 +47,12 @@ public class RoleDTO extends PageQuery {
      */
 //    @NotEmpty(message = "权限 id 集合不能为空")
     private Set<Integer> permissions;
+    /**
+     * 起始创建时间
+     */
+    private LocalDate startTime;
+    /**
+     * 截止创建时间
+     */
+    private LocalDate endTime;
 }

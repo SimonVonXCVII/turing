@@ -91,15 +91,26 @@ public class RoleServiceImpl implements IRoleService {
                 Predicate name = builder.like(root.get(Role.NAME), "%" + dto.getName() + "%", '/');
                 predicateList.add(name);
             }
-            if (StringUtils.hasText(dto.getAuthority())) {
-                Predicate code = builder.like(builder.lower(root.get(Role.AUTHORITY)),
-                        "%" + dto.getAuthority().toLowerCase() + "%", '/');
-                predicateList.add(code);
+            if (dto.getId() != null) {
+                Predicate id = builder.equal(root.get(Role.ID), dto.getId());
+                predicateList.add(id);
+            }
+            if (dto.getStatus() != null) {
+                Predicate status = builder.equal(root.get(Role.STATUS), dto.getStatus());
+                predicateList.add(status);
             }
             if (StringUtils.hasText(dto.getRemark())) {
                 Predicate remark = builder.like(root.get(Role.REMARK),
                         "%" + dto.getRemark() + "%", '/');
                 predicateList.add(remark);
+            }
+            if (dto.getStartTime() != null) {
+                Predicate createdDate = builder.greaterThanOrEqualTo(root.get(Role.CREATED_DATE), dto.getStartTime());
+                predicateList.add(createdDate);
+            }
+            if (dto.getEndTime() != null) {
+                Predicate createdDate = builder.lessThanOrEqualTo(root.get(Role.CREATED_DATE), dto.getEndTime());
+                predicateList.add(createdDate);
             }
             Predicate predicate = builder.and(predicateList.toArray(Predicate[]::new));
             return query.where(predicate).orderBy(builder.asc(root.get(Role.ID))).getRestriction();

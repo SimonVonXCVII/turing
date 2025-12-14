@@ -44,7 +44,7 @@ public interface IRoleService {
     RoleDTO selectById(Integer id);
 
     /**
-     * 删除
+     * 逻辑删除
      */
     void deleteById(Integer roleId);
 
