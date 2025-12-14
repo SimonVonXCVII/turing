@@ -22,6 +22,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.util.Collection;
@@ -136,15 +137,46 @@ public class RoleServiceImpl implements IRoleService {
     }
 
     @Override
-    public void statusSwitching(Integer id, RoleDTO dto) {
+    @Transactional(rollbackFor = Exception.class)
+    public void update(Integer id, RoleDTO dto) {
+        // 保存 Role
         UpdateSpecification<Role> us = (root, update, builder) -> {
             Predicate idPredicate = builder.equal(root.get(Role.ID), id);
-            update.set(root.get(Role.STATUS), dto.getStatus());
+            // 状态修改
+            if (!StringUtils.hasText(dto.getName())) {
+                update.set(root.get(Role.STATUS), dto.getStatus());
+            }
+            // 单个修改
+            else {
+                update.set(root.get(Role.NAME), dto.getName())
+                        .set(root.get(Role.AUTHORITY), dto.getName())
+                        .set(root.get(Role.STATUS), dto.getStatus())
+                        .set(root.get(Role.REMARK), dto.getRemark());
+            }
             return update.where(idPredicate).getRestriction();
         };
         long updated = roleJpaRepository.update(us);
         if (updated == 0) {
-            throw new RuntimeException("状态切换失败，无法查找到该数据");
+            throw new RuntimeException("数据修改失败，无法查找到该数据");
+        }
+
+        // 保存 RolePermission
+        if (!CollectionUtils.isEmpty(dto.getPermissions())) {
+            // TODO 可以优化成只添加需要添加的，只删除需要删除的
+            DeleteSpecification<RolePermission> deleteSpecification =
+                    (root, query, builder) -> {
+                        Predicate predicate = builder.equal(root.get(RolePermission.ROLE_ID), id);
+                        return query.where(predicate).getRestriction();
+                    };
+            rolePermissionJpaRepository.delete(deleteSpecification);
+            List<RolePermission> rolePermissionList = new LinkedList<>();
+            dto.getPermissions().forEach(permissionId -> {
+                RolePermission rp = new RolePermission();
+                rp.setRoleId(id);
+                rp.setPermissionId(permissionId);
+                rolePermissionList.add(rp);
+            });
+            rolePermissionJpaRepository.saveAll(rolePermissionList);
         }
     }
 

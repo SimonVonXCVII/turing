@@ -195,51 +195,147 @@ class CustomDatabaseInitializingBean(
         userJpaRepository.save(user)
 
 
-        val role = Role(authority = "SUPER_ADMIN", name = "超级管理员")
+        val role = Role(authority = "SUPER_ADMIN", name = "SUPER_ADMIN", remark = "超级管理员")
         val roleList = listOfNotNull(
             role,
-            Role(authority = "GOV_COUNTRY_ADMIN", name = "国家级行政单位管理员"),
-            Role(authority = "GOV_COUNTRY_STAFF", name = "国家级行政单位工作人员"),
-            Role(authority = "GOV_PROVINCE_ADMIN", name = "省级行政单位管理员"),
-            Role(authority = "GOV_PROVINCE_STAFF", name = "省级行政单位工作人员"),
-            Role(authority = "GOV_CITY_ADMIN", name = "市级行政单位管理员"),
-            Role(authority = "GOV_CITY_STAFF", name = "市级行政单位工作人员"),
-            Role(authority = "GOV_DISTRICT_ADMIN", name = "县级行政单位管理员"),
-            Role(authority = "GOV_DISTRICT_STAFF", name = "县级行政单位工作人员"),
-            Role(authority = "BUSINESS_MINE_INFORMATION_COLLECTION_ADMIN", name = "矿山信息采集单位管理员"),
-            Role(authority = "BUSINESS_MINE_INFORMATION_COLLECTION_STAFF", name = "矿山信息采集单位工作人员"),
-            Role(authority = "BUSINESS_REGIONAL_SURVEY_LOCATIONS_ADMIN", name = "区域调查布点单位管理员"),
-            Role(authority = "BUSINESS_REGIONAL_SURVEY_LOCATIONS_STAFF", name = "区域调查布点单位工作人员"),
-            Role(authority = "BUSINESS_AREA_SAMPLING_SURVEYS_ADMIN", name = "区域采样调查单位管理员"),
-            Role(authority = "BUSINESS_AREA_SAMPLING_SURVEYS_STAFF", name = "区域采样调查单位工作人员"),
-            Role(authority = "BUSINESS_LAND_PARCEL_INFORMATION_COLLECTION_ADMIN", name = "地块信息采集单位管理员"),
-            Role(authority = "BUSINESS_LAND_PARCEL_INFORMATION_COLLECTION_STAFF", name = "地块信息采集单位工作人员"),
-            Role(authority = "BUSINESS_PLOT_SURVEY_LAYOUT_ADMIN", name = "地块调查布点单位管理员"),
-            Role(authority = "BUSINESS_PLOT_SURVEY_LAYOUT_STAFF", name = "地块调查布点单位工作人员"),
-            Role(authority = "BUSINESS_PLOT_SAMPLING_SURVEY_ADMIN", name = "地块采样调查单位管理员"),
-            Role(authority = "BUSINESS_PLOT_SAMPLING_SURVEY_STAFF", name = "地块采样调查单位工作人员"),
-            Role(authority = "BUSINESS_SAMPLE_TESTING_ADMIN", name = "样品检测单位管理员"),
-            Role(authority = "BUSINESS_SAMPLE_TESTING_STAFF", name = "样品检测单位工作人员"),
-            Role(authority = "BUSINESS_DATA_ANALYSIS_EVALUATION_ADMIN", name = "数据分析评价单位管理员"),
-            Role(authority = "BUSINESS_DATA_ANALYSIS_EVALUATION_STAFF", name = "数据分析评价单位工作人员"),
-            Role(authority = "BUSINESS_CONTAMINATION_RISK_ASSESSMENT_ADMIN", name = "污染风险评估单位管理员"),
-            Role(authority = "BUSINESS_CONTAMINATION_RISK_ASSESSMENT_STAFF", name = "污染风险评估单位工作人员"),
-            Role(authority = "QC_INFORMATION_COLLECTION_ADMIN", name = "信息采集质控单位管理员"),
-            Role(authority = "QC_INFORMATION_COLLECTION_STAFF", name = "信息采集质控单位工作人员"),
-            Role(authority = "QC_DISTRIBUTE_ADMIN", name = "布点质控单位管理员"),
-            Role(authority = "QC_DISTRIBUTE_STAFF", name = "布点质控单位工作人员"),
-            Role(authority = "QC_SAMPLING_ADMIN", name = "采样质控单位管理员"),
-            Role(authority = "QC_SAMPLING_STAFF", name = "采样质控单位工作人员"),
-            Role(authority = "QC_SAMPLE_TESTING_ADMIN", name = "样品检测质控单位管理员"),
-            Role(authority = "QC_SAMPLE_TESTING_STAFF", name = "样品检测质控单位工作人员"),
-            Role(authority = "LEADER", name = "信息采集和取样调查小组组长"),
-            Role(authority = "MEMBER", name = "信息采集和取样调查小组组员"),
-            Role(authority = "INFORMATION_COLLECTION_INTERNAL_AUDITOR", name = "信息采集单位内审人员"),
-            Role(authority = "PLOT_SAMPLING_SURVEY_INTERNAL_AUDITOR", name = "取样调查单位内审人员"),
+            Role(authority = "GOV_COUNTRY_ADMIN", name = "GOV_COUNTRY_ADMIN", remark = "国家级行政单位管理员"),
+            Role(authority = "GOV_COUNTRY_STAFF", name = "GOV_COUNTRY_STAFF", remark = "国家级行政单位工作人员"),
+            Role(authority = "GOV_PROVINCE_ADMIN", name = "GOV_PROVINCE_ADMIN", remark = "省级行政单位管理员"),
+            Role(authority = "GOV_PROVINCE_STAFF", name = "GOV_PROVINCE_STAFF", remark = "省级行政单位工作人员"),
+            Role(authority = "GOV_CITY_ADMIN", name = "GOV_CITY_ADMIN", remark = "市级行政单位管理员"),
+            Role(authority = "GOV_CITY_STAFF", name = "GOV_CITY_STAFF", remark = "市级行政单位工作人员"),
+            Role(authority = "GOV_DISTRICT_ADMIN", name = "GOV_DISTRICT_ADMIN", remark = "县级行政单位管理员"),
+            Role(authority = "GOV_DISTRICT_STAFF", name = "GOV_DISTRICT_STAFF", remark = "县级行政单位工作人员"),
+            Role(
+                authority = "BUSINESS_MINE_INFORMATION_COLLECTION_ADMIN",
+                name = "BUSINESS_MINE_INFORMATION_COLLECTION_ADMIN",
+                remark = "矿山信息采集单位管理员"
+            ),
+            Role(
+                authority = "BUSINESS_MINE_INFORMATION_COLLECTION_STAFF",
+                name = "BUSINESS_MINE_INFORMATION_COLLECTION_STAFF",
+                remark = "矿山信息采集单位工作人员"
+            ),
+            Role(
+                authority = "BUSINESS_REGIONAL_SURVEY_LOCATIONS_ADMIN",
+                name = "BUSINESS_REGIONAL_SURVEY_LOCATIONS_ADMIN",
+                remark = "区域调查布点单位管理员"
+            ),
+            Role(
+                authority = "BUSINESS_REGIONAL_SURVEY_LOCATIONS_STAFF",
+                name = "BUSINESS_REGIONAL_SURVEY_LOCATIONS_STAFF",
+                remark = "区域调查布点单位工作人员"
+            ),
+            Role(
+                authority = "BUSINESS_AREA_SAMPLING_SURVEYS_ADMIN",
+                name = "BUSINESS_AREA_SAMPLING_SURVEYS_ADMIN",
+                remark = "区域采样调查单位管理员"
+            ),
+            Role(
+                authority = "BUSINESS_AREA_SAMPLING_SURVEYS_STAFF",
+                name = "BUSINESS_AREA_SAMPLING_SURVEYS_STAFF",
+                remark = "区域采样调查单位工作人员"
+            ),
+            Role(
+                authority = "BUSINESS_LAND_PARCEL_INFORMATION_COLLECTION_ADMIN",
+                name = "BUSINESS_LAND_PARCEL_INFORMATION_COLLECTION_ADMIN",
+                remark = "地块信息采集单位管理员"
+            ),
+            Role(
+                authority = "BUSINESS_LAND_PARCEL_INFORMATION_COLLECTION_STAFF",
+                name = "BUSINESS_LAND_PARCEL_INFORMATION_COLLECTION_STAFF",
+                remark = "地块信息采集单位工作人员"
+            ),
+            Role(
+                authority = "BUSINESS_PLOT_SURVEY_LAYOUT_ADMIN",
+                name = "BUSINESS_PLOT_SURVEY_LAYOUT_ADMIN",
+                remark = "地块调查布点单位管理员"
+            ),
+            Role(
+                authority = "BUSINESS_PLOT_SURVEY_LAYOUT_STAFF",
+                name = "BUSINESS_PLOT_SURVEY_LAYOUT_STAFF",
+                remark = "地块调查布点单位工作人员"
+            ),
+            Role(
+                authority = "BUSINESS_PLOT_SAMPLING_SURVEY_ADMIN",
+                name = "BUSINESS_PLOT_SAMPLING_SURVEY_ADMIN",
+                remark = "地块采样调查单位管理员"
+            ),
+            Role(
+                authority = "BUSINESS_PLOT_SAMPLING_SURVEY_STAFF",
+                name = "BUSINESS_PLOT_SAMPLING_SURVEY_STAFF",
+                remark = "地块采样调查单位工作人员"
+            ),
+            Role(
+                authority = "BUSINESS_SAMPLE_TESTING_ADMIN",
+                name = "BUSINESS_SAMPLE_TESTING_ADMIN",
+                remark = "样品检测单位管理员"
+            ),
+            Role(
+                authority = "BUSINESS_SAMPLE_TESTING_STAFF",
+                name = "BUSINESS_SAMPLE_TESTING_STAFF",
+                remark = "样品检测单位工作人员"
+            ),
+            Role(
+                authority = "BUSINESS_DATA_ANALYSIS_EVALUATION_ADMIN",
+                name = "BUSINESS_DATA_ANALYSIS_EVALUATION_ADMIN",
+                remark = "数据分析评价单位管理员"
+            ),
+            Role(
+                authority = "BUSINESS_DATA_ANALYSIS_EVALUATION_STAFF",
+                name = "BUSINESS_DATA_ANALYSIS_EVALUATION_STAFF",
+                remark = "数据分析评价单位工作人员"
+            ),
+            Role(
+                authority = "BUSINESS_CONTAMINATION_RISK_ASSESSMENT_ADMIN",
+                name = "BUSINESS_CONTAMINATION_RISK_ASSESSMENT_ADMIN",
+                remark = "污染风险评估单位管理员"
+            ),
+            Role(
+                authority = "BUSINESS_CONTAMINATION_RISK_ASSESSMENT_STAFF",
+                name = "BUSINESS_CONTAMINATION_RISK_ASSESSMENT_STAFF",
+                remark = "污染风险评估单位工作人员"
+            ),
+            Role(
+                authority = "QC_INFORMATION_COLLECTION_ADMIN",
+                name = "QC_INFORMATION_COLLECTION_ADMIN",
+                remark = "信息采集质控单位管理员"
+            ),
+            Role(
+                authority = "QC_INFORMATION_COLLECTION_STAFF",
+                name = "QC_INFORMATION_COLLECTION_STAFF",
+                remark = "信息采集质控单位工作人员"
+            ),
+            Role(authority = "QC_DISTRIBUTE_ADMIN", name = "QC_DISTRIBUTE_ADMIN", remark = "布点质控单位管理员"),
+            Role(authority = "QC_DISTRIBUTE_STAFF", name = "QC_DISTRIBUTE_STAFF", remark = "布点质控单位工作人员"),
+            Role(authority = "QC_SAMPLING_ADMIN", name = "QC_SAMPLING_ADMIN", remark = "采样质控单位管理员"),
+            Role(authority = "QC_SAMPLING_STAFF", name = "QC_SAMPLING_STAFF", remark = "采样质控单位工作人员"),
+            Role(
+                authority = "QC_SAMPLE_TESTING_ADMIN",
+                name = "QC_SAMPLE_TESTING_ADMIN",
+                remark = "样品检测质控单位管理员"
+            ),
+            Role(
+                authority = "QC_SAMPLE_TESTING_STAFF",
+                name = "QC_SAMPLE_TESTING_STAFF",
+                remark = "样品检测质控单位工作人员"
+            ),
+            Role(authority = "LEADER", name = "LEADER", remark = "信息采集和取样调查小组组长"),
+            Role(authority = "MEMBER", name = "MEMBER", remark = "信息采集和取样调查小组组员"),
+            Role(
+                authority = "INFORMATION_COLLECTION_INTERNAL_AUDITOR",
+                name = "INFORMATION_COLLECTION_INTERNAL_AUDITOR",
+                remark = "信息采集单位内审人员"
+            ),
+            Role(
+                authority = "PLOT_SAMPLING_SURVEY_INTERNAL_AUDITOR",
+                name = "PLOT_SAMPLING_SURVEY_INTERNAL_AUDITOR",
+                remark = "取样调查单位内审人员"
+            ),
             Role(
                 authority = "DEFAULT_TECHNICAL",
-                name = "技术单位管理员的默认角色",
-                remark = "注册技术单位时赋予管理员的默认角色，仅有【技术单位业务申请】权限"
+                name = "DEFAULT_TECHNICAL",
+                remark = "技术单位管理员的默认角色，注册技术单位时赋予管理员的默认角色，仅有【技术单位业务申请】权限"
             )
         )
         roleJpaRepository.saveAll(roleList)

@@ -26,12 +26,12 @@ public interface IRoleService {
     Page<RoleDTO> list(RoleDTO dto);
 
     /**
-     * 状态切换
+     * 状态修改与单个修改
      *
      * @param id  主键 id
-     * @param dto 接收 status
+     * @param dto 其他数据
      */
-    void statusSwitching(Integer id, RoleDTO dto);
+    void update(Integer id, RoleDTO dto);
 
     /**
      * 列表查询

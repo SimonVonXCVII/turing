@@ -5,6 +5,7 @@ import com.simonvonxcvii.turing.model.dto.RoleDTO;
 import com.simonvonxcvii.turing.service.IRoleService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.jspecify.annotations.NonNull;
 import org.springframework.data.domain.Page;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -45,10 +46,10 @@ public class RoleController {
     }
 
     // todo 验证 status 字段的值的有效性，还有其他
-    @Operation(summary = "状态切换")
+    @Operation(summary = "状态修改与单个修改")
     @PutMapping("/{id}")
-    public Result<Object> statusSwitching(@PathVariable Integer id, @RequestBody RoleDTO dto) {
-        service.statusSwitching(id, dto);
+    public Result<Object> update(@PathVariable @NonNull Integer id, @Validated @RequestBody RoleDTO dto) {
+        service.update(id, dto);
         return Result.ok();
     }
 

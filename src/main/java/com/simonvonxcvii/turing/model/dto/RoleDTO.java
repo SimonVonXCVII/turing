@@ -1,8 +1,6 @@
 package com.simonvonxcvii.turing.model.dto;
 
 import com.simonvonxcvii.turing.model.query.PageQuery;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
@@ -22,17 +20,17 @@ public class RoleDTO extends PageQuery {
     /**
      * 角色名称
      */
-    @NotBlank(message = "角色名称不能为空")
+//    @NotBlank(message = "角色名称不能为空")
     private String name;
     /**
      * 角色编码
      */
-    @NotBlank(message = "角色编码不能为空")
+//    @NotBlank(message = "角色编码不能为空")
     private String authority;
     /**
      * 备注
      */
-    @NotBlank(message = "备注不能为空")
+//    @NotBlank(message = "备注不能为空")
     private String remark;
     /**
      * 角色状态
@@ -46,6 +44,6 @@ public class RoleDTO extends PageQuery {
     /**
      * 权限 id 集合
      */
-    @NotEmpty(message = "权限 id 集合不能为空")
+//    @NotEmpty(message = "权限 id 集合不能为空")
     private Set<Integer> permissions;
 }
