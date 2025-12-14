@@ -111,27 +111,22 @@ public class UserServiceImpl implements IUserService {
             Specification<User> spec = (root, query, builder) -> {
                 List<Predicate> predicateList = new LinkedList<>();
                 if (StringUtils.hasText(dto.getName())) {
-                    predicateList.add(builder.like(root.get(User.NAME),
-                            "%" + dto.getName() + "%", '/'));
+                    predicateList.add(builder.like(root.get(User.NAME), "%" + dto.getName() + "%"));
                 }
                 if (dto.getMobile() != null) {
-                    predicateList.add(builder.like(root.get(User.MOBILE),
-                            "%" + dto.getMobile() + "%", '/'));
+                    predicateList.add(builder.like(root.get(User.MOBILE), "%" + dto.getMobile() + "%"));
                 }
                 if (StringUtils.hasText(dto.getGender())) {
                     predicateList.add(builder.equal(root.get(User.GENDER), dto.getGender()));
                 }
                 if (StringUtils.hasText(dto.getOrgName())) {
-                    predicateList.add(builder.like(root.get(User.ORG_NAME),
-                            "%" + dto.getOrgName() + "%", '/'));
+                    predicateList.add(builder.like(root.get(User.ORG_NAME), "%" + dto.getOrgName() + "%"));
                 }
                 if (StringUtils.hasText(dto.getDepartment())) {
-                    predicateList.add(builder.like(root.get(User.DEPARTMENT),
-                            "%" + dto.getDepartment() + "%", '/'));
+                    predicateList.add(builder.like(root.get(User.DEPARTMENT), "%" + dto.getDepartment() + "%"));
                 }
                 if (StringUtils.hasText(dto.getUsername())) {
-                    predicateList.add(builder.like(root.get(User.USERNAME),
-                            "%" + dto.getUsername() + "%", '/'));
+                    predicateList.add(builder.like(root.get(User.USERNAME), "%" + dto.getUsername() + "%"));
                 }
                 if (!CollectionUtils.isEmpty(dto.getRoleList())) {
                     Specification<UserRole> userRoleSpec =

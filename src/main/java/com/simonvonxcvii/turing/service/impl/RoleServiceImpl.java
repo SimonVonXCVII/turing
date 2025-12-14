@@ -73,7 +73,7 @@ public class RoleServiceImpl implements IRoleService {
         Specification<Role> spec = (root, query, builder) -> {
             List<Predicate> predicateList = new LinkedList<>();
             if (StringUtils.hasText(dto.getName())) {
-                Predicate name = builder.like(root.get(Role.NAME), "%" + dto.getName() + "%", '/');
+                Predicate name = builder.like(root.get(Role.NAME), "%" + dto.getName() + "%");
                 predicateList.add(name);
             }
             if (dto.getId() != null) {
@@ -85,8 +85,7 @@ public class RoleServiceImpl implements IRoleService {
                 predicateList.add(status);
             }
             if (StringUtils.hasText(dto.getRemark())) {
-                Predicate remark = builder.like(root.get(Role.REMARK),
-                        "%" + dto.getRemark() + "%", '/');
+                Predicate remark = builder.like(root.get(Role.REMARK), "%" + dto.getRemark() + "%");
                 predicateList.add(remark);
             }
             if (dto.getStartTime() != null) {
@@ -180,10 +179,8 @@ public class RoleServiceImpl implements IRoleService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void deleteById(Integer id) {
-        Specification<UserRole> spec = (root, query, builder) -> {
-            Predicate predicate = builder.equal(root.get(UserRole.ROLE_ID), id);
-            return query.where(predicate).getRestriction();
-        };
+        PredicateSpecification<UserRole> spec = (from, criteriaBuilder) ->
+                criteriaBuilder.equal(from.get(UserRole.ROLE_ID), id);
         boolean exists = userRoleJpaRepository.exists(spec);
         if (exists) {
             throw new RuntimeException("该角色已关联用户");

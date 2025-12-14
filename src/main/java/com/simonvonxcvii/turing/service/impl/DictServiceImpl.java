@@ -59,15 +59,15 @@ public class DictServiceImpl implements IDictService {
         Specification<Dict> spec = (root, query, builder) -> {
             List<Predicate> predicateList = new LinkedList<>();
             if (StringUtils.hasText(dto.getType())) {
-                Predicate type = builder.like(root.get(Dict.TYPE), "%" + dto.getType() + "%", '/');
+                Predicate type = builder.like(root.get(Dict.TYPE), "%" + dto.getType() + "%");
                 predicateList.add(type);
             }
             if (StringUtils.hasText(dto.getName())) {
-                Predicate name = builder.like(root.get(Dict.NAME), "%" + dto.getName() + "%", '/');
+                Predicate name = builder.like(root.get(Dict.NAME), "%" + dto.getName() + "%");
                 predicateList.add(name);
             }
             if (StringUtils.hasText(dto.getValue())) {
-                Predicate value = builder.like(root.get(Dict.VALUE), "%" + dto.getValue() + "%", '/');
+                Predicate value = builder.like(root.get(Dict.VALUE), "%" + dto.getValue() + "%");
                 predicateList.add(value);
             }
             Predicate predicate = builder.and(predicateList.toArray(Predicate[]::new));

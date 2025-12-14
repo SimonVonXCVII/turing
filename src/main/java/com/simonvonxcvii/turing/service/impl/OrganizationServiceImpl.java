@@ -72,12 +72,12 @@ public class OrganizationServiceImpl implements IOrganizationService {
         Specification<Organization> spec = (root, query, builder) -> {
             List<Predicate> predicateList = new LinkedList<>();
             if (StringUtils.hasText(dto.getName())) {
-                Predicate name = builder.like(root.get(Organization.NAME), "%" + dto.getName() + "%", '/');
+                Predicate name = builder.like(root.get(Organization.NAME), "%" + dto.getName() + "%");
                 predicateList.add(name);
             }
             if (StringUtils.hasText(dto.getCode())) {
                 Predicate code = builder.like(builder.lower(root.get(Organization.CODE)),
-                        "%" + dto.getCode().toLowerCase() + "%", '/');
+                        "%" + dto.getCode().toLowerCase() + "%");
                 predicateList.add(code);
             }
             if (StringUtils.hasText(dto.getType())) {
@@ -98,7 +98,7 @@ public class OrganizationServiceImpl implements IOrganizationService {
             }
             if (StringUtils.hasText(dto.getLegalPerson())) {
                 Predicate legalPerson = builder.like(root.get(Organization.LEGAL_PERSON),
-                        "%" + dto.getLegalPerson() + "%", '/');
+                        "%" + dto.getLegalPerson() + "%");
                 predicateList.add(legalPerson);
             }
             Predicate predicate = builder.and(predicateList.toArray(Predicate[]::new));
@@ -140,11 +140,11 @@ public class OrganizationServiceImpl implements IOrganizationService {
         Specification<OrganizationBusiness> spec =
                 (root, query, builder) -> {
                     Predicate linkPredicate = builder.like(root.get(OrganizationBusiness.LINK),
-                            "%" + OrganizationBusinessBusinessLinksEnum.SAMPLE_TESTING.getDesc() + "%", '/');
+                            "%" + OrganizationBusinessBusinessLinksEnum.SAMPLE_TESTING.getDesc() + "%");
                     Predicate statePredicate = builder.like(root.get(OrganizationBusiness.STATE),
-                            "%" + OrganizationBusinessStateEnum.PASSES + "%", '/');
+                            "%" + OrganizationBusinessStateEnum.PASSES + "%");
                     Predicate namePredicate = builder.like(root.get(OrganizationBusiness.ORG_NAME),
-                            "%" + name + "%", '/');
+                            "%" + name + "%");
                     Predicate predicate = builder.and(linkPredicate, statePredicate, namePredicate);
                     return query.where(predicate).getRestriction();
                 };

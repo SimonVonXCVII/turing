@@ -255,7 +255,7 @@ public class OrganizationBusinessServiceImpl implements IOrganizationBusinessSer
 //                        (root, query, criteriaBuilder) -> {
 //                            assert query != null;
 //                            return query.where(root.get(OrganizationBusiness.ORG_ID).in(UserUtils.getOrgId()),
-//                                    criteriaBuilder.like(root.get(OrganizationBusiness.LINK), "%" + link + "%", '/'),
+//                                    criteriaBuilder.like(root.get(OrganizationBusiness.LINK), "%" + link + "%"),
 //                                    root.get(OrganizationBusiness.STATE).in("已通过")).getRestriction();
 //                        });
 //                if (organizationBusinessList.isEmpty()) {
@@ -276,7 +276,7 @@ public class OrganizationBusinessServiceImpl implements IOrganizationBusinessSer
 //                        (root, query, criteriaBuilder) -> {
 //                            assert query != null;
 //                            return query.where(root.get(OrganizationBusiness.ORG_ID).in(UserUtils.getOrgId()),
-//                                    criteriaBuilder.like(root.get(OrganizationBusiness.TYPE), "%" + type + "%", '/'),
+//                                    criteriaBuilder.like(root.get(OrganizationBusiness.TYPE), "%" + type + "%"),
 //                                    root.get(OrganizationBusiness.STATE).in("已通过")).getRestriction();
 //                        });
 //                if (organizationBusinessList.isEmpty()) {
@@ -343,7 +343,7 @@ public class OrganizationBusinessServiceImpl implements IOrganizationBusinessSer
 //                            (root, query, criteriaBuilder) -> {
 //                                assert query != null;
 //                                return query.where(root.get(OrganizationBusiness.ORG_ID).in(user.getOrgId()),
-//                                        criteriaBuilder.like(root.get(OrganizationBusiness.LINK), "%" + link + "%", '/'),
+//                                        criteriaBuilder.like(root.get(OrganizationBusiness.LINK), "%" + link + "%"),
 //                                        root.get(OrganizationBusiness.STATE).in("已通过")).getRestriction();
 //                            });
 //                    if (organizationBusinessList.isEmpty()) {
@@ -376,7 +376,7 @@ public class OrganizationBusinessServiceImpl implements IOrganizationBusinessSer
 //                            (root, query, criteriaBuilder) -> {
 //                                assert query != null;
 //                                return query.where(root.get(OrganizationBusiness.ORG_ID).in(user.getOrgId()),
-//                                        criteriaBuilder.like(root.get(OrganizationBusiness.TYPE), "%" + type + "%", '/'),
+//                                        criteriaBuilder.like(root.get(OrganizationBusiness.TYPE), "%" + type + "%"),
 //                                        root.get(OrganizationBusiness.STATE).in("已通过")).getRestriction();
 //                            });
 //                    if (organizationBusinessList.isEmpty()) {
