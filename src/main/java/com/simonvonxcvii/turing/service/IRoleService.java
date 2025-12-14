@@ -3,8 +3,6 @@ package com.simonvonxcvii.turing.service;
 import com.simonvonxcvii.turing.model.dto.RoleDTO;
 import org.springframework.data.domain.Page;
 
-import java.util.List;
-
 /**
  * <p>
  * 角色表 服务类
@@ -16,50 +14,28 @@ import java.util.List;
 public interface IRoleService {
 
     /**
-     * 单个新增或修改
+     * 新增数据
      */
-    void insertOrUpdate(RoleDTO dto);
+    void insert(RoleDTO dto);
 
     /**
-     * 分页查询
+     * 条件查询
      */
     Page<RoleDTO> list(RoleDTO dto);
 
     /**
-     * 状态修改与单个修改
+     * 修改数据
      *
      * @param id  主键 id
      * @param dto 其他数据
      */
-    void update(Integer id, RoleDTO dto);
-
-    /**
-     * 列表查询
-     */
-    List<RoleDTO> selectList(RoleDTO dto);
-
-    /**
-     * 根据角色 id 获取单个角色
-     */
-    RoleDTO selectById(Integer id);
+    void updateById(Integer id, RoleDTO dto);
 
     /**
      * 逻辑删除
-     */
-    void deleteById(Integer roleId);
-
-    /**
-     * 查询业务单位管理员的能分配给本单位其他用户的角色
      *
-     * @author Simon Von
+     * @param id 主键 id
      */
-    List<RoleDTO> selectListForBusinessOrg();
-
-    /**
-     * 根据当前登录用户查询行政单位工作人员角色
-     *
-     * @author Simon Von
-     */
-    List<RoleDTO> selectListForAdministrativeOrg();
+    void deleteById(Integer id);
 
 }

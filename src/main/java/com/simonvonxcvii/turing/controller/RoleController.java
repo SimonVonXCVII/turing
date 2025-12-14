@@ -10,8 +10,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 /**
  * <p>
  * 角色表 前端控制器
@@ -32,37 +30,24 @@ public class RoleController {
         this.service = service;
     }
 
-    @Operation(summary = "单个新增或修改")
-    @PostMapping("/insertOrUpdate")
-    public Result<Object> insertOrUpdate(@RequestBody @Validated RoleDTO dto) {
-        service.insertOrUpdate(dto);
+    @Operation(summary = "新增数据")
+    @PostMapping
+    public Result<Object> insert(@RequestBody @Validated RoleDTO dto) {
+        service.insert(dto);
         return Result.ok();
     }
 
-    @Operation(summary = "分页查询")
+    @Operation(summary = "条件查询")
     @PostMapping("/list")
     public Result<Page<RoleDTO>> list(@RequestBody RoleDTO dto) {
         return Result.ok(service.list(dto));
     }
 
-    // todo 验证 status 字段的值的有效性，还有其他
-    @Operation(summary = "状态修改与单个修改")
+    @Operation(summary = "修改数据")
     @PutMapping("/{id}")
-    public Result<Object> update(@PathVariable @NonNull Integer id, @Validated @RequestBody RoleDTO dto) {
-        service.update(id, dto);
+    public Result<Object> updateById(@PathVariable @NonNull Integer id, @Validated @RequestBody RoleDTO dto) {
+        service.updateById(id, dto);
         return Result.ok();
-    }
-
-    @Operation(summary = "列表查询")
-    @PostMapping("/selectList")
-    public Result<List<RoleDTO>> selectList(@RequestBody RoleDTO dto) {
-        return Result.ok(service.selectList(dto));
-    }
-
-    @Operation(summary = "根据角色 id 获取单个角色")
-    @GetMapping("/selectById")
-    public Result<RoleDTO> selectById(Integer id) {
-        return Result.ok(service.selectById(id));
     }
 
     @Operation(summary = "逻辑删除")
@@ -70,18 +55,6 @@ public class RoleController {
     public Result<Object> deleteById(@PathVariable @NonNull Integer id) {
         service.deleteById(id);
         return Result.ok();
-    }
-
-    @Operation(summary = "查询业务单位管理员的能分配给本单位其他用户的角色")
-    @GetMapping("/selectListForBusinessOrg")
-    public Result<List<RoleDTO>> selectListForBusinessOrg() {
-        return Result.ok(service.selectListForBusinessOrg());
-    }
-
-    @Operation(summary = "根据当前登录用户查询行政单位工作人员角色")
-    @GetMapping("/selectListForAdministrativeOrg")
-    public Result<List<RoleDTO>> selectListForAdministrativeOrg() {
-        return Result.ok(service.selectListForAdministrativeOrg());
     }
 
 }
