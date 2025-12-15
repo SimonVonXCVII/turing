@@ -1,54 +1,55 @@
-package com.simonvonxcvii.turing.model.dto;
+package com.simonvonxcvii.turing.model.dto
 
-import com.simonvonxcvii.turing.model.query.PageQuery;
-import jakarta.validation.constraints.NotBlank;
-import lombok.Getter;
-import lombok.Setter;
-
-import java.util.List;
+import com.simonvonxcvii.turing.model.query.PageQuery
+import jakarta.validation.constraints.NotBlank
 
 /**
- * 字典 DTO
- *
+ * Dict DTO
+ * 
  * @author Simon Von
  * @since 12/30/2022 4:03 PM
  */
-@Getter
-@Setter
-public class DictDTO extends PageQuery {
+class DictDTO(
     /**
      * 字典 id
      */
-    private Integer id;
+    var id: Int? = null,
+
     /**
      * 字典类型
      */
-    @NotBlank(message = "字典类型不能为空")
-    private String type;
+    @field:NotBlank(message = "字典类型不能为空")
+    var type: @NotBlank(message = "字典类型不能为空") String? = null,
+
     /**
      * 上级字典 id
      */
-    private Integer pid;
+    var pid: Int? = null,
+
     /**
      * 字典名称
      */
-    @NotBlank(message = "字典名称不能为空")
-    private String name;
+    @field:NotBlank(message = "字典名称不能为空")
+    var name: @NotBlank(message = "字典名称不能为空") String? = null,
+
     /**
      * 字典值
      */
-    @NotBlank(message = "字典值不能为空")
-    private String value;
+    @field:NotBlank(message = "字典值不能为空")
+    var value: @NotBlank(message = "字典值不能为空") String? = null,
+
     /**
      * 字典说明
      */
-    private String description;
+    var description: String? = null,
+
     /**
      * 字典排序
      */
-    private Integer sort;
+    var sort: Int? = null,
+
     /**
      * 下级字典
      */
-    private List<DictDTO> children;
-}
+    var children: MutableList<DictDTO?>? = null
+) : PageQuery()

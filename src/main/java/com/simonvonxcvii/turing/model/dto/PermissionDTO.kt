@@ -1,44 +1,46 @@
-package com.simonvonxcvii.turing.model.dto;
+package com.simonvonxcvii.turing.model.dto
 
-import com.simonvonxcvii.turing.model.query.PageQuery;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.experimental.Accessors;
+import com.simonvonxcvii.turing.model.query.PageQuery
+import jakarta.validation.constraints.NotBlank
+import jakarta.validation.constraints.NotNull
 
-import java.util.LinkedList;
-import java.util.List;
-
-@Accessors(chain = true)
-@Getter
-@Setter
-public class PermissionDTO extends PageQuery {
+/**
+ * Permission DTO
+ * 
+ * @author Simon Von
+ * @since 12/30/2022 4:03 PM
+ */
+class PermissionDTO(
     /**
      * 权限 id
      */
-    private Integer id;
+    var id: Int? = null,
+
     /**
      * 上级权限 id
      */
-    private Integer pid;
+    var pid: Int? = null,
+
     /**
      * 权限名称
      */
-    @NotBlank(message = "权限名称不能为空")
-    private String name;
+    @field:NotBlank(message = "权限名称不能为空")
+    var name: String? = null,
+
     /**
      * 权限编码
      */
-    @NotBlank(message = "权限名称不能为空")
-    private String code;
+    @field:NotBlank(message = "权限名称不能为空")
+    var code: String? = null,
+
     /**
      * 排序编号
      */
-    @NotNull(message = "排序编号不能为空")
-    private Integer sort;
+    @field:NotNull(message = "排序编号不能为空")
+    var sort: Int? = null,
+
     /**
      * 子级权限集合
      */
-    private List<PermissionDTO> children = new LinkedList<>();
-}
+    var children: MutableList<PermissionDTO?> = mutableListOf()
+) : PageQuery()

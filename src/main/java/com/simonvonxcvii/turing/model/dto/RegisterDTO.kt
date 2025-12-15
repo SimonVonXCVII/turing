@@ -1,90 +1,84 @@
-package com.simonvonxcvii.turing.model.dto;
+package com.simonvonxcvii.turing.model.dto
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
-import lombok.Getter;
-import lombok.Setter;
+import jakarta.validation.constraints.NotBlank
+import jakarta.validation.constraints.NotNull
+import jakarta.validation.constraints.Size
 
 /**
- * 业务注册类
- *
+ * Register DTO
+ * 
  * @author Simon Von
  * @since 12/29/2022 11:45 AM
  */
-@Getter
-@Setter
-public class RegisterDTO {
-
+class RegisterDTO(
     /**
-     * 单位信息
+     * 单位信息 -------------------------------------------
      * 单位名称
      */
-    @NotBlank(message = "单位名称不能为空")
-    private String name;
+    @field:NotBlank(message = "单位名称不能为空")
+    var name: String? = null,
 
     /**
      * 信用代码
      */
-    @NotBlank(message = "信用代码不能为空")
-    @Size(min = 18, max = 18, message = "请填写正确的信用代码")
-    private String code;
+    @field:NotBlank(message = "信用代码不能为空")
+    @field:Size(min = 18, max = 18, message = "请填写正确的信用代码")
+    var code: String? = null,
 
     /**
      * 单位所在省
      */
-    @NotNull(message = "单位所在省不能为空")
-    private Integer provinceCode;
+    @field:NotNull(message = "单位所在省不能为空")
+    var provinceCode: Int? = null,
 
     /**
      * 单位所在市
      */
-    @NotNull(message = "单位所在市不能为空")
-    private Integer cityCode;
+    @field:NotNull(message = "单位所在市不能为空")
+    var cityCode: Int? = null,
 
     /**
      * 单位所在县
      */
-    @NotNull(message = "单位所在县不能为空")
-    private Integer districtCode;
+    @field:NotNull(message = "单位所在县不能为空")
+    var districtCode: Int? = null,
 
     /**
      * 单位地址详情
      */
-    private String address;
+    var address: String? = null,
 
     /**
      * 单位法人
      */
-    private String legalPerson;
+    var legalPerson: String? = null,
 
     /**
      * 联系电话
      */
-    private String phone;
+    var phone: String? = null,
 
     /**
-     * 用户信息
+     * 用户信息 -------------------------------------------
      * 用户姓名
      */
-    @NotBlank(message = "用户姓名不能为空")
-    private String nickName;
+    @field:NotBlank(message = "用户姓名不能为空")
+    var nickName: String? = null,
 
     /**
      * 用户手机号
      */
-    @NotBlank(message = "用户手机号不能为空")
-    private String mobile;
+    @field:NotBlank(message = "用户手机号不能为空")
+    var mobile: String? = null,
 
     /**
      * 登录账号
      */
-    @NotBlank(message = "登录账号不能为空")
-    private String username;
+    @field:NotBlank(message = "登录账号不能为空")
+    var username: String? = null,
 
     /**
      * 性别
      */
-    private String gender;
-
-}
+    var gender: String? = null
+)

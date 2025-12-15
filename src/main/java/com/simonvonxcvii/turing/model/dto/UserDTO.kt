@@ -1,103 +1,118 @@
-package com.simonvonxcvii.turing.model.dto;
+package com.simonvonxcvii.turing.model.dto
 
-import com.simonvonxcvii.turing.model.query.PageQuery;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.experimental.Accessors;
+import com.simonvonxcvii.turing.model.query.PageQuery
+import jakarta.validation.constraints.NotBlank
+import jakarta.validation.constraints.NotEmpty
+import jakarta.validation.constraints.NotNull
+import java.time.LocalDateTime
 
-import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
+/**
+ * User DTO
+ * 
+ * @author Simon Von
+ * @since 12/30/2022 4:03 PM
+ */
+class UserDTO(
 
-@Accessors(chain = true)
-@Getter
-@Setter
-public class UserDTO extends PageQuery {
     /**
      * 用户姓名
      */
-    @NotBlank(message = "用户姓名不能为空")
-    public String name;
+    @field:NotBlank(message = "用户姓名不能为空")
+    var name: String? = null,
+
     /**
      * 用户姓名
      */
-    @NotBlank(message = "用户姓名不能为空")
-    public String realName;
+    @field:NotBlank(message = "用户姓名不能为空")
+    var realName: String? = null,
+
     /**
      * 用户手机号
      */
-    @NotNull(message = "用户手机号不能为空")
-    public Long mobile;
+    @field:NotNull(message = "用户手机号不能为空")
+    var mobile: Long? = null,
+
     /**
      * 用户性别
      */
-    @NotBlank(message = "用户性别不能为空")
-    public String gender;
+    @field:NotBlank(message = "用户性别不能为空")
+    var gender: String? = null,
+
     /**
      * 单位 id
      */
-    @NotBlank(message = "单位 id 不能为空")
-    public Integer orgId;
+    @field:NotBlank(message = "单位 id 不能为空")
+    var orgId: Int? = null,
+
     /**
      * 单位名称
      */
-    public String orgName;
+    var orgName: String? = null,
+
     /**
      * 部门
      */
-    public String department;
+    var department: String? = null,
+
     /**
      * 登录账号
      */
-    @NotBlank(message = "登录账号不能为空")
-    public String username;
+    @field:NotBlank(message = "登录账号不能为空")
+    var username: String? = null,
+
     /**
      * 是否已过期
      */
-    public Boolean accountNonExpired;
+    var accountNonExpired: Boolean? = null,
+
     /**
      * 是否已锁定
      */
-    public Boolean accountNonLocked;
+    var accountNonLocked: Boolean? = null,
+
     /**
      * 是否凭证已过期
      */
-    public Boolean credentialsNonExpired;
+    var credentialsNonExpired: Boolean? = null,
+
     /**
      * 是否启用
      */
-    public Boolean enabled;
+    var enabled: Boolean? = null,
+
     /**
      * 是否单位管理员
      */
-    public Boolean manager;
+    var manager: Boolean? = null,
+
     /**
      * 是否需要重新设置密码
      */
-    public Boolean needResetPassword;
+    var needResetPassword: Boolean? = null,
+
     /**
      * 用户角色
      */
-    public Collection<RoleDTO> authorities;
+    var authorities: MutableCollection<RoleDTO?>? = null,
+
     /**
      * 用户角色编码
      */
-    public Set<String> roles;
+    var roles: MutableSet<String?>? = null,
+
     /**
      * 用户 id
      */
-    private Integer id;
+    var id: Int? = null,
+
     /**
      * 创建时间
      */
-    private LocalDateTime createdDate;
+    var createdDate: LocalDateTime? = null,
+
     /**
      * 角色集合
      */
-    @NotEmpty(message = "角色集合不能为空")
-    private List<Integer> roleList;
-}
+    @field:NotEmpty(message = "角色集合不能为空")
+    var roleList: MutableList<Int?>? = null
+) : PageQuery()

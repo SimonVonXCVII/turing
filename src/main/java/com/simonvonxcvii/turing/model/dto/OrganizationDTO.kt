@@ -1,83 +1,95 @@
-package com.simonvonxcvii.turing.model.dto;
+package com.simonvonxcvii.turing.model.dto
 
-import com.simonvonxcvii.turing.model.query.PageQuery;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.experimental.Accessors;
+import com.simonvonxcvii.turing.model.query.PageQuery
+import jakarta.validation.constraints.NotBlank
+import jakarta.validation.constraints.NotNull
+import jakarta.validation.constraints.Pattern
+import java.time.LocalDateTime
 
-import java.time.LocalDateTime;
-
-@Accessors(chain = true)
-@Getter
-@Setter
-public class OrganizationDTO extends PageQuery {
+/**
+ * Organization DTO
+ * 
+ * @author Simon Von
+ * @since 12/30/2022 4:03 PM
+ */
+class OrganizationDTO(
     /**
      * 单位所在省名称
      */
-    public String provinceName;
+    var provinceName: String? = null,
+
     /**
      * 单位所在市名称
      */
-    public String cityName;
+    var cityName: String? = null,
+
     /**
      * 单位所在县名称
      */
-    public String districtName;
+    var districtName: String? = null,
+
     /**
      * 主键 id
      */
-    private Integer id;
+    var id: Int? = null,
+
     /**
      * 单位名称
      */
-    @NotBlank(message = "单位名称不能为空")
-    private String name;
+    @field:NotBlank(message = "单位名称不能为空")
+    var name: String? = null,
+
     /**
      * 信用代码
      */
-    @NotBlank(message = "信用代码不能为空")
-    @Pattern(regexp = "^\\w{18}$", message = "请输入正确的十八位信用代码")
-    private String code;
+    @field:NotBlank(message = "信用代码不能为空")
+    @field:Pattern(regexp = "^\\w{18}$", message = "请输入正确的十八位信用代码")
+    var code: String? = null,
+
     /**
      * 单位类型
      */
-    @NotBlank(message = "单位类型不能为空")
-    private String type;
+    @field:NotBlank(message = "单位类型不能为空")
+    var type: String? = null,
+
     /**
      * 单位所在省（市、区）编码
      */
-    @NotNull(message = "单位所在省（市、区）不能为空")
-    private Integer provinceCode;
+    @field:NotNull(message = "单位所在省（市、区）不能为空")
+    var provinceCode: Int? = null,
+
     /**
      * 单位所在市（州、盟）编码
      */
-    @NotNull(message = "单位所在市（州、盟）不能为空")
-    private Integer cityCode;
+    @field:NotNull(message = "单位所在市（州、盟）不能为空")
+    var cityCode: Int? = null,
+
     /**
      * 单位所在县（市、旗）编码
      */
-    @NotNull(message = "单位所在县（市、旗）不能为空")
-    private Integer districtCode;
+    @field:NotNull(message = "单位所在县（市、旗）不能为空")
+    var districtCode: Int? = null,
+
     /**
      * 单位地址详情
      */
-    @NotBlank(message = "单位地址详情不能为空")
-    private String address;
+    @field:NotBlank(message = "单位地址详情不能为空")
+    var address: String? = null,
+
     /**
      * 单位法人
      */
-    @NotBlank(message = "单位法人不能为空")
-    private String legalPerson;
+    @field:NotBlank(message = "单位法人不能为空")
+    var legalPerson: String? = null,
+
     /**
      * 联系电话
      */
-    @NotBlank(message = "联系电话不能为空")
-    private String phone;
+    @field:NotBlank(message = "联系电话不能为空")
+    var phone: String? = null,
+
     /**
      * 创建时间
      */
-    private LocalDateTime createdDate;
-}
+    var createdDate: LocalDateTime? = null
+) : PageQuery()

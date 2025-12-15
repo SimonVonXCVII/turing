@@ -1,26 +1,19 @@
-package com.simonvonxcvii.turing.model.dto;
-
-import lombok.Getter;
-import lombok.Setter;
+package com.simonvonxcvii.turing.model.dto
 
 /**
- * UploadFileDTO
- *
+ * UploadFile DTO
+ * 
  * @author Simon Von
  * @since 2023/4/3 10:52
  */
-@Getter
-@Setter
-public class UploadFileDTO {
-
+class UploadFileDTO(
     /**
      * 文件 id
      */
-    private Integer id;
+    var id: Int? = null,
 
     /**
      * 文件名
      */
-    private String filename;
-
-}
+    var filename: String? = null
+)

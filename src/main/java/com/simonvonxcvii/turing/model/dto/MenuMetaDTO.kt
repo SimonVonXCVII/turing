@@ -1,25 +1,24 @@
-package com.simonvonxcvii.turing.model.dto;
+package com.simonvonxcvii.turing.model.dto
 
-import lombok.Getter;
-import lombok.Setter;
-
-@Getter
-@Setter
-public class MenuMetaDTO {
-
+/**
+ * Menu Meta DTO
+ *
+ * @author Simon Von
+ * @since 12/30/2022 4:03 PM
+ */
+class MenuMetaDTO(
     /**
      * 菜单名称
      */
-    public String title;
+    var title: String? = null,
 
     /**
      * 菜单图标
      */
-    public String icon;
+    var icon: String? = null,
 
     /**
      * 是否隐藏菜单
      */
-    public boolean hideMenu;
-
-}
+    var hideMenu: Boolean = false
+)

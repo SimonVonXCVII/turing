@@ -1,58 +1,64 @@
-package com.simonvonxcvii.turing.model.dto;
+package com.simonvonxcvii.turing.model.dto
 
-import com.simonvonxcvii.turing.model.query.PageQuery;
-import jakarta.validation.constraints.NotNull;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.experimental.Accessors;
+import com.simonvonxcvii.turing.model.query.PageQuery
+import jakarta.validation.constraints.NotNull
+import java.time.LocalDate
+import java.time.LocalDateTime
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Set;
-
-@Accessors(chain = true)
-@Getter
-@Setter
-public class RoleDTO extends PageQuery {
+/**
+ * Role DTO
+ *
+ * @author Simon Von
+ * @since 12/30/2022 4:03 PM
+ */
+class RoleDTO(
     /**
      * 角色 id
      */
-    private Integer id;
+    var id: Int? = null,
+
     /**
      * 角色名称
      */
-//    @NotBlank(message = "角色名称不能为空")
-    private String name;
+    //    @NotBlank(message = "角色名称不能为空")
+    var name: String? = null,
+
     /**
      * 角色编码
      */
-//    @NotBlank(message = "角色编码不能为空")
-    private String authority;
+    //    @NotBlank(message = "角色编码不能为空")
+    var authority: String? = null,
+
     /**
      * 状态
      */
-    @NotNull(message = "状态")
-    private Byte status;
+    @field:NotNull(message = "状态")
+    var status: Byte? = null,
+
     /**
      * 备注
      */
 //    @NotBlank(message = "备注不能为空")
-    private String remark;
+    var remark: String? = null,
+
     /**
      * 创建时间
      */
-    private LocalDateTime createdDate;
+    var createdDate: LocalDateTime? = null,
+
     /**
      * 权限 id 集合
      */
 //    @NotEmpty(message = "权限 id 集合不能为空")
-    private Set<Integer> permissions;
+    var permissions: MutableSet<Int?>? = null,
+
     /**
      * 起始创建时间
      */
-    private LocalDate startTime;
+    var startTime: LocalDate? = null,
+
     /**
      * 截止创建时间
      */
-    private LocalDate endTime;
-}
+    var endTime: LocalDate? = null
+) : PageQuery()
