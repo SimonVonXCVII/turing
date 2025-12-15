@@ -29,10 +29,10 @@ public class MenuController {
         this.service = service;
     }
 
-    @Operation(summary = "单个新增或修改")
-    @PostMapping("/insertOrUpdate")
-    public Result<Object> insertOrUpdate(@RequestBody @Validated MenuDTO dto) {
-        service.insertOrUpdate(dto);
+    @Operation(summary = "新增数据")
+    @PostMapping
+    public Result<Object> insert(@RequestBody @Validated MenuDTO dto) {
+        service.insert(dto);
         return Result.ok();
     }
 
@@ -44,7 +44,7 @@ public class MenuController {
 
     @Operation(summary = "查询路由地址是否存在")
     @GetMapping("/path-exists")
-    public Result<Object> pathExists(String path) {
+    public Result<Boolean> pathExists(String path) {
         return Result.ok(service.pathExists(path));
     }
 

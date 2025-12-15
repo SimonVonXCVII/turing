@@ -34,8 +34,8 @@ data class Menu(
     /**
      * 系统权限 id
      */
-    @Column(unique = true, nullable = false, columnDefinition = "INTEGER", comment = "系统权限 id")
-    var permissionId: Int = 0,
+    @Column(unique = true, columnDefinition = "INTEGER", comment = "系统权限 id")
+    var permissionId: Int? = 0,
 
     /**
      * 菜单名称
@@ -91,29 +91,29 @@ data class Menu(
     /**
      * 排序编号
      */
-    @Column(unique = true, nullable = false, columnDefinition = "INTEGER", comment = "排序编号")
-    var sort: Int = 0,
+    @Column(unique = true, columnDefinition = "INTEGER", comment = "排序编号")
+    var sort: Int? = 0,
 
     /**
      * 是否显示
      */
-    @Column(nullable = false, columnDefinition = "BOOLEAN", comment = "是否显示")
+    @Column(columnDefinition = "BOOLEAN", comment = "是否显示")
     @get:JvmName("isShowed")
-    var showed: Boolean = true,
+    var showed: Boolean? = true,
 
     /**
      * 是否缓存
      */
-    @Column(nullable = false, columnDefinition = "BOOLEAN", comment = "是否缓存")
+    @Column(columnDefinition = "BOOLEAN", comment = "是否缓存")
     @get:JvmName("isCached")
-    var cached: Boolean = true,
+    var cached: Boolean? = true,
 
     /**
      * 是否外链
      */
-    @Column(nullable = false, columnDefinition = "BOOLEAN", comment = "是否外链")
+    @Column(columnDefinition = "BOOLEAN", comment = "是否外链")
     @get:JvmName("isExternal")
-    var external: Boolean = false
+    var external: Boolean? = false
 ) : AbstractAuditable() {
     companion object {
         /**

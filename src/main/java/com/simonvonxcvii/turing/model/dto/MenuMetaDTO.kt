@@ -1,5 +1,7 @@
 package com.simonvonxcvii.turing.model.dto
 
+import jakarta.validation.constraints.NotBlank
+
 /**
  * Menu Meta DTO
  *
@@ -8,9 +10,10 @@ package com.simonvonxcvii.turing.model.dto
  */
 class MenuMetaDTO(
     /**
-     * 菜单名称
+     * 标题
      */
-    var title: String? = null,
+    @field:NotBlank(message = "标题不能为空")
+    var title: String = "",
 
     /**
      * 菜单图标
@@ -20,5 +23,5 @@ class MenuMetaDTO(
     /**
      * 是否隐藏菜单
      */
-    var hideMenu: Boolean = false
+    var hideMenu: Boolean? = null
 )

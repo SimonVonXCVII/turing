@@ -42,5 +42,5 @@ class PermissionDTO(
     /**
      * 子级权限集合
      */
-    var children: MutableList<PermissionDTO?> = mutableListOf()
+    var children: MutableList<PermissionDTO>? = mutableListOf()
 ) : PageQuery()

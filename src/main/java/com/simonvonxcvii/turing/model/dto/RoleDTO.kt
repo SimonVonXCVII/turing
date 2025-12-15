@@ -32,7 +32,7 @@ class RoleDTO(
     /**
      * 状态
      */
-    @field:NotNull(message = "状态")
+    @field:NotNull(message = "状态不能为空")
     var status: Byte? = null,
 
     /**
@@ -50,7 +50,7 @@ class RoleDTO(
      * 权限 id 集合
      */
 //    @NotEmpty(message = "权限 id 集合不能为空")
-    var permissions: MutableSet<Int?>? = null,
+    var permissions: MutableSet<Int>? = mutableSetOf(),
 
     /**
      * 起始创建时间

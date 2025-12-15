@@ -93,12 +93,12 @@ class UserDTO(
     /**
      * 用户角色
      */
-    var authorities: MutableCollection<RoleDTO?>? = null,
+    var authorities: MutableCollection<RoleDTO>? = mutableListOf(),
 
     /**
      * 用户角色编码
      */
-    var roles: MutableSet<String?>? = null,
+    var roles: MutableSet<String>? = mutableSetOf(),
 
     /**
      * 用户 id
@@ -114,5 +114,5 @@ class UserDTO(
      * 角色集合
      */
     @field:NotEmpty(message = "角色集合不能为空")
-    var roleList: MutableList<Int?>? = null
+    var roleList: MutableList<Int>? = mutableListOf()
 ) : PageQuery()

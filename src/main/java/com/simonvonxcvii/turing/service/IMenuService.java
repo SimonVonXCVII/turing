@@ -15,9 +15,9 @@ import java.util.List;
 public interface IMenuService {
 
     /**
-     * 单个新增或修改
+     * 新增数据
      */
-    void insertOrUpdate(MenuDTO dto);
+    void insert(MenuDTO dto);
 
     /**
      * 查询名称是否存在

@@ -19,7 +19,7 @@ class DictDTO(
      * 字典类型
      */
     @field:NotBlank(message = "字典类型不能为空")
-    var type: @NotBlank(message = "字典类型不能为空") String? = null,
+    var type: String? = null,
 
     /**
      * 上级字典 id
@@ -30,13 +30,13 @@ class DictDTO(
      * 字典名称
      */
     @field:NotBlank(message = "字典名称不能为空")
-    var name: @NotBlank(message = "字典名称不能为空") String? = null,
+    var name: String? = null,
 
     /**
      * 字典值
      */
     @field:NotBlank(message = "字典值不能为空")
-    var value: @NotBlank(message = "字典值不能为空") String? = null,
+    var value: String? = null,
 
     /**
      * 字典说明
@@ -51,5 +51,5 @@ class DictDTO(
     /**
      * 下级字典
      */
-    var children: MutableList<DictDTO?>? = null
+    var children: MutableList<DictDTO>? = mutableListOf()
 ) : PageQuery()

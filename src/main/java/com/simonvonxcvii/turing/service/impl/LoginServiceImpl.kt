@@ -85,7 +85,7 @@ class LoginServiceImpl(
                     } else {
                         menuDTOList.stream()
                             .filter { parentMenuDTO -> parentMenuDTO.id == menuDTO.pid }
-                            .forEach { parentMenuDTO -> parentMenuDTO.children.add(menuDTO) }
+                            .forEach { parentMenuDTO -> parentMenuDTO.children!!.add(menuDTO) }
                     }
                 }
             return menuDTOList
@@ -128,7 +128,7 @@ class LoginServiceImpl(
             .peek { menuDTO: MenuDTO ->
                 menuDTOList.stream()
                     .filter { childMenuDTO -> menuDTO.id == childMenuDTO.pid }
-                    .forEach { childMenuDTO -> menuDTO.children.add(childMenuDTO) }
+                    .forEach { childMenuDTO -> menuDTO.children!!.add(childMenuDTO) }
             }
             .toList()
     }
@@ -143,7 +143,7 @@ class LoginServiceImpl(
         val menuMetaDTO = MenuMetaDTO()
         menuMetaDTO.title = menu.title
         menuMetaDTO.icon = menu.icon
-        menuMetaDTO.hideMenu = !menu.showed
+//        menuMetaDTO.hideMenu = !menu.showed
         menuDTO.meta = menuMetaDTO
         return menuDTO
     }

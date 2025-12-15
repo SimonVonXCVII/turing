@@ -117,7 +117,7 @@ CREATE TABLE IF NOT EXISTS public.turing_menu
         CONSTRAINT con_public_turing_menu_constraint_1
             PRIMARY KEY,
     pid                INTEGER,
-    permission_id      INTEGER                             NOT NULL
+    permission_id      INTEGER
         UNIQUE,
     name               VARCHAR(64)                         NOT NULL
         UNIQUE,
@@ -131,11 +131,11 @@ CREATE TABLE IF NOT EXISTS public.turing_menu
     component          VARCHAR(128),
     status             SMALLINT                            NOT NULL,
     icon               VARCHAR(128),
-    sort               INTEGER                             NOT NULL
+    sort               INTEGER
         UNIQUE,
-    showed             BOOLEAN                             NOT NULL,
-    cached             BOOLEAN                             NOT NULL,
-    external           BOOLEAN                             NOT NULL,
+    showed             BOOLEAN,
+    cached             BOOLEAN,
+    external           BOOLEAN,
     created_by         INTEGER,
     created_date       TIMESTAMP                           NOT NULL,
     last_modified_by   INTEGER,

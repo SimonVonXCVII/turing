@@ -57,12 +57,12 @@ class OrganizationBusinessDTO(
     /**
      * 业务环节 TODO，尝试改成 Set<String> 或者 Set<OrganizationBusinessBusinessLinksEnum>
      */
-    var link: Array<String?>?,
+    var link: Array<String>?,
 
     /**
      * 质控类型 TODO，尝试改成 Set<String> 或者 Set<OrganizationBusinessQualityControlTypeEnum>
      */
-    var type: Array<String?>?,
+    var type: Array<String>?,
 
     /**
      * 业务申请状态

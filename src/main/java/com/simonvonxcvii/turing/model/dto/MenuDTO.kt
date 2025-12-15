@@ -24,7 +24,6 @@ class MenuDTO(
     /**
      * 系统权限 id
      */
-    @field:NotBlank(message = "系统权限 id 不能为空")
     var permissionId: Int? = null,
 
     /**
@@ -36,7 +35,6 @@ class MenuDTO(
     /**
      * 菜单标题
      */
-    @field:NotBlank(message = "菜单标题不能为空")
     var title: String? = null,
 
     /**
@@ -50,7 +48,6 @@ class MenuDTO(
     /**
      * 权限标识
      */
-    @field:NotBlank(message = "权限标识不能为空")
     var authCode: String? = null,
 
     /**
@@ -68,7 +65,7 @@ class MenuDTO(
     /**
      * 状态
      */
-    @field:NotNull(message = "状态")
+    @field:NotNull(message = "状态不能为空")
     var status: Byte? = null,
 
     /**
@@ -79,34 +76,31 @@ class MenuDTO(
     /**
      * 菜单排序
      */
-    @field:NotNull(message = "菜单排序不能为空")
     var sort: Int? = null,
 
     /**
      * 是否显示
      */
-    @field:NotNull(message = "是否显示不能为空")
     var showed: Boolean? = null,
 
     /**
      * 是否缓存
      */
-    @field:NotNull(message = "是否缓存不能为空")
     var cached: Boolean? = null,
 
     /**
      * 是否外链
      */
-    @field:NotNull(message = "是否外链不能为空")
     var external: Boolean? = null,
 
     /**
      * 菜单元数据
      */
-    var meta: MenuMetaDTO? = null,
+    @field:NotNull(message = "菜单元数据不能为空")
+    var meta: MenuMetaDTO = MenuMetaDTO(),
 
     /**
      * 子菜单
      */
-    var children: MutableList<MenuDTO> = mutableListOf()
+    var children: MutableList<MenuDTO>? = mutableListOf()
 ) : PageQuery()

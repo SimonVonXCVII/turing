@@ -12,6 +12,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.PredicateSpecification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.Objects;
@@ -33,20 +34,10 @@ public class MenuServiceImpl implements IMenuService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void insertOrUpdate(MenuDTO dto) {
-        if (dto.getPid() == null && dto.getSort() % 100 != 0) {
-            throw new RuntimeException("父级权限的排序编号必须是一百的整数倍");
-        }
-        Menu menu;
-        // 新增
-        if (dto.getId() == null) {
-            menu = new Menu();
-        }
-        // 修改
-        else {
-            menu = menuJpaRepository.findById(dto.getId()).orElseThrow(() -> new RuntimeException("无法查找到该数据"));
-        }
-        BeanUtils.copyProperties(dto, menu);
+    public void insert(MenuDTO dto) {
+        Menu menu = new Menu();
+        BeanUtils.copyProperties(dto, menu, "id", "title");
+        menu.setTitle(dto.getMeta().getTitle());
         menuJpaRepository.save(menu);
     }
 
@@ -70,13 +61,17 @@ public class MenuServiceImpl implements IMenuService {
         List<Menu> menuList = menuJpaRepository.findAll(Sort.by(Menu.SORT));
         // menu 级别分类
         List<Menu> level1MenuList = menuList.stream()
-                .filter(menu -> menu.getSort() % 10000 == 0)
+                .filter(menu ->
+                        StringUtils.hasText(menu.getPath()) && menu.getPath().chars().filter(c -> c == '/').count() == 1
+                )
                 .toList();
         List<Menu> level2MenuList = menuList.stream()
-                .filter(menu -> menu.getSort() % 100 == 0)
+                .filter(menu ->
+                        StringUtils.hasText(menu.getPath()) && menu.getPath().chars().filter(c -> c == '/').count() == 2
+                )
                 .toList();
         List<Menu> level3MenuList = menuList.stream()
-                .filter(menu -> menu.getSort() % 100 != 0)
+                .filter(menu -> !StringUtils.hasText(menu.getPath()))
                 .toList();
         return level1MenuList.stream()
                 .map(level1Menu -> {
@@ -86,7 +81,7 @@ public class MenuServiceImpl implements IMenuService {
                     MenuMetaDTO level1MenuMetaDTO = new MenuMetaDTO();
                     level1MenuMetaDTO.setTitle(level1Menu.getTitle());
                     level1MenuMetaDTO.setIcon(level1Menu.getIcon());
-                    level1MenuMetaDTO.setHideMenu(!level1Menu.isShowed());
+//                    level1MenuMetaDTO.setHideMenu(!level1Menu.isShowed());
                     level1MenuDTO.setMeta(level1MenuMetaDTO);
                     level2MenuList.stream()
                             .filter(level2Menu -> Objects.equals(level1Menu.getId(), level2Menu.getPid()))
@@ -97,7 +92,7 @@ public class MenuServiceImpl implements IMenuService {
                                 MenuMetaDTO level2MenuMetaDTO = new MenuMetaDTO();
                                 level2MenuMetaDTO.setTitle(level2Menu.getTitle());
                                 level2MenuMetaDTO.setIcon(level2Menu.getIcon());
-                                level2MenuMetaDTO.setHideMenu(!level2Menu.isShowed());
+//                                level2MenuMetaDTO.setHideMenu(!level2Menu.isShowed());
                                 level2MenuDTO.setMeta(level2MenuMetaDTO);
                                 level1MenuDTO.getChildren().add(level2MenuDTO);
                                 level3MenuList.stream()
@@ -109,7 +104,7 @@ public class MenuServiceImpl implements IMenuService {
                                             MenuMetaDTO level3MenuMetaDTO = new MenuMetaDTO();
                                             level3MenuMetaDTO.setTitle(level3Menu.getTitle());
                                             level3MenuMetaDTO.setIcon(level3Menu.getIcon());
-                                            level3MenuMetaDTO.setHideMenu(!level3Menu.isShowed());
+//                                            level3MenuMetaDTO.setHideMenu(!level3Menu.isShowed());
                                             level3MenuDTO.setMeta(level3MenuMetaDTO);
                                             level2MenuDTO.getChildren().add(level3MenuDTO);
                                         });
