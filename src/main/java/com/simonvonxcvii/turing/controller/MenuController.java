@@ -36,6 +36,18 @@ public class MenuController {
         return Result.ok();
     }
 
+    @Operation(summary = "查询菜单名称是否存在")
+    @GetMapping("/name-exists")
+    public Result<Boolean> nameExists(String name) {
+        return Result.ok(service.nameExists(name));
+    }
+
+    @Operation(summary = "查询路由地址是否存在")
+    @GetMapping("/path-exists")
+    public Result<Object> pathExists(String path) {
+        return Result.ok(service.pathExists(path));
+    }
+
     @Operation(summary = "条件查询")
     @GetMapping("/list")
     public Result<List<MenuDTO>> selectBy() {

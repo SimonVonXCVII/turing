@@ -9,6 +9,7 @@ import com.simonvonxcvii.turing.service.IMenuService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.PredicateSpecification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -47,6 +48,20 @@ public class MenuServiceImpl implements IMenuService {
         }
         BeanUtils.copyProperties(dto, menu);
         menuJpaRepository.save(menu);
+    }
+
+    @Override
+    public Boolean nameExists(String name) {
+        PredicateSpecification<Menu> spec = (from, criteriaBuilder) ->
+                criteriaBuilder.equal(from.get(Menu.NAME), name);
+        return menuJpaRepository.exists(spec);
+    }
+
+    @Override
+    public Boolean pathExists(String path) {
+        PredicateSpecification<Menu> spec = (from, criteriaBuilder) ->
+                criteriaBuilder.equal(from.get(Menu.PATH), path);
+        return menuJpaRepository.exists(spec);
     }
 
     @Override
