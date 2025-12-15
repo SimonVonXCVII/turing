@@ -29,29 +29,30 @@ import org.springframework.security.core.GrantedAuthority
 @SQLRestriction("deleted = FALSE")
 data class Role(
     /**
-     * 角色编码
-     */
-    @Column(unique = true, nullable = false, columnDefinition = "VARCHAR(64)", comment = "角色编码")
-    @get:JvmName("getAuthorityValue")
-    var authority: String = "",
-
-    /**
      * 角色名称
      */
     @Column(unique = true, nullable = false, columnDefinition = "VARCHAR(64)", comment = "角色名称")
     var name: String = "",
 
     /**
+     * 角色名称，唯一作用是为了 <code>org.springframework.security.core.GrantedAuthority</code>
+     * @see org.springframework.security.core.GrantedAuthority
+     */
+    @Column(unique = true, nullable = false, columnDefinition = "VARCHAR(64)", comment = "角色名称")
+    @get:JvmName("getAuthorityValue")
+    var authority: String = "",
+
+    /**
+     * 状态
+     */
+    @Column(nullable = false, columnDefinition = "SMALLINT", comment = "状态")
+    var status: Byte = 1,
+
+    /**
      * 备注
      */
     @Column(columnDefinition = "VARCHAR(128)", comment = "备注")
-    var remark: String? = null,
-
-    /**
-     * 角色状态
-     */
-    @Column(nullable = false, columnDefinition = "SMALLINT", comment = "角色状态")
-    var status: Short = 1
+    var remark: String? = null
 ) : AbstractAuditable(), GrantedAuthority {
     override fun getAuthority(): String {
         return authority
@@ -70,7 +71,7 @@ data class Role(
 
         const val AUTHORITY = "authority"
         const val NAME = "name"
-        const val REMARK = "remark"
         const val STATUS = "status"
+        const val REMARK = "remark"
     }
 }

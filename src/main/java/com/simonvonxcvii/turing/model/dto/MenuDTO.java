@@ -1,5 +1,6 @@
 package com.simonvonxcvii.turing.model.dto;
 
+import com.simonvonxcvii.turing.enums.MenuTypeEnum;
 import com.simonvonxcvii.turing.model.query.PageQuery;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -17,19 +18,11 @@ public class MenuDTO extends PageQuery {
     /**
      * 菜单 id
      */
-    public Integer id;
+    private Integer id;
     /**
      * 上级菜单 id
      */
-    public Integer pid;
-    /**
-     * 菜单元数据
-     */
-    public MenuMetaDTO meta;
-    /**
-     * 子菜单
-     */
-    public List<MenuDTO> children = new LinkedList<>();
+    private Integer pid;
     /**
      * 系统权限 id
      */
@@ -46,24 +39,32 @@ public class MenuDTO extends PageQuery {
     @NotBlank(message = "菜单标题不能为空")
     private String title;
     /**
-     * 系统权限
-     */
-    private String permission;
-    /**
      * 菜单类型：目录、菜单、按钮
+     *
+     * @see MenuTypeEnum
      */
     @NotBlank(message = "菜单类型不能为空")
     private String type;
     /**
-     * 菜单路径
+     * 权限标识
      */
-    @NotBlank(message = "菜单路径不能为空")
+    @NotBlank(message = "权限标识不能为空")
+    private String authCode;
+    /**
+     * 路由地址
+     */
+    @NotBlank(message = "路由地址不能为空")
     private String path;
     /**
-     * 组件路径
+     * 页面组件
      */
-    @NotBlank(message = "组件路径不能为空")
+    @NotBlank(message = "页面组件不能为空")
     private String component;
+    /**
+     * 状态
+     */
+    @NotNull(message = "状态")
+    private Byte status;
     /**
      * 图标
      */
@@ -72,7 +73,7 @@ public class MenuDTO extends PageQuery {
      * 菜单排序
      */
     @NotNull(message = "菜单排序不能为空")
-    private Short sort;
+    private Integer sort;
     /**
      * 是否显示
      */
@@ -88,4 +89,12 @@ public class MenuDTO extends PageQuery {
      */
     @NotNull(message = "是否外链不能为空")
     private Boolean external;
+    /**
+     * 菜单元数据
+     */
+    private MenuMetaDTO meta;
+    /**
+     * 子菜单
+     */
+    private List<MenuDTO> children = new LinkedList<>();
 }

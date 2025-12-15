@@ -16,7 +16,6 @@ import java.util.Set;
  * </p>
  *
  * @author Simon Von
- * @author JiangEEZzz
  * @since 2023-01-04 17:22:49
  */
 @Tag(name = "PermissionController", description = "权限表 前端控制器")

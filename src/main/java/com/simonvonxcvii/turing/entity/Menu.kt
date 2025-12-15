@@ -51,22 +51,36 @@ data class Menu(
 
     /**
      * 菜单类型：目录、菜单、按钮
+     *
+     * @see MenuTypeEnum
      */
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, columnDefinition = "VARCHAR(64)", comment = "菜单类型：目录、菜单、按钮")
-    var type: MenuTypeEnum = MenuTypeEnum.ROUTE,
+    var type: MenuTypeEnum = MenuTypeEnum.MENU,
 
     /**
-     * 菜单路径
+     * 权限标识
      */
-    @Column(unique = true, nullable = false, columnDefinition = "VARCHAR(128)", comment = "菜单路径")
-    var path: String = "",
+    @Column(unique = true, columnDefinition = "VARCHAR(128)", comment = "权限标识")
+    var authCode: String? = null,
 
     /**
-     * 组件路径
+     * 路由地址
      */
-    @Column(nullable = false, columnDefinition = "VARCHAR(128)", comment = "组件路径")
-    var component: String = "",
+    @Column(unique = true, columnDefinition = "VARCHAR(128)", comment = "路由地址")
+    var path: String? = null,
+
+    /**
+     * 页面组件
+     */
+    @Column(columnDefinition = "VARCHAR(128)", comment = "页面组件")
+    var component: String? = null,
+
+    /**
+     * 状态
+     */
+    @Column(nullable = false, columnDefinition = "SMALLINT", comment = "状态")
+    var status: Byte = 1,
 
     /**
      * 图标
@@ -77,8 +91,8 @@ data class Menu(
     /**
      * 排序编号
      */
-    @Column(unique = true, nullable = false, columnDefinition = "SMALLINT", comment = "排序编号")
-    var sort: Short = 0,
+    @Column(unique = true, nullable = false, columnDefinition = "INTEGER", comment = "排序编号")
+    var sort: Int = 0,
 
     /**
      * 是否显示
@@ -117,8 +131,10 @@ data class Menu(
         const val NAME = "name"
         const val TITLE = "title"
         const val TYPE = "type"
+        const val AUTH_CODE = "authCode"
         const val PATH = "path"
         const val COMPONENT = "component"
+        const val STATUS = "status"
         const val ICON = "icon"
         const val SORT = "sort"
         const val SHOWED = "showed"

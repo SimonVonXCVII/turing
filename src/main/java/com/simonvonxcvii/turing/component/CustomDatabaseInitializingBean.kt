@@ -345,1658 +345,1400 @@ class CustomDatabaseInitializingBean(
         userRoleJpaRepository.save(userRole)
 
 
-        val permission100 = Permission(name = "基础数据管理", sort = 100)
-        permissionJpaRepository.save(permission100)
-        val permission101 = Permission(pid = permission100.id, name = "业务管理账号开通", sort = 101)
-        val permission102 = Permission(pid = permission100.id, name = "业务管理单位授权", sort = 102)
-        val permission103 = Permission(pid = permission100.id, name = "技术单位信息管理", sort = 103)
-        val permission104 = Permission(pid = permission100.id, name = "技术专家信息维护", sort = 104)
-        val permission105 = Permission(pid = permission100.id, name = "数据字典管理", sort = 105)
-        val permission106 = Permission(pid = permission100.id, name = "设备终端授权管理", sort = 106)
-        val permission107 = Permission(pid = permission100.id, name = "平台用户新增维护", sort = 107)
-        val permission100List = listOfNotNull(
-            permission101, permission102, permission103, permission104, permission105, permission106, permission107
+        val permission10000 = Permission(name = "基础数据管理", sort = 10000)
+        permissionJpaRepository.save(permission10000)
+        val permission10100 = Permission(pid = permission10000.id, name = "业务管理账号开通", sort = 10100)
+        val permission10200 = Permission(pid = permission10000.id, name = "业务管理单位授权", sort = 10200)
+        val permission10300 = Permission(pid = permission10000.id, name = "技术单位信息管理", sort = 10300)
+        val permission10400 = Permission(pid = permission10000.id, name = "技术专家信息维护", sort = 10400)
+        val permission10500 = Permission(pid = permission10000.id, name = "数据字典管理", sort = 10500)
+        val permission10600 = Permission(pid = permission10000.id, name = "设备终端授权管理", sort = 10600)
+        val permission10700 = Permission(pid = permission10000.id, name = "平台用户新增维护", sort = 10700)
+        val permission10000List = listOfNotNull(
+            permission10100,
+            permission10200,
+            permission10300,
+            permission10400,
+            permission10500,
+            permission10600,
+            permission10700
         )
-        permissionJpaRepository.saveAll(permission100List)
-        val permission200 = Permission(name = "用户单位管理", sort = 200)
-        permissionJpaRepository.save(permission200)
-        val permission201 = Permission(pid = permission200.id, name = "管理单位用户维护", sort = 201)
-        val permission202 = Permission(pid = permission200.id, name = "技术单位业务申请", sort = 202)
-        val permission203 = Permission(pid = permission200.id, name = "技术单位业务审核", sort = 203)
-        val permission204 = Permission(pid = permission200.id, name = "技术单位用户维护", sort = 204)
-        val permission205 = Permission(pid = permission200.id, name = "技术专家业务申请", sort = 205)
-        val permission206 = Permission(pid = permission200.id, name = "技术专家业务审核", sort = 206)
-        val permission207 = Permission(pid = permission200.id, name = "调查小组新建维护", sort = 207)
-        val permission208 = Permission(pid = permission200.id, name = "调查单位信息查询", sort = 208)
-        val permission209 = Permission(pid = permission200.id, name = "调查用户信息查询", sort = 209)
-        val permission200List = listOfNotNull(
-            permission201,
-            permission202,
-            permission203,
-            permission204,
-            permission205,
-            permission206,
-            permission207,
-            permission208,
-            permission209
+        permissionJpaRepository.saveAll(permission10000List)
+        val permission20000 = Permission(name = "用户单位管理", sort = 20000)
+        permissionJpaRepository.save(permission20000)
+        val permission20100 = Permission(pid = permission20000.id, name = "管理单位用户维护", sort = 20100)
+        val permission20200 = Permission(pid = permission20000.id, name = "技术单位业务申请", sort = 20200)
+        val permission20300 = Permission(pid = permission20000.id, name = "技术单位业务审核", sort = 20300)
+        val permission20400 = Permission(pid = permission20000.id, name = "技术单位用户维护", sort = 20400)
+        val permission20500 = Permission(pid = permission20000.id, name = "技术专家业务申请", sort = 20500)
+        val permission20600 = Permission(pid = permission20000.id, name = "技术专家业务审核", sort = 20600)
+        val permission20700 = Permission(pid = permission20000.id, name = "调查小组新建维护", sort = 20700)
+        val permission20800 = Permission(pid = permission20000.id, name = "调查单位信息查询", sort = 20800)
+        val permission20900 = Permission(pid = permission20000.id, name = "调查用户信息查询", sort = 20900)
+        val permission20000List = listOfNotNull(
+            permission20100,
+            permission20200,
+            permission20300,
+            permission20400,
+            permission20500,
+            permission20600,
+            permission20700,
+            permission20800,
+            permission20900
         )
-        permissionJpaRepository.saveAll(permission200List)
-        val permission300 = Permission(name = "项目任务管理", sort = 300)
-        permissionJpaRepository.save(permission300)
-        val permission301 = Permission(pid = permission300.id, name = "项目新增维护", sort = 301)
-        val permission302 = Permission(pid = permission300.id, name = "监管对象维护", sort = 302)
-        val permission303 = Permission(pid = permission300.id, name = "任务下发管理", sort = 303)
-        val permission304 = Permission(pid = permission300.id, name = "牵头单位实施", sort = 304)
-        val permission305 = Permission(pid = permission300.id, name = "监管对象信息查询", sort = 305)
-        val permission306 = Permission(pid = permission300.id, name = "技术单位任务执行", sort = 306)
-        val permission300List = listOfNotNull(
-            permission301, permission302, permission303, permission304, permission305, permission306
+        permissionJpaRepository.saveAll(permission20000List)
+        val permission30000 = Permission(name = "项目任务管理", sort = 30000)
+        permissionJpaRepository.save(permission30000)
+        val permission30100 = Permission(pid = permission30000.id, name = "项目新增维护", sort = 30100)
+        val permission30200 = Permission(pid = permission30000.id, name = "监管对象维护", sort = 30200)
+        val permission30300 = Permission(pid = permission30000.id, name = "任务下发管理", sort = 30300)
+        val permission30400 = Permission(pid = permission30000.id, name = "牵头单位实施", sort = 30400)
+        val permission30500 = Permission(pid = permission30000.id, name = "监管对象信息查询", sort = 30500)
+        val permission30600 = Permission(pid = permission30000.id, name = "技术单位任务执行", sort = 30600)
+        val permission30000List = listOfNotNull(
+            permission30100, permission30200, permission30300, permission30400, permission30500, permission30600
         )
-        permissionJpaRepository.saveAll(permission300List)
-        val permission400 = Permission(name = "点位布设管理", sort = 400)
-        permissionJpaRepository.save(permission400)
-        val permission401 = Permission(pid = permission400.id, name = "测试项目新增维护", sort = 401)
-        val permission402 = Permission(pid = permission400.id, name = "测试项目分类管理", sort = 402)
-        val permission403 = Permission(pid = permission400.id, name = "布点人员任务分配", sort = 403)
-        val permission404 = Permission(pid = permission400.id, name = "布点数据成果录入", sort = 404)
-        val permission405 = Permission(pid = permission400.id, name = "布点方案数据退回", sort = 405)
-        val permission406 = Permission(pid = permission400.id, name = "布点方案数据查询", sort = 406)
-        val permission407 = Permission(pid = permission400.id, name = "新增测试项目审核", sort = 407)
-        val permission400List = listOfNotNull(
-            permission401, permission402, permission403, permission404, permission405, permission406, permission407
+        permissionJpaRepository.saveAll(permission30000List)
+        val permission40000 = Permission(name = "点位布设管理", sort = 40000)
+        permissionJpaRepository.save(permission40000)
+        val permission40100 = Permission(pid = permission40000.id, name = "测试项目新增维护", sort = 40100)
+        val permission40200 = Permission(pid = permission40000.id, name = "测试项目分类管理", sort = 40200)
+        val permission40300 = Permission(pid = permission40000.id, name = "布点人员任务分配", sort = 40300)
+        val permission40400 = Permission(pid = permission40000.id, name = "布点数据成果录入", sort = 40400)
+        val permission40500 = Permission(pid = permission40000.id, name = "布点方案数据退回", sort = 40500)
+        val permission40600 = Permission(pid = permission40000.id, name = "布点方案数据查询", sort = 40600)
+        val permission40700 = Permission(pid = permission40000.id, name = "新增测试项目审核", sort = 40700)
+        val permission40000List = listOfNotNull(
+            permission40100,
+            permission40200,
+            permission40300,
+            permission40400,
+            permission40500,
+            permission40600,
+            permission40700
         )
-        permissionJpaRepository.saveAll(permission400List)
-        val permission500 = Permission(name = "点位布设", sort = 500)
-        permissionJpaRepository.save(permission500)
-        val permission501 = Permission(pid = permission500.id, name = "布点方案问题整改", sort = 501)
-        val permission502 = Permission(pid = permission500.id, name = "布点方案数据维护", sort = 502)
-        val permission503 = Permission(pid = permission500.id, name = "布点方案信息查询", sort = 503)
-        val permission500List = listOfNotNull(
-            permission501, permission502, permission503
+        permissionJpaRepository.saveAll(permission40000List)
+        val permission50000 = Permission(name = "点位布设", sort = 50000)
+        permissionJpaRepository.save(permission50000)
+        val permission50100 = Permission(pid = permission50000.id, name = "布点方案问题整改", sort = 50100)
+        val permission50200 = Permission(pid = permission50000.id, name = "布点方案数据维护", sort = 50200)
+        val permission50300 = Permission(pid = permission50000.id, name = "布点方案信息查询", sort = 50300)
+        val permission50000List = listOfNotNull(
+            permission50100, permission50200, permission50300
         )
-        permissionJpaRepository.saveAll(permission500List)
-        val permission600 = Permission(name = "布点质控管理", sort = 600)
-        permissionJpaRepository.save(permission600)
-        val permission601 = Permission(pid = permission600.id, name = "布点质控专家组维护", sort = 601)
-        val permission602 = Permission(pid = permission600.id, name = "一级质控(县)任务分配", sort = 602)
-        val permission603 = Permission(pid = permission600.id, name = "二级质控(市)任务分配", sort = 603)
-        val permission604 = Permission(pid = permission600.id, name = "三级质控(省)任务分配", sort = 604)
-        val permission605 = Permission(pid = permission600.id, name = "布点质控专家组任务", sort = 605)
-        val permission606 = Permission(pid = permission600.id, name = "布点质控意见反馈", sort = 606)
-        val permission607 = Permission(pid = permission600.id, name = "布点质控专家查询", sort = 607)
-        val permission608 = Permission(pid = permission600.id, name = "布点质控意见退回", sort = 608)
-        val permission600List = listOfNotNull(
-            permission601,
-            permission602,
-            permission603,
-            permission604,
-            permission605,
-            permission606,
-            permission607,
-            permission608
+        permissionJpaRepository.saveAll(permission50000List)
+        val permission60000 = Permission(name = "布点质控管理", sort = 60000)
+        permissionJpaRepository.save(permission60000)
+        val permission60100 = Permission(pid = permission60000.id, name = "布点质控专家组维护", sort = 60100)
+        val permission60200 = Permission(pid = permission60000.id, name = "一级质控(县)任务分配", sort = 60200)
+        val permission60300 = Permission(pid = permission60000.id, name = "二级质控(市)任务分配", sort = 60300)
+        val permission60400 = Permission(pid = permission60000.id, name = "三级质控(省)任务分配", sort = 60400)
+        val permission60500 = Permission(pid = permission60000.id, name = "布点质控专家组任务", sort = 60500)
+        val permission60600 = Permission(pid = permission60000.id, name = "布点质控意见反馈", sort = 60600)
+        val permission60700 = Permission(pid = permission60000.id, name = "布点质控专家查询", sort = 60700)
+        val permission60800 = Permission(pid = permission60000.id, name = "布点质控意见退回", sort = 60800)
+        val permission60000List = listOfNotNull(
+            permission60100,
+            permission60200,
+            permission60300,
+            permission60400,
+            permission60500,
+            permission60600,
+            permission60700,
+            permission60800
         )
-        permissionJpaRepository.saveAll(permission600List)
-        val permission700 = Permission(name = "采样调查管理", sort = 700)
-        permissionJpaRepository.save(permission700)
-        val permission701 = Permission(pid = permission700.id, name = "牵头单位组织实施", sort = 701)
-        val permission702 = Permission(pid = permission700.id, name = "采样小组任务分配", sort = 702)
-        val permission703 = Permission(pid = permission700.id, name = "采样调查信息查询", sort = 703)
-        val permission704 = Permission(pid = permission700.id, name = "检测子样进度查询", sort = 704)
-        val permission705 = Permission(pid = permission700.id, name = "取样调查表单下载", sort = 705)
-        val permission706 = Permission(pid = permission700.id, name = "采样资料单位内审", sort = 706)
-        val permission707 = Permission(pid = permission700.id, name = "质控退回样点查询", sort = 707)
-        val permission708 = Permission(pid = permission700.id, name = "批次样品运送表单", sort = 708)
-        val permission709 = Permission(pid = permission700.id, name = "单位取样进展统计", sort = 709)
-        val permission710 = Permission(pid = permission700.id, name = "资料内审状态查询", sort = 710)
-        val permission711 = Permission(pid = permission700.id, name = "资料内审进展统计", sort = 711)
-        val permission712 = Permission(pid = permission700.id, name = "重采样品信息查询", sort = 712)
-        val permission713 = Permission(pid = permission700.id, name = "严重质量问题申诉", sort = 713)
+        permissionJpaRepository.saveAll(permission60000List)
+        val permission70000 = Permission(name = "采样调查管理", sort = 70000)
+        permissionJpaRepository.save(permission70000)
+        val permission70100 = Permission(pid = permission70000.id, name = "牵头单位组织实施", sort = 70100)
+        val permission70200 = Permission(pid = permission70000.id, name = "采样小组任务分配", sort = 70200)
+        val permission70300 = Permission(pid = permission70000.id, name = "采样调查信息查询", sort = 70300)
+        val permission70400 = Permission(pid = permission70000.id, name = "检测子样进度查询", sort = 70400)
+        val permission70500 = Permission(pid = permission70000.id, name = "取样调查表单下载", sort = 70500)
+        val permission70600 = Permission(pid = permission70000.id, name = "采样资料单位内审", sort = 70600)
+        val permission70700 = Permission(pid = permission70000.id, name = "质控退回样点查询", sort = 70700)
+        val permission70800 = Permission(pid = permission70000.id, name = "批次样品运送表单", sort = 70800)
+        val permission70900 = Permission(pid = permission70000.id, name = "单位取样进展统计", sort = 70900)
+        val permission71000 = Permission(pid = permission70000.id, name = "资料内审状态查询", sort = 71000)
+        val permission71100 = Permission(pid = permission70000.id, name = "资料内审进展统计", sort = 71100)
+        val permission71200 = Permission(pid = permission70000.id, name = "重采样品信息查询", sort = 71200)
+        val permission71300 = Permission(pid = permission70000.id, name = "严重质量问题申诉", sort = 71300)
         val permission700List = listOfNotNull(
-            permission701,
-            permission702,
-            permission703,
-            permission704,
-            permission705,
-            permission706,
-            permission707,
-            permission708,
-            permission709,
-            permission710,
-            permission711,
-            permission712,
-            permission713
+            permission70100,
+            permission70200,
+            permission70300,
+            permission70400,
+            permission70500,
+            permission70600,
+            permission70700,
+            permission70800,
+            permission70900,
+            permission71000,
+            permission71100,
+            permission71200,
+            permission71300
         )
         permissionJpaRepository.saveAll(permission700List)
-        val permission800 = Permission(name = "取样调查", sort = 800)
-        permissionJpaRepository.save(permission800)
-        val permission801 = Permission(pid = permission800.id, name = "取样调查表单明细", sort = 801)
-        val permission802 = Permission(pid = permission800.id, name = "质控退回样点明细", sort = 802)
-        val permission803 = Permission(pid = permission800.id, name = "严重问题申诉记录", sort = 803)
-        val permission804 = Permission(pid = permission800.id, name = "重采样品信息明细", sort = 804)
-        val permission800List = listOfNotNull(
-            permission801, permission802, permission803, permission804
+        val permission80000 = Permission(name = "取样调查", sort = 80000)
+        permissionJpaRepository.save(permission80000)
+        val permission80100 = Permission(pid = permission80000.id, name = "取样调查表单明细", sort = 80100)
+        val permission80200 = Permission(pid = permission80000.id, name = "质控退回样点明细", sort = 80200)
+        val permission80300 = Permission(pid = permission80000.id, name = "严重问题申诉记录", sort = 80300)
+        val permission80400 = Permission(pid = permission80000.id, name = "重采样品信息明细", sort = 80400)
+        val permission80000List = listOfNotNull(
+            permission80100, permission80200, permission80300, permission80400
         )
-        permissionJpaRepository.saveAll(permission800List)
-        val permission900 = Permission(name = "采样质控管理", sort = 900)
-        permissionJpaRepository.save(permission900)
-        val permission901 = Permission(pid = permission900.id, name = "采样一级质控(县)任务", sort = 901)
-        val permission902 = Permission(pid = permission900.id, name = "采样二级质控(市)任务", sort = 902)
-        val permission903 = Permission(pid = permission900.id, name = "采样三级质控(省)任务", sort = 903)
-        val permission904 = Permission(pid = permission900.id, name = "采样质控专家任务", sort = 904)
-        val permission905 = Permission(pid = permission900.id, name = "采样质控意见反馈", sort = 905)
-        val permission906 = Permission(pid = permission900.id, name = "取样资料质控进度", sort = 906)
-        val permission907 = Permission(pid = permission900.id, name = "采样质控专家查询", sort = 907)
-        val permission908 = Permission(pid = permission900.id, name = "采样质控意见退回", sort = 908)
-        val permission900List = listOfNotNull(
-            permission901,
-            permission902,
-            permission903,
-            permission904,
-            permission905,
-            permission906,
-            permission907,
-            permission908
+        permissionJpaRepository.saveAll(permission80000List)
+        val permission90000 = Permission(name = "采样质控管理", sort = 90000)
+        permissionJpaRepository.save(permission90000)
+        val permission90100 = Permission(pid = permission90000.id, name = "采样一级质控(县)任务", sort = 90100)
+        val permission90200 = Permission(pid = permission90000.id, name = "采样二级质控(市)任务", sort = 90200)
+        val permission90300 = Permission(pid = permission90000.id, name = "采样三级质控(省)任务", sort = 90300)
+        val permission90400 = Permission(pid = permission90000.id, name = "采样质控专家任务", sort = 90400)
+        val permission90500 = Permission(pid = permission90000.id, name = "采样质控意见反馈", sort = 90500)
+        val permission90600 = Permission(pid = permission90000.id, name = "取样资料质控进度", sort = 90600)
+        val permission90700 = Permission(pid = permission90000.id, name = "采样质控专家查询", sort = 90700)
+        val permission90800 = Permission(pid = permission90000.id, name = "采样质控意见退回", sort = 90800)
+        val permission90000List = listOfNotNull(
+            permission90100,
+            permission90200,
+            permission90300,
+            permission90400,
+            permission90500,
+            permission90600,
+            permission90700,
+            permission90800
         )
-        permissionJpaRepository.saveAll(permission900List)
-        val permission1000 = Permission(name = "样品检测管理", sort = 1000)
-        permissionJpaRepository.save(permission1000)
-        val permission1001 = Permission(pid = permission1000.id, name = "批次送检样交接单", sort = 1001)
-        val permission1002 = Permission(pid = permission1000.id, name = "检测子样信息查询", sort = 1002)
-        val permission1003 = Permission(pid = permission1000.id, name = "检测资质文件报送", sort = 1003)
-        val permission1004 = Permission(pid = permission1000.id, name = "检测资质能力审核", sort = 1004)
-        val permission1005 = Permission(pid = permission1000.id, name = "基本检测方法标准", sort = 1005)
-        val permission1006 = Permission(pid = permission1000.id, name = "地方新增检测方法", sort = 1006)
-        val permission1007 = Permission(pid = permission1000.id, name = "方法验证材料上传", sort = 1007)
-        val permission1008 = Permission(pid = permission1000.id, name = "方法验证材料审核", sort = 1008)
-        val permission1009 = Permission(pid = permission1000.id, name = "统一监控样品管理", sort = 1009)
-        val permission1010 = Permission(pid = permission1000.id, name = "统一监控样品查询", sort = 1010)
-        val permission1011 = Permission(pid = permission1000.id, name = "严重问题样品查询", sort = 1011)
-        val permission1012 = Permission(pid = permission1000.id, name = "批次检测数据报送", sort = 1012)
-        val permission1013 = Permission(pid = permission1000.id, name = "批次检测数据整改", sort = 1013)
-        val permission1014 = Permission(pid = permission1000.id, name = "样品检测数据查询", sort = 1014)
-        val permission1000List = listOfNotNull(
-            permission1001,
-            permission1002,
-            permission1003,
-            permission1004,
-            permission1005,
-            permission1006,
-            permission1007,
-            permission1008,
-            permission1009,
-            permission1010,
-            permission1011,
-            permission1012,
-            permission1013,
-            permission1014
+        permissionJpaRepository.saveAll(permission90000List)
+        val permission100000 = Permission(name = "样品检测管理", sort = 100000)
+        permissionJpaRepository.save(permission100000)
+        val permission100100 = Permission(pid = permission100000.id, name = "批次送检样交接单", sort = 100100)
+        val permission100200 = Permission(pid = permission100000.id, name = "检测子样信息查询", sort = 100200)
+        val permission100300 = Permission(pid = permission100000.id, name = "检测资质文件报送", sort = 100300)
+        val permission100400 = Permission(pid = permission100000.id, name = "检测资质能力审核", sort = 100400)
+        val permission100500 = Permission(pid = permission100000.id, name = "基本检测方法标准", sort = 100500)
+        val permission100600 = Permission(pid = permission100000.id, name = "地方新增检测方法", sort = 100600)
+        val permission100700 = Permission(pid = permission100000.id, name = "方法验证材料上传", sort = 100700)
+        val permission100800 = Permission(pid = permission100000.id, name = "方法验证材料审核", sort = 100800)
+        val permission100900 = Permission(pid = permission100000.id, name = "统一监控样品管理", sort = 100900)
+        val permission101000 = Permission(pid = permission100000.id, name = "统一监控样品查询", sort = 101000)
+        val permission101100 = Permission(pid = permission100000.id, name = "严重问题样品查询", sort = 101100)
+        val permission101200 = Permission(pid = permission100000.id, name = "批次检测数据报送", sort = 101200)
+        val permission101300 = Permission(pid = permission100000.id, name = "批次检测数据整改", sort = 101300)
+        val permission101400 = Permission(pid = permission100000.id, name = "样品检测数据查询", sort = 101400)
+        val permission100000List = listOfNotNull(
+            permission100100,
+            permission100200,
+            permission100300,
+            permission100400,
+            permission100500,
+            permission100600,
+            permission100700,
+            permission100800,
+            permission100900,
+            permission101000,
+            permission101100,
+            permission101200,
+            permission101300,
+            permission101400
         )
-        permissionJpaRepository.saveAll(permission1000List)
-        val permission1100 = Permission(name = "数据质量审核", sort = 1100)
-        permissionJpaRepository.save(permission1100)
-        val permission1101 = Permission(pid = permission1100.id, name = "检测一级质控(县)任务", sort = 1101)
-        val permission1102 = Permission(pid = permission1100.id, name = "检测二级质控(市)任务", sort = 1102)
-        val permission1103 = Permission(pid = permission1100.id, name = "检测三级质控(省)任务", sort = 1103)
-        val permission1104 = Permission(pid = permission1100.id, name = "检测质控专家任务", sort = 1104)
-        val permission1105 = Permission(pid = permission1100.id, name = "检测质控意见反馈", sort = 1105)
-        val permission1106 = Permission(pid = permission1100.id, name = "质控退改批次查询", sort = 1106)
-        val permission1100List = listOfNotNull(
-            permission1101, permission1102, permission1103, permission1104, permission1105, permission1106
+        permissionJpaRepository.saveAll(permission100000List)
+        val permission110000 = Permission(name = "数据质量审核", sort = 110000)
+        permissionJpaRepository.save(permission110000)
+        val permission110100 = Permission(pid = permission110000.id, name = "检测一级质控(县)任务", sort = 110100)
+        val permission110200 = Permission(pid = permission110000.id, name = "检测二级质控(市)任务", sort = 110200)
+        val permission110300 = Permission(pid = permission110000.id, name = "检测三级质控(省)任务", sort = 110300)
+        val permission110400 = Permission(pid = permission110000.id, name = "检测质控专家任务", sort = 110400)
+        val permission110500 = Permission(pid = permission110000.id, name = "检测质控意见反馈", sort = 110500)
+        val permission110600 = Permission(pid = permission110000.id, name = "质控退改批次查询", sort = 110600)
+        val permission110000List = listOfNotNull(
+            permission110100, permission110200, permission110300, permission110400, permission110500, permission110600
         )
-        permissionJpaRepository.saveAll(permission1100List)
-        val permission1200 = Permission(name = "数据统计分析", sort = 1200)
-        permissionJpaRepository.save(permission1200)
-        val permission1300 = Permission(name = "数据对标评价", sort = 1300)
-        permissionJpaRepository.save(permission1300)
-        val permission1400 = Permission(name = "工作文件管理", sort = 1400)
-        permissionJpaRepository.save(permission1400)
-        val permission1401 = Permission(pid = permission1400.id, name = "工作文件下载", sort = 1401)
-        permissionJpaRepository.save(permission1401)
-        val permission1500 = Permission(name = "后台数据管理", sort = 1500)
-        permissionJpaRepository.save(permission1500)
-        val permission1501 = Permission(pid = permission1500.id, name = "单位管理", sort = 1501)
-        val permission1502 = Permission(pid = permission1500.id, name = "用户管理", sort = 1502)
-        val permission1503 = Permission(pid = permission1500.id, name = "角色管理", sort = 1503)
-        val permission1504 = Permission(pid = permission1500.id, name = "权限管理", sort = 1504)
-        val permission1505 = Permission(pid = permission1500.id, name = "菜单管理", sort = 1505)
-        val permission1506 = Permission(pid = permission1500.id, name = "字典管理", sort = 1506)
-        val permission1500List = listOfNotNull(
-            permission1501, permission1502, permission1503, permission1504, permission1505, permission1506
+        permissionJpaRepository.saveAll(permission110000List)
+        val permission120000 = Permission(name = "数据统计分析", sort = 120000)
+        permissionJpaRepository.save(permission120000)
+        val permission130000 = Permission(name = "数据对标评价", sort = 130000)
+        permissionJpaRepository.save(permission130000)
+        val permission140000 = Permission(name = "工作文件管理", sort = 140000)
+        permissionJpaRepository.save(permission140000)
+        val permission140100 = Permission(pid = permission140000.id, name = "工作文件下载", sort = 140100)
+        permissionJpaRepository.save(permission140100)
+        val permission150000 = Permission(name = "后台数据管理", sort = 150000)
+        permissionJpaRepository.save(permission150000)
+        val permission150100 = Permission(pid = permission150000.id, name = "单位管理", sort = 150100)
+        val permission150200 = Permission(pid = permission150000.id, name = "用户管理", sort = 150200)
+        val permission150300 = Permission(pid = permission150000.id, name = "角色管理", sort = 150300)
+        val permission150400 = Permission(pid = permission150000.id, name = "权限管理", sort = 150400)
+        val permission150500 = Permission(pid = permission150000.id, name = "菜单管理", sort = 150500)
+        val permission150600 = Permission(pid = permission150000.id, name = "字典管理", sort = 150600)
+        val permission150000List = listOfNotNull(
+            permission150100, permission150200, permission150300, permission150400, permission150500, permission150600
         )
-        permissionJpaRepository.saveAll(permission1500List)
+        permissionJpaRepository.saveAll(permission150000List)
+        val permission150501 = Permission(pid = permission150500.id, name = "新增", sort = 150501)
+        val permission150502 = Permission(pid = permission150500.id, name = "修改", sort = 150502)
+        val permission150503 = Permission(pid = permission150500.id, name = "删除", sort = 150503)
+        val permission150500List = listOfNotNull(permission150501, permission150502, permission150503)
+        permissionJpaRepository.saveAll(permission150500List)
 
 
-        val menu100 = Menu(
-            permissionId = permission100.id,
+        val menu10000 = Menu(
+            permissionId = permission10000.id,
             name = "基础数据管理",
             title = "基础数据管理",
-            type = MenuTypeEnum.ROUTE,
+            type = MenuTypeEnum.CATALOG,
             path = "/basic",
             component = "LAYOUT",
-            sort = 100,
-            showed = true,
-            cached = true,
-            external = false
+            sort = 10000
         )
-        menuJpaRepository.save(menu100)
-        val menu101 = Menu(
-            pid = menu100.id,
-            permissionId = permission101.id,
+        menuJpaRepository.save(menu10000)
+        val menu10100 = Menu(
+            pid = menu10000.id,
+            permissionId = permission10100.id,
             name = "业务管理账号开通",
             title = "业务管理账号开通",
-            type = MenuTypeEnum.ROUTE,
+            type = MenuTypeEnum.MENU,
             path = "/basic/accountOpen",
-            component = "/basic/accountOpen/index",
-            sort = 101,
-            showed = true,
-            cached = true,
-            external = false
+            component = "/basic/accountOpen/list",
+            sort = 10100
         )
-        val menu102 = Menu(
-            pid = menu100.id,
-            permissionId = permission102.id,
+        val menu10200 = Menu(
+            pid = menu10000.id,
+            permissionId = permission10200.id,
             name = "业务管理单位授权",
             title = "业务管理单位授权",
-            type = MenuTypeEnum.ROUTE,
+            type = MenuTypeEnum.MENU,
             path = "/basic/empower",
-            component = "/basic/empower/index",
-            sort = 102,
-            showed = true,
-            cached = true,
-            external = false
+            component = "/basic/empower/list",
+            sort = 10200
         )
-        val menu103 = Menu(
-            pid = menu100.id,
-            permissionId = permission103.id,
+        val menu10300 = Menu(
+            pid = menu10000.id,
+            permissionId = permission10300.id,
             name = "技术单位信息管理",
             title = "技术单位信息管理",
-            type = MenuTypeEnum.ROUTE,
+            type = MenuTypeEnum.MENU,
             path = "/basic/orgInfoManage",
-            component = "/basic/orgInfoManage/index",
-            sort = 103,
-            showed = true,
-            cached = true,
-            external = false
+            component = "/basic/orgInfoManage/list",
+            sort = 10300
         )
-        val menu104 = Menu(
-            pid = menu100.id,
-            permissionId = permission104.id,
+        val menu10400 = Menu(
+            pid = menu10000.id,
+            permissionId = permission10400.id,
             name = "技术专家信息维护",
             title = "技术专家信息维护",
-            type = MenuTypeEnum.ROUTE,
+            type = MenuTypeEnum.MENU,
             path = "/basic/d",
-            component = "/basic/d/index",
-            sort = 104,
-            showed = true,
-            cached = true,
-            external = false
+            component = "/basic/d/list",
+            sort = 10400
         )
-        val menu105 = Menu(
-            pid = menu100.id,
-            permissionId = permission105.id,
+        val menu10500 = Menu(
+            pid = menu10000.id,
+            permissionId = permission10500.id,
             name = "平台新增用户维护",
             title = "平台新增用户维护",
-            type = MenuTypeEnum.ROUTE,
+            type = MenuTypeEnum.MENU,
             path = "/basic/newUsersManage",
-            component = "/basic/newUsersManage/index",
-            sort = 105,
-            showed = true,
-            cached = true,
-            external = false
+            component = "/basic/newUsersManage/list",
+            sort = 10500
         )
-        val menu106 = Menu(
-            pid = menu100.id,
-            permissionId = permission106.id,
+        val menu10600 = Menu(
+            pid = menu10000.id,
+            permissionId = permission10600.id,
             name = "设备终端授权管理",
             title = "设备终端授权管理",
-            type = MenuTypeEnum.ROUTE,
+            type = MenuTypeEnum.MENU,
             path = "/basic/f",
-            component = "/basic/f/index",
-            sort = 106,
-            showed = true,
-            cached = true,
-            external = false
+            component = "/basic/f/list",
+            sort = 10600
         )
-        val menu100List = listOfNotNull(
-            menu101, menu102, menu103, menu104, menu105, menu106
+        val menu10000List = listOfNotNull(
+            menu10100, menu10200, menu10300, menu10400, menu10500, menu10600
         )
-        menuJpaRepository.saveAll(menu100List)
-        val menu200 = Menu(
-            permissionId = permission200.id,
+        menuJpaRepository.saveAll(menu10000List)
+        val menu20000 = Menu(
+            permissionId = permission20000.id,
             name = "用户单位管理",
             title = "用户单位管理",
-            type = MenuTypeEnum.ROUTE,
+            type = MenuTypeEnum.CATALOG,
             path = "/organization",
             component = "LAYOUT",
-            sort = 200,
-            showed = true,
-            cached = true,
-            external = false
+            sort = 20000
         )
-        menuJpaRepository.save(menu200)
-        val menu201 = Menu(
-            pid = menu200.id,
-            permissionId = permission201.id,
+        menuJpaRepository.save(menu20000)
+        val menu20100 = Menu(
+            pid = menu20000.id,
+            permissionId = permission20100.id,
             name = "管理单位用户维护",
             title = "管理单位用户维护",
-            type = MenuTypeEnum.ROUTE,
+            type = MenuTypeEnum.MENU,
             path = "/organization/manageUnitUser",
-            component = "/organization/manageUnitUser/index",
-            sort = 201,
-            showed = true,
-            cached = true,
-            external = false
+            component = "/organization/manageUnitUser/list",
+            sort = 20100
         )
-        val menu202 = Menu(
-            pid = menu200.id,
-            permissionId = permission202.id,
+        val menu20200 = Menu(
+            pid = menu20000.id,
+            permissionId = permission20200.id,
             name = "技术单位业务申请",
             title = "技术单位业务申请",
-            type = MenuTypeEnum.ROUTE,
+            type = MenuTypeEnum.MENU,
             path = "/organization/organizationBusinessApply",
-            component = "/organization/organizationBusinessApply/index",
-            sort = 202,
-            showed = true,
-            cached = true,
-            external = false
+            component = "/organization/organizationBusinessApply/list",
+            sort = 20200
         )
-        val menu203 = Menu(
-            pid = menu200.id,
-            permissionId = permission203.id,
+        val menu20300 = Menu(
+            pid = menu20000.id,
+            permissionId = permission20300.id,
             name = "技术单位业务审核",
             title = "技术单位业务审核",
-            type = MenuTypeEnum.ROUTE,
+            type = MenuTypeEnum.MENU,
             path = "/organization/organizationBusinessCheck",
-            component = "/organization/organizationBusinessCheck/index",
-            sort = 203,
-            showed = true,
-            cached = true,
-            external = false
+            component = "/organization/organizationBusinessCheck/list",
+            sort = 20300
         )
-        val menu204 = Menu(
-            pid = menu200.id,
-            permissionId = permission204.id,
+        val menu20400 = Menu(
+            pid = menu20000.id,
+            permissionId = permission20400.id,
             name = "技术单位用户维护",
             title = "技术单位用户维护",
-            type = MenuTypeEnum.ROUTE,
+            type = MenuTypeEnum.MENU,
             path = "/organization/technicalUnitUser",
-            component = "/organization/technicalUnitUser/index",
-            sort = 204,
-            showed = true,
-            cached = true,
-            external = false
+            component = "/organization/technicalUnitUser/list",
+            sort = 20400
         )
-        val menu205 = Menu(
-            pid = menu200.id,
-            permissionId = permission205.id,
+        val menu20500 = Menu(
+            pid = menu20000.id,
+            permissionId = permission20500.id,
             name = "技术专家业务申请",
             title = "技术专家业务申请",
-            type = MenuTypeEnum.ROUTE,
+            type = MenuTypeEnum.MENU,
             path = "/organization/e",
-            component = "/organization/e/index",
-            sort = 205,
-            showed = true,
-            cached = true,
-            external = false
+            component = "/organization/e/list",
+            sort = 20500
         )
-        val menu206 = Menu(
-            pid = menu200.id,
-            permissionId = permission206.id,
+        val menu20600 = Menu(
+            pid = menu20000.id,
+            permissionId = permission20600.id,
             name = "技术专家业务审核",
             title = "技术专家业务审核",
-            type = MenuTypeEnum.ROUTE,
+            type = MenuTypeEnum.MENU,
             path = "/organization/f",
-            component = "/organization/f/index",
-            sort = 206,
-            showed = true,
-            cached = true,
-            external = false
+            component = "/organization/f/list",
+            sort = 20600
         )
-        val menu207 = Menu(
-            pid = menu200.id,
-            permissionId = permission207.id,
+        val menu20700 = Menu(
+            pid = menu20000.id,
+            permissionId = permission20700.id,
             name = "调查小组新建维护",
             title = "调查小组新建维护",
-            type = MenuTypeEnum.ROUTE,
+            type = MenuTypeEnum.MENU,
             path = "/organization/groupAddOrUpt",
-            component = "/organization/groupAddOrUpt/index",
-            sort = 207,
-            showed = true,
-            cached = true,
-            external = false
+            component = "/organization/groupAddOrUpt/list",
+            sort = 20700
         )
-        val menu208 = Menu(
-            pid = menu200.id,
-            permissionId = permission208.id,
+        val menu20800 = Menu(
+            pid = menu20000.id,
+            permissionId = permission20800.id,
             name = "调查单位信息查询",
             title = "调查单位信息查询",
-            type = MenuTypeEnum.ROUTE,
+            type = MenuTypeEnum.MENU,
             path = "/organization/unitInformationQuery",
-            component = "/organization/unitInformationQuery/index",
-            sort = 208,
-            showed = true,
-            cached = true,
-            external = false
+            component = "/organization/unitInformationQuery/list",
+            sort = 20800
         )
-        val menu209 = Menu(
-            pid = menu200.id,
-            permissionId = permission209.id,
+        val menu20900 = Menu(
+            pid = menu20000.id,
+            permissionId = permission20900.id,
             name = "调查用户信息查询",
             title = "调查用户信息查询",
-            type = MenuTypeEnum.ROUTE,
+            type = MenuTypeEnum.MENU,
             path = "/organization/userInformationQuery",
-            component = "/organization/userInformationQuery/index",
-            sort = 209,
-            showed = true,
-            cached = true,
-            external = false
+            component = "/organization/userInformationQuery/list",
+            sort = 20900
         )
-        val menu200List = listOfNotNull(
-            menu201, menu202, menu203, menu204, menu205, menu206, menu207, menu208, menu209
+        val menu20000List = listOfNotNull(
+            menu20100, menu20200, menu20300, menu20400, menu20500, menu20600, menu20700, menu20800, menu20900
         )
-        menuJpaRepository.saveAll(menu200List)
-        val menu300 = Menu(
-            permissionId = permission300.id,
+        menuJpaRepository.saveAll(menu20000List)
+        val menu30000 = Menu(
+            permissionId = permission30000.id,
             name = "项目任务管理",
             title = "项目任务管理",
-            type = MenuTypeEnum.ROUTE,
+            type = MenuTypeEnum.CATALOG,
             path = "/projectTask",
             component = "LAYOUT",
-            sort = 300,
-            showed = true,
-            cached = true,
-            external = false
+            sort = 30000
         )
-        menuJpaRepository.save(menu300)
-        val menu301 = Menu(
-            pid = menu300.id,
-            permissionId = permission301.id,
+        menuJpaRepository.save(menu30000)
+        val menu30100 = Menu(
+            pid = menu30000.id,
+            permissionId = permission30100.id,
             name = "调查项目新增维护",
             title = "调查项目新增维护",
-            type = MenuTypeEnum.ROUTE,
+            type = MenuTypeEnum.MENU,
             path = "/projectTask/a",
-            component = "/projectTask/a/index",
-            sort = 301,
-            showed = true,
-            cached = true,
-            external = false
+            component = "/projectTask/a/list",
+            sort = 30100
         )
-        val menu302 = Menu(
-            pid = menu300.id,
-            permissionId = permission302.id,
+        val menu30200 = Menu(
+            pid = menu30000.id,
+            permissionId = permission30200.id,
             name = "监管对象新增维护",
             title = "监管对象新增维护",
-            type = MenuTypeEnum.ROUTE,
+            type = MenuTypeEnum.MENU,
             path = "/projectTask/superviseObjectMaintain",
-            component = "/projectTask/superviseObjectMaintain/index",
-            sort = 302,
-            showed = true,
-            cached = true,
-            external = false
+            component = "/projectTask/superviseObjectMaintain/list",
+            sort = 30200
         )
-        val menu303 = Menu(
-            pid = menu300.id,
-            permissionId = permission303.id,
+        val menu30300 = Menu(
+            pid = menu30000.id,
+            permissionId = permission30300.id,
             name = "工作任务下发管理",
             title = "工作任务下发管理",
-            type = MenuTypeEnum.ROUTE,
+            type = MenuTypeEnum.MENU,
             path = "/projectTask/taskDistribution",
-            component = "/projectTask/taskDistribution/index",
-            sort = 303,
-            showed = true,
-            cached = true,
-            external = false
+            component = "/projectTask/taskDistribution/list",
+            sort = 30300
         )
-        val menu304 = Menu(
-            pid = menu300.id,
-            permissionId = permission304.id,
+        val menu30400 = Menu(
+            pid = menu30000.id,
+            permissionId = permission30400.id,
             name = "牵头单位组织实施",
             title = "牵头单位组织实施",
-            type = MenuTypeEnum.ROUTE,
+            type = MenuTypeEnum.MENU,
             path = "/projectTask/leadOrgImplement",
-            component = "/projectTask/leadOrgImplement/index",
-            sort = 304,
-            showed = true,
-            cached = true,
-            external = false
+            component = "/projectTask/leadOrgImplement/list",
+            sort = 30400
         )
-        val menu305 = Menu(
-            pid = menu300.id,
-            permissionId = permission305.id,
+        val menu30500 = Menu(
+            pid = menu30000.id,
+            permissionId = permission30500.id,
             name = "技术单位任务执行",
             title = "技术单位任务执行",
-            type = MenuTypeEnum.ROUTE,
+            type = MenuTypeEnum.MENU,
             path = "/projectTask/taskExecution",
-            component = "/projectTask/taskExecution/index",
-            sort = 305,
-            showed = true,
-            cached = true,
-            external = false
+            component = "/projectTask/taskExecution/list",
+            sort = 30500
         )
-        val menu306 = Menu(
-            pid = menu300.id,
-            permissionId = permission306.id,
+        val menu30600 = Menu(
+            pid = menu30000.id,
+            permissionId = permission30600.id,
             name = "监管对象信息查询",
             title = "监管对象信息查询",
-            type = MenuTypeEnum.ROUTE,
+            type = MenuTypeEnum.MENU,
             path = "/projectTask/supervisionInformationQuery",
-            component = "/projectTask/supervisionInformationQuery/index",
-            sort = 306,
-            showed = true,
-            cached = true,
-            external = false
+            component = "/projectTask/supervisionInformationQuery/list",
+            sort = 30600
         )
-        val menu300List = listOfNotNull(
-            menu301, menu302, menu303, menu304, menu305, menu306
+        val menu30000List = listOfNotNull(
+            menu30100, menu30200, menu30300, menu30400, menu30500, menu30600
         )
-        menuJpaRepository.saveAll(menu300List)
-        val menu400 = Menu(
-            permissionId = permission400.id,
+        menuJpaRepository.saveAll(menu30000List)
+        val menu40000 = Menu(
+            permissionId = permission40000.id,
             name = "点位布设管理",
             title = "点位布设管理",
-            type = MenuTypeEnum.ROUTE,
+            type = MenuTypeEnum.CATALOG,
             path = "/pointManage",
             component = "LAYOUT",
-            sort = 400,
-            showed = true,
-            cached = true,
-            external = false
+            sort = 40000
         )
-        menuJpaRepository.save(menu400)
-        val menu401 = Menu(
-            pid = menu400.id,
-            permissionId = permission401.id,
+        menuJpaRepository.save(menu40000)
+        val menu40100 = Menu(
+            pid = menu40000.id,
+            permissionId = permission40100.id,
             name = "测试项目新增维护",
             title = "测试项目新增维护",
-            type = MenuTypeEnum.ROUTE,
+            type = MenuTypeEnum.MENU,
             path = "/pointManage/testMaintenance",
-            component = "/pointManage/testMaintenance/index",
-            sort = 401,
-            showed = true,
-            cached = true,
-            external = false
+            component = "/pointManage/testMaintenance/list",
+            sort = 40100
         )
-        val menu402 = Menu(
-            pid = menu400.id,
-            permissionId = permission402.id,
+        val menu40200 = Menu(
+            pid = menu40000.id,
+            permissionId = permission40200.id,
             name = "测试项目分类管理",
             title = "测试项目分类管理",
-            type = MenuTypeEnum.ROUTE,
+            type = MenuTypeEnum.MENU,
             path = "/pointManage/testClassification",
-            component = "/pointManage/testClassification/index",
-            sort = 402,
-            showed = true,
-            cached = true,
-            external = false
+            component = "/pointManage/testClassification/list",
+            sort = 40200
         )
-        val menu403 = Menu(
-            pid = menu400.id,
-            permissionId = permission403.id,
+        val menu40300 = Menu(
+            pid = menu40000.id,
+            permissionId = permission40300.id,
             name = "新增测试项目审核",
             title = "新增测试项目审核",
-            type = MenuTypeEnum.ROUTE,
+            type = MenuTypeEnum.MENU,
             path = "/pointManage/addTestItemAudit",
-            component = "/pointManage/addTestItemAudit/index",
-            sort = 403,
-            showed = true,
-            cached = true,
-            external = false
+            component = "/pointManage/addTestItemAudit/list",
+            sort = 40300
         )
-        val menu404 = Menu(
-            pid = menu400.id,
-            permissionId = permission404.id,
+        val menu40400 = Menu(
+            pid = menu40000.id,
+            permissionId = permission40400.id,
             name = "布点人员任务分配",
             title = "布点人员任务分配",
-            type = MenuTypeEnum.ROUTE,
+            type = MenuTypeEnum.MENU,
             path = "/pointManage/assignPersonnelTask",
-            component = "/pointManage/assignPersonnelTask/index",
-            sort = 404,
-            showed = true,
-            cached = true,
-            external = false
+            component = "/pointManage/assignPersonnelTask/list",
+            sort = 40400
         )
-        val menu405 = Menu(
-            pid = menu400.id,
-            permissionId = permission405.id,
+        val menu40500 = Menu(
+            pid = menu40000.id,
+            permissionId = permission40500.id,
             name = "布点数据成果录入",
             title = "布点数据成果录入",
-            type = MenuTypeEnum.ROUTE,
+            type = MenuTypeEnum.MENU,
             // TODO 应该是 pointManage 吧？
             path = "/pointUserTasks/LayOutMethodMaintain",
-            component = "/pointUserTasks/LayOutMethodMaintain/index",
-            sort = 405,
-            showed = true,
-            cached = true,
-            external = false
+            component = "/pointUserTasks/LayOutMethodMaintain/list",
+            sort = 40500
         )
-        val menu406 = Menu(
-            pid = menu400.id,
-            permissionId = permission406.id,
+        val menu40600 = Menu(
+            pid = menu40000.id,
+            permissionId = permission40600.id,
             name = "布点方案数据退回",
             title = "布点方案数据退回",
-            type = MenuTypeEnum.ROUTE,
+            type = MenuTypeEnum.MENU,
             path = "/pointManage/dotsDataReturned",
-            component = "/pointManage/dotsDataReturned/index",
-            sort = 406,
-            showed = true,
-            cached = true,
-            external = false
+            component = "/pointManage/dotsDataReturned/list",
+            sort = 40600
         )
-        val menu407 = Menu(
-            pid = menu400.id,
-            permissionId = permission407.id,
+        val menu40700 = Menu(
+            pid = menu40000.id,
+            permissionId = permission40700.id,
             name = "布点方案数据查询",
             title = "布点方案数据查询",
-            type = MenuTypeEnum.ROUTE,
+            type = MenuTypeEnum.MENU,
             // TODO 应该是 pointManage 吧？
             path = "/point/f",
-            component = "/point/f/index",
-            sort = 407,
-            showed = true,
-            cached = true,
-            external = false
+            component = "/point/f/list",
+            sort = 40700
         )
-        val menu400List = listOfNotNull(
-            menu401, menu402, menu403, menu404, menu405, menu406, menu407
+        val menu40000List = listOfNotNull(
+            menu40100, menu40200, menu40300, menu40400, menu40500, menu40600, menu40700
         )
-        menuJpaRepository.saveAll(menu400List)
-        val menu500 = Menu(
-            permissionId = permission500.id,
+        menuJpaRepository.saveAll(menu40000List)
+        val menu50000 = Menu(
+            permissionId = permission50000.id,
             name = "点位布设",
             title = "点位布设",
-            type = MenuTypeEnum.ROUTE,
+            type = MenuTypeEnum.CATALOG,
             path = "/pointLayout",
             component = "LAYOUT",
-            sort = 500,
-            showed = true,
-            cached = true,
-            external = false
+            sort = 50000
         )
-        menuJpaRepository.save(menu500)
-        val menu501 = Menu(
-            pid = menu500.id,
-            permissionId = permission501.id,
+        menuJpaRepository.save(menu50000)
+        val menu50100 = Menu(
+            pid = menu50000.id,
+            permissionId = permission50100.id,
             name = "布点方案数据维护",
             title = "布点方案数据维护",
-            type = MenuTypeEnum.ROUTE,
+            type = MenuTypeEnum.MENU,
             path = "pointLayout/planMaintain",
-            component = "pointLayout/planMaintain/index",
-            sort = 501,
-            showed = true,
-            cached = true,
-            external = false
+            component = "pointLayout/planMaintain/list",
+            sort = 50100
         )
-        val menu502 = Menu(
-            pid = menu500.id,
-            permissionId = permission502.id,
+        val menu50200 = Menu(
+            pid = menu50000.id,
+            permissionId = permission50200.id,
             name = "布点方案问题整改",
             title = "布点方案问题整改",
-            type = MenuTypeEnum.ROUTE,
+            type = MenuTypeEnum.MENU,
             path = "pointLayout/planUpdate",
-            component = "pointLayout/planUpdate/index",
-            sort = 502,
-            showed = true,
-            cached = true,
-            external = false
+            component = "pointLayout/planUpdate/list",
+            sort = 50200
         )
-        val menu503 = Menu(
-            pid = menu500.id,
-            permissionId = permission503.id,
+        val menu50300 = Menu(
+            pid = menu50000.id,
+            permissionId = permission50300.id,
             name = "布点方案信息查询",
             title = "布点方案信息查询",
-            type = MenuTypeEnum.ROUTE,
+            type = MenuTypeEnum.MENU,
             path = "pointLayout/planQuery",
-            component = "pointLayout/planQuery/index",
-            sort = 503,
-            showed = true,
-            cached = true,
-            external = false
+            component = "pointLayout/planQuery/list",
+            sort = 50300
         )
-        val menu500List = listOfNotNull(
-            menu501, menu502, menu503
+        val menu50000List = listOfNotNull(
+            menu50100, menu50200, menu50300
         )
-        menuJpaRepository.saveAll(menu500List)
-        val menu600 = Menu(
-            permissionId = permission600.id,
+        menuJpaRepository.saveAll(menu50000List)
+        val menu60000 = Menu(
+            permissionId = permission60000.id,
             name = "布点质控管理",
             title = "布点质控管理",
-            type = MenuTypeEnum.ROUTE,
+            type = MenuTypeEnum.CATALOG,
             path = "/layout",
             component = "LAYOUT",
-            sort = 600,
-            showed = true,
-            cached = true,
-            external = false
+            sort = 60000
         )
-        menuJpaRepository.save(menu600)
-        val menu601 = Menu(
-            pid = menu600.id,
-            permissionId = permission601.id,
+        menuJpaRepository.save(menu60000)
+        val menu60100 = Menu(
+            pid = menu60000.id,
+            permissionId = permission60100.id,
             name = "布点质控专家组维护",
             title = "布点质控专家组维护",
-            type = MenuTypeEnum.ROUTE,
+            type = MenuTypeEnum.MENU,
             path = "/layout/a",
-            component = "/layout/a/index",
-            sort = 601,
-            showed = true,
-            cached = true,
-            external = false
+            component = "/layout/a/list",
+            sort = 60100
         )
-        val menu602 = Menu(
-            pid = menu600.id,
-            permissionId = permission602.id,
+        val menu60200 = Menu(
+            pid = menu60000.id,
+            permissionId = permission60200.id,
             name = "一级质控(县)任务分配",
             title = "一级质控(县)任务分配",
-            type = MenuTypeEnum.ROUTE,
+            type = MenuTypeEnum.MENU,
             path = "/layout/b",
-            component = "/layout/b/index",
-            sort = 602,
-            showed = true,
-            cached = true,
-            external = false
+            component = "/layout/b/list",
+            sort = 60200
         )
-        val menu603 = Menu(
-            pid = menu600.id,
-            permissionId = permission603.id,
+        val menu60300 = Menu(
+            pid = menu60000.id,
+            permissionId = permission60300.id,
             name = "二级质控(市)任务分配",
             title = "二级质控(市)任务分配",
-            type = MenuTypeEnum.ROUTE,
+            type = MenuTypeEnum.MENU,
             path = "/layout/c",
-            component = "/layout/c/index",
-            sort = 603,
-            showed = true,
-            cached = true,
-            external = false
+            component = "/layout/c/list",
+            sort = 60300
         )
-        val menu604 = Menu(
-            pid = menu600.id,
-            permissionId = permission604.id,
+        val menu60400 = Menu(
+            pid = menu60000.id,
+            permissionId = permission60400.id,
             name = "三级质控(省)任务分配",
             title = "三级质控(省)任务分配",
-            type = MenuTypeEnum.ROUTE,
+            type = MenuTypeEnum.MENU,
             path = "/layout/d",
-            component = "/layout/d/index",
-            sort = 604,
-            showed = true,
-            cached = true,
-            external = false
+            component = "/layout/d/list",
+            sort = 60400
         )
-        val menu605 = Menu(
-            pid = menu600.id,
-            permissionId = permission605.id,
+        val menu60500 = Menu(
+            pid = menu60000.id,
+            permissionId = permission60500.id,
             name = "布点质控专家组任务",
             title = "布点质控专家组任务",
-            type = MenuTypeEnum.ROUTE,
+            type = MenuTypeEnum.MENU,
             path = "/layout/e",
-            component = "/layout/e/index",
-            sort = 605,
-            showed = true,
-            cached = true,
-            external = false
+            component = "/layout/e/list",
+            sort = 60500
         )
-        val menu606 = Menu(
-            pid = menu600.id,
-            permissionId = permission606.id,
+        val menu60600 = Menu(
+            pid = menu60000.id,
+            permissionId = permission60600.id,
             name = "布点质控意见反馈",
             title = "布点质控意见反馈",
-            type = MenuTypeEnum.ROUTE,
+            type = MenuTypeEnum.MENU,
             path = "/layout/f",
-            component = "/layout/f/index",
-            sort = 606,
-            showed = true,
-            cached = true,
-            external = false
+            component = "/layout/f/list",
+            sort = 60600
         )
-        val menu607 = Menu(
-            pid = menu600.id,
-            permissionId = permission607.id,
+        val menu60700 = Menu(
+            pid = menu60000.id,
+            permissionId = permission60700.id,
             name = "布点质控专家查询",
             title = "布点质控专家查询",
-            type = MenuTypeEnum.ROUTE,
+            type = MenuTypeEnum.MENU,
             path = "/layout/g",
-            component = "/layout/g/index",
-            sort = 607,
-            showed = true,
-            cached = true,
-            external = false
+            component = "/layout/g/list",
+            sort = 60700
         )
-        val menu608 = Menu(
-            pid = menu600.id,
-            permissionId = permission608.id,
+        val menu60800 = Menu(
+            pid = menu60000.id,
+            permissionId = permission60800.id,
             name = "布点质控意见退回",
             title = "布点质控意见退回",
-            type = MenuTypeEnum.ROUTE,
+            type = MenuTypeEnum.MENU,
             path = "/layout/h",
-            component = "/layout/h/index",
-            sort = 608,
-            showed = true,
-            cached = true,
-            external = false
+            component = "/layout/h/list",
+            sort = 60800
         )
-        val menu600List = listOfNotNull(
-            menu601, menu602, menu603, menu604, menu605, menu606, menu607, menu608
+        val menu60000List = listOfNotNull(
+            menu60100, menu60200, menu60300, menu60400, menu60500, menu60600, menu60700, menu60800
         )
-        menuJpaRepository.saveAll(menu600List)
-        val menu700 = Menu(
-            permissionId = permission700.id,
+        menuJpaRepository.saveAll(menu60000List)
+        val menu70000 = Menu(
+            permissionId = permission70000.id,
             name = "采样调查管理",
             title = "采样调查管理",
-            type = MenuTypeEnum.ROUTE,
+            type = MenuTypeEnum.CATALOG,
             path = "/sampleManage",
             component = "LAYOUT",
-            sort = 700,
-            showed = true,
-            cached = true,
-            external = false
+            sort = 70000
         )
-        menuJpaRepository.save(menu700)
-        val menu701 = Menu(
-            pid = menu700.id,
-            permissionId = permission701.id,
+        menuJpaRepository.save(menu70000)
+        val menu70100 = Menu(
+            pid = menu70000.id,
+            permissionId = permission70100.id,
             name = "取样小组任务分配",
             title = "取样小组任务分配",
-            type = MenuTypeEnum.ROUTE,
+            type = MenuTypeEnum.MENU,
             path = "/sampleManage/sampleGroupTask",
-            component = "/sampleManage/sampleGroupTask/index",
-            sort = 701,
-            showed = true,
-            cached = true,
-            external = false
+            component = "/sampleManage/sampleGroupTask/list",
+            sort = 70100
         )
-        val menu702 = Menu(
-            pid = menu700.id,
-            permissionId = permission702.id,
+        val menu70200 = Menu(
+            pid = menu70000.id,
+            permissionId = permission70200.id,
             name = "批次样品运送表单",
             title = "批次样品运送表单",
-            type = MenuTypeEnum.ROUTE,
+            type = MenuTypeEnum.MENU,
             path = "/sampleManage/sampleShippingForm",
-            component = "/sampleManage/sampleShippingForm/index",
-            sort = 702,
-            showed = true,
-            cached = true,
-            external = false
+            component = "/sampleManage/sampleShippingForm/list",
+            sort = 70200
         )
-        val menu703 = Menu(
-            pid = menu700.id,
-            permissionId = permission703.id,
+        val menu70300 = Menu(
+            pid = menu70000.id,
+            permissionId = permission70300.id,
             name = "取样调查表单下载",
             title = "取样调查表单下载",
-            type = MenuTypeEnum.ROUTE,
+            type = MenuTypeEnum.MENU,
             path = "/sampleManage/formDownload",
-            component = "/sampleManage/formDownload/index",
-            sort = 703,
-            showed = true,
-            cached = true,
-            external = false
+            component = "/sampleManage/formDownload/list",
+            sort = 70300
         )
-        val menu704 = Menu(
-            pid = menu700.id,
-            permissionId = permission704.id,
+        val menu70400 = Menu(
+            pid = menu70000.id,
+            permissionId = permission70400.id,
             name = "子样流转进度查询",
             title = "子样流转进度查询",
-            type = MenuTypeEnum.ROUTE,
+            type = MenuTypeEnum.MENU,
             path = "/sampleManage/sampleProgressQuery",
-            component = "/sampleManage/sampleProgressQuery/index",
-            sort = 704,
-            showed = true,
-            cached = true,
-            external = false
+            component = "/sampleManage/sampleProgressQuery/list",
+            sort = 70400
         )
-        val menu705 = Menu(
-            pid = menu700.id,
-            permissionId = permission705.id,
+        val menu70500 = Menu(
+            pid = menu70000.id,
+            permissionId = permission70500.id,
             name = "取样资料单位内审",
             title = "取样资料单位内审",
-            type = MenuTypeEnum.ROUTE,
+            type = MenuTypeEnum.MENU,
             path = "/sampleManage/CYInformationCheck",
-            component = "/sampleManage/CYInformationCheck/index",
-            sort = 705,
-            showed = true,
-            cached = true,
-            external = false
+            component = "/sampleManage/CYInformationCheck/list",
+            sort = 70500
         )
-        val menu706 = Menu(
-            pid = menu700.id,
-            permissionId = permission706.id,
+        val menu70600 = Menu(
+            pid = menu70000.id,
+            permissionId = permission70600.id,
             name = "质控退回样点查询",
             title = "质控退回样点查询",
-            type = MenuTypeEnum.ROUTE,
+            type = MenuTypeEnum.MENU,
             path = "/sampleManage/QCPointQuery",
-            component = "/sampleManage/QCPointQuery/index",
-            sort = 706,
-            showed = true,
-            cached = true,
-            external = false
+            component = "/sampleManage/QCPointQuery/list",
+            sort = 70600
         )
-        val menu707 = Menu(
-            pid = menu700.id,
-            permissionId = permission707.id,
+        val menu70700 = Menu(
+            pid = menu70000.id,
+            permissionId = permission70700.id,
             name = "严重质量问题申诉",
             title = "严重质量问题申诉",
-            type = MenuTypeEnum.ROUTE,
+            type = MenuTypeEnum.MENU,
             path = "/sampleManage/seriousIssueAppeal",
-            component = "/sampleManage/seriousIssueAppeal/index",
-            sort = 707,
-            showed = true,
-            cached = true,
-            external = false
+            component = "/sampleManage/seriousIssueAppeal/list",
+            sort = 70700
         )
-        val menu708 = Menu(
-            pid = menu700.id,
-            permissionId = permission708.id,
+        val menu70800 = Menu(
+            pid = menu70000.id,
+            permissionId = permission70800.id,
             name = "重采样品信息查询",
             title = "重采样品信息查询",
-            type = MenuTypeEnum.ROUTE,
+            type = MenuTypeEnum.MENU,
             path = "/sampleManage/resampleSampleQuery",
-            component = "/sampleManage/resampleSampleQuery/index",
-            sort = 708,
-            showed = true,
-            cached = true,
-            external = false
+            component = "/sampleManage/resampleSampleQuery/list",
+            sort = 70800
         )
-        val menu709 = Menu(
-            pid = menu700.id,
-            permissionId = permission709.id,
+        val menu70900 = Menu(
+            pid = menu70000.id,
+            permissionId = permission70900.id,
             name = "资料内审状态查询",
             title = "资料内审状态查询",
-            type = MenuTypeEnum.ROUTE,
+            type = MenuTypeEnum.MENU,
             path = "/sampleManage/internalStatusInquiry",
-            component = "/sampleManage/internalStatusInquiry/index",
-            sort = 709,
-            showed = true,
-            cached = true,
-            external = false
+            component = "/sampleManage/internalStatusInquiry/list",
+            sort = 70900
         )
-        val menu710 = Menu(
-            pid = menu700.id,
-            permissionId = permission710.id,
+        val menu71000 = Menu(
+            pid = menu70000.id,
+            permissionId = permission71000.id,
             name = "资料内审进展统计",
             title = "资料内审进展统计",
-            type = MenuTypeEnum.ROUTE,
+            type = MenuTypeEnum.MENU,
             // TODO 应该是 sampleManage 吧？
             path = "/sampleSurveys/ky",
-            component = "/sampleSurveys/ky/index",
-            sort = 710,
-            showed = true,
-            cached = true,
-            external = false
+            component = "/sampleSurveys/ky/list",
+            sort = 71000
         )
-        val menu711 = Menu(
-            pid = menu700.id,
-            permissionId = permission711.id,
+        val menu71100 = Menu(
+            pid = menu70000.id,
+            permissionId = permission71100.id,
             name = "采样调查信息查询",
             title = "采样调查信息查询",
-            type = MenuTypeEnum.ROUTE,
+            type = MenuTypeEnum.MENU,
             // TODO 应该是 sampleManage 吧？
             path = "/sampleSurveys/l",
-            component = "/sampleSurveys/l/index",
-            sort = 711,
-            showed = true,
-            cached = true,
-            external = false
+            component = "/sampleSurveys/l/list",
+            sort = 71100
         )
-        val menu712 = Menu(
-            pid = menu700.id,
-            permissionId = permission712.id,
+        val menu71200 = Menu(
+            pid = menu70000.id,
+            permissionId = permission71200.id,
             name = "单位取样进展统计",
             title = "单位取样进展统计",
-            type = MenuTypeEnum.ROUTE,
+            type = MenuTypeEnum.MENU,
             // TODO 应该是 sampleManage 吧？
             path = "/sampleSurveys/i",
-            component = "/sampleSurveys/i/index",
-            sort = 712,
-            showed = true,
-            cached = true,
-            external = false
+            component = "/sampleSurveys/i/list",
+            sort = 71200
         )
-        val menu700List = listOfNotNull(
-            menu701, menu702, menu703, menu704, menu705, menu706, menu707, menu708, menu709, menu710, menu711, menu712
+        val menu70000List = listOfNotNull(
+            menu70100,
+            menu70200,
+            menu70300,
+            menu70400,
+            menu70500,
+            menu70600,
+            menu70700,
+            menu70800,
+            menu70900,
+            menu71000,
+            menu71100,
+            menu71200
         )
-        menuJpaRepository.saveAll(menu700List)
-        val menu800 = Menu(
-            permissionId = permission800.id,
+        menuJpaRepository.saveAll(menu70000List)
+        val menu80000 = Menu(
+            permissionId = permission80000.id,
             name = "取样调查",
             title = "取样调查",
-            type = MenuTypeEnum.ROUTE,
+            type = MenuTypeEnum.CATALOG,
             path = "/sampleSurvey",
             component = "LAYOUT",
-            sort = 800,
-            showed = true,
-            cached = true,
-            external = false
+            sort = 80000
         )
-        menuJpaRepository.save(menu800)
-        val menu801 = Menu(
-            pid = menu800.id,
-            permissionId = permission801.id,
+        menuJpaRepository.save(menu80000)
+        val menu80100 = Menu(
+            pid = menu80000.id,
+            permissionId = permission80100.id,
             name = "取样调查表单明细",
             title = "取样调查表单明细",
-            type = MenuTypeEnum.ROUTE,
+            type = MenuTypeEnum.MENU,
             path = "/sampleSurvey/formDetails",
-            component = "/sampleSurvey/formDetails/index",
-            sort = 801,
-            showed = true,
-            cached = true,
-            external = false
+            component = "/sampleSurvey/formDetails/list",
+            sort = 80100
         )
-        val menu802 = Menu(
-            pid = menu800.id,
-            permissionId = permission802.id,
+        val menu80200 = Menu(
+            pid = menu80000.id,
+            permissionId = permission80200.id,
             name = "质控退回样点明细",
             title = "质控退回样点明细",
-            type = MenuTypeEnum.ROUTE,
+            type = MenuTypeEnum.MENU,
             path = "/sampleSurvey/QCReturnDetails",
-            component = "/sampleSurvey/QCReturnDetails/index",
-            sort = 802,
-            showed = true,
-            cached = true,
-            external = false
+            component = "/sampleSurvey/QCReturnDetails/list",
+            sort = 80200
         )
-        val menu803 = Menu(
-            pid = menu800.id,
-            permissionId = permission803.id,
+        val menu80300 = Menu(
+            pid = menu80000.id,
+            permissionId = permission80300.id,
             name = "严重问题申诉记录",
             title = "严重问题申诉记录",
-            type = MenuTypeEnum.ROUTE,
+            type = MenuTypeEnum.MENU,
             path = "/sampleSurvey/seriousProblemRecord",
-            component = "/sampleSurvey/seriousProblemRecord/index",
-            sort = 803,
-            showed = true,
-            cached = true,
-            external = false
+            component = "/sampleSurvey/seriousProblemRecord/list",
+            sort = 80300
         )
-        val menu804 = Menu(
-            pid = menu800.id,
-            permissionId = permission804.id,
+        val menu80400 = Menu(
+            pid = menu80000.id,
+            permissionId = permission80400.id,
             name = "重采样品信息明细",
             title = "重采样品信息明细",
-            type = MenuTypeEnum.ROUTE,
+            type = MenuTypeEnum.MENU,
             path = "/sampleSurvey/sampleInformationDetails",
-            component = "/sampleSurvey/sampleInformationDetails/index",
-            sort = 804,
-            showed = true,
-            cached = true,
-            external = false
+            component = "/sampleSurvey/sampleInformationDetails/list",
+            sort = 80400
         )
-        val menu800List = listOfNotNull(
-            menu801, menu802, menu803, menu804
+        val menu80000List = listOfNotNull(
+            menu80100, menu80200, menu80300, menu80400
         )
-        menuJpaRepository.saveAll(menu800List)
-        val menu900 = Menu(
-            permissionId = permission900.id,
+        menuJpaRepository.saveAll(menu80000List)
+        val menu90000 = Menu(
+            permissionId = permission90000.id,
             name = "采样质控管理",
             title = "采样质控管理",
-            type = MenuTypeEnum.ROUTE,
+            type = MenuTypeEnum.CATALOG,
             path = "/samplingQualityControl",
             component = "LAYOUT",
-            sort = 900,
-            showed = true,
-            cached = true,
-            external = false
+            sort = 90000
         )
-        menuJpaRepository.save(menu900)
-        val menu901 = Menu(
-            pid = menu900.id,
-            permissionId = permission901.id,
+        menuJpaRepository.save(menu90000)
+        val menu90100 = Menu(
+            pid = menu90000.id,
+            permissionId = permission90100.id,
             name = "采样一级质控(县)任务",
             title = "采样一级质控(县)任务",
-            type = MenuTypeEnum.ROUTE,
+            type = MenuTypeEnum.MENU,
             path = "/samplingQualityControl/a",
-            component = "/samplingQualityControl/a/index",
-            sort = 901,
-            showed = true,
-            cached = true,
-            external = false
+            component = "/samplingQualityControl/a/list",
+            sort = 90100
         )
-        val menu902 = Menu(
-            pid = menu900.id,
-            permissionId = permission902.id,
+        val menu90200 = Menu(
+            pid = menu90000.id,
+            permissionId = permission90200.id,
             name = "采样二级质控(市)任务",
             title = "采样二级质控(市)任务",
-            type = MenuTypeEnum.ROUTE,
+            type = MenuTypeEnum.MENU,
             path = "/samplingQualityControl/b",
-            component = "/samplingQualityControl/b/index",
-            sort = 902,
-            showed = true,
-            cached = true,
-            external = false
+            component = "/samplingQualityControl/b/list",
+            sort = 90200
         )
-        val menu903 = Menu(
-            pid = menu900.id,
-            permissionId = permission903.id,
+        val menu90300 = Menu(
+            pid = menu90000.id,
+            permissionId = permission90300.id,
             name = "采样三级质控(省)任务",
             title = "采样三级质控(省)任务",
-            type = MenuTypeEnum.ROUTE,
+            type = MenuTypeEnum.MENU,
             path = "/samplingQualityControl/c",
-            component = "/samplingQualityControl/c/index",
-            sort = 903,
-            showed = true,
-            cached = true,
-            external = false
+            component = "/samplingQualityControl/c/list",
+            sort = 90300
         )
-        val menu904 = Menu(
-            pid = menu900.id,
-            permissionId = permission904.id,
+        val menu90400 = Menu(
+            pid = menu90000.id,
+            permissionId = permission90400.id,
             name = "采样质控专家任务",
             title = "采样质控专家任务",
-            type = MenuTypeEnum.ROUTE,
+            type = MenuTypeEnum.MENU,
             path = "/samplingQualityControl/d",
-            component = "/samplingQualityControl/d/index",
-            sort = 904,
-            showed = true,
-            cached = true,
-            external = false
+            component = "/samplingQualityControl/d/list",
+            sort = 90400
         )
-        val menu905 = Menu(
-            pid = menu900.id,
-            permissionId = permission905.id,
+        val menu90500 = Menu(
+            pid = menu90000.id,
+            permissionId = permission90500.id,
             name = "采样质控意见反馈",
             title = "采样质控意见反馈",
-            type = MenuTypeEnum.ROUTE,
+            type = MenuTypeEnum.MENU,
             path = "/samplingQualityControl/e",
-            component = "/samplingQualityControl/e/index",
-            sort = 905,
-            showed = true,
-            cached = true,
-            external = false
+            component = "/samplingQualityControl/e/list",
+            sort = 90500
         )
-        val menu906 = Menu(
-            pid = menu900.id,
-            permissionId = permission906.id,
+        val menu90600 = Menu(
+            pid = menu90000.id,
+            permissionId = permission90600.id,
             name = "取样资料质控进度",
             title = "取样资料质控进度",
-            type = MenuTypeEnum.ROUTE,
+            type = MenuTypeEnum.MENU,
             path = "/samplingQualityControl/f",
-            component = "/samplingQualityControl/f/index",
-            sort = 906,
-            showed = true,
-            cached = true,
-            external = false
+            component = "/samplingQualityControl/f/list",
+            sort = 90600
         )
-        val menu907 = Menu(
-            pid = menu900.id,
-            permissionId = permission907.id,
+        val menu90700 = Menu(
+            pid = menu90000.id,
+            permissionId = permission90700.id,
             name = "采样质控专家查询",
             title = "采样质控专家查询",
-            type = MenuTypeEnum.ROUTE,
+            type = MenuTypeEnum.MENU,
             path = "/samplingQualityControl/g",
-            component = "/samplingQualityControl/g/index",
-            sort = 907,
-            showed = true,
-            cached = true,
-            external = false
+            component = "/samplingQualityControl/g/list",
+            sort = 90700
         )
-        val menu908 = Menu(
-            pid = menu900.id,
-            permissionId = permission908.id,
+        val menu90800 = Menu(
+            pid = menu90000.id,
+            permissionId = permission90800.id,
             name = "采样质控意见退回",
             title = "采样质控意见退回",
-            type = MenuTypeEnum.ROUTE,
+            type = MenuTypeEnum.MENU,
             path = "/samplingQualityControl/h",
-            component = "/samplingQualityControl/h/index",
-            sort = 908,
-            showed = true,
-            cached = true,
-            external = false
+            component = "/samplingQualityControl/h/list",
+            sort = 90800
         )
-        val menu900List = listOfNotNull(
-            menu901, menu902, menu903, menu904, menu905, menu906, menu907, menu908
+        val menu90000List = listOfNotNull(
+            menu90100, menu90200, menu90300, menu90400, menu90500, menu90600, menu90700, menu90800
         )
-        menuJpaRepository.saveAll(menu900List)
-        val menu1000 = Menu(
-            permissionId = permission1000.id,
+        menuJpaRepository.saveAll(menu90000List)
+        val menu100000 = Menu(
+            permissionId = permission100000.id,
             name = "样品检测管理",
             title = "样品检测管理",
-            type = MenuTypeEnum.ROUTE,
+            type = MenuTypeEnum.CATALOG,
             path = "/sampleTesting",
             component = "LAYOUT",
-            sort = 1000,
-            showed = true,
-            cached = true,
-            external = false
+            sort = 100000
         )
-        menuJpaRepository.save(menu1000)
-        val menu1001 = Menu(
-            pid = menu1000.id,
-            permissionId = permission1001.id,
+        menuJpaRepository.save(menu100000)
+        val menu100100 = Menu(
+            pid = menu100000.id,
+            permissionId = permission100100.id,
             name = "批次送检样交接单",
             title = "批次送检样交接单",
-            type = MenuTypeEnum.ROUTE,
+            type = MenuTypeEnum.MENU,
             path = "/sampleTesting/a",
-            component = "/sampleTesting/a/index",
-            sort = 1001,
-            showed = true,
-            cached = true,
-            external = false
+            component = "/sampleTesting/a/list",
+            sort = 100100
         )
-        val menu1002 = Menu(
-            pid = menu1000.id,
-            permissionId = permission1002.id,
+        val menu100200 = Menu(
+            pid = menu100000.id,
+            permissionId = permission100200.id,
             name = "检测子样信息查询",
             title = "检测子样信息查询",
-            type = MenuTypeEnum.ROUTE,
+            type = MenuTypeEnum.MENU,
             path = "/sampleTesting/b",
-            component = "/sampleTesting/b/index",
-            sort = 1002,
-            showed = true,
-            cached = true,
-            external = false
+            component = "/sampleTesting/b/list",
+            sort = 100200
         )
-        val menu1003 = Menu(
-            pid = menu1000.id,
-            permissionId = permission1003.id,
+        val menu100300 = Menu(
+            pid = menu100000.id,
+            permissionId = permission100300.id,
             name = "检测资质文件报送",
             title = "检测资质文件报送",
-            type = MenuTypeEnum.ROUTE,
+            type = MenuTypeEnum.MENU,
             path = "/sampleTesting/TestQualificationDocuments",
-            component = "/sampleTesting/TestQualificationDocuments/index",
-            sort = 1003,
-            showed = true,
-            cached = true,
-            external = false
+            component = "/sampleTesting/TestQualificationDocuments/list",
+            sort = 100300
         )
-        val menu1004 = Menu(
-            pid = menu1000.id,
-            permissionId = permission1004.id,
+        val menu100400 = Menu(
+            pid = menu100000.id,
+            permissionId = permission100400.id,
             name = "检测资质能力审核",
             title = "检测资质能力审核",
-            type = MenuTypeEnum.ROUTE,
+            type = MenuTypeEnum.MENU,
             path = "/sampleTesting/QualificationCompetencyAudit",
-            component = "/sampleTesting/QualificationCompetencyAudit/index",
-            sort = 1004,
-            showed = true,
-            cached = true,
-            external = false
+            component = "/sampleTesting/QualificationCompetencyAudit/list",
+            sort = 100400
         )
-        val menu1005 = Menu(
-            pid = menu1000.id,
-            permissionId = permission1005.id,
+        val menu100500 = Menu(
+            pid = menu100000.id,
+            permissionId = permission100500.id,
             name = "基本检测方法标准",
             title = "基本检测方法标准",
-            type = MenuTypeEnum.ROUTE,
+            type = MenuTypeEnum.MENU,
             path = "/sampleTesting/e",
-            component = "/sampleTesting/e/index",
-            sort = 1005,
-            showed = true,
-            cached = true,
-            external = false
+            component = "/sampleTesting/e/list",
+            sort = 100500
         )
-        val menu1006 = Menu(
-            pid = menu1000.id,
-            permissionId = permission1006.id,
+        val menu100600 = Menu(
+            pid = menu100000.id,
+            permissionId = permission100600.id,
             name = "地方新增检测方法",
             title = "地方新增检测方法",
-            type = MenuTypeEnum.ROUTE,
+            type = MenuTypeEnum.MENU,
             path = "/sampleTesting/f",
-            component = "/sampleTesting/f/index",
-            sort = 1006,
-            showed = true,
-            cached = true,
-            external = false
+            component = "/sampleTesting/f/list",
+            sort = 100600
         )
-        val menu1007 = Menu(
-            pid = menu1000.id,
-            permissionId = permission1007.id,
+        val menu100700 = Menu(
+            pid = menu100000.id,
+            permissionId = permission100700.id,
             name = "方法验证材料上传",
             title = "方法验证材料上传",
-            type = MenuTypeEnum.ROUTE,
+            type = MenuTypeEnum.MENU,
             path = "/sampleTesting/g",
-            component = "/sampleTesting/g/index",
-            sort = 1007,
-            showed = true,
-            cached = true,
-            external = false
+            component = "/sampleTesting/g/list",
+            sort = 100700
         )
-        val menu1008 = Menu(
-            pid = menu1000.id,
-            permissionId = permission1008.id,
+        val menu100800 = Menu(
+            pid = menu100000.id,
+            permissionId = permission100800.id,
             name = "方法验证材料审核",
             title = "方法验证材料审核",
-            type = MenuTypeEnum.ROUTE,
+            type = MenuTypeEnum.MENU,
             path = "/sampleTesting/h",
-            component = "/sampleTesting/h/index",
-            sort = 1008,
-            showed = true,
-            cached = true,
-            external = false
+            component = "/sampleTesting/h/list",
+            sort = 100800
         )
-        val menu1009 = Menu(
-            pid = menu1000.id,
-            permissionId = permission1009.id,
+        val menu100900 = Menu(
+            pid = menu100000.id,
+            permissionId = permission100900.id,
             name = "统一监控样品管理",
             title = "统一监控样品管理",
-            type = MenuTypeEnum.ROUTE,
+            type = MenuTypeEnum.MENU,
             path = "/sampleTesting/i",
-            component = "/sampleTesting/i/index",
-            sort = 1009,
-            showed = true,
-            cached = true,
-            external = false
+            component = "/sampleTesting/i/list",
+            sort = 100900
         )
-        val menu1010 = Menu(
-            pid = menu1000.id,
-            permissionId = permission1010.id,
+        val menu101000 = Menu(
+            pid = menu100000.id,
+            permissionId = permission101000.id,
             name = "统一监控样品查询",
             title = "统一监控样品查询",
-            type = MenuTypeEnum.ROUTE,
+            type = MenuTypeEnum.MENU,
             path = "/sampleTesting/j",
-            component = "/sampleTesting/j/index",
-            sort = 1010,
-            showed = true,
-            cached = true,
-            external = false
+            component = "/sampleTesting/j/list",
+            sort = 101000
         )
-        val menu1011 = Menu(
-            pid = menu1000.id,
-            permissionId = permission1011.id,
+        val menu101100 = Menu(
+            pid = menu100000.id,
+            permissionId = permission101100.id,
             name = "严重问题样品查询",
             title = "严重问题样品查询",
-            type = MenuTypeEnum.ROUTE,
+            type = MenuTypeEnum.MENU,
             path = "/sampleTesting/k",
-            component = "/sampleTesting/k/index",
-            sort = 1011,
-            showed = true,
-            cached = true,
-            external = false
+            component = "/sampleTesting/k/list",
+            sort = 101100
         )
-        val menu1012 = Menu(
-            pid = menu1000.id,
-            permissionId = permission1012.id,
+        val menu101200 = Menu(
+            pid = menu100000.id,
+            permissionId = permission101200.id,
             name = "批次检测数据报送",
             title = "批次检测数据报送",
-            type = MenuTypeEnum.ROUTE,
+            type = MenuTypeEnum.MENU,
             path = "/sampleTesting/l",
-            component = "/sampleTesting/l/index",
-            sort = 1012,
-            showed = true,
-            cached = true,
-            external = false
+            component = "/sampleTesting/l/list",
+            sort = 101200
         )
-        val menu1013 = Menu(
-            pid = menu1000.id,
-            permissionId = permission1013.id,
+        val menu101300 = Menu(
+            pid = menu100000.id,
+            permissionId = permission101300.id,
             name = "批次检测数据整改",
             title = "批次检测数据整改",
-            type = MenuTypeEnum.ROUTE,
+            type = MenuTypeEnum.MENU,
             path = "/sampleTesting/m",
-            component = "/sampleTesting/m/index",
-            sort = 1013,
-            showed = true,
-            cached = true,
-            external = false
+            component = "/sampleTesting/m/list",
+            sort = 101300
         )
-        val menu1014 = Menu(
-            pid = menu1000.id,
-            permissionId = permission1014.id,
+        val menu101400 = Menu(
+            pid = menu100000.id,
+            permissionId = permission101400.id,
             name = "样品检测数据查询",
             title = "样品检测数据查询",
-            type = MenuTypeEnum.ROUTE,
+            type = MenuTypeEnum.MENU,
             path = "/sampleTesting/n",
-            component = "/sampleTesting/n/index",
-            sort = 1014,
-            showed = true,
-            cached = true,
-            external = false
+            component = "/sampleTesting/n/list",
+            sort = 101400
         )
-        val menu1000List = listOfNotNull(
-            menu1001,
-            menu1002,
-            menu1003,
-            menu1004,
-            menu1005,
-            menu1006,
-            menu1007,
-            menu1008,
-            menu1009,
-            menu1010,
-            menu1011,
-            menu1012,
-            menu1013,
-            menu1014
+        val menu100000List = listOfNotNull(
+            menu100100,
+            menu100200,
+            menu100300,
+            menu100400,
+            menu100500,
+            menu100600,
+            menu100700,
+            menu100800,
+            menu100900,
+            menu101000,
+            menu101100,
+            menu101200,
+            menu101300,
+            menu101400
         )
-        menuJpaRepository.saveAll(menu1000List)
-        val menu1100 = Menu(
-            permissionId = permission1100.id,
+        menuJpaRepository.saveAll(menu100000List)
+        val menu110000 = Menu(
+            permissionId = permission110000.id,
             name = "数据质量审核",
             title = "数据质量审核",
-            type = MenuTypeEnum.ROUTE,
+            type = MenuTypeEnum.CATALOG,
             path = "/dataQualityAudits",
             component = "LAYOUT",
-            sort = 1100,
-            showed = true,
-            cached = true,
-            external = false
+            sort = 110000
         )
-        menuJpaRepository.save(menu1100)
-        val menu1101 = Menu(
-            pid = menu1100.id,
-            permissionId = permission1101.id,
+        menuJpaRepository.save(menu110000)
+        val menu110100 = Menu(
+            pid = menu110000.id,
+            permissionId = permission110100.id,
             name = "检测一级质控(县)任务",
             title = "检测一级质控(县)任务",
-            type = MenuTypeEnum.ROUTE,
+            type = MenuTypeEnum.MENU,
             path = "/dataQualityAudits/a",
-            component = "/dataQualityAudits/a/index",
-            sort = 1101,
-            showed = true,
-            cached = true,
-            external = false
+            component = "/dataQualityAudits/a/list",
+            sort = 110100
         )
-        val menu1102 = Menu(
-            pid = menu1100.id,
-            permissionId = permission1102.id,
+        val menu110200 = Menu(
+            pid = menu110000.id,
+            permissionId = permission110200.id,
             name = "检测二级质控(市)任务",
             title = "检测二级质控(市)任务",
-            type = MenuTypeEnum.ROUTE,
+            type = MenuTypeEnum.MENU,
             path = "/dataQualityAudits/b",
-            component = "/dataQualityAudits/b/index",
-            sort = 1102,
-            showed = true,
-            cached = true,
-            external = false
+            component = "/dataQualityAudits/b/list",
+            sort = 110200
         )
-        val menu1103 = Menu(
-            pid = menu1100.id,
-            permissionId = permission1103.id,
+        val menu110300 = Menu(
+            pid = menu110000.id,
+            permissionId = permission110300.id,
             name = "检测三级质控(省)任务",
             title = "检测三级质控(省)任务",
-            type = MenuTypeEnum.ROUTE,
+            type = MenuTypeEnum.MENU,
             path = "/dataQualityAudits/c",
-            component = "/dataQualityAudits/c/index",
-            sort = 1103,
-            showed = true,
-            cached = true,
-            external = false
+            component = "/dataQualityAudits/c/list",
+            sort = 110300
         )
-        val menu1104 = Menu(
-            pid = menu1100.id,
-            permissionId = permission1104.id,
+        val menu110400 = Menu(
+            pid = menu110000.id,
+            permissionId = permission110400.id,
             name = "检测质控专家任务",
             title = "检测质控专家任务",
-            type = MenuTypeEnum.ROUTE,
+            type = MenuTypeEnum.MENU,
             path = "/dataQualityAudits/d",
-            component = "/dataQualityAudits/d/index",
-            sort = 1104,
-            showed = true,
-            cached = true,
-            external = false
+            component = "/dataQualityAudits/d/list",
+            sort = 110400
         )
-        val menu1105 = Menu(
-            pid = menu1100.id,
-            permissionId = permission1105.id,
+        val menu110500 = Menu(
+            pid = menu110000.id,
+            permissionId = permission110500.id,
             name = "检测质控意见反馈",
             title = "检测质控意见反馈",
-            type = MenuTypeEnum.ROUTE,
+            type = MenuTypeEnum.MENU,
             path = "/dataQualityAudits/e",
-            component = "/dataQualityAudits/e/index",
-            sort = 1105,
-            showed = true,
-            cached = true,
-            external = false
+            component = "/dataQualityAudits/e/list",
+            sort = 110500
         )
-        val menu1106 = Menu(
-            pid = menu1100.id,
-            permissionId = permission1106.id,
+        val menu110600 = Menu(
+            pid = menu110000.id,
+            permissionId = permission110600.id,
             name = "质控退改批次查询",
             title = "质控退改批次查询",
-            type = MenuTypeEnum.ROUTE,
+            type = MenuTypeEnum.MENU,
             path = "/dataQualityAudits/f",
-            component = "/dataQualityAudits/f/index",
-            sort = 1106,
-            showed = true,
-            cached = true,
-            external = false
+            component = "/dataQualityAudits/f/list",
+            sort = 110600
         )
-        val menu1100List = listOfNotNull(
-            menu1101, menu1102, menu1103, menu1104, menu1105, menu1106
+        val menu110000List = listOfNotNull(
+            menu110100, menu110200, menu110300, menu110400, menu110500, menu110600
         )
-        menuJpaRepository.saveAll(menu1100List)
-        val menu1200 = Menu(
-            permissionId = permission1200.id,
+        menuJpaRepository.saveAll(menu110000List)
+        val menu120000 = Menu(
+            permissionId = permission120000.id,
             name = "数据统计分析",
             title = "数据统计分析",
-            type = MenuTypeEnum.ROUTE,
+            type = MenuTypeEnum.CATALOG,
             path = "/statisticalAnalysisOfData",
             component = "LAYOUT",
-            sort = 1200,
-            showed = true,
-            cached = true,
-            external = false
+            sort = 120000
         )
-        menuJpaRepository.save(menu1200)
-        val menu1300 = Menu(
-            permissionId = permission1300.id,
+        menuJpaRepository.save(menu120000)
+        val menu130000 = Menu(
+            permissionId = permission130000.id,
             name = "数据对标评价",
             title = "数据对标评价",
-            type = MenuTypeEnum.ROUTE,
+            type = MenuTypeEnum.CATALOG,
             path = "/dataBenchmarkingEvaluation",
             component = "LAYOUT",
-            sort = 1300,
-            showed = true,
-            cached = true,
-            external = false
+            sort = 130000
         )
-        menuJpaRepository.save(menu1300)
-        val menu1400 = Menu(
-            permissionId = permission1400.id,
+        menuJpaRepository.save(menu130000)
+        val menu140000 = Menu(
+            permissionId = permission140000.id,
             name = "工作文件管理",
             title = "工作文件管理",
-            type = MenuTypeEnum.ROUTE,
+            type = MenuTypeEnum.CATALOG,
             path = "/workFileManagement",
             component = "LAYOUT",
-            sort = 1400,
-            showed = true,
-            cached = true,
-            external = false
+            sort = 140000
         )
-        menuJpaRepository.save(menu1400)
-        val menu1401 = Menu(
-            pid = menu1400.id,
-            permissionId = permission1401.id,
+        menuJpaRepository.save(menu140000)
+        val menu140100 = Menu(
+            pid = menu140000.id,
+            permissionId = permission140100.id,
             name = "工作文件下载",
             title = "工作文件下载",
-            type = MenuTypeEnum.ROUTE,
+            type = MenuTypeEnum.MENU,
             path = "/workFileManagement/a",
-            component = "/workFileManagement/a/index",
-            sort = 1401,
-            showed = true,
-            cached = true,
-            external = false
+            component = "/workFileManagement/a/list",
+            sort = 140100
         )
-        menuJpaRepository.save(menu1401)
-        val menu1500 = Menu(
-            permissionId = permission1500.id,
+        menuJpaRepository.save(menu140100)
+        val menu150000 = Menu(
+            permissionId = permission150000.id,
             name = "后台数据管理",
             title = "后台数据管理",
-            type = MenuTypeEnum.ROUTE,
+            type = MenuTypeEnum.CATALOG,
             path = "/system",
             component = "LAYOUT",
-            sort = 1500,
-            showed = true,
-            cached = true,
-            external = false
+            sort = 150000
         )
-        menuJpaRepository.save(menu1500)
-        val menu1501 = Menu(
-            pid = menu1500.id,
-            permissionId = permission1501.id,
+        menuJpaRepository.save(menu150000)
+        val menu150100 = Menu(
+            pid = menu150000.id,
+            permissionId = permission150100.id,
             name = "单位管理",
             title = "单位管理",
-            type = MenuTypeEnum.ROUTE,
+            type = MenuTypeEnum.MENU,
             path = "/system/organization",
-            component = "/system/organization/index",
-            sort = 1501,
-            showed = true,
-            cached = true,
-            external = false
+            component = "/system/organization/list",
+            sort = 150100
         )
-        val menu1502 = Menu(
-            pid = menu1500.id,
-            permissionId = permission1502.id,
+        val menu150200 = Menu(
+            pid = menu150000.id,
+            permissionId = permission150200.id,
             name = "用户管理",
             title = "用户管理",
-            type = MenuTypeEnum.ROUTE,
+            type = MenuTypeEnum.MENU,
             path = "/system/user",
-            component = "/system/user/index",
-            sort = 1502,
-            showed = true,
-            cached = true,
-            external = false
+            component = "/system/user/list",
+            sort = 150200
         )
-        val menu1503 = Menu(
-            pid = menu1500.id,
-            permissionId = permission1503.id,
+        val menu150300 = Menu(
+            pid = menu150000.id,
+            permissionId = permission150300.id,
             name = "角色管理",
             title = "角色管理",
-            type = MenuTypeEnum.ROUTE,
+            type = MenuTypeEnum.MENU,
             path = "/system/role",
-            component = "/system/role/index",
-            sort = 1503,
-            showed = true,
-            cached = true,
-            external = false
+            component = "/system/role/list",
+            sort = 150300
         )
-        val menu1504 = Menu(
-            pid = menu1500.id,
-            permissionId = permission1504.id,
+        val menu150400 = Menu(
+            pid = menu150000.id,
+            permissionId = permission150400.id,
             name = "权限管理",
             title = "权限管理",
-            type = MenuTypeEnum.ROUTE,
+            type = MenuTypeEnum.MENU,
             path = "/system/permission",
-            component = "/system/permission/index",
-            sort = 1504,
-            showed = true,
-            cached = true,
-            external = false
+            component = "/system/permission/list",
+            sort = 150400
         )
-        val menu1505 = Menu(
-            pid = menu1500.id,
-            permissionId = permission1505.id,
+        val menu150500 = Menu(
+            pid = menu150000.id,
+            permissionId = permission150500.id,
             name = "菜单管理",
             title = "菜单管理",
-            type = MenuTypeEnum.ROUTE,
+            type = MenuTypeEnum.MENU,
             path = "/system/menu",
-            component = "/system/menu/index",
-            sort = 1505,
-            showed = true,
-            cached = true,
-            external = false
+            component = "/system/menu/list",
+            sort = 150500
         )
-        val menu1506 = Menu(
-            pid = menu1500.id,
-            permissionId = permission1506.id,
+        val menu150600 = Menu(
+            pid = menu150000.id,
+            permissionId = permission150600.id,
             name = "字典管理",
             title = "字典管理",
-            type = MenuTypeEnum.ROUTE,
+            type = MenuTypeEnum.MENU,
             path = "/system/dict",
-            component = "/system/dict/index",
-            sort = 1506,
-            showed = true,
-            cached = true,
-            external = false
+            component = "/system/dict/list",
+            sort = 150600
         )
-        val menu1500List = listOfNotNull(
-            menu1501, menu1502, menu1503, menu1504, menu1505, menu1506
+        val menu150000List = listOfNotNull(
+            menu150100, menu150200, menu150300, menu150400, menu150500, menu150600
         )
-        menuJpaRepository.saveAll(menu1500List)
+        menuJpaRepository.saveAll(menu150000List)
+        val menu150501 = Menu(
+            pid = menu150500.id,
+            permissionId = permission150501.id,
+            name = "新增",
+            title = "新增",
+            type = MenuTypeEnum.BUTTON,
+            authCode = "System:Menu:Create",
+            sort = 150501
+        )
+        val menu150502 = Menu(
+            pid = menu150500.id,
+            permissionId = permission150502.id,
+            name = "修改",
+            title = "修改",
+            type = MenuTypeEnum.BUTTON,
+            authCode = "System:Menu:Edit",
+            sort = 150502
+        )
+        val menu150503 = Menu(
+            pid = menu150500.id,
+            permissionId = permission150503.id,
+            name = "删除",
+            title = "删除",
+            type = MenuTypeEnum.BUTTON,
+            authCode = "System:Menu:Delete",
+            sort = 150503
+        )
+        val menu150500List = listOfNotNull(menu150501, menu150502, menu150503)
+        menuJpaRepository.saveAll(menu150500List)
     }
 
     /**

@@ -48,8 +48,8 @@ data class Permission(
     /**
      * 排序编号
      */
-    @Column(unique = true, nullable = false, columnDefinition = "SMALLINT", comment = "排序编号")
-    var sort: Short = 0,
+    @Column(unique = true, nullable = false, columnDefinition = "INTEGER", comment = "排序编号")
+    var sort: Int = 0,
 ) : AbstractAuditable() {
     companion object {
         /**

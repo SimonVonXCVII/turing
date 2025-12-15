@@ -69,7 +69,7 @@ public class RoleServiceImpl implements IRoleService {
     }
 
     @Override
-    public Page<RoleDTO> list(RoleDTO dto) {
+    public Page<RoleDTO> selectBy(RoleDTO dto) {
         Specification<Role> spec = (root, query, builder) -> {
             List<Predicate> predicateList = new LinkedList<>();
             if (StringUtils.hasText(dto.getName())) {

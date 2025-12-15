@@ -124,11 +124,14 @@ CREATE TABLE IF NOT EXISTS public.turing_menu
     title              VARCHAR(64)                         NOT NULL
         UNIQUE,
     type               VARCHAR(32)                         NOT NULL,
-    path               VARCHAR(128)                        NOT NULL
+    authCode           VARCHAR(128)
         UNIQUE,
-    component          VARCHAR(128)                        NOT NULL,
+    path               VARCHAR(128)
+        UNIQUE,
+    component          VARCHAR(128),
+    status             SMALLINT                            NOT NULL,
     icon               VARCHAR(128),
-    sort               SMALLINT                            NOT NULL
+    sort               INTEGER                             NOT NULL
         UNIQUE,
     showed             BOOLEAN                             NOT NULL,
     cached             BOOLEAN                             NOT NULL,
@@ -155,9 +158,13 @@ COMMENT ON COLUMN public.turing_menu.title IS '菜单标题';
 
 COMMENT ON COLUMN public.turing_menu.type IS '菜单类型';
 
-COMMENT ON COLUMN public.turing_menu.path IS '菜单路径';
+COMMENT ON COLUMN public.turing_menu.authCode IS '权限标识';
 
-COMMENT ON COLUMN public.turing_menu.component IS '组件路径';
+COMMENT ON COLUMN public.turing_menu.path IS '路由地址';
+
+COMMENT ON COLUMN public.turing_menu.component IS '页面组件';
+
+COMMENT ON COLUMN public.turing_menu.status IS '状态';
 
 COMMENT ON COLUMN public.turing_menu.icon IS '图标';
 
@@ -336,7 +343,7 @@ CREATE TABLE IF NOT EXISTS public.turing_permission
         UNIQUE,
     code               VARCHAR(32)
         UNIQUE,
-    sort               SMALLINT                            NOT NULL
+    sort               INTEGER                             NOT NULL
         UNIQUE,
     created_by         INTEGER,
     created_date       TIMESTAMP                           NOT NULL,
@@ -382,8 +389,8 @@ CREATE TABLE IF NOT EXISTS public.turing_role
         UNIQUE,
     authority          VARCHAR(64)                         NOT NULL
         UNIQUE,
-    remark             VARCHAR(128),
     status             SMALLINT                            NOT NULL,
+    remark             VARCHAR(128),
     created_by         INTEGER,
     created_date       TIMESTAMP                           NOT NULL,
     last_modified_by   INTEGER,
@@ -400,9 +407,9 @@ COMMENT ON COLUMN public.turing_role.name IS '角色名称';
 
 COMMENT ON COLUMN public.turing_role.authority IS '角色编码';
 
-COMMENT ON COLUMN public.turing_role.remark IS '备注';
+COMMENT ON COLUMN public.turing_role.status IS '状态';
 
-COMMENT ON COLUMN public.turing_role.status IS '角色状态';
+COMMENT ON COLUMN public.turing_role.remark IS '备注';
 
 COMMENT ON COLUMN public.turing_role.created_by IS '创建者';
 

@@ -10,17 +10,17 @@ enum class MenuTypeEnum(val desc: String) {
     /**
      * 目录
      */
-    DIRECTORY("目录"),
+    CATALOG("catalog"),
 
     /**
      * 菜单
      */
-    ROUTE("菜单"),
+    MENU("menu"),
 
     /**
      * 按钮
      */
-    BUTTON("按钮"),
+    BUTTON("button"),
     ;
 
     companion object {

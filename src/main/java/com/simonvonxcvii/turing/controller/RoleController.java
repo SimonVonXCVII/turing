@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
  * </p>
  *
  * @author Simon Von
- * @author JiangEEZzz
  * @since 2022-12-22 16:22:50
  */
 @RestController
@@ -39,8 +38,8 @@ public class RoleController {
 
     @Operation(summary = "条件查询")
     @PostMapping("/list")
-    public Result<Page<RoleDTO>> list(@RequestBody RoleDTO dto) {
-        return Result.ok(service.list(dto));
+    public Result<Page<RoleDTO>> selectBy(@RequestBody RoleDTO dto) {
+        return Result.ok(service.selectBy(dto));
     }
 
     @Operation(summary = "修改数据")

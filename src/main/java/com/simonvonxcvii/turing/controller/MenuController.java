@@ -36,16 +36,10 @@ public class MenuController {
         return Result.ok();
     }
 
-    @Operation(summary = "获取菜单集合")
-    @PostMapping("/list")
-    public Result<List<MenuDTO>> list(@RequestBody MenuDTO dto) {
-        return Result.ok(service.list(dto));
-    }
-
-    @Operation(summary = "用于角色管理页面修改操作时获取菜单集合")
+    @Operation(summary = "条件查询")
     @GetMapping("/list")
-    public Result<List<MenuDTO>> list() {
-        return Result.ok(service.list());
+    public Result<List<MenuDTO>> selectBy() {
+        return Result.ok(service.selectBy());
     }
 
     @Operation(summary = "根据主键 id 逻辑删除")

@@ -1,7 +1,6 @@
 package com.simonvonxcvii.turing.service.impl;
 
 import com.simonvonxcvii.turing.entity.Menu;
-import com.simonvonxcvii.turing.entity.Permission;
 import com.simonvonxcvii.turing.model.dto.MenuDTO;
 import com.simonvonxcvii.turing.model.dto.MenuMetaDTO;
 import com.simonvonxcvii.turing.repository.jpa.MenuJpaRepository;
@@ -12,9 +11,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -53,115 +50,56 @@ public class MenuServiceImpl implements IMenuService {
     }
 
     @Override
-    public List<MenuDTO> list(MenuDTO dto) {
+    public List<MenuDTO> selectBy() {
         // 将两次查询改为提前查询所有数据，减少查询次数，减轻数据库压力
         List<Menu> menuList = menuJpaRepository.findAll(Sort.by(Menu.SORT));
-        // 按条件过滤
-        List<Menu> menuList1 = menuList.stream()
-                .filter(menu -> !StringUtils.hasText(dto.getName()) ||
-                        (menu.getName().contains(dto.getName()) || dto.getName().contains(menu.getName())))
-                .filter(menu -> !StringUtils.hasText(dto.getType()) ||
-                        (menu.getType().getDesc().contains(dto.getType()) || dto.getType().contains(menu.getType().getDesc())))
-                .filter(menu -> !StringUtils.hasText(dto.getPath()) ||
-                        (menu.getPath().contains(dto.getPath()) || dto.getPath().contains(menu.getPath())))
-                .filter(menu -> !StringUtils.hasText(dto.getComponent()) ||
-                        (menu.getComponent().contains(dto.getComponent()) || dto.getComponent().contains(menu.getComponent())))
-                .filter(menu -> dto.getSort() == null || Objects.equals(menu.getSort(), dto.getSort()))
-                .filter(menu -> dto.getShowed() == null || Objects.equals(menu.isShowed(), dto.getShowed()))
-                .filter(menu -> dto.getCached() == null || Objects.equals(menu.isCached(), dto.getCached()))
-                .filter(menu -> dto.getExternal() == null || Objects.equals(menu.isExternal(), dto.getExternal()))
+        // menu 级别分类
+        List<Menu> level1MenuList = menuList.stream()
+                .filter(menu -> menu.getSort() % 10000 == 0)
                 .toList();
-        if (menuList1.isEmpty()) {
-            return new ArrayList<>();
-        }
-        // 收集 id
-        List<Integer> parentIdList = menuList1.stream().filter(menu -> menu.getPid() == null).map(Menu::getId).toList();
-        List<Integer> childIdList = menuList1.stream().filter(menu -> menu.getPid() != null).map(Menu::getId).toList();
-        List<Integer> childPidList = menuList1.stream().map(Menu::getPid).filter(Objects::nonNull).toList();
-        menuList1 = menuList.stream()
-                .filter(menu -> {
-                    if (!parentIdList.isEmpty() && parentIdList.contains(menu.getId())) {
-                        return true;
-                    } else if (!parentIdList.isEmpty() && parentIdList.contains(menu.getPid())) {
-                        return true;
-                    } else if (!childIdList.isEmpty() && childIdList.contains(menu.getId())) {
-                        return true;
-                    } else return !childPidList.isEmpty() && childPidList.contains(menu.getId());
-                })
+        List<Menu> level2MenuList = menuList.stream()
+                .filter(menu -> menu.getSort() % 100 == 0)
                 .toList();
-        List<Menu> parentList = menuList1.stream().filter(menu -> menu.getPid() == null).toList();
-        List<Menu> childList = menuList1.stream().filter(menu -> menu.getPid() != null).toList();
-        return parentList.stream()
-                .map(parent -> {
-                    MenuDTO parentDTO = new MenuDTO();
-                    BeanUtils.copyProperties(parent, parentDTO);
-                    Permission permission = permissionJpaRepository.findById(parent.getPermissionId())
-                            .orElseThrow(() -> new RuntimeException("无法查询到相应的权限数据"));
-                    parentDTO.setPermission(permission.getName());
-                    childList.stream()
-                            .filter(child -> Objects.equals(parent.getId(), child.getPid()))
-                            .forEach(child -> {
-                                MenuDTO childDTO = new MenuDTO();
-                                BeanUtils.copyProperties(child, childDTO);
-                                Permission permission1 = permissionJpaRepository.findById(child.getPermissionId())
-                                        .orElseThrow(() -> new RuntimeException("无法查询到相应的权限数据"));
-                                childDTO.setPermission(permission1.getName());
-                                parentDTO.getChildren().add(childDTO);
+        List<Menu> level3MenuList = menuList.stream()
+                .filter(menu -> menu.getSort() % 100 != 0)
+                .toList();
+        return level1MenuList.stream()
+                .map(level1Menu -> {
+                    MenuDTO level1MenuDTO = new MenuDTO();
+                    BeanUtils.copyProperties(level1Menu, level1MenuDTO);
+                    level1MenuDTO.setType(level1Menu.getType().getDesc());
+                    MenuMetaDTO level1MenuMetaDTO = new MenuMetaDTO();
+                    level1MenuMetaDTO.setTitle(level1Menu.getTitle());
+                    level1MenuMetaDTO.setIcon(level1Menu.getIcon());
+                    level1MenuMetaDTO.setHideMenu(!level1Menu.isShowed());
+                    level1MenuDTO.setMeta(level1MenuMetaDTO);
+                    level2MenuList.stream()
+                            .filter(level2Menu -> Objects.equals(level1Menu.getId(), level2Menu.getPid()))
+                            .forEach(level2Menu -> {
+                                MenuDTO level2MenuDTO = new MenuDTO();
+                                BeanUtils.copyProperties(level2Menu, level2MenuDTO);
+                                level2MenuDTO.setType(level2Menu.getType().getDesc());
+                                MenuMetaDTO level2MenuMetaDTO = new MenuMetaDTO();
+                                level2MenuMetaDTO.setTitle(level2Menu.getTitle());
+                                level2MenuMetaDTO.setIcon(level2Menu.getIcon());
+                                level2MenuMetaDTO.setHideMenu(!level2Menu.isShowed());
+                                level2MenuDTO.setMeta(level2MenuMetaDTO);
+                                level1MenuDTO.getChildren().add(level2MenuDTO);
+                                level3MenuList.stream()
+                                        .filter(level3Menu -> Objects.equals(level2Menu.getId(), level3Menu.getPid()))
+                                        .forEach(level3Menu -> {
+                                            MenuDTO level3MenuDTO = new MenuDTO();
+                                            BeanUtils.copyProperties(level3Menu, level3MenuDTO);
+                                            level3MenuDTO.setType(level3Menu.getType().getDesc());
+                                            MenuMetaDTO level3MenuMetaDTO = new MenuMetaDTO();
+                                            level3MenuMetaDTO.setTitle(level3Menu.getTitle());
+                                            level3MenuMetaDTO.setIcon(level3Menu.getIcon());
+                                            level3MenuMetaDTO.setHideMenu(!level3Menu.isShowed());
+                                            level3MenuDTO.setMeta(level3MenuMetaDTO);
+                                            level2MenuDTO.getChildren().add(level3MenuDTO);
+                                        });
                             });
-                    return parentDTO;
-                })
-                .toList();
-    }
-
-    @Override
-    public List<MenuDTO> list() {
-        // 将两次查询改为提前查询所有数据，减少查询次数，减轻数据库压力
-        List<Menu> menuList = menuJpaRepository.findAll(Sort.by(Menu.SORT));
-        // 收集 id
-        List<Integer> parentIdList = menuList.stream().filter(menu -> menu.getPid() == null).map(Menu::getId).toList();
-        List<Integer> childIdList = menuList.stream().filter(menu -> menu.getPid() != null).map(Menu::getId).toList();
-        List<Integer> childPidList = menuList.stream().map(Menu::getPid).filter(Objects::nonNull).toList();
-        menuList = menuList.stream()
-                .filter(menu -> {
-                    if (!parentIdList.isEmpty() && parentIdList.contains(menu.getId())) {
-                        return true;
-                    } else if (!parentIdList.isEmpty() && parentIdList.contains(menu.getPid())) {
-                        return true;
-                    } else if (!childIdList.isEmpty() && childIdList.contains(menu.getId())) {
-                        return true;
-                    } else return !childPidList.isEmpty() && childPidList.contains(menu.getId());
-                })
-                .toList();
-        List<Menu> parentList = menuList.stream().filter(menu -> menu.getPid() == null).toList();
-        List<Menu> childList = menuList.stream().filter(menu -> menu.getPid() != null).toList();
-        return parentList.stream()
-                .map(parent -> {
-                    MenuDTO parentDTO = new MenuDTO();
-                    BeanUtils.copyProperties(parent, parentDTO);
-                    MenuMetaDTO menuMetaDTO = new MenuMetaDTO();
-                    menuMetaDTO.setTitle(parent.getTitle());
-                    menuMetaDTO.setIcon(parent.getIcon());
-                    menuMetaDTO.setHideMenu(!parent.isShowed());
-                    parentDTO.setMeta(menuMetaDTO);
-                    Permission permission = permissionJpaRepository.findById(parent.getPermissionId())
-                            .orElseThrow(() -> new RuntimeException("无法查询到相应的权限数据"));
-                    parentDTO.setPermission(permission.getName());
-                    childList.stream()
-                            .filter(child -> Objects.equals(parent.getId(), child.getPid()))
-                            .forEach(child -> {
-                                MenuDTO childDTO = new MenuDTO();
-                                BeanUtils.copyProperties(child, childDTO);
-                                MenuMetaDTO childMenuMetaDTO = new MenuMetaDTO();
-                                childMenuMetaDTO.setTitle(child.getTitle());
-                                childMenuMetaDTO.setIcon(child.getIcon());
-                                childMenuMetaDTO.setHideMenu(!child.isShowed());
-                                childDTO.setMeta(childMenuMetaDTO);
-                                Permission permission1 = permissionJpaRepository.findById(child.getPermissionId())
-                                        .orElseThrow(() -> new RuntimeException("无法查询到相应的权限数据"));
-                                childDTO.setPermission(permission1.getName());
-                                parentDTO.getChildren().add(childDTO);
-                            });
-                    return parentDTO;
+                    return level1MenuDTO;
                 })
                 .toList();
     }

@@ -21,7 +21,7 @@ public interface IRoleService {
     /**
      * 条件查询
      */
-    Page<RoleDTO> list(RoleDTO dto);
+    Page<RoleDTO> selectBy(RoleDTO dto);
 
     /**
      * 修改数据

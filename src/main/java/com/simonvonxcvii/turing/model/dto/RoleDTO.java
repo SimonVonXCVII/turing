@@ -29,15 +29,15 @@ public class RoleDTO extends PageQuery {
 //    @NotBlank(message = "角色编码不能为空")
     private String authority;
     /**
+     * 状态
+     */
+    @NotNull(message = "状态")
+    private Byte status;
+    /**
      * 备注
      */
 //    @NotBlank(message = "备注不能为空")
     private String remark;
-    /**
-     * 角色状态
-     */
-    @NotNull(message = "角色状态")
-    private Short status;
     /**
      * 创建时间
      */

@@ -20,14 +20,9 @@ public interface IMenuService {
     void insertOrUpdate(MenuDTO dto);
 
     /**
-     * 获取菜单集合
+     * 条件查询
      */
-    List<MenuDTO> list(MenuDTO dto);
-
-    /**
-     * 用于角色管理页面修改操作时获取菜单集合
-     */
-    List<MenuDTO> list();
+    List<MenuDTO> selectBy();
 
     /**
      * 根据主键 id 逻辑删除
