@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -122,8 +123,29 @@ public class MenuServiceImpl implements IMenuService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void deleteById(Integer id) {
+        // 当前级
         menuJpaRepository.deleteById(id);
         menuMetaJpaRepository.deleteByMenuId(id);
+        // 二级（如果有）
+        Set<Integer> menuIdSet2 = menuJpaRepository.findByPid(id)
+                .stream()
+                .map(Menu::getId)
+                .collect(Collectors.toSet());
+        if (menuIdSet2.isEmpty()) {
+            return;
+        }
+        menuJpaRepository.deleteAllByIdInBatch(menuIdSet2);
+        menuMetaJpaRepository.deleteByMenuIdIn(menuIdSet2);
+        // 三级（如果有）
+        Set<Integer> menuIdSet3 = menuJpaRepository.findByPidIn(menuIdSet2)
+                .stream()
+                .map(Menu::getId)
+                .collect(Collectors.toSet());
+        if (menuIdSet3.isEmpty()) {
+            return;
+        }
+        menuJpaRepository.deleteAllByIdInBatch(menuIdSet3);
+        menuMetaJpaRepository.deleteByMenuIdIn(menuIdSet3);
     }
 
     /**

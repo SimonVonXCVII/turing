@@ -18,4 +18,6 @@ interface MenuMetaJpaRepository : JpaRepositoryImplementation<MenuMeta, Int> {
 
     fun deleteByMenuId(menuId: Int)
 
+    fun deleteByMenuIdIn(menuIds: MutableCollection<Int>)
+
 }

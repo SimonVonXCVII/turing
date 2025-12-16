@@ -21,4 +21,8 @@ interface MenuJpaRepository : JpaRepositoryImplementation<Menu, Int> {
 
     fun existsByPathAndIdNot(path: String, id: Int): Boolean
 
+    fun findByPid(pid: Int): MutableList<Menu>
+
+    fun findByPidIn(pids: MutableCollection<Int>): MutableList<Menu>
+
 }

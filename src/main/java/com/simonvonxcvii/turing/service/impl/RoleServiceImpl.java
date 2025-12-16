@@ -36,8 +36,8 @@ import java.util.stream.Collectors;
 @Service
 public class RoleServiceImpl implements IRoleService {
 
-    private final RolePermissionJpaRepository rolePermissionJpaRepository;
     private final RoleJpaRepository roleJpaRepository;
+    private final RolePermissionJpaRepository rolePermissionJpaRepository;
     private final UserRoleJpaRepository userRoleJpaRepository;
 
     @Override
@@ -125,7 +125,7 @@ public class RoleServiceImpl implements IRoleService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void updateById(Integer id, RoleDTO dto) {
-        // 保存 Role
+        // 修改 Role
         roleJpaRepository.findById(id)
                 .ifPresent(role -> {
                     // 状态修改与单个修改
@@ -138,7 +138,7 @@ public class RoleServiceImpl implements IRoleService {
                     }
                 });
 
-        // 保存 RolePermission
+        // 修改 RolePermission
         if (!CollectionUtils.isEmpty(dto.getPermissions())) {
             // TODO 可以优化成只添加需要添加的，只删除需要删除的
             rolePermissionJpaRepository.deleteByRoleId(id);
