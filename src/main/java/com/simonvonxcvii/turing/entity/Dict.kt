@@ -78,7 +78,6 @@ data class Dict(
         const val NAME = "name"
         const val VALUE = "value"
         const val DESCRIPTION = "description"
-        const val STATUS = "status"
         const val SORT = "sort"
     }
 }

@@ -116,26 +116,16 @@ CREATE TABLE IF NOT EXISTS public.turing_menu
     id                 SERIAL
         CONSTRAINT con_public_turing_menu_constraint_1
             PRIMARY KEY,
-    pid                INTEGER,
-    permission_id      INTEGER
-        UNIQUE,
+    type               VARCHAR(32)                         NOT NULL,
     name               VARCHAR(64)                         NOT NULL
         UNIQUE,
-    title              VARCHAR(64)                         NOT NULL
-        UNIQUE,
-    type               VARCHAR(32)                         NOT NULL,
-    authCode           VARCHAR(128)
-        UNIQUE,
-    path               VARCHAR(128)
-        UNIQUE,
+    pid                INTEGER,
+    path               VARCHAR(128),
+    active_path        VARCHAR(128),
     component          VARCHAR(128),
-    status             SMALLINT                            NOT NULL,
-    icon               VARCHAR(128),
-    sort               INTEGER
+    auth_code          VARCHAR(128)
         UNIQUE,
-    showed             BOOLEAN,
-    cached             BOOLEAN,
-    external           BOOLEAN,
+    status             SMALLINT                            NOT NULL,
     created_by         INTEGER,
     created_date       TIMESTAMP                           NOT NULL,
     last_modified_by   INTEGER,
@@ -148,33 +138,21 @@ COMMENT ON TABLE public.turing_menu IS '菜单表';
 
 COMMENT ON COLUMN public.turing_menu.id IS '菜单 id';
 
-COMMENT ON COLUMN public.turing_menu.pid IS '上级菜单 id';
-
-COMMENT ON COLUMN public.turing_menu.permission_id IS '系统权限 id';
+COMMENT ON COLUMN public.turing_menu.type IS '菜单类型';
 
 COMMENT ON COLUMN public.turing_menu.name IS '菜单名称';
 
-COMMENT ON COLUMN public.turing_menu.title IS '菜单标题';
-
-COMMENT ON COLUMN public.turing_menu.type IS '菜单类型';
-
-COMMENT ON COLUMN public.turing_menu.authCode IS '权限标识';
+COMMENT ON COLUMN public.turing_menu.pid IS '上级菜单 id';
 
 COMMENT ON COLUMN public.turing_menu.path IS '路由地址';
 
+COMMENT ON COLUMN public.turing_menu.active_path IS '激活路径';
+
 COMMENT ON COLUMN public.turing_menu.component IS '页面组件';
 
+COMMENT ON COLUMN public.turing_menu.auth_code IS '权限标识';
+
 COMMENT ON COLUMN public.turing_menu.status IS '状态';
-
-COMMENT ON COLUMN public.turing_menu.icon IS '图标';
-
-COMMENT ON COLUMN public.turing_menu.sort IS '排序编号';
-
-COMMENT ON COLUMN public.turing_menu.showed IS '是否显示';
-
-COMMENT ON COLUMN public.turing_menu.cached IS '是否缓存';
-
-COMMENT ON COLUMN public.turing_menu.external IS '是否为外部链接';
 
 COMMENT ON COLUMN public.turing_menu.created_by IS '创建者';
 
@@ -189,6 +167,85 @@ COMMENT ON COLUMN public.turing_menu.version IS '乐观锁版本';
 COMMENT ON COLUMN public.turing_menu.deleted IS '逻辑删除';
 
 ALTER TABLE public.turing_menu
+    OWNER TO postgres;
+
+CREATE TABLE IF NOT EXISTS public.turing_menu_meta
+(
+    id                    SERIAL
+        CONSTRAINT con_public_turing_menu_meta_constraint_1
+            PRIMARY KEY,
+    menu_id               INTEGER                             NOT NULL,
+    title                 VARCHAR(64)                         NOT NULL,
+    icon                  VARCHAR(128),
+    active_icon           VARCHAR(128),
+    badge_type            VARCHAR(8),
+    badge                 VARCHAR(128),
+    badge_variants        VARCHAR(16),
+    keep_alive            BOOLEAN   DEFAULT FALSE,
+    affix_tab             BOOLEAN   DEFAULT FALSE,
+    hide_in_menu          BOOLEAN   DEFAULT FALSE,
+    hide_children_in_menu BOOLEAN   DEFAULT FALSE,
+    hide_in_breadcrumb    BOOLEAN   DEFAULT FALSE,
+    hide_in_tab           BOOLEAN   DEFAULT FALSE,
+    iframe_src            VARCHAR(128),
+    link                  VARCHAR(128),
+    cached                BOOLEAN,
+    external              BOOLEAN,
+    created_by            INTEGER,
+    created_date          TIMESTAMP                           NOT NULL,
+    last_modified_by      INTEGER,
+    last_modified_date    TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    version               INTEGER   DEFAULT 0                 NOT NULL,
+    deleted               BOOLEAN   DEFAULT FALSE             NOT NULL
+);
+
+COMMENT ON TABLE public.turing_menu_meta IS '菜单表';
+
+COMMENT ON COLUMN public.turing_menu_meta.id IS '菜单 id';
+
+COMMENT ON COLUMN public.turing_menu_meta.menu_id IS '菜单 id';
+
+COMMENT ON COLUMN public.turing_menu_meta.title IS '标题';
+
+COMMENT ON COLUMN public.turing_menu_meta.icon IS '图标';
+
+COMMENT ON COLUMN public.turing_menu_meta.active_icon IS '激活图标';
+
+COMMENT ON COLUMN public.turing_menu_meta.badge_type IS '徽标类型';
+
+COMMENT ON COLUMN public.turing_menu_meta.badge IS '徽章内容';
+
+COMMENT ON COLUMN public.turing_menu_meta.badge_variants IS '徽标样式';
+
+COMMENT ON COLUMN public.turing_menu_meta.keep_alive IS '缓存标签页';
+
+COMMENT ON COLUMN public.turing_menu_meta.affix_tab IS '固定在标签';
+
+COMMENT ON COLUMN public.turing_menu_meta.hide_in_menu IS '隐藏菜单';
+
+COMMENT ON COLUMN public.turing_menu_meta.hide_children_in_menu IS '隐藏子菜单';
+
+COMMENT ON COLUMN public.turing_menu_meta.hide_in_breadcrumb IS '在面包屑中隐藏';
+
+COMMENT ON COLUMN public.turing_menu_meta.hide_in_tab IS '在标签栏中隐藏';
+
+COMMENT ON COLUMN public.turing_menu_meta.iframe_src IS '内嵌-链接地址';
+
+COMMENT ON COLUMN public.turing_menu_meta.link IS '外链-链接地址';
+
+COMMENT ON COLUMN public.turing_menu_meta.created_by IS '创建者';
+
+COMMENT ON COLUMN public.turing_menu_meta.created_date IS '创建时间';
+
+COMMENT ON COLUMN public.turing_menu_meta.last_modified_by IS '最后修改者';
+
+COMMENT ON COLUMN public.turing_menu_meta.last_modified_date IS '最后修改时间';
+
+COMMENT ON COLUMN public.turing_menu_meta.version IS '乐观锁版本';
+
+COMMENT ON COLUMN public.turing_menu_meta.deleted IS '逻辑删除';
+
+ALTER TABLE public.turing_menu_meta
     OWNER TO postgres;
 
 CREATE TABLE IF NOT EXISTS public.turing_organization

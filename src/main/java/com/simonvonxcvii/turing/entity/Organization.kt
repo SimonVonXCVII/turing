@@ -172,12 +172,15 @@ data class Organization(
         const val PID = "pid"
         const val NAME = "name"
         const val CODE = "code"
+        const val LEGAL_PERSON = "legalPerson"
+        const val PHONE = "phone"
         const val TYPE = "type"
         const val PROVINCE_CODE = "provinceCode"
         const val CITY_CODE = "cityCode"
         const val DISTRICT_CODE = "districtCode"
+        const val PROVINCE_NAME = "provinceName"
+        const val CITY_NAME = "cityName"
+        const val DISTRICT_NAME = "districtName"
         const val ADDRESS = "address"
-        const val LEGAL_PERSON = "legalPerson"
-        const val PHONE = "phone"
     }
 }

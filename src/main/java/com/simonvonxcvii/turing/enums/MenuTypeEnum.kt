@@ -6,7 +6,7 @@ package com.simonvonxcvii.turing.enums
  * @author Simon Von
  * @since 2025/9/25 11:30 PM
  */
-enum class MenuTypeEnum(val desc: String) {
+enum class MenuTypeEnum(val value: String) {
     /**
      * 目录
      */
@@ -21,45 +21,60 @@ enum class MenuTypeEnum(val desc: String) {
      * 按钮
      */
     BUTTON("button"),
+
+    /**
+     * 内嵌
+     */
+    EMBEDDED("embedded"),
+
+    /**
+     * 外链
+     */
+    LINK("link"),
+
+    /**
+     * 未知
+     */
+    UNKNOWN("unknown"),
     ;
 
     companion object {
         private val VALUES = entries.toTypedArray()
 
         @JvmStatic
-        fun getDescByOrdinal(ordinal: Int): String? {
+        fun getValueByOrdinal(ordinal: Int): String {
             // Use cached VALUES instead of values() to prevent array allocation.
             for (anEnum in VALUES)
                 if (anEnum.ordinal == ordinal)
-                    return anEnum.desc
-            return null
+                    return anEnum.value
+            return UNKNOWN.value
         }
 
         @JvmStatic
-        fun getOrdinalByDesc(desc: String): Int? {
+        fun getOrdinalByValue(value: String): Int {
             // Use cached VALUES instead of values() to prevent array allocation.
             for (anEnum in VALUES)
-                if (anEnum.desc == desc)
+                if (anEnum.value == value)
                     return anEnum.ordinal
-            return null
+            return UNKNOWN.ordinal
         }
 
         @JvmStatic
-        fun getByOrdinal(ordinal: Int): MenuTypeEnum? {
+        fun getEnumByOrdinal(ordinal: Int): MenuTypeEnum {
             // Use cached VALUES instead of values() to prevent array allocation.
             for (anEnum in VALUES)
                 if (anEnum.ordinal == ordinal)
                     return anEnum
-            return null
+            return UNKNOWN
         }
 
         @JvmStatic
-        fun getByDesc(desc: String): MenuTypeEnum? {
+        fun getEnumByValue(value: String): MenuTypeEnum {
             // Use cached VALUES instead of values() to prevent array allocation.
             for (anEnum in VALUES)
-                if (anEnum.desc == desc)
+                if (anEnum.value == value)
                     return anEnum
-            return null
+            return UNKNOWN
         }
     }
 }

@@ -1,26 +1,36 @@
 package com.simonvonxcvii.turing.enums
 
 /**
- * 单位业务级别枚举类
+ * 菜单徽标类型枚举
  *
  * @author Simon Von
- * @since 1/4/2023 5:26 PM
+ * @since 12/16/25 12:42 AM
  */
-enum class OrganizationBusinessLevelEnum(val value: String) {
+enum class MenuBadgeVariantsEnum(val value: String) {
     /**
-     * 省级
+     * default
      */
-    PROVINCE("省级"),
+    DEFAULT("default"),
 
     /**
-     * 市级
+     * destructive
      */
-    CITY("市级"),
+    DESTRUCTIVE("destructive"),
 
     /**
-     * 县级
+     * primary
      */
-    DISTRICT("县级"),
+    PRIMARY("primary"),
+
+    /**
+     * success
+     */
+    SUCCESS("success"),
+
+    /**
+     * warning
+     */
+    WARNING("warning"),
 
     /**
      * 未知
@@ -50,7 +60,7 @@ enum class OrganizationBusinessLevelEnum(val value: String) {
         }
 
         @JvmStatic
-        fun getEnumByOrdinal(ordinal: Int): OrganizationBusinessLevelEnum {
+        fun getEnumByOrdinal(ordinal: Int): MenuBadgeVariantsEnum {
             // Use cached VALUES instead of values() to prevent array allocation.
             for (anEnum in VALUES)
                 if (anEnum.ordinal == ordinal)
@@ -59,7 +69,7 @@ enum class OrganizationBusinessLevelEnum(val value: String) {
         }
 
         @JvmStatic
-        fun getEnumByValue(value: String): OrganizationBusinessLevelEnum {
+        fun getEnumByValue(value: String): MenuBadgeVariantsEnum {
             // Use cached VALUES instead of values() to prevent array allocation.
             for (anEnum in VALUES)
                 if (anEnum.value == value)

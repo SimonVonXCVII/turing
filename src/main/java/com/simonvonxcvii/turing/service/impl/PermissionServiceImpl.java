@@ -1,18 +1,14 @@
 package com.simonvonxcvii.turing.service.impl;
 
-import com.simonvonxcvii.turing.entity.Menu;
 import com.simonvonxcvii.turing.entity.Permission;
-import com.simonvonxcvii.turing.entity.RolePermission;
 import com.simonvonxcvii.turing.model.dto.PermissionDTO;
 import com.simonvonxcvii.turing.repository.jpa.MenuJpaRepository;
 import com.simonvonxcvii.turing.repository.jpa.PermissionJpaRepository;
 import com.simonvonxcvii.turing.repository.jpa.RolePermissionJpaRepository;
 import com.simonvonxcvii.turing.service.IPermissionService;
-import jakarta.persistence.criteria.Predicate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -138,7 +134,7 @@ public class PermissionServiceImpl implements IPermissionService {
     }
 
     /**
-     * 根据主键 id 逻辑删除
+     * 根据主键 id 逻辑删除 todo
      *
      * @author Simon Von
      * @since 3/4/2023 9:28 PM
@@ -146,22 +142,22 @@ public class PermissionServiceImpl implements IPermissionService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void deleteById(Integer id) {
-        Specification<RolePermission> spec = (root, query, builder) -> {
-            Predicate predicate = builder.equal(root.get(RolePermission.PERMISSION_ID), id);
-            return query.where(predicate).getRestriction();
-        };
-        boolean exists = rolePermissionJpaRepository.exists(spec);
-        if (exists) {
-            throw new RuntimeException("该权限已关联角色");
-        }
-        Specification<Menu> menuSpec = (root, query, builder) -> {
-            Predicate predicate = builder.equal(root.get(Menu.PERMISSION_ID), id);
-            return query.where(predicate).getRestriction();
-        };
-        exists = menuJpaRepository.exists(menuSpec);
-        if (exists) {
-            throw new RuntimeException("该权限已关联菜单");
-        }
-        permissionJpaRepository.deleteById(id);
+//        Specification<RolePermission> spec = (root, query, builder) -> {
+//            Predicate predicate = builder.equal(root.get(RolePermission.PERMISSION_ID), id);
+//            return query.where(predicate).getRestriction();
+//        };
+//        boolean exists = rolePermissionJpaRepository.exists(spec);
+//        if (exists) {
+//            throw new RuntimeException("该权限已关联角色");
+//        }
+//        Specification<Menu> menuSpec = (root, query, builder) -> {
+//            Predicate predicate = builder.equal(root.get(Menu.PERMISSION_ID), id);
+//            return query.where(predicate).getRestriction();
+//        };
+//        exists = menuJpaRepository.exists(menuSpec);
+//        if (exists) {
+//            throw new RuntimeException("该权限已关联菜单");
+//        }
+//        permissionJpaRepository.deleteById(id);
     }
 }

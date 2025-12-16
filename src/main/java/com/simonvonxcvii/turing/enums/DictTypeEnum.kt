@@ -1,55 +1,60 @@
 package com.simonvonxcvii.turing.enums
 
 /**
- * 菜单类型枚举
+ * 字典类型枚举
  *
  * @author Simon Von
  * @since 2025/9/25 11:30 PM
  */
-enum class DictTypeEnum(val desc: String) {
+enum class DictTypeEnum(val value: String) {
     /**
      * 地区
      */
     AREA("地区"),
+
+    /**
+     * 未知
+     */
+    UNKNOWN("unknown"),
     ;
 
     companion object {
         private val VALUES = entries.toTypedArray()
 
         @JvmStatic
-        fun getDescByOrdinal(ordinal: Int): String? {
+        fun getValueByOrdinal(ordinal: Int): String {
             // Use cached VALUES instead of values() to prevent array allocation.
             for (anEnum in VALUES)
                 if (anEnum.ordinal == ordinal)
-                    return anEnum.desc
-            return null
+                    return anEnum.value
+            return UNKNOWN.value
         }
 
         @JvmStatic
-        fun getOrdinalByDesc(desc: String): Int? {
+        fun getOrdinalByValue(value: String): Int {
             // Use cached VALUES instead of values() to prevent array allocation.
             for (anEnum in VALUES)
-                if (anEnum.desc == desc)
+                if (anEnum.value == value)
                     return anEnum.ordinal
-            return null
+            return UNKNOWN.ordinal
         }
 
         @JvmStatic
-        fun getByOrdinal(ordinal: Int): DictTypeEnum? {
+        fun getEnumByOrdinal(ordinal: Int): DictTypeEnum {
             // Use cached VALUES instead of values() to prevent array allocation.
             for (anEnum in VALUES)
                 if (anEnum.ordinal == ordinal)
                     return anEnum
-            return null
+            return UNKNOWN
         }
 
         @JvmStatic
-        fun getByDesc(desc: String): DictTypeEnum? {
+        fun getEnumByValue(value: String): DictTypeEnum {
             // Use cached VALUES instead of values() to prevent array allocation.
             for (anEnum in VALUES)
-                if (anEnum.desc == desc)
+                if (anEnum.value == value)
                     return anEnum
-            return null
+            return UNKNOWN
         }
     }
 }

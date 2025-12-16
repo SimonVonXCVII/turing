@@ -26,16 +26,13 @@ import org.hibernate.annotations.SQLRestriction
 @SQLRestriction("deleted = FALSE")
 data class Menu(
     /**
-     * 上级菜单 id
+     * 菜单类型：目录、菜单、按钮、内嵌、外链
+     *
+     * @see MenuTypeEnum
      */
-    @Column(columnDefinition = "INTEGER", comment = "上级菜单 id")
-    var pid: Int? = null,
-
-    /**
-     * 系统权限 id
-     */
-    @Column(unique = true, columnDefinition = "INTEGER", comment = "系统权限 id")
-    var permissionId: Int? = 0,
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, columnDefinition = "VARCHAR(64)", comment = "菜单类型：目录、菜单、按钮、内嵌、外链")
+    var type: MenuTypeEnum = MenuTypeEnum.MENU,
 
     /**
      * 菜单名称
@@ -44,31 +41,22 @@ data class Menu(
     var name: String = "",
 
     /**
-     * 标头
+     * 上级菜单 id
      */
-    @Column(unique = true, nullable = false, columnDefinition = "VARCHAR(64)", comment = "标头")
-    var title: String = "",
-
-    /**
-     * 菜单类型：目录、菜单、按钮
-     *
-     * @see MenuTypeEnum
-     */
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false, columnDefinition = "VARCHAR(64)", comment = "菜单类型：目录、菜单、按钮")
-    var type: MenuTypeEnum = MenuTypeEnum.MENU,
-
-    /**
-     * 权限标识
-     */
-    @Column(unique = true, columnDefinition = "VARCHAR(128)", comment = "权限标识")
-    var authCode: String? = null,
+    @Column(columnDefinition = "INTEGER", comment = "上级菜单 id")
+    var pid: Int? = null,
 
     /**
      * 路由地址
      */
-    @Column(unique = true, columnDefinition = "VARCHAR(128)", comment = "路由地址")
+    @Column(columnDefinition = "VARCHAR(128)", comment = "路由地址")
     var path: String? = null,
+
+    /**
+     * 激活路径
+     */
+    @Column(columnDefinition = "VARCHAR(128)", comment = "激活路径")
+    var activePath: String? = null,
 
     /**
      * 页面组件
@@ -77,43 +65,16 @@ data class Menu(
     var component: String? = null,
 
     /**
+     * 权限标识
+     */
+    @Column(unique = true, columnDefinition = "VARCHAR(128)", comment = "权限标识")
+    var authCode: String? = null,
+
+    /**
      * 状态
      */
     @Column(nullable = false, columnDefinition = "SMALLINT", comment = "状态")
-    var status: Byte = 1,
-
-    /**
-     * 图标
-     */
-    @Column(columnDefinition = "VARCHAR(128)", comment = "图标")
-    var icon: String? = null,
-
-    /**
-     * 排序编号
-     */
-    @Column(unique = true, columnDefinition = "INTEGER", comment = "排序编号")
-    var sort: Int? = 0,
-
-    /**
-     * 是否显示
-     */
-    @Column(columnDefinition = "BOOLEAN", comment = "是否显示")
-    @get:JvmName("isShowed")
-    var showed: Boolean? = true,
-
-    /**
-     * 是否缓存
-     */
-    @Column(columnDefinition = "BOOLEAN", comment = "是否缓存")
-    @get:JvmName("isCached")
-    var cached: Boolean? = true,
-
-    /**
-     * 是否外链
-     */
-    @Column(columnDefinition = "BOOLEAN", comment = "是否外链")
-    @get:JvmName("isExternal")
-    var external: Boolean? = false
+    var status: Byte = 1
 ) : AbstractAuditable() {
     companion object {
         /**
@@ -126,19 +87,13 @@ data class Menu(
          */
         const val REDIS_KEY_PREFIX = "$ES_INDEX:"
 
-        const val PID = "pid"
-        const val PERMISSION_ID = "permissionId"
-        const val NAME = "name"
-        const val TITLE = "title"
         const val TYPE = "type"
-        const val AUTH_CODE = "authCode"
+        const val NAME = "name"
+        const val PID = "pid"
         const val PATH = "path"
+        const val ACTIVE_PATH = "activePath"
         const val COMPONENT = "component"
+        const val AUTH_CODE = "authCode"
         const val STATUS = "status"
-        const val ICON = "icon"
-        const val SORT = "sort"
-        const val SHOWED = "showed"
-        const val CACHED = "cached"
-        const val EXTERNAL = "external"
     }
 }

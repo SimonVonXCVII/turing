@@ -49,7 +49,7 @@ public class AppFileController {
                 !Pattern.matches("^\\.(?i)xlsx?$", multipartFile.suffix())) {
             return Result.error("暂时只支持上传 .pdf、.doc、.docx、.xls 和 .xlsx 格式的文件");
         }
-        return Result.ok(service.uploadFile(file, multipartFile.originalFilename(), multipartFile.suffix(), FileTypeEnum.getByOrdinal(bizType), remark, false, false));
+        return Result.ok(service.uploadFile(file, multipartFile.originalFilename(), multipartFile.suffix(), FileTypeEnum.getEnumByOrdinal(bizType), remark, false, false));
     }
 
     @Operation(summary = "web 端上传图片")
@@ -66,7 +66,7 @@ public class AppFileController {
                 !Pattern.matches("^\\.(?i)webp$", multipartFile.suffix())) {
             return Result.error("暂时只支持上传 .jpg、.jpeg、.png 和 .webp 格式的图片");
         }
-        return Result.ok(service.uploadFile(file, multipartFile.originalFilename(), multipartFile.suffix(), FileTypeEnum.getByOrdinal(bizType), remark, isCompress, false));
+        return Result.ok(service.uploadFile(file, multipartFile.originalFilename(), multipartFile.suffix(), FileTypeEnum.getEnumByOrdinal(bizType), remark, isCompress, false));
     }
 
     @Operation(summary = "app 端上传文件")
@@ -82,7 +82,7 @@ public class AppFileController {
                 !Pattern.matches("^\\.(?i)xlsx?$", multipartFile.suffix())) {
             return Result.error("暂时只支持上传 .pdf、.doc、.docx、.xls 和 .xlsx 格式的文件");
         }
-        return Result.ok(service.uploadFile(file, multipartFile.originalFilename(), multipartFile.suffix(), FileTypeEnum.getByOrdinal(bizType), remark, false, true));
+        return Result.ok(service.uploadFile(file, multipartFile.originalFilename(), multipartFile.suffix(), FileTypeEnum.getEnumByOrdinal(bizType), remark, false, true));
     }
 
     @Operation(summary = "app 端上传图片")
@@ -99,7 +99,7 @@ public class AppFileController {
                 !Pattern.matches("^\\.(?i)webp$", multipartFile.suffix())) {
             return Result.error("暂时只支持上传 .jpg、.jpeg、.png 和 .webp 格式的图片");
         }
-        return Result.ok(service.uploadFile(file, multipartFile.originalFilename(), multipartFile.suffix(), FileTypeEnum.getByOrdinal(bizType), remark, isCompress, true));
+        return Result.ok(service.uploadFile(file, multipartFile.originalFilename(), multipartFile.suffix(), FileTypeEnum.getEnumByOrdinal(bizType), remark, isCompress, true));
     }
 
     @Parameter(name = "id", description = "文件 id")

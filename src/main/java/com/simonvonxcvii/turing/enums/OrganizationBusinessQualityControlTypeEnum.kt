@@ -6,50 +6,55 @@ package com.simonvonxcvii.turing.enums
  * @author Simon Von
  * @since 1/4/2023 5:26 PM
  */
-enum class OrganizationBusinessQualityControlTypeEnum(val desc: String) {
+enum class OrganizationBusinessQualityControlTypeEnum(val value: String) {
     INFORMATION_COLLECTION_QC("信息采集质控"),
     DISTRIBUTE_QC("布点质控"),
     SAMPLING_QC("采样质控"),
     SAMPLE_TESTING_QC("样品检测质控"),
+
+    /**
+     * 未知
+     */
+    UNKNOWN("unknown"),
     ;
 
     companion object {
         private val VALUES = entries.toTypedArray()
 
         @JvmStatic
-        fun getDescByOrdinal(ordinal: Int): String? {
+        fun getValueByOrdinal(ordinal: Int): String {
             // Use cached VALUES instead of values() to prevent array allocation.
             for (anEnum in VALUES)
                 if (anEnum.ordinal == ordinal)
-                    return anEnum.desc
-            return null
+                    return anEnum.value
+            return UNKNOWN.value
         }
 
         @JvmStatic
-        fun getOrdinalByDesc(desc: String): Int? {
+        fun getOrdinalByValue(value: String): Int {
             // Use cached VALUES instead of values() to prevent array allocation.
             for (anEnum in VALUES)
-                if (anEnum.desc == desc)
+                if (anEnum.value == value)
                     return anEnum.ordinal
-            return null
+            return UNKNOWN.ordinal
         }
 
         @JvmStatic
-        fun getByOrdinal(ordinal: Int): OrganizationBusinessQualityControlTypeEnum? {
+        fun getEnumByOrdinal(ordinal: Int): OrganizationBusinessQualityControlTypeEnum {
             // Use cached VALUES instead of values() to prevent array allocation.
             for (anEnum in VALUES)
                 if (anEnum.ordinal == ordinal)
                     return anEnum
-            return null
+            return UNKNOWN
         }
 
         @JvmStatic
-        fun getByDesc(desc: String): OrganizationBusinessQualityControlTypeEnum? {
+        fun getEnumByValue(value: String): OrganizationBusinessQualityControlTypeEnum {
             // Use cached VALUES instead of values() to prevent array allocation.
             for (anEnum in VALUES)
-                if (anEnum.desc == desc)
+                if (anEnum.value == value)
                     return anEnum
-            return null
+            return UNKNOWN
         }
     }
 }

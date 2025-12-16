@@ -60,8 +60,10 @@ public class AppFileServiceImpl implements IAppFileService {
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public UploadFileDTO uploadFile(MultipartFile multipartFile, String originalFilename, String suffix,
-                                    FileTypeEnum bizType, String remark, Boolean isCompress, boolean isApp) throws IOException {
+    public UploadFileDTO uploadFile(
+            MultipartFile multipartFile, String originalFilename, String suffix, FileTypeEnum bizType, String remark,
+            Boolean isCompress, boolean isApp
+    ) throws IOException {
         byte[] bytes;
         try (ByteArrayOutputStream os = new ByteArrayOutputStream();
              InputStream is = multipartFile.getInputStream()) {
@@ -109,7 +111,7 @@ public class AppFileServiceImpl implements IAppFileService {
         // 保存文件名
         String filename = UUID.randomUUID() + suffix; // todo
         // 将文件保存在不同的路径
-        File directory = new File("/shiting/project/turing/file/" + bizType.getDesc());
+        File directory = new File("/shiting/project/turing/file/" + bizType.getValue());
         // 如果当前不存在该文件夹则创建
         if (!directory.exists() && directory.mkdirs()) {
             log.debug("已创建文件夹: " + directory);

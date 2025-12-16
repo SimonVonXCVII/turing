@@ -6,7 +6,7 @@ package com.simonvonxcvii.turing.enums
  * @author Simon Von
  * @since 2023/4/3 11:05
  */
-enum class FileTypeEnum(val desc: String) {
+enum class FileTypeEnum(val value: String) {
     /**
      * 信息采集
      */
@@ -26,31 +26,36 @@ enum class FileTypeEnum(val desc: String) {
      * 样品检测
      */
     SAMPLE_TESTING("信息采集"),
+
+    /**
+     * 未知
+     */
+    UNKNOWN("unknown"),
     ;
 
     companion object {
         private val VALUES = entries.toTypedArray()
 
         @JvmStatic
-        fun getDescByOrdinal(ordinal: Int): String? {
+        fun getValueByOrdinal(ordinal: Int): String? {
             // Use cached VALUES instead of values() to prevent array allocation.
             for (anEnum in VALUES)
                 if (anEnum.ordinal == ordinal)
-                    return anEnum.desc
+                    return anEnum.value
             return null
         }
 
         @JvmStatic
-        fun getOrdinalByDesc(desc: String): Int? {
+        fun getOrdinalByValue(value: String): Int? {
             // Use cached VALUES instead of values() to prevent array allocation.
             for (anEnum in VALUES)
-                if (anEnum.desc == desc)
+                if (anEnum.value == value)
                     return anEnum.ordinal
             return null
         }
 
         @JvmStatic
-        fun getByOrdinal(ordinal: Int): FileTypeEnum? {
+        fun getEnumByOrdinal(ordinal: Int): FileTypeEnum? {
             // Use cached VALUES instead of values() to prevent array allocation.
             for (anEnum in VALUES)
                 if (anEnum.ordinal == ordinal)
@@ -59,10 +64,10 @@ enum class FileTypeEnum(val desc: String) {
         }
 
         @JvmStatic
-        fun getByDesc(desc: String): FileTypeEnum? {
+        fun getEnumByValue(value: String): FileTypeEnum? {
             // Use cached VALUES instead of values() to prevent array allocation.
             for (anEnum in VALUES)
-                if (anEnum.desc == desc)
+                if (anEnum.value == value)
                     return anEnum
             return null
         }

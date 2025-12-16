@@ -140,7 +140,7 @@ public class OrganizationServiceImpl implements IOrganizationService {
         Specification<OrganizationBusiness> spec =
                 (root, query, builder) -> {
                     Predicate linkPredicate = builder.like(root.get(OrganizationBusiness.LINK),
-                            "%" + OrganizationBusinessBusinessLinksEnum.SAMPLE_TESTING.getDesc() + "%");
+                            "%" + OrganizationBusinessBusinessLinksEnum.SAMPLE_TESTING.getValue() + "%");
                     Predicate statePredicate = builder.like(root.get(OrganizationBusiness.STATE),
                             "%" + OrganizationBusinessStateEnum.PASSES + "%");
                     Predicate namePredicate = builder.like(root.get(OrganizationBusiness.ORG_NAME),

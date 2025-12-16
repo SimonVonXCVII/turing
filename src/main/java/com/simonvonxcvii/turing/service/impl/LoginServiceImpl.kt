@@ -2,16 +2,18 @@ package com.simonvonxcvii.turing.service.impl
 
 import com.simonvonxcvii.turing.entity.AbstractAuditable
 import com.simonvonxcvii.turing.entity.Menu
+import com.simonvonxcvii.turing.entity.MenuMeta
 import com.simonvonxcvii.turing.entity.RolePermission
 import com.simonvonxcvii.turing.model.dto.MenuDTO
-import com.simonvonxcvii.turing.model.dto.MenuMetaDTO
 import com.simonvonxcvii.turing.model.dto.UserDTO
 import com.simonvonxcvii.turing.repository.jpa.MenuJpaRepository
+import com.simonvonxcvii.turing.repository.jpa.MenuMetaJpaRepository
 import com.simonvonxcvii.turing.repository.jpa.RolePermissionJpaRepository
 import com.simonvonxcvii.turing.service.LoginService
 import com.simonvonxcvii.turing.utils.UserUtils
 import org.springframework.beans.BeanUtils
 import org.springframework.data.domain.Sort
+import org.springframework.data.jpa.domain.PredicateSpecification
 import org.springframework.data.jpa.domain.Specification
 import org.springframework.stereotype.Service
 import java.util.function.Predicate
@@ -26,6 +28,7 @@ import java.util.function.Predicate
 class LoginServiceImpl(
 //    private val randomUtils: RandomUtils,
     private val menuJpaRepository: MenuJpaRepository,
+    private val menuMetaJpaRepository: MenuMetaJpaRepository,
     private val rolePermissionJpaRepository: RolePermissionJpaRepository,
 //    private val stringRedisTemplate: StringRedisTemplate
 ) : LoginService {
@@ -72,7 +75,7 @@ class LoginServiceImpl(
     override fun getMenuList(): List<MenuDTO> {
         var menuDTOList = mutableListOf<MenuDTO>()
         // 预先查询所有菜单
-        val menuList = menuJpaRepository.findAll(Sort.by(Menu.SORT)).filterNotNull()
+        val menuList = menuJpaRepository.findAll(Sort.by(AbstractAuditable.ID)).filterNotNull()
         // 超级管理员可查看所有菜单
         val user = UserUtils.getUser()
         if (user.admin) {
@@ -102,20 +105,20 @@ class LoginServiceImpl(
             throw RuntimeException("无法获取菜单，因为当前用户的角色没有任何权限")
         }
 
-        // 该用户权限对应的所有子级菜单
-        menuDTOList = menuList.stream()
-            .filter { menu ->
-                rolePermissionList.stream()
-                    .map { obj -> obj.permissionId }
-                    .anyMatch(Predicate.isEqual(menu.permissionId))
-            }
-            // 只需要子级
-            .filter { menu -> menu.pid != null }
-            .map { menu -> menuConvertToDTO(menu) }
-            .toList()
-        if (menuDTOList.isEmpty()) {
-            throw RuntimeException("当前用户没有任何菜单")
-        }
+        // 该用户权限对应的所有子级菜单 todo
+//        menuDTOList = menuList.stream()
+//            .filter { menu ->
+//                rolePermissionList.stream()
+//                    .map { obj -> obj.permissionId }
+//                    .anyMatch(Predicate.isEqual(menu.permissionId))
+//            }
+//            // 只需要子级
+//            .filter { menu -> menu.pid != null }
+//            .map { menu -> menuConvertToDTO(menu) }
+//            .toList()
+//        if (menuDTOList.isEmpty()) {
+//            throw RuntimeException("当前用户没有任何菜单")
+//        }
 
         // 匹配父级和子级菜单
         return menuList.stream()
@@ -140,11 +143,17 @@ class LoginServiceImpl(
     fun menuConvertToDTO(menu: Menu): MenuDTO {
         val menuDTO = MenuDTO()
         BeanUtils.copyProperties(menu, menuDTO)
-        val menuMetaDTO = MenuMetaDTO()
-        menuMetaDTO.title = menu.title
-        menuMetaDTO.icon = menu.icon
-//        menuMetaDTO.hideMenu = !menu.showed
-        menuDTO.meta = menuMetaDTO
+        val spec = PredicateSpecification<MenuMeta> { from, criteriaBuilder ->
+            criteriaBuilder.equal(
+                from.get<MenuMeta>(MenuMeta.MENU_ID),
+                menu.id
+            )
+        }
+        menuMetaJpaRepository.findOne(spec)
+            .ifPresent { menuMeta ->
+                menuDTO.meta.title = menuMeta.title
+                menuDTO.meta.icon = menuMeta.icon
+            }
         return menuDTO
     }
 }
