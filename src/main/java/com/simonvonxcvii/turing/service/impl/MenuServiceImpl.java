@@ -1,24 +1,25 @@
 package com.simonvonxcvii.turing.service.impl;
 
-import com.simonvonxcvii.turing.entity.AbstractAuditable;
 import com.simonvonxcvii.turing.entity.Menu;
 import com.simonvonxcvii.turing.entity.MenuMeta;
+import com.simonvonxcvii.turing.enums.MenuBadgeTypeEnum;
+import com.simonvonxcvii.turing.enums.MenuBadgeVariantsEnum;
 import com.simonvonxcvii.turing.enums.MenuTypeEnum;
 import com.simonvonxcvii.turing.model.dto.MenuDTO;
 import com.simonvonxcvii.turing.repository.jpa.MenuJpaRepository;
 import com.simonvonxcvii.turing.repository.jpa.MenuMetaJpaRepository;
 import com.simonvonxcvii.turing.service.IMenuService;
 import lombok.RequiredArgsConstructor;
-import org.jspecify.annotations.NonNull;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.domain.PredicateSpecification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 
+import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -34,102 +35,141 @@ public class MenuServiceImpl implements IMenuService {
 
     private final MenuJpaRepository menuJpaRepository;
     private final MenuMetaJpaRepository menuMetaJpaRepository;
-//    private final PermissionJpaRepository permissionJpaRepository;
-
-    /**
-     * Menu 转换为 MenuDTO
-     *
-     * @param menu Menu
-     * @return MenuDTO
-     * @author Simon Von
-     * @since 12/15/25 11:24 PM
-     */
-    public @NonNull MenuDTO convertToDTO(Menu menu) {
-        MenuDTO menuDTO = new MenuDTO();
-        BeanUtils.copyProperties(menu, menuDTO);
-        menuDTO.setType(menu.getType().getValue());
-        // MenuMeta
-        PredicateSpecification<MenuMeta> spec = (from, criteriaBuilder) ->
-                criteriaBuilder.equal(from.get(MenuMeta.MENU_ID), menu.getId());
-        menuMetaJpaRepository.findOne(spec)
-                .ifPresent(menuMeta -> {
-                    menuDTO.getMeta().setTitle(menuMeta.getTitle());
-                    menuDTO.getMeta().setIcon(menuMeta.getIcon());
-                });
-        return menuDTO;
-    }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void insert(MenuDTO dto) {
+        // Menu
         Menu menu = new Menu();
-        BeanUtils.copyProperties(dto, menu, "id", "title");
+        BeanUtils.copyProperties(dto, menu, "id");
         menu.setType(MenuTypeEnum.getEnumByValue(dto.getType()));
         menuJpaRepository.save(menu);
         // MenuMeta
         MenuMeta menuMeta = new MenuMeta();
         BeanUtils.copyProperties(dto.getMeta(), menuMeta);
+        menuMeta.setMenuId(menu.getId());
+        if (dto.getMeta().getBadgeType() != null) {
+            menuMeta.setBadgeType(MenuBadgeTypeEnum.getEnumByValue(dto.getMeta().getBadgeType()));
+        }
+        if (dto.getMeta().getBadgeVariants() != null) {
+            menuMeta.setBadgeVariants(MenuBadgeVariantsEnum.getEnumByValue(dto.getMeta().getBadgeVariants()));
+        }
         menuMetaJpaRepository.save(menuMeta);
     }
 
     @Override
-    public Boolean nameExists(String name) {
-        PredicateSpecification<Menu> spec = (from, criteriaBuilder) ->
-                criteriaBuilder.equal(from.get(Menu.NAME), name);
-        return menuJpaRepository.exists(spec);
+    public Boolean nameExists(String name, Integer id) {
+        // 如果 id 为 null，说明是新增操作
+        if (id == null) {
+            return menuJpaRepository.existsByName(name);
+        }
+        // 否则是修改操作，需要排除当前数据
+        return menuJpaRepository.existsByNameAndIdNot(name, id);
     }
 
     @Override
-    public Boolean pathExists(String path) {
-        PredicateSpecification<Menu> spec = (from, criteriaBuilder) ->
-                criteriaBuilder.equal(from.get(Menu.PATH), path);
-        return menuJpaRepository.exists(spec);
+    public Boolean pathExists(String path, Integer id) {
+        // 如果 id 为 null，说明是新增操作
+        if (id == null) {
+            return menuJpaRepository.existsByPath(path);
+        }
+        // 否则是修改操作，需要排除当前数据
+        return menuJpaRepository.existsByPathAndIdNot(path, id);
     }
 
     @Override
     public List<MenuDTO> selectBy() {
-        // 将两次查询改为提前查询所有数据，减少查询次数，减轻数据库压力
-        List<Menu> menuList = menuJpaRepository.findAll(Sort.by(AbstractAuditable.ID));
-        // menu 级别分类
-        List<Menu> level1MenuList = menuList.stream()
-                .filter(menu ->
-                        StringUtils.hasText(menu.getPath())
-                                && menu.getPath().chars().filter(c -> c == '/').count() == 1
+        // 1. 将两次查询改为提前查询所有数据，减少查询次数，减轻数据库压力
+        List<Menu> menuList = menuJpaRepository.findAll(Sort.by(Menu.ID));
+        List<MenuMeta> menuMetaList = menuMetaJpaRepository.findAll(Sort.by(MenuMeta.ID));
+        // 2. Menu 按 pid 分组：pid -> childrenMenuList
+        Map<Integer, List<Menu>> childrenMenuListMap = menuList.stream()
+                .filter(menu -> menu.getPid() != null)
+                .collect(Collectors.groupingBy(Menu::getPid));
+        // 3. MenuMeta 按 menuId 索引：menuId -> MenuMeta
+        Map<Integer, MenuMeta> menuMetaMap = menuMetaList.stream()
+                .collect(Collectors.toMap(MenuMeta::getMenuId, Function.identity()));
+        return menuList.stream()
+                .filter(menu -> menu.getPid() == null)
+                .map(menu -> buildTree(menu, childrenMenuListMap, menuMetaMap)
                 )
                 .toList();
-        List<Menu> level2MenuList = menuList.stream()
-                .filter(menu ->
-                        StringUtils.hasText(menu.getPath())
-                                && menu.getPath().chars().filter(c -> c == '/').count() == 2
-                )
-                .toList();
-        List<Menu> level3MenuList = menuList.stream()
-                .filter(menu -> !StringUtils.hasText(menu.getPath()))
-                .toList();
-        return level1MenuList.stream()
-                .map(level1Menu -> {
-                    MenuDTO level1MenuDTO = convertToDTO(level1Menu);
-                    level2MenuList.stream()
-                            .filter(level2Menu -> Objects.equals(level1Menu.getId(), level2Menu.getPid()))
-                            .forEach(level2Menu -> {
-                                MenuDTO level2MenuDTO = convertToDTO(level2Menu);
-                                level1MenuDTO.getChildren().add(level2MenuDTO);
-                                level3MenuList.stream()
-                                        .filter(level3Menu -> Objects.equals(level2Menu.getId(), level3Menu.getPid()))
-                                        .forEach(level3Menu -> {
-                                            MenuDTO level3MenuDTO = convertToDTO(level3Menu);
-                                            level2MenuDTO.getChildren().add(level3MenuDTO);
-                                        });
-                            });
-                    return level1MenuDTO;
-                })
-                .toList();
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void updateById(Integer id, MenuDTO dto) {
+        // 从数据库查询出来后，如果对该对象作了修改，那么 JPA / Hibernate 会自动更新数据库
+        // Menu
+        menuJpaRepository.findById(id)
+                .ifPresent(menu -> {
+                    BeanUtils.copyProperties(dto, menu, "id");
+                    menu.setType(MenuTypeEnum.getEnumByValue(dto.getType()));
+                });
+        // MenuMeta
+        menuMetaJpaRepository.findOneByMenuId(id)
+                .ifPresent(menuMeta -> {
+                    BeanUtils.copyProperties(dto.getMeta(), menuMeta);
+                    if (dto.getMeta().getBadgeType() != null) {
+                        menuMeta.setBadgeType(MenuBadgeTypeEnum.getEnumByValue(dto.getMeta().getBadgeType()));
+                    }
+                    if (dto.getMeta().getBadgeVariants() != null) {
+                        menuMeta.setBadgeVariants(MenuBadgeVariantsEnum.getEnumByValue(dto.getMeta().getBadgeVariants()));
+                    }
+                });
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void deleteById(Integer id) {
         menuJpaRepository.deleteById(id);
+        menuMetaJpaRepository.deleteByMenuId(id);
+    }
+
+    /**
+     * Menu 转换为 MenuDTO
+     *
+     * @param menu                Menu
+     * @param childrenMenuListMap Menu 按 pid 分组：pid -> childrenMenuList 后的 ListMap 集合
+     * @param menuMetaMap         MenuMeta 按 menuId 索引：menuId -> MenuMeta 后的 Map 集合
+     * @return MenuDTO
+     * @author Simon Von
+     * @since 12/16/25 11:14 AM
+     */
+    public MenuDTO buildTree(Menu menu, Map<Integer, List<Menu>> childrenMenuListMap, Map<Integer, MenuMeta> menuMetaMap) {
+        MenuDTO dto = convertToDTO(menu, menuMetaMap.get(menu.getId()));
+        childrenMenuListMap.getOrDefault(menu.getId(), Collections.emptyList())
+                .forEach(child ->
+                        dto.getChildren().add(
+                                buildTree(child, childrenMenuListMap, menuMetaMap)
+                        )
+                );
+        return dto;
+    }
+
+    /**
+     * Menu 转换为 MenuDTO
+     *
+     * @param menu     Menu
+     * @param menuMeta MenuMeta
+     * @return MenuDTO
+     * @author Simon Von
+     * @since 12/15/25 11:24 PM
+     */
+    public MenuDTO convertToDTO(Menu menu, MenuMeta menuMeta) {
+        // Menu
+        MenuDTO menuDTO = new MenuDTO();
+        BeanUtils.copyProperties(menu, menuDTO);
+        menuDTO.setType(menu.getType().getValue());
+        // MenuMeta
+        BeanUtils.copyProperties(menuMeta, menuDTO.getMeta());
+        if (menuMeta.getBadgeType() != null) {
+            menuDTO.getMeta().setBadgeType(menuMeta.getBadgeType().getValue());
+        }
+        if (menuMeta.getBadgeVariants() != null) {
+            menuDTO.getMeta().setBadgeVariants(menuMeta.getBadgeVariants().getValue());
+        }
+        return menuDTO;
     }
 
 }

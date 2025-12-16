@@ -5,7 +5,7 @@ import com.simonvonxcvii.turing.model.dto.RoleDTO;
 import com.simonvonxcvii.turing.service.IRoleService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.jspecify.annotations.NonNull;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.data.domain.Page;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -44,14 +44,15 @@ public class RoleController {
 
     @Operation(summary = "修改数据")
     @PutMapping("/{id}")
-    public Result<Object> updateById(@PathVariable @NonNull Integer id, @Validated @RequestBody RoleDTO dto) {
+    public Result<Object> updateById(@PathVariable @NotNull(message = "主键 id 不能为 null") Integer id,
+                                     @RequestBody RoleDTO dto) {
         service.updateById(id, dto);
         return Result.ok();
     }
 
     @Operation(summary = "逻辑删除")
     @DeleteMapping("/{id}")
-    public Result<Object> deleteById(@PathVariable @NonNull Integer id) {
+    public Result<Object> deleteById(@PathVariable @NotNull(message = "主键 id 不能为 null") Integer id) {
         service.deleteById(id);
         return Result.ok();
     }

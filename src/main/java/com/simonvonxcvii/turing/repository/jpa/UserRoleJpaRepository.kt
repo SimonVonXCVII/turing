@@ -11,4 +11,8 @@ import org.springframework.stereotype.Repository
  * @since 2023-08-21 18:08:08
  */
 @Repository
-interface UserRoleJpaRepository : JpaRepositoryImplementation<UserRole, Int>
+interface UserRoleJpaRepository : JpaRepositoryImplementation<UserRole, Int> {
+
+    fun existsByRoleId(roleId: Int): Boolean
+
+}

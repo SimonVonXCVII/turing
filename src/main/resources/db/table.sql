@@ -116,7 +116,7 @@ CREATE TABLE IF NOT EXISTS public.turing_menu
     id                 SERIAL
         CONSTRAINT con_public_turing_menu_constraint_1
             PRIMARY KEY,
-    type               VARCHAR(32)                         NOT NULL,
+    type               VARCHAR(8)                          NOT NULL,
     name               VARCHAR(64)                         NOT NULL
         UNIQUE,
     pid                INTEGER,

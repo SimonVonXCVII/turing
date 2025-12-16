@@ -665,19 +665,19 @@ class CustomDatabaseInitializingBean(
         )
         menuMetaJpaRepository.saveAll(menuMeta20000List)
         val menu20501 = Menu(
-            pid = menu20500.id,
+            pid = menu20100.id,
             name = "新增",
             type = MenuTypeEnum.BUTTON,
             authCode = "System:Menu:Create"
         )
         val menu20502 = Menu(
-            pid = menu20500.id,
+            pid = menu20100.id,
             name = "修改",
             type = MenuTypeEnum.BUTTON,
             authCode = "System:Menu:Edit"
         )
         val menu20503 = Menu(
-            pid = menu20500.id,
+            pid = menu20100.id,
             name = "删除",
             type = MenuTypeEnum.BUTTON,
             authCode = "System:Menu:Delete"

@@ -11,4 +11,14 @@ import org.springframework.stereotype.Repository
  * @since 2023-08-19 18:08:08
  */
 @Repository
-interface MenuJpaRepository : JpaRepositoryImplementation<Menu, Int>
+interface MenuJpaRepository : JpaRepositoryImplementation<Menu, Int> {
+
+    fun existsByName(name: String): Boolean
+
+    fun existsByNameAndIdNot(name: String, id: Int): Boolean
+
+    fun existsByPath(path: String): Boolean
+
+    fun existsByPathAndIdNot(path: String, id: Int): Boolean
+
+}

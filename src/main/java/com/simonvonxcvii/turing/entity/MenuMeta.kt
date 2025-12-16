@@ -1,5 +1,7 @@
 package com.simonvonxcvii.turing.entity
 
+import com.simonvonxcvii.turing.enums.MenuBadgeTypeEnum
+import com.simonvonxcvii.turing.enums.MenuBadgeVariantsEnum
 import jakarta.persistence.*
 import org.hibernate.annotations.SQLDelete
 import org.hibernate.annotations.SQLRestriction
@@ -51,10 +53,11 @@ data class MenuMeta(
     /**
      * 徽标类型
      *
-     * @see com.simonvonxcvii.turing.enums.MenuBadgeTypeEnum
+     * @see MenuBadgeTypeEnum
      */
+    @Enumerated(EnumType.STRING)
     @Column(columnDefinition = "VARCHAR(8)", comment = "徽标类型")
-    var badgeType: String? = null,
+    var badgeType: MenuBadgeTypeEnum? = null,
 
     /**
      * 徽章内容
@@ -65,10 +68,11 @@ data class MenuMeta(
     /**
      * 徽标样式
      *
-     * @see com.simonvonxcvii.turing.enums.MenuBadgeVariantsEnum
+     * @see MenuBadgeVariantsEnum
      */
+    @Enumerated(EnumType.STRING)
     @Column(columnDefinition = "VARCHAR(16)", comment = "徽标样式")
-    var badgeVariants: String? = null,
+    var badgeVariants: MenuBadgeVariantsEnum? = null,
 
     /**
      * 缓存标签页

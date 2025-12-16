@@ -29,7 +29,7 @@ class MenuDTO(
      * 菜单名称
      */
     @field:NotBlank(message = "菜单名称不能为空")
-    @field:Size(min = 3, message = "菜单名称至少 2 个字符")
+    @field:Size(min = 2, message = "菜单名称至少 2 个字符")
     var name: String? = null,
 
     /**

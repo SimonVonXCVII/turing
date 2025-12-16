@@ -151,8 +151,13 @@ class LoginServiceImpl(
         }
         menuMetaJpaRepository.findOne(spec)
             .ifPresent { menuMeta ->
-                menuDTO.meta.title = menuMeta.title
-                menuDTO.meta.icon = menuMeta.icon
+                BeanUtils.copyProperties(menuMeta, menuDTO.meta)
+                if (menuMeta.badgeType != null) {
+                    menuDTO.meta.badgeType = menuMeta.badgeType!!.value
+                }
+                if (menuMeta.badgeVariants != null) {
+                    menuDTO.meta.badgeVariants = menuMeta.badgeVariants!!.value
+                }
             }
         return menuDTO
     }

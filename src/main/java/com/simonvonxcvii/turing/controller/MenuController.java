@@ -5,6 +5,7 @@ import com.simonvonxcvii.turing.model.dto.MenuDTO;
 import com.simonvonxcvii.turing.service.IMenuService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,14 +39,14 @@ public class MenuController {
 
     @Operation(summary = "查询菜单名称是否存在")
     @GetMapping("/name-exists")
-    public Result<Boolean> nameExists(String name) {
-        return Result.ok(service.nameExists(name));
+    public Result<Boolean> nameExists(String name, Integer id) {
+        return Result.ok(service.nameExists(name, id));
     }
 
     @Operation(summary = "查询路由地址是否存在")
     @GetMapping("/path-exists")
-    public Result<Boolean> pathExists(String path) {
-        return Result.ok(service.pathExists(path));
+    public Result<Boolean> pathExists(String path, Integer id) {
+        return Result.ok(service.pathExists(path, id));
     }
 
     @Operation(summary = "条件查询")
@@ -54,9 +55,17 @@ public class MenuController {
         return Result.ok(service.selectBy());
     }
 
-    @Operation(summary = "根据主键 id 逻辑删除")
-    @DeleteMapping("/deleteById/{id}")
-    public Result<Object> deleteById(@PathVariable Integer id) {
+    @Operation(summary = "修改数据")
+    @PutMapping("/{id}")
+    public Result<Object> updateById(@PathVariable @NotNull(message = "主键 id 不能为 null") Integer id,
+                                     @RequestBody MenuDTO dto) {
+        service.updateById(id, dto);
+        return Result.ok();
+    }
+
+    @Operation(summary = "逻辑删除")
+    @DeleteMapping("/{id}")
+    public Result<Object> deleteById(@PathVariable @NotNull(message = "主键 id 不能为 null") Integer id) {
         service.deleteById(id);
         return Result.ok();
     }

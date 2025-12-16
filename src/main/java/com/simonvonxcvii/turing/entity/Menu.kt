@@ -31,7 +31,7 @@ data class Menu(
      * @see MenuTypeEnum
      */
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, columnDefinition = "VARCHAR(64)", comment = "菜单类型：目录、菜单、按钮、内嵌、外链")
+    @Column(nullable = false, columnDefinition = "VARCHAR(8)", comment = "菜单类型：目录、菜单、按钮、内嵌、外链")
     var type: MenuTypeEnum = MenuTypeEnum.MENU,
 
     /**

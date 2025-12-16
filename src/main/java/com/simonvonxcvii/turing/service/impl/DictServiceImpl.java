@@ -5,12 +5,12 @@ import com.simonvonxcvii.turing.enums.DictTypeEnum;
 import com.simonvonxcvii.turing.model.dto.DictDTO;
 import com.simonvonxcvii.turing.repository.jpa.DictJpaRepository;
 import com.simonvonxcvii.turing.service.IDictService;
-import jakarta.persistence.criteria.Order;
 import jakarta.persistence.criteria.Predicate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -100,10 +100,9 @@ public class DictServiceImpl implements IDictService {
                 Predicate pid = builder.isNull(root.get(Dict.PID));
                 Predicate type = builder.equal(root.get(Dict.TYPE), DictTypeEnum.AREA);
                 Predicate predicate = builder.and(pid, type);
-                Order sortAsc = builder.asc(root.get(Dict.SORT));
-                return query.where(predicate).orderBy(sortAsc).getRestriction();
+                return query.where(predicate).getRestriction();
             };
-            List<Dict> children = dictJpaRepository.findAll(spec);
+            List<Dict> children = dictJpaRepository.findAll(spec, Sort.by(Dict.SORT));
             if (!children.isEmpty()) {
                 dictDTO.setChildren(children.stream().map(this::convertToDictDTO).toList());
             }
@@ -122,10 +121,9 @@ public class DictServiceImpl implements IDictService {
             Predicate pid = builder.equal(root.get(Dict.PID), dict.getId());
             Predicate type = builder.equal(root.get(Dict.TYPE), DictTypeEnum.AREA);
             Predicate predicate = builder.and(pid, type);
-            Order sortAsc = builder.asc(root.get(Dict.SORT));
-            return query.where(predicate).orderBy(sortAsc).getRestriction();
+            return query.where(predicate).getRestriction();
         };
-        List<Dict> children = dictJpaRepository.findAll(spec2);
+        List<Dict> children = dictJpaRepository.findAll(spec2, Sort.by(Dict.SORT));
         if (!children.isEmpty()) {
             dictDTO.setChildren(children.stream().map(this::convertToDictDTO).toList());
         }
