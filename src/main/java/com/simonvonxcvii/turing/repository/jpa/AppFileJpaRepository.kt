@@ -3,6 +3,7 @@ package com.simonvonxcvii.turing.repository.jpa
 import com.simonvonxcvii.turing.entity.AppFile
 import org.springframework.data.jpa.repository.support.JpaRepositoryImplementation
 import org.springframework.stereotype.Repository
+import java.util.*
 
 /**
  * 文件 JpaRepository 接口
@@ -11,4 +12,8 @@ import org.springframework.stereotype.Repository
  * @since 2023-08-21 18:08:08
  */
 @Repository
-interface AppFileJpaRepository : JpaRepositoryImplementation<AppFile, Int>
+interface AppFileJpaRepository : JpaRepositoryImplementation<AppFile, Int> {
+
+    fun findOneByMd5(md5: String): Optional<AppFile>
+
+}

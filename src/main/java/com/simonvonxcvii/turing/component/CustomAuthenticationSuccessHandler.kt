@@ -4,7 +4,6 @@ import com.simonvonxcvii.turing.common.result.Result
 import com.simonvonxcvii.turing.entity.User
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
-import org.springframework.data.redis.core.StringRedisTemplate
 import org.springframework.http.*
 import org.springframework.security.core.Authentication
 import org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames
@@ -28,7 +27,7 @@ import java.nio.charset.StandardCharsets
 @Component
 class CustomAuthenticationSuccessHandler(
     private val objectMapper: ObjectMapper,
-    private val stringRedisTemplate: StringRedisTemplate,
+//    private val stringRedisTemplate: StringRedisTemplate,
 //    private val keycloakTokenService: KeycloakTokenService,
 ) : AuthenticationSuccessHandler {
     /**

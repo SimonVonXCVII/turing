@@ -2,9 +2,7 @@ package com.simonvonxcvii.turing.service.impl;
 
 import com.simonvonxcvii.turing.entity.Permission;
 import com.simonvonxcvii.turing.model.dto.PermissionDTO;
-import com.simonvonxcvii.turing.repository.jpa.MenuJpaRepository;
 import com.simonvonxcvii.turing.repository.jpa.PermissionJpaRepository;
-import com.simonvonxcvii.turing.repository.jpa.RolePermissionJpaRepository;
 import com.simonvonxcvii.turing.service.IPermissionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
@@ -32,8 +30,8 @@ import java.util.stream.Collectors;
 public class PermissionServiceImpl implements IPermissionService {
 
     private final PermissionJpaRepository permissionJpaRepository;
-    private final RolePermissionJpaRepository rolePermissionJpaRepository;
-    private final MenuJpaRepository menuJpaRepository;
+//    private final RolePermissionJpaRepository rolePermissionJpaRepository;
+//    private final MenuJpaRepository menuJpaRepository;
 
     /**
      * 获取权限码
@@ -45,8 +43,10 @@ public class PermissionServiceImpl implements IPermissionService {
      */
     @Override
     public Set<String> codes() {
-        List<Permission> permissionList = permissionJpaRepository.findAll(Sort.by(Permission.SORT));
-        return permissionList.stream().map(Permission::getCode).collect(Collectors.toSet());
+        List<Permission> permissionList = permissionJpaRepository.findAll(Sort.by(Permission.ID));
+        return permissionList.stream()
+                .map(Permission::getCode)
+                .collect(Collectors.toSet());
     }
 
     /**

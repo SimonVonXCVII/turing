@@ -9,10 +9,8 @@ import com.simonvonxcvii.turing.repository.jpa.OrganizationJpaRepository;
 import com.simonvonxcvii.turing.repository.jpa.UserJpaRepository;
 import com.simonvonxcvii.turing.repository.jpa.UserRoleJpaRepository;
 import com.simonvonxcvii.turing.service.RegisterService;
-import jakarta.persistence.criteria.Predicate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,47 +40,27 @@ public class RegisterServiceImpl implements RegisterService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void register(RegisterDTO dto) {
-        Specification<Organization> spec = (root, query, builder) -> {
-            Predicate predicate = builder.equal(root.get(Organization.NAME), dto.getName());
-            return query.where(predicate).getRestriction();
-        };
-        boolean exists = organizationJpaRepository.exists(spec);
+        boolean exists = organizationJpaRepository.existsByName(dto.getName());
         if (exists) {
             throw new RuntimeException("该单位名称已经注册，请重新输入");
         }
 
-        Specification<Organization> spec2 = (root, query, builder) -> {
-            Predicate predicate = builder.equal(root.get(Organization.CODE), dto.getCode());
-            return query.where(predicate).getRestriction();
-        };
-        exists = organizationJpaRepository.exists(spec2);
+        exists = organizationJpaRepository.existsByCode(dto.getCode());
         if (exists) {
             throw new RuntimeException("该信用代码已经注册，请重新输入");
         }
 
-        Specification<Organization> spec3 = (root, query, builder) -> {
-            Predicate predicate = builder.equal(root.get(Organization.PHONE), dto.getPhone());
-            return query.where(predicate).getRestriction();
-        };
-        exists = organizationJpaRepository.exists(spec3);
+        exists = organizationJpaRepository.existsByPhone(dto.getPhone());
         if (exists) {
             throw new RuntimeException("该联系电话已被使用，请重新输入");
         }
 
-        Specification<User> userSpec = (root, query, builder) -> {
-            Predicate predicate = builder.equal(root.get(User.MOBILE), dto.getMobile());
-            return query.where(predicate).getRestriction();
-        };
-        exists = userJpaRepository.exists(userSpec);
+        exists = userJpaRepository.existsByMobile(dto.getMobile());
         if (exists) {
             throw new RuntimeException("该手机号码已被使用，请重新输入");
         }
 
-        Specification<User> userSpec2 = (root, query, builder) -> {
-            Predicate predicate = builder.equal(root.get(User.USERNAME), dto.getUsername());
-            return query.where(predicate).getRestriction();
-        };
-        exists = userJpaRepository.exists(userSpec2);
+        exists = userJpaRepository.existsByUsername(dto.getUsername());
         if (exists) {
             throw new RuntimeException("该登录账号已被使用，请重新输入");
         }

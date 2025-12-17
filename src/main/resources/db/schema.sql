@@ -126,6 +126,8 @@ CREATE TABLE IF NOT EXISTS public.turing_menu
     auth_code          VARCHAR(128)
         UNIQUE,
     status             SMALLINT                            NOT NULL,
+    meta_id            INTEGER                             NOT NULL
+        references public.turing_menu_meta (id),
     created_by         INTEGER,
     created_date       TIMESTAMP                           NOT NULL,
     last_modified_by   INTEGER,
@@ -153,6 +155,8 @@ COMMENT ON COLUMN public.turing_menu.component IS '页面组件';
 COMMENT ON COLUMN public.turing_menu.auth_code IS '权限标识';
 
 COMMENT ON COLUMN public.turing_menu.status IS '状态';
+
+COMMENT ON COLUMN public.turing_menu.meta_id IS '元数据 id';
 
 COMMENT ON COLUMN public.turing_menu.created_by IS '创建者';
 

@@ -68,8 +68,8 @@ data class RegisterDTO(
     /**
      * 用户手机号
      */
-    @field:NotBlank(message = "用户手机号不能为空")
-    var mobile: String? = null,
+    @field:NotNull(message = "用户手机号不能为空")
+    var mobile: Long? = null,
 
     /**
      * 登录账号

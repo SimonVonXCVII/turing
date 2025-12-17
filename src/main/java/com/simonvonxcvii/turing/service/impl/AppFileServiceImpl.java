@@ -6,12 +6,10 @@ import com.simonvonxcvii.turing.model.dto.UploadFileDTO;
 import com.simonvonxcvii.turing.repository.jpa.AppFileJpaRepository;
 import com.simonvonxcvii.turing.service.IAppFileService;
 import com.simonvonxcvii.turing.utils.UserUtils;
-import jakarta.persistence.criteria.Predicate;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
@@ -95,11 +93,7 @@ public class AppFileServiceImpl implements IAppFileService {
         // 生成 md5
         String md5 = DigestUtils.md5DigestAsHex(bytes);
         // 通过 md5 查询文件
-        Specification<AppFile> spec = (root, query, builder) -> {
-            Predicate md5Predicate = builder.equal(root.get(AppFile.MD5), md5);
-            return query.where(md5Predicate).getRestriction();
-        };
-        Optional<AppFile> appFileOptional = appFileJpaRepository.findOne(spec);
+        Optional<AppFile> appFileOptional = appFileJpaRepository.findOneByMd5(md5);
         UploadFileDTO dto = new UploadFileDTO();
         // 如果文件存在则直接返回文件信息
         if (appFileOptional.isPresent()) {

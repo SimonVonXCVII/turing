@@ -9,12 +9,10 @@ import com.simonvonxcvii.turing.repository.jpa.OrganizationJpaRepository;
 import com.simonvonxcvii.turing.repository.jpa.UserJpaRepository;
 import com.simonvonxcvii.turing.repository.jpa.UserRoleJpaRepository;
 import com.simonvonxcvii.turing.service.IOrganizationService;
-import jakarta.persistence.criteria.Predicate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.jpa.domain.DeleteSpecification;
 import org.springframework.data.jpa.domain.PredicateSpecification;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -22,7 +20,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 /**
@@ -69,41 +70,42 @@ public class OrganizationServiceImpl implements IOrganizationService {
 
     @Override
     public Page<OrganizationDTO> selectPage(OrganizationDTO dto) {
-        Specification<Organization> spec = (root, query, builder) -> {
-            List<Predicate> predicateList = new LinkedList<>();
-            if (StringUtils.hasText(dto.getName())) {
-                Predicate name = builder.like(root.get(Organization.NAME), "%" + dto.getName() + "%");
-                predicateList.add(name);
+        Specification<Organization> spec = Specification.<Organization>where((root, builder) -> {
+            if (!StringUtils.hasText(dto.getName())) {
+                return null;
             }
-            if (StringUtils.hasText(dto.getCode())) {
-                Predicate code = builder.like(builder.lower(root.get(Organization.CODE)),
-                        "%" + dto.getCode().toLowerCase() + "%");
-                predicateList.add(code);
+            return builder.like(root.get(Organization.NAME), "%" + dto.getName() + "%");
+        }).and((from, builder) -> {
+            if (!StringUtils.hasText(dto.getCode())) {
+                return null;
             }
-            if (StringUtils.hasText(dto.getType())) {
-                Predicate type = builder.equal(root.get(Organization.TYPE), dto.getType());
-                predicateList.add(type);
+            return builder.like(builder.lower(from.get(Organization.CODE)), "%" + dto.getCode().toLowerCase() + "%");
+        }).and((from, builder) -> {
+            if (!StringUtils.hasText(dto.getType())) {
+                return null;
             }
-            if (dto.getProvinceCode() != null) {
-                Predicate provinceCode = builder.equal(root.get(Organization.PROVINCE_CODE), dto.getProvinceCode());
-                predicateList.add(provinceCode);
+            return builder.equal(from.get(Organization.TYPE), dto.getType());
+        }).and((from, builder) -> {
+            if (dto.getProvinceCode() == null) {
+                return null;
             }
-            if (dto.getCityCode() != null) {
-                Predicate cityCode = builder.equal(root.get(Organization.CITY_CODE), dto.getCityCode());
-                predicateList.add(cityCode);
+            return builder.equal(from.get(Organization.PROVINCE_CODE), dto.getProvinceCode());
+        }).and((from, builder) -> {
+            if (dto.getCityCode() == null) {
+                return null;
             }
-            if (dto.getDistrictCode() != null) {
-                Predicate districtCode = builder.equal(root.get(Organization.DISTRICT_CODE), dto.getDistrictCode());
-                predicateList.add(districtCode);
+            return builder.equal(from.get(Organization.CITY_CODE), dto.getCityCode());
+        }).and((from, builder) -> {
+            if (dto.getDistrictCode() == null) {
+                return null;
             }
-            if (StringUtils.hasText(dto.getLegalPerson())) {
-                Predicate legalPerson = builder.like(root.get(Organization.LEGAL_PERSON),
-                        "%" + dto.getLegalPerson() + "%");
-                predicateList.add(legalPerson);
+            return builder.equal(from.get(Organization.DISTRICT_CODE), dto.getDistrictCode());
+        }).and((from, builder) -> {
+            if (!StringUtils.hasText(dto.getLegalPerson())) {
+                return null;
             }
-            Predicate predicate = builder.and(predicateList.toArray(Predicate[]::new));
-            return query.where(predicate).getRestriction();
-        };
+            return builder.like(from.get(Organization.LEGAL_PERSON), "%" + dto.getLegalPerson() + "%");
+        });
         // TODO: 2023/8/29 设置前端 number 默认从 0 开始，或许就不需要减一了
         PageRequest pageRequest = PageRequest.of(dto.getPage() - 1, dto.getPageSize());
         return organizationJpaRepository.findAll(spec, pageRequest)
@@ -138,16 +140,16 @@ public class OrganizationServiceImpl implements IOrganizationService {
     @Override
     public List<OrganizationDTO> selectList(String name) {
         Specification<OrganizationBusiness> spec =
-                (root, query, builder) -> {
-                    Predicate linkPredicate = builder.like(root.get(OrganizationBusiness.LINK),
-                            "%" + OrganizationBusinessBusinessLinksEnum.SAMPLE_TESTING.getValue() + "%");
-                    Predicate statePredicate = builder.like(root.get(OrganizationBusiness.STATE),
-                            "%" + OrganizationBusinessStateEnum.PASSES + "%");
-                    Predicate namePredicate = builder.like(root.get(OrganizationBusiness.ORG_NAME),
-                            "%" + name + "%");
-                    Predicate predicate = builder.and(linkPredicate, statePredicate, namePredicate);
-                    return query.where(predicate).getRestriction();
-                };
+                Specification.<OrganizationBusiness>where((from, builder) ->
+                        builder.like(from.get(OrganizationBusiness.LINK),
+                                "%" + OrganizationBusinessBusinessLinksEnum.SAMPLE_TESTING.getValue() + "%")
+                ).and((from, builder) ->
+                        builder.like(from.get(OrganizationBusiness.STATE),
+                                "%" + OrganizationBusinessStateEnum.PASSES + "%")
+                ).and((from, builder) ->
+                        builder.like(from.get(OrganizationBusiness.ORG_NAME),
+                                "%" + name + "%")
+                );
         return organizationBusinessJpaRepository.findAll(spec)
                 .stream()
                 .map(organizationBusiness -> {
@@ -168,13 +170,10 @@ public class OrganizationServiceImpl implements IOrganizationService {
         PredicateSpecification<User> spec =
                 (root, builder) -> builder.equal(root.get(User.ORG_ID), id);
         List<User> userList = userJpaRepository.findAll(spec);
-        List<Integer> userIdList = userList.stream().map(AbstractAuditable::getId).toList();
-        DeleteSpecification<UserRole> userRoleSpec =
-                (root, query, builder) -> {
-                    Predicate predicate = builder.in(root.get(UserRole.USER_ID)).in(userIdList);
-                    return query.where(predicate).getRestriction();
-                };
-        userRoleJpaRepository.delete(userRoleSpec);
+        List<Integer> userIdList = userList.stream()
+                .map(AbstractAuditable::getId)
+                .toList();
+        userRoleJpaRepository.deleteByUserIdIn(userIdList);
         // 删除单位下的所有用户
         userJpaRepository.delete(spec);
         // 删除单位

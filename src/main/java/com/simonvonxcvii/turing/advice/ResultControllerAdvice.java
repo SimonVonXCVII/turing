@@ -33,7 +33,8 @@ public class ResultControllerAdvice {
     @ExceptionHandler(MaxUploadSizeExceededException.class)
     public ResponseEntity<Result<Object>> maxUploadSizeExceededException(MaxUploadSizeExceededException e) {
         log.error("@ExceptionHandler(MaxUploadSizeExceededException.class): ", e);
-        return ResponseEntity.ok(Result.error("上传的文件超过限制，当前最大允许: " + environment.getProperty("spring.servlet.multipart.max-file-size")));
+        return ResponseEntity.ok(Result.error("上传的文件超过限制，当前最大允许: "
+                + environment.getProperty("spring.servlet.multipart.max-file-size")));
     }
 
     /**
@@ -61,7 +62,7 @@ public class ResultControllerAdvice {
     public ResponseEntity<Result<Object>> methodArgumentNotValidException(MethodArgumentNotValidException e) {
         log.error("@ExceptionHandler(MethodArgumentNotValidException.class): ", e);
         if (e.hasFieldErrors()) {
-            return ResponseEntity.ok(Result.error(e.getFieldError().getDefaultMessage()));
+            return ResponseEntity.ok(Result.error(e.getFieldErrors().getFirst().getDefaultMessage()));
         }
         return ResponseEntity.ok(Result.error(e.getLocalizedMessage()));
     }

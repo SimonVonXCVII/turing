@@ -6,6 +6,7 @@ import com.simonvonxcvii.turing.service.IOrganizationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.data.domain.Page;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,34 +33,34 @@ public class OrganizationController {
 
     @Operation(summary = "单个新增或修改")
     @PostMapping("/insertOrUpdate")
-    public Result<Object> insertOrUpdate(@RequestBody @Validated OrganizationDTO dto) {
+    public ResponseEntity<Result<Object>> insertOrUpdate(@RequestBody @Validated OrganizationDTO dto) {
         service.insertOrUpdate(dto);
-        return Result.ok();
+        return ResponseEntity.ok(Result.ok());
     }
 
     @Operation(summary = "分页查询")
     @PostMapping("/selectPage")
-    public Result<Page<OrganizationDTO>> selectPage(@RequestBody OrganizationDTO dto) {
-        return Result.ok(service.selectPage(dto));
+    public ResponseEntity<Result<Page<OrganizationDTO>>> selectPage(@RequestBody OrganizationDTO dto) {
+        return ResponseEntity.ok(Result.ok(service.selectPage(dto)));
     }
 
     @Operation(summary = "查询单位 id 和单位名称列表")
     @GetMapping("/selectIdAndNameList")
-    public Result<List<OrganizationDTO>> selectIdAndNameList() {
-        return Result.ok(service.selectIdAndNameList());
+    public ResponseEntity<Result<List<OrganizationDTO>>> selectIdAndNameList() {
+        return ResponseEntity.ok(Result.ok(service.selectIdAndNameList()));
     }
 
     @Operation(summary = "【测试项目分类管理】菜单【添加测试项目分类】弹窗中的检测实验室和检测质控实验室接口")
     @GetMapping("/selectList")
-    public Result<List<OrganizationDTO>> selectList(String name) {
-        return Result.ok(service.selectList(name));
+    public ResponseEntity<Result<List<OrganizationDTO>>> selectList(String name) {
+        return ResponseEntity.ok(Result.ok(service.selectList(name)));
     }
 
     @Operation(summary = "根据 id 逻辑删除单位及其关联的用户和用户的角色")
     @DeleteMapping("/deleteById/{id}")
-    public Result<String> deleteById(@PathVariable Integer id) {
+    public ResponseEntity<Result<String>> deleteById(@PathVariable Integer id) {
         service.deleteById(id);
-        return Result.ok();
+        return ResponseEntity.ok(Result.ok());
     }
 
 }

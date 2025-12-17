@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.data.domain.Page;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,30 +32,30 @@ public class RoleController {
 
     @Operation(summary = "新增数据")
     @PostMapping
-    public Result<Object> insert(@RequestBody @Validated RoleDTO dto) {
+    public ResponseEntity<Result<Object>> insert(@RequestBody @Validated RoleDTO dto) {
         service.insert(dto);
-        return Result.ok();
+        return ResponseEntity.ok(Result.ok());
     }
 
     @Operation(summary = "条件查询")
     @PostMapping("/list")
-    public Result<Page<RoleDTO>> selectBy(@RequestBody RoleDTO dto) {
-        return Result.ok(service.selectBy(dto));
+    public ResponseEntity<Result<Page<RoleDTO>>> selectBy(@RequestBody RoleDTO dto) {
+        return ResponseEntity.ok(Result.ok(service.selectBy(dto)));
     }
 
     @Operation(summary = "修改数据")
     @PutMapping("/{id}")
-    public Result<Object> updateById(@PathVariable @NotNull(message = "主键 id 不能为 null") Integer id,
-                                     @RequestBody RoleDTO dto) {
+    public ResponseEntity<Result<Object>> updateById(@PathVariable @NotNull(message = "主键 id 不能为 null") Integer id,
+                                                     @RequestBody RoleDTO dto) {
         service.updateById(id, dto);
-        return Result.ok();
+        return ResponseEntity.ok(Result.ok());
     }
 
     @Operation(summary = "逻辑删除")
     @DeleteMapping("/{id}")
-    public Result<Object> deleteById(@PathVariable @NotNull(message = "主键 id 不能为 null") Integer id) {
+    public ResponseEntity<Result<Object>> deleteById(@PathVariable @NotNull(message = "主键 id 不能为 null") Integer id) {
         service.deleteById(id);
-        return Result.ok();
+        return ResponseEntity.ok(Result.ok());
     }
 
 }

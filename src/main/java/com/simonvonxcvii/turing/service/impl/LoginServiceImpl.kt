@@ -6,7 +6,6 @@ import com.simonvonxcvii.turing.entity.RolePermission
 import com.simonvonxcvii.turing.model.dto.MenuDTO
 import com.simonvonxcvii.turing.model.dto.UserDTO
 import com.simonvonxcvii.turing.repository.jpa.MenuJpaRepository
-import com.simonvonxcvii.turing.repository.jpa.MenuMetaJpaRepository
 import com.simonvonxcvii.turing.repository.jpa.RolePermissionJpaRepository
 import com.simonvonxcvii.turing.service.LoginService
 import com.simonvonxcvii.turing.utils.UserUtils
@@ -24,32 +23,9 @@ import java.util.function.Predicate
  */
 @Service
 class LoginServiceImpl(
-//    private val randomUtils: RandomUtils,
     private val menuJpaRepository: MenuJpaRepository,
-    private val menuMetaJpaRepository: MenuMetaJpaRepository,
     private val rolePermissionJpaRepository: RolePermissionJpaRepository,
-//    private val stringRedisTemplate: StringRedisTemplate
 ) : LoginService {
-    /**
-     * 获取登录验证码
-     *
-     * @author Simon Von
-     * @since 12/16/2022 4:09 PM
-     */
-//    @Throws(IOException::class)
-//    override fun getCaptcha(request: HttpServletRequest, response: HttpServletResponse) {
-//        // 生成验证码并写入到响应中
-//        val captcha = randomUtils.getCaptcha(response)
-//        // 使用 md5 这种方式作为 key 的原因是 session id 总是会改变，同一个客户端的浏览器发送的请求的 session id 无法保持一致
-//        val ipAddr = InetAddress.getByName(request.remoteAddr).hostAddress
-//        val userAgent = request.getHeader(HttpHeaders.USER_AGENT)
-//        val ipAddrUserAgentByte = (ipAddr + userAgent).toByteArray(StandardCharsets.UTF_8)
-//        val md5DigestAsHex = DigestUtils.md5DigestAsHex(ipAddrUserAgentByte)
-//        // 缓存当前用户标识生成的 md5 和验证码
-//        // 验证码一分钟有效期 TODO 是否该用 setIfAbsent
-//        stringRedisTemplate.opsForValue()
-//            .set(Constants.REDIS_CAPTCHA + md5DigestAsHex, captcha, Duration.ofMinutes(1))
-//    }
 
     /**
      * 获取用户登录成功后所需要的信息

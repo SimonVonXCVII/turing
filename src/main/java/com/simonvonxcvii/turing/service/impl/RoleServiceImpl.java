@@ -68,41 +68,36 @@ public class RoleServiceImpl implements IRoleService {
     @Override
     public Page<RoleDTO> selectBy(RoleDTO dto) {
         Specification<Role> ps = Specification.<Role>where((from, builder) -> {
-                    if (!StringUtils.hasText(dto.getName())) {
-                        return null;
-                    }
-                    return builder.like(from.get(Role.NAME), "%" + dto.getName() + "%");
-                })
-                .and((from, criteriaBuilder) -> {
-                    if (dto.getId() == null) {
-                        return null;
-                    }
-                    return criteriaBuilder.equal(from.get(Role.ID), dto.getId());
-                })
-                .and((from, criteriaBuilder) -> {
-                    if (dto.getStatus() == null) {
-                        return null;
-                    }
-                    return criteriaBuilder.equal(from.get(Role.STATUS), dto.getStatus());
-                })
-                .and((from, criteriaBuilder) -> {
-                    if (!StringUtils.hasText(dto.getRemark())) {
-                        return null;
-                    }
-                    return criteriaBuilder.like(from.get(Role.REMARK), "%" + dto.getRemark() + "%");
-                })
-                .and((from, criteriaBuilder) -> {
-                    if (dto.getStartTime() == null) {
-                        return null;
-                    }
-                    return criteriaBuilder.greaterThanOrEqualTo(from.get(Role.CREATED_DATE), dto.getStartTime());
-                })
-                .and((from, criteriaBuilder) -> {
-                    if (dto.getEndTime() == null) {
-                        return null;
-                    }
-                    return criteriaBuilder.lessThanOrEqualTo(from.get(Role.CREATED_DATE), dto.getEndTime());
-                });
+            if (!StringUtils.hasText(dto.getName())) {
+                return null;
+            }
+            return builder.like(from.get(Role.NAME), "%" + dto.getName() + "%");
+        }).and((from, criteriaBuilder) -> {
+            if (dto.getId() == null) {
+                return null;
+            }
+            return criteriaBuilder.equal(from.get(Role.ID), dto.getId());
+        }).and((from, criteriaBuilder) -> {
+            if (dto.getStatus() == null) {
+                return null;
+            }
+            return criteriaBuilder.equal(from.get(Role.STATUS), dto.getStatus());
+        }).and((from, criteriaBuilder) -> {
+            if (!StringUtils.hasText(dto.getRemark())) {
+                return null;
+            }
+            return criteriaBuilder.like(from.get(Role.REMARK), "%" + dto.getRemark() + "%");
+        }).and((from, criteriaBuilder) -> {
+            if (dto.getStartTime() == null) {
+                return null;
+            }
+            return criteriaBuilder.greaterThanOrEqualTo(from.get(Role.CREATED_DATE), dto.getStartTime());
+        }).and((from, criteriaBuilder) -> {
+            if (dto.getEndTime() == null) {
+                return null;
+            }
+            return criteriaBuilder.lessThanOrEqualTo(from.get(Role.CREATED_DATE), dto.getEndTime());
+        });
         // TODO: 2023/8/29 设置前端 number 默认从 0 开始，或许就不需要减一了
         PageRequest pageRequest = PageRequest.of(dto.getPage() - 1, dto.getPageSize(), Sort.by(Role.ID));
         // 映射 RoleId 分组为 PermissionIdSet Map

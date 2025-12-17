@@ -5,6 +5,7 @@ import com.simonvonxcvii.turing.model.dto.UserDTO;
 import com.simonvonxcvii.turing.service.IUserService;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.data.domain.Page;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,28 +29,28 @@ public class UserController {
 
     @Operation(summary = "获取用户信息")
     @GetMapping("/info")
-    public Result<UserDTO> info() {
-        return Result.ok(service.info());
+    public ResponseEntity<Result<UserDTO>> info() {
+        return ResponseEntity.ok(Result.ok(service.info()));
     }
 
     @Operation(summary = "单个新增或修改")
     @PostMapping("/insertOrUpdate")
-    public Result<Object> insertOrUpdate(@RequestBody @Validated UserDTO dto) {
+    public ResponseEntity<Result<Object>> insertOrUpdate(@RequestBody @Validated UserDTO dto) {
         service.insertOrUpdate(dto);
-        return Result.ok();
+        return ResponseEntity.ok(Result.ok());
     }
 
     @Operation(summary = "分页查询")
     @PostMapping("/selectPage")
-    public Result<Page<UserDTO>> selectPage(@RequestBody UserDTO dto) {
-        return Result.ok(service.selectPage(dto));
+    public ResponseEntity<Result<Page<UserDTO>>> selectPage(@RequestBody UserDTO dto) {
+        return ResponseEntity.ok(Result.ok(service.selectPage(dto)));
     }
 
     @Operation(summary = "根据用户 id 逻辑删除用户")
     @DeleteMapping("/deleteById/{id}")
-    public Result<Object> deleteById(@PathVariable Integer id) {
+    public ResponseEntity<Result<Object>> deleteById(@PathVariable Integer id) {
         service.deleteById(id);
-        return Result.ok();
+        return ResponseEntity.ok(Result.ok());
     }
 
 }

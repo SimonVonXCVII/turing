@@ -84,8 +84,7 @@ public class MenuServiceImpl implements IMenuService {
                 .collect(Collectors.groupingBy(Menu::getPid));
         return menuList.stream()
                 .filter(menu -> menu.getPid() == null)
-                .map(menu -> buildTree(menu, childrenMenuListMap)
-                )
+                .map(menu -> buildTree(menu, childrenMenuListMap))
                 .toList();
     }
 

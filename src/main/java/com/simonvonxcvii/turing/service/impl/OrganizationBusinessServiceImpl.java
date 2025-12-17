@@ -22,8 +22,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
-import java.util.LinkedList;
-import java.util.List;
 
 /**
  * <p>
@@ -39,11 +37,8 @@ public class OrganizationBusinessServiceImpl implements IOrganizationBusinessSer
 
     private final OrganizationBusinessJpaRepository organizationBusinessJpaRepository;
     private final OrganizationJpaRepository organizationJpaRepository;
-    //    private final UserRoleJpaRepository userRoleJpaRepository;
-//    private final RoleJpaRepository roleJpaRepository;
     private final UserJpaRepository userJpaRepository;
     private final StringRedisTemplate stringRedisTemplate;
-//    private final ElasticsearchClient elasticsearchClient;
 
     /**
      * 单位管理员查询本单位已申请业务或者审核人员查询
@@ -152,33 +147,29 @@ public class OrganizationBusinessServiceImpl implements IOrganizationBusinessSer
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void insert(OrganizationBusinessDTO dto) throws IOException {
-        // TODO 需要检验生成的 sql
-        Specification<OrganizationBusiness> spec = (root, query, builder) -> {
-            List<Predicate> predicateList = new LinkedList<>();
-            // 本单位
-            Predicate orgId = builder.equal(root.get(OrganizationBusiness.ORG_ID), UserUtils.getOrgId());
-            predicateList.add(orgId);
-            // 省级
-            Predicate provinceCode = builder.equal(root.get(OrganizationBusiness.PROVINCE_CODE), dto.getProvinceCode());
-            predicateList.add(provinceCode);
-            // 市级
-            if (dto.getCityCode() == null) {
-                Predicate cityCode = builder.isNull(root.get(OrganizationBusiness.CITY_CODE));
-                predicateList.add(cityCode);
-            } else {
-                Predicate cityCode = builder.equal(root.get(OrganizationBusiness.CITY_CODE), dto.getCityCode());
-                predicateList.add(cityCode);
-            }
-            // 县级
-            if (dto.getCityCode() == null) {
-                Predicate districtCode = builder.isNull(root.get(OrganizationBusiness.DISTRICT_CODE));
-                predicateList.add(districtCode);
-            } else {
-                Predicate districtCode = builder.equal(root.get(OrganizationBusiness.DISTRICT_CODE), dto.getDistrictCode());
-                predicateList.add(districtCode);
-            }
-            return query.where(builder.and(predicateList.toArray(Predicate[]::new))).getRestriction();
-        };
+        Specification<OrganizationBusiness> spec = Specification
+                .<OrganizationBusiness>where((from, builder) ->
+                        builder.equal(from.get(OrganizationBusiness.ORG_ID), UserUtils.getOrgId()))
+                // 省级
+                .and((from, builder) ->
+                        builder.equal(from.get(OrganizationBusiness.PROVINCE_CODE), dto.getProvinceCode())
+                )
+                // 市级
+                .and((from, builder) -> {
+                    if (dto.getCityCode() == null) {
+                        return builder.isNull(from.get(OrganizationBusiness.CITY_CODE));
+                    } else {
+                        return builder.equal(from.get(OrganizationBusiness.CITY_CODE), dto.getCityCode());
+                    }
+                })
+                // 县级
+                .and((from, builder) -> {
+                    if (dto.getCityCode() == null) {
+                        return builder.isNull(from.get(OrganizationBusiness.DISTRICT_CODE));
+                    } else {
+                        return builder.equal(from.get(OrganizationBusiness.DISTRICT_CODE), dto.getDistrictCode());
+                    }
+                });
         boolean exists = organizationBusinessJpaRepository.exists(spec);
         if (exists) {
             throw new RuntimeException("已申请该地区业务，请重新选择");
@@ -211,7 +202,6 @@ public class OrganizationBusinessServiceImpl implements IOrganizationBusinessSer
                 ? OrganizationBusinessLevelEnum.DISTRICT : organizationBusiness.getCityCode() != null
                 ? OrganizationBusinessLevelEnum.CITY : OrganizationBusinessLevelEnum.PROVINCE;
         organizationBusiness.setBusinessLevel(businessLevel);
-        organizationBusinessJpaRepository.save(organizationBusiness);
 
         // 同步到 ES
 //        elasticsearchClient.create(CreateRequest.of(builder -> builder.index(OrganizationBusiness.INDEX)
@@ -235,7 +225,6 @@ public class OrganizationBusinessServiceImpl implements IOrganizationBusinessSer
 //        organizationBusiness.setLink(dto.getLink());
 //        organizationBusiness.setType(dto.getType());
         organizationBusiness.setState(OrganizationBusinessStateEnum.AWAITING_CHECK);
-        organizationBusinessJpaRepository.save(organizationBusiness);
 
         // 同步到 ES
 //        elasticsearchClient.update(builder -> builder.index(OrganizationBusiness.INDEX)
@@ -302,7 +291,6 @@ public class OrganizationBusinessServiceImpl implements IOrganizationBusinessSer
                 .orElseThrow(() -> new RuntimeException("没有找到该业务记录"));
         // TODO 不知道使用 OrganizationBusinessStateEnum.valueOf(dto.getState()) 对不对
         organizationBusiness.setState(OrganizationBusinessStateEnum.valueOf(dto.getState()));
-        organizationBusinessJpaRepository.save(organizationBusiness);
 
         // 同步到 ES
 //        elasticsearchClient.update(builder -> builder.index(OrganizationBusiness.INDEX)

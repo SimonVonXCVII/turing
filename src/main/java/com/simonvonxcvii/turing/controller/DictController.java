@@ -6,6 +6,7 @@ import com.simonvonxcvii.turing.service.IDictService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.data.domain.Page;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,28 +31,28 @@ public class DictController {
 
     @Operation(summary = "单个新增或修改")
     @PostMapping("/insertOrUpdate")
-    public Result<Object> insertOrUpdate(@RequestBody @Validated DictDTO dto) {
+    public ResponseEntity<Result<Object>> insertOrUpdate(@RequestBody @Validated DictDTO dto) {
         service.insertOrUpdate(dto);
-        return Result.ok();
+        return ResponseEntity.ok(Result.ok());
     }
 
     @Operation(summary = "分页查询")
     @PostMapping("/selectPage")
-    public Result<Page<DictDTO>> selectPage(@RequestBody DictDTO dto) {
-        return Result.ok(service.selectPage(dto));
+    public ResponseEntity<Result<Page<DictDTO>>> selectPage(@RequestBody DictDTO dto) {
+        return ResponseEntity.ok(Result.ok(service.selectPage(dto)));
     }
 
     @Operation(summary = "地区及下级地区查询")
     @GetMapping("/getAreaByCode")
-    public Result<DictDTO> getAreaByCode(Integer code) {
-        return Result.ok(service.getAreaByCode(code));
+    public ResponseEntity<Result<DictDTO>> getAreaByCode(Integer code) {
+        return ResponseEntity.ok(Result.ok(service.getAreaByCode(code)));
     }
 
     @Operation(summary = "根据主键 id 逻辑删除")
     @DeleteMapping("/deleteById/{id}")
-    public Result<Object> deleteDictByIds(@PathVariable Integer id) {
+    public ResponseEntity<Result<Object>> deleteDictByIds(@PathVariable Integer id) {
         service.deleteById(id);
-        return Result.ok();
+        return ResponseEntity.ok(Result.ok());
     }
 
 }

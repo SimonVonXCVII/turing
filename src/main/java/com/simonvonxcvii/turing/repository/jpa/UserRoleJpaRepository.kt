@@ -15,4 +15,12 @@ interface UserRoleJpaRepository : JpaRepositoryImplementation<UserRole, Int> {
 
     fun existsByRoleId(roleId: Int): Boolean
 
+    fun findAllByUserId(userId: Int): MutableList<UserRole>
+
+    fun deleteByUserIdIn(userIds: MutableCollection<Int>)
+
+    fun findAllByRoleIdIn(roleIds: MutableCollection<Int>): MutableList<UserRole>
+
+    fun deleteByUserId(userId: Int)
+
 }

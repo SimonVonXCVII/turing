@@ -8,7 +8,6 @@ import com.simonvonxcvii.turing.repository.jpa.*
 import org.apache.commons.logging.LogFactory
 import org.springframework.beans.factory.InitializingBean
 import org.springframework.core.io.ClassPathResource
-import org.springframework.data.jpa.domain.Specification
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Component
 import org.springframework.util.StringUtils
@@ -42,11 +41,7 @@ class CustomDatabaseInitializingBean(
     @Throws(Exception::class)
     override fun afterPropertiesSet() {
         // 判断是否需要初始化，如果表数据存在说明不需要
-        val spec = Specification<Dict> { root, query, builder ->
-            val type = builder.equal(root.get<String>(Dict.TYPE), DictTypeEnum.AREA)
-            query.where(type)?.restriction
-        }
-        val exists = dictJpaRepository.exists(spec)
+        val exists = dictJpaRepository.existsByType(DictTypeEnum.AREA)
         if (exists) {
             return
         }

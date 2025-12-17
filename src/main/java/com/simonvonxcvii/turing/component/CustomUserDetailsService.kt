@@ -2,12 +2,10 @@ package com.simonvonxcvii.turing.component
 
 import com.simonvonxcvii.turing.entity.Role
 import com.simonvonxcvii.turing.entity.User
-import com.simonvonxcvii.turing.entity.UserRole
 import com.simonvonxcvii.turing.repository.jpa.OrganizationJpaRepository
 import com.simonvonxcvii.turing.repository.jpa.RoleJpaRepository
 import com.simonvonxcvii.turing.repository.jpa.UserJpaRepository
 import com.simonvonxcvii.turing.repository.jpa.UserRoleJpaRepository
-import org.springframework.data.jpa.domain.Specification
 import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.security.authentication.*
 import org.springframework.security.core.userdetails.UserDetails
@@ -57,11 +55,7 @@ class CustomUserDetailsService(
             throw UsernameNotFoundException("用户账号不能为空")
         }
         // 获取用户数据
-        val spec = Specification<User> { root, query, builder ->
-            val usernamePredicate = builder.equal(root.get<String>(User.USERNAME), username)
-            query.where(usernamePredicate)?.restriction
-        }
-        val user = userJpaRepository.findOne(spec)
+        val user = userJpaRepository.findOneByUsername(username)
             .orElse(null) ?: throw UsernameNotFoundException("该用户账号不存在：$username")
 
         if (!user.isAccountNonExpired) throw AccountExpiredException("账号已过期")
@@ -75,12 +69,7 @@ class CustomUserDetailsService(
             roleJpaRepository.findAll().filterNotNull()
         } else {
             // 获取用户角色与用户关联记录表
-            val spec = Specification<UserRole> { root, query, builder ->
-                val userId = builder.equal(root.get<String>(UserRole.USER_ID), user.id)
-                query.where(userId)?.restriction
-            }
-            val userRoleList = userRoleJpaRepository.findAll(spec)
-                .filterNotNull()
+            val userRoleList = userRoleJpaRepository.findAllByUserId(user.id)
                 .also {
                     if (it.isEmpty()) throw BadCredentialsException("非法账号，该账号没有角色：$username")
                 }

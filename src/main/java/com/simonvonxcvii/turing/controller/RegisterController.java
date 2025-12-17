@@ -6,6 +6,7 @@ import com.simonvonxcvii.turing.service.RegisterService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,9 +31,9 @@ public class RegisterController {
 
     @Operation(summary = "注册")
     @PostMapping
-    public Result<Object> register(@RequestBody @Valid RegisterDTO dto) {
+    public ResponseEntity<Result<Object>> register(@RequestBody @Valid RegisterDTO dto) {
         service.register(dto);
-        return Result.ok();
+        return ResponseEntity.ok(Result.ok());
     }
 
 }

@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.data.domain.Page;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -38,15 +39,15 @@ public class OrganizationBusinessController {
     @PreAuthorize("hasAnyRole('TECHNICAL_DEFAULT', 'ADMIN_PROVINCE_GOV', 'STAFF_PROVINCE_GOV', 'ADMIN_CITY_GOV', 'STAFF_CITY_GOV', 'ADMIN_DISTRICT_GOV', 'STAFF_DISTRICT_GOV')")
     @Operation(summary = "单位管理员查询本单位已申请业务或者审核人员查询")
     @PostMapping("/selectPage")
-    public Result<Page<OrganizationBusinessDTO>> selectPage(@RequestBody OrganizationBusinessDTO dto) throws IOException {
-        return Result.ok(service.selectPage(dto));
+    public ResponseEntity<Result<Page<OrganizationBusinessDTO>>> selectPage(@RequestBody OrganizationBusinessDTO dto) throws IOException {
+        return ResponseEntity.ok(Result.ok(service.selectPage(dto)));
     }
 
     @Operation(summary = "单位管理员在点击编辑前查询单条数据")
     @Parameter(name = "id", description = "主键 id")
     @GetMapping("/getOneById")
-    public Result<OrganizationBusinessDTO> getOneById(@NotNull(message = "id 不能为空") String id) throws IOException {
-        return Result.ok(service.getOneById(id));
+    public ResponseEntity<Result<OrganizationBusinessDTO>> getOneById(@NotNull(message = "id 不能为空") String id) throws IOException {
+        return ResponseEntity.ok(Result.ok(service.getOneById(id)));
     }
 
     @PreAuthorize("hasRole('TECHNICAL_DEFAULT')")
@@ -60,17 +61,17 @@ public class OrganizationBusinessController {
     @PreAuthorize("hasRole('TECHNICAL_DEFAULT')")
     @Operation(summary = "申请页面更新业务")
     @PutMapping("/applyUpdate")
-    public Result<Object> applyUpdate(@RequestBody @Validated(Update.class) OrganizationBusinessDTO dto) throws IOException {
+    public ResponseEntity<Result<Object>> applyUpdate(@RequestBody @Validated(Update.class) OrganizationBusinessDTO dto) throws IOException {
         service.applyUpdate(dto);
-        return Result.ok();
+        return ResponseEntity.ok(Result.ok());
     }
 
     @PreAuthorize("hasAnyRole('ADMIN_PROVINCE_GOV', 'STAFF_PROVINCE_GOV', 'ADMIN_CITY_GOV', 'STAFF_CITY_GOV', 'ADMIN_DISTRICT_GOV', 'STAFF_DISTRICT_GOV')")
     @Operation(summary = "审核页面更新业务")
     @PutMapping("/checkUpdate")
-    public Result<Object> checkUpdate(@RequestBody @Validated(Update.class) OrganizationBusinessDTO dto) throws IOException {
+    public ResponseEntity<Result<Object>> checkUpdate(@RequestBody @Validated(Update.class) OrganizationBusinessDTO dto) throws IOException {
         service.checkUpdate(dto);
-        return Result.ok();
+        return ResponseEntity.ok(Result.ok());
     }
 
 }

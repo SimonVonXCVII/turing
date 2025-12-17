@@ -10,14 +10,6 @@ import com.simonvonxcvii.turing.model.dto.UserDTO
  * @since 12/16/2022 4:07 PM
  */
 interface LoginService {
-    /**
-     * 获取登录验证码
-     *
-     * @author Simon Von
-     * @since 12/16/2022 4:09 PM
-     */
-//    @Throws(IOException::class)
-//    fun getCaptcha(request: HttpServletRequest, response: HttpServletResponse)
 
     /**
      * 获取用户登录成功后所需要的信息

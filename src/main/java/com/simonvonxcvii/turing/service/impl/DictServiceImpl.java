@@ -5,7 +5,6 @@ import com.simonvonxcvii.turing.enums.DictTypeEnum;
 import com.simonvonxcvii.turing.model.dto.DictDTO;
 import com.simonvonxcvii.turing.repository.jpa.DictJpaRepository;
 import com.simonvonxcvii.turing.service.IDictService;
-import jakarta.persistence.criteria.Predicate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
@@ -17,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -51,28 +49,26 @@ public class DictServiceImpl implements IDictService {
         } else {
             BeanUtils.copyProperties(dto, dict);
         }
-        dictJpaRepository.save(dict);
     }
 
     @Override
     public Page<DictDTO> selectPage(DictDTO dto) {
-        Specification<Dict> spec = (root, query, builder) -> {
-            List<Predicate> predicateList = new LinkedList<>();
-            if (StringUtils.hasText(dto.getType())) {
-                Predicate type = builder.like(root.get(Dict.TYPE), "%" + dto.getType() + "%");
-                predicateList.add(type);
+        Specification<Dict> spec = Specification.<Dict>where((from, builder) -> {
+            if (!StringUtils.hasText(dto.getType())) {
+                return null;
             }
-            if (StringUtils.hasText(dto.getName())) {
-                Predicate name = builder.like(root.get(Dict.NAME), "%" + dto.getName() + "%");
-                predicateList.add(name);
+            return builder.like(from.get(Dict.TYPE), "%" + dto.getType() + "%");
+        }).and((from, builder) -> {
+            if (!StringUtils.hasText(dto.getName())) {
+                return null;
             }
-            if (StringUtils.hasText(dto.getValue())) {
-                Predicate value = builder.like(root.get(Dict.VALUE), "%" + dto.getValue() + "%");
-                predicateList.add(value);
+            return builder.like(from.get(Dict.NAME), "%" + dto.getName() + "%");
+        }).and((from, builder) -> {
+            if (!StringUtils.hasText(dto.getValue())) {
+                return null;
             }
-            Predicate predicate = builder.and(predicateList.toArray(Predicate[]::new));
-            return query.where(predicate).getRestriction();
-        };
+            return builder.like(from.get(Dict.VALUE), "%" + dto.getValue() + "%");
+        });
         // TODO: 2023/8/29 设置前端 number 默认从 0 开始，或许就不需要减一了
         PageRequest pageRequest = PageRequest.of(dto.getPage() - 1, dto.getPageSize());
         return dictJpaRepository.findAll(spec, pageRequest)
@@ -96,34 +92,18 @@ public class DictServiceImpl implements IDictService {
     public DictDTO getAreaByCode(Integer code) {
         if (code == null) {
             DictDTO dictDTO = new DictDTO();
-            Specification<Dict> spec = (root, query, builder) -> {
-                Predicate pid = builder.isNull(root.get(Dict.PID));
-                Predicate type = builder.equal(root.get(Dict.TYPE), DictTypeEnum.AREA);
-                Predicate predicate = builder.and(pid, type);
-                return query.where(predicate).getRestriction();
-            };
-            List<Dict> children = dictJpaRepository.findAll(spec, Sort.by(Dict.SORT));
+            List<Dict> children = dictJpaRepository.findAllByPidIsNullAndTypeEquals(
+                    DictTypeEnum.AREA, Sort.by(Dict.SORT));
             if (!children.isEmpty()) {
                 dictDTO.setChildren(children.stream().map(this::convertToDictDTO).toList());
             }
             return dictDTO;
         }
-        Specification<Dict> spec = (root, query, builder) -> {
-            Predicate value = builder.equal(root.get(Dict.VALUE), code.toString());
-            Predicate type = builder.equal(root.get(Dict.TYPE), DictTypeEnum.AREA);
-            Predicate predicate = builder.and(value, type);
-            return query.where(predicate).getRestriction();
-        };
-        Dict dict = dictJpaRepository.findOne(spec)
+        Dict dict = dictJpaRepository.findOneByValueEqualsAndTypeEquals(code.toString(), DictTypeEnum.AREA)
                 .orElseThrow(() -> new RuntimeException("没有找到区域编码：" + code));
         DictDTO dictDTO = convertToDictDTO(dict);
-        Specification<Dict> spec2 = (root, query, builder) -> {
-            Predicate pid = builder.equal(root.get(Dict.PID), dict.getId());
-            Predicate type = builder.equal(root.get(Dict.TYPE), DictTypeEnum.AREA);
-            Predicate predicate = builder.and(pid, type);
-            return query.where(predicate).getRestriction();
-        };
-        List<Dict> children = dictJpaRepository.findAll(spec2, Sort.by(Dict.SORT));
+        List<Dict> children = dictJpaRepository.findAllByPidEqualsAndTypeEquals(
+                dict.getId(), DictTypeEnum.AREA, Sort.by(Dict.SORT));
         if (!children.isEmpty()) {
             dictDTO.setChildren(children.stream().map(this::convertToDictDTO).toList());
         }
