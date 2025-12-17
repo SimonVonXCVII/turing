@@ -26,7 +26,7 @@ import java.util.*
 // @SQLDelete 只支持 delete(T entity) 和 deleteById(ID id)
 @SQLDelete(sql = "UPDATE turing_app_file SET deleted = TRUE WHERE id = ? AND version = ? AND deleted = FALSE")
 @SQLRestriction("deleted = FALSE")
-data class AppFile(
+class AppFile(
     /**
      * 所有者 id
      */

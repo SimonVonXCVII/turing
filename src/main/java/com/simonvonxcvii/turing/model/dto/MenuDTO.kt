@@ -11,7 +11,7 @@ import jakarta.validation.constraints.Size
  * @author Simon Von
  * @since 12/30/2022 4:03 PM
  */
-class MenuDTO(
+data class MenuDTO(
     /**
      * 菜单 id
      */

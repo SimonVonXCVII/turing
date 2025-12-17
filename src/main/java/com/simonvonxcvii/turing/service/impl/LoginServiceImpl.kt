@@ -2,7 +2,6 @@ package com.simonvonxcvii.turing.service.impl
 
 import com.simonvonxcvii.turing.entity.AbstractAuditable
 import com.simonvonxcvii.turing.entity.Menu
-import com.simonvonxcvii.turing.entity.MenuMeta
 import com.simonvonxcvii.turing.entity.RolePermission
 import com.simonvonxcvii.turing.model.dto.MenuDTO
 import com.simonvonxcvii.turing.model.dto.UserDTO
@@ -13,7 +12,6 @@ import com.simonvonxcvii.turing.service.LoginService
 import com.simonvonxcvii.turing.utils.UserUtils
 import org.springframework.beans.BeanUtils
 import org.springframework.data.domain.Sort
-import org.springframework.data.jpa.domain.PredicateSpecification
 import org.springframework.data.jpa.domain.Specification
 import org.springframework.stereotype.Service
 import java.util.function.Predicate
@@ -143,22 +141,14 @@ class LoginServiceImpl(
     fun menuConvertToDTO(menu: Menu): MenuDTO {
         val menuDTO = MenuDTO()
         BeanUtils.copyProperties(menu, menuDTO)
-        val spec = PredicateSpecification<MenuMeta> { from, criteriaBuilder ->
-            criteriaBuilder.equal(
-                from.get<MenuMeta>(MenuMeta.MENU_ID),
-                menu.id
-            )
+        val menuMeta = menu.meta
+        BeanUtils.copyProperties(menuMeta, menuDTO.meta)
+        if (menuMeta.badgeType != null) {
+            menuDTO.meta.badgeType = menuMeta.badgeType!!.value
         }
-        menuMetaJpaRepository.findOne(spec)
-            .ifPresent { menuMeta ->
-                BeanUtils.copyProperties(menuMeta, menuDTO.meta)
-                if (menuMeta.badgeType != null) {
-                    menuDTO.meta.badgeType = menuMeta.badgeType!!.value
-                }
-                if (menuMeta.badgeVariants != null) {
-                    menuDTO.meta.badgeVariants = menuMeta.badgeVariants!!.value
-                }
-            }
+        if (menuMeta.badgeVariants != null) {
+            menuDTO.meta.badgeVariants = menuMeta.badgeVariants!!.value
+        }
         return menuDTO
     }
 }

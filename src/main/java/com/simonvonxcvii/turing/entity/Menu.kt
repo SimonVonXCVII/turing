@@ -24,7 +24,7 @@ import org.hibernate.annotations.SQLRestriction
 // @SQLDelete 只支持 delete(T entity) 和 deleteById(ID id)
 @SQLDelete(sql = "UPDATE turing_menu SET deleted = TRUE WHERE id = ? AND version = ? AND deleted = FALSE")
 @SQLRestriction("deleted = FALSE")
-data class Menu(
+class Menu(
     /**
      * 菜单类型：目录、菜单、按钮、内嵌、外链
      *
@@ -74,7 +74,17 @@ data class Menu(
      * 状态
      */
     @Column(nullable = false, columnDefinition = "SMALLINT", comment = "状态")
-    var status: Byte = 1
+    var status: Byte = 1,
+
+    /**
+     * 元数据 id
+     * ⚠️注意：这将创建外键
+     * cascade = [CascadeType.ALL] - crud 都将同步影响 meta
+     * optional = false            - meta 不可为 null
+     */
+    @OneToOne(cascade = [CascadeType.ALL], fetch = FetchType.LAZY, optional = false, orphanRemoval = true)
+    @JoinColumn(name = "meta_id", nullable = false, comment = "元数据 id")
+    var meta: MenuMeta = MenuMeta()
 ) : AbstractAuditable() {
     companion object {
         /**

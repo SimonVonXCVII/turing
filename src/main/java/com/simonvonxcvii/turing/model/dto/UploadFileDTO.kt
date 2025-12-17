@@ -6,7 +6,7 @@ package com.simonvonxcvii.turing.model.dto
  * @author Simon Von
  * @since 2023/4/3 10:52
  */
-class UploadFileDTO(
+data class UploadFileDTO(
     /**
      * 文件 id
      */

@@ -11,7 +11,7 @@ import jakarta.validation.constraints.NotNull
  * @author Simon Von
  * @since 1/4/2023 4:59 PM
  */
-class OrganizationBusinessDTO(
+data class OrganizationBusinessDTO(
     /**
      * 业务 id
      */

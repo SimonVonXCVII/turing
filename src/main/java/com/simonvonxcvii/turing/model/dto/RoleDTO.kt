@@ -11,7 +11,7 @@ import java.time.LocalDateTime
  * @author Simon Von
  * @since 12/30/2022 4:03 PM
  */
-class RoleDTO(
+data class RoleDTO(
     /**
      * 角色 id
      */

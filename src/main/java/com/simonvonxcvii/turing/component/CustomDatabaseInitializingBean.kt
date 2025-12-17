@@ -37,7 +37,6 @@ class CustomDatabaseInitializingBean(
     private val userRoleJpaRepository: UserRoleJpaRepository,
     private val permissionJpaRepository: PermissionJpaRepository,
     private val menuJpaRepository: MenuJpaRepository,
-    private val menuMetaJpaRepository: MenuMetaJpaRepository,
     private val dictJpaRepository: DictJpaRepository
 ) : InitializingBean {
     @Throws(Exception::class)
@@ -58,7 +57,7 @@ class CustomDatabaseInitializingBean(
 
         // 创建数据库表
         // 已实现在服务启动时自动检测是否存在实体类对应的 table，不存在则根据实体类相关注解自动生成对应的 table
-//        val classPathResourceTableSql = ClassPathResource("/db/table.sql")
+//        val classPathResourceTableSql = ClassPathResource("/db/schema.sql")
 //        classPathResourceTableSql.exists()
 //            .run {
 //                if (!this) {
@@ -583,112 +582,116 @@ class CustomDatabaseInitializingBean(
         permissionJpaRepository.saveAll(permission150500List)
 
 
+        val menuMeta10000 = MenuMeta(title = "工作台")
         val menu10000 = Menu(
             name = "工作台",
             type = MenuTypeEnum.MENU,
             path = "/workspace",
-            component = "/dashboard/workspace/index"
+            component = "/dashboard/workspace/index",
+            meta = menuMeta10000
         )
         menuJpaRepository.save(menu10000)
-        val menuMeta10000 = MenuMeta(menuId = menu10000.id, title = "工作台")
-        menuMetaJpaRepository.save(menuMeta10000)
+        val menuMeta20000 = MenuMeta(title = "系统管理")
         val menu20000 = Menu(
             name = "系统管理",
             type = MenuTypeEnum.CATALOG,
             path = "/system",
+            meta = menuMeta20000
         )
         menuJpaRepository.save(menu20000)
-        val menuMeta20000 = MenuMeta(menuId = menu20000.id, title = "系统管理")
-        menuMetaJpaRepository.save(menuMeta20000)
+        val menuMeta20100 = MenuMeta(title = "菜单管理")
+        val menuMeta20200 = MenuMeta(title = "部门管理")
+        val menuMeta20300 = MenuMeta(title = "单位管理")
+        val menuMeta20400 = MenuMeta(title = "用户管理")
+        val menuMeta20500 = MenuMeta(title = "角色管理")
+        val menuMeta20600 = MenuMeta(title = "权限管理")
+        val menuMeta20700 = MenuMeta(title = "字典管理")
         val menu20100 = Menu(
             pid = menu20000.id,
             name = "菜单管理",
             type = MenuTypeEnum.MENU,
             path = "/system/menu",
-            component = "/system/menu/list"
+            component = "/system/menu/list",
+            meta = menuMeta20100
         )
         val menu20200 = Menu(
             pid = menu20000.id,
             name = "部门管理",
             type = MenuTypeEnum.MENU,
             path = "/system/menu",
-            component = "/system/dept/list"
+            component = "/system/dept/list",
+            meta = menuMeta20200
         )
         val menu20300 = Menu(
             pid = menu20000.id,
             name = "单位管理",
             type = MenuTypeEnum.MENU,
             path = "/system/organization",
-            component = "/system/organization/list"
+            component = "/system/organization/list",
+            meta = menuMeta20300
         )
         val menu20400 = Menu(
             pid = menu20000.id,
             name = "用户管理",
             type = MenuTypeEnum.MENU,
             path = "/system/user",
-            component = "/system/user/list"
+            component = "/system/user/list",
+            meta = menuMeta20400
         )
         val menu20500 = Menu(
             pid = menu20000.id,
             name = "角色管理",
             type = MenuTypeEnum.MENU,
             path = "/system/role",
-            component = "/system/role/list"
+            component = "/system/role/list",
+            meta = menuMeta20500
         )
         val menu20600 = Menu(
             pid = menu20000.id,
             name = "权限管理",
             type = MenuTypeEnum.MENU,
             path = "/system/permission",
-            component = "/system/permission/list"
+            component = "/system/permission/list",
+            meta = menuMeta20600
         )
         val menu20700 = Menu(
             pid = menu20000.id,
             name = "字典管理",
             type = MenuTypeEnum.MENU,
             path = "/system/dict",
-            component = "/system/dict/list"
+            component = "/system/dict/list",
+            meta = menuMeta20700
         )
         val menu20000List = listOfNotNull(
             menu20100, menu20200, menu20300, menu20400, menu20500, menu20600, menu20700
         )
         menuJpaRepository.saveAll(menu20000List)
-        val menuMeta20100 = MenuMeta(menuId = menu20100.id, title = "菜单管理")
-        val menuMeta20200 = MenuMeta(menuId = menu20200.id, title = "部门管理")
-        val menuMeta20300 = MenuMeta(menuId = menu20300.id, title = "单位管理")
-        val menuMeta20400 = MenuMeta(menuId = menu20400.id, title = "用户管理")
-        val menuMeta20500 = MenuMeta(menuId = menu20500.id, title = "角色管理")
-        val menuMeta20600 = MenuMeta(menuId = menu20600.id, title = "权限管理")
-        val menuMeta20700 = MenuMeta(menuId = menu20700.id, title = "字典管理")
-        val menuMeta20000List = listOfNotNull(
-            menuMeta20100, menuMeta20200, menuMeta20300, menuMeta20400, menuMeta20500, menuMeta20600, menuMeta20700
-        )
-        menuMetaJpaRepository.saveAll(menuMeta20000List)
+        val menuMeta20501 = MenuMeta(title = "新增")
+        val menuMeta20502 = MenuMeta(title = "修改")
+        val menuMeta20503 = MenuMeta(title = "删除")
         val menu20501 = Menu(
             pid = menu20100.id,
             name = "新增",
             type = MenuTypeEnum.BUTTON,
-            authCode = "System:Menu:Create"
+            authCode = "System:Menu:Create",
+            meta = menuMeta20501
         )
         val menu20502 = Menu(
             pid = menu20100.id,
             name = "修改",
             type = MenuTypeEnum.BUTTON,
-            authCode = "System:Menu:Edit"
+            authCode = "System:Menu:Edit",
+            meta = menuMeta20502
         )
         val menu20503 = Menu(
             pid = menu20100.id,
             name = "删除",
             type = MenuTypeEnum.BUTTON,
-            authCode = "System:Menu:Delete"
+            authCode = "System:Menu:Delete",
+            meta = menuMeta20503
         )
         val menu20500List = listOfNotNull(menu20501, menu20502, menu20503)
         menuJpaRepository.saveAll(menu20500List)
-        val menuMeta20501 = MenuMeta(menuId = menu20501.id, title = "新增")
-        val menuMeta20502 = MenuMeta(menuId = menu20502.id, title = "修改")
-        val menuMeta20503 = MenuMeta(menuId = menu20503.id, title = "删除")
-        val menuMeta20500List = listOfNotNull(menuMeta20501, menuMeta20502, menuMeta20503)
-        menuMetaJpaRepository.saveAll(menuMeta20500List)
     }
 
     /**

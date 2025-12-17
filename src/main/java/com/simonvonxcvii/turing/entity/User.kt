@@ -34,7 +34,7 @@ import org.springframework.security.core.userdetails.UserDetails
 @SQLRestriction("deleted = FALSE")
 //@RedisHash
 //@Document(indexName = "turing_user")
-data class User(
+class User(
     /**
      * 用户姓名
      */

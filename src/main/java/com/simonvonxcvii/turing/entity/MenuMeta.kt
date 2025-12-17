@@ -25,13 +25,7 @@ import org.hibernate.annotations.SQLRestriction
 // @SQLDelete 只支持 delete(T entity) 和 deleteById(ID id)
 @SQLDelete(sql = "UPDATE turing_menu_meta SET deleted = TRUE WHERE id = ? AND version = ? AND deleted = FALSE")
 @SQLRestriction("deleted = FALSE")
-data class MenuMeta(
-    /**
-     * 菜单 id
-     */
-    @Column(columnDefinition = "INTEGER", comment = "菜单 id")
-    var menuId: Int = 0,
-
+class MenuMeta(
     /**
      * 标题
      */
@@ -139,7 +133,6 @@ data class MenuMeta(
          */
         const val REDIS_KEY_PREFIX = "$ES_INDEX:"
 
-        const val MENU_ID = "menuId"
         const val TITLE = "title"
         const val ICON = "icon"
         const val ACTIVE_ICON = "activeIcon"

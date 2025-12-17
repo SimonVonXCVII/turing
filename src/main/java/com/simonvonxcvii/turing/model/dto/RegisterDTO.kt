@@ -10,7 +10,7 @@ import jakarta.validation.constraints.Size
  * @author Simon Von
  * @since 12/29/2022 11:45 AM
  */
-class RegisterDTO(
+data class RegisterDTO(
     /**
      * 单位信息 -------------------------------------------
      * 单位名称

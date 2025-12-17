@@ -10,7 +10,7 @@ import jakarta.validation.constraints.NotNull
  * @author Simon Von
  * @since 12/30/2022 4:03 PM
  */
-class PermissionDTO(
+data class PermissionDTO(
     /**
      * 权限 id
      */

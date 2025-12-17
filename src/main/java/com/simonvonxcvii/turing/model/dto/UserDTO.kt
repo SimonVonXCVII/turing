@@ -12,8 +12,7 @@ import java.time.LocalDateTime
  * @author Simon Von
  * @since 12/30/2022 4:03 PM
  */
-class UserDTO(
-
+data class UserDTO(
     /**
      * 用户姓名
      */

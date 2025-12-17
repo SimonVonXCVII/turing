@@ -26,7 +26,7 @@ import org.hibernate.annotations.SQLRestriction
 // @SQLDelete 只支持 delete(T entity) 和 deleteById(ID id)
 @SQLDelete(sql = "UPDATE turing_permission SET deleted = TRUE WHERE id = ? AND version = ? AND deleted = FALSE")
 @SQLRestriction("deleted = FALSE")
-data class Permission(
+class Permission(
     /**
      * 上级权限 id
      */

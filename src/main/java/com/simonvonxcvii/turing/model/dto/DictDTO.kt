@@ -9,7 +9,7 @@ import jakarta.validation.constraints.NotBlank
  * @author Simon Von
  * @since 12/30/2022 4:03 PM
  */
-class DictDTO(
+data class DictDTO(
     /**
      * 字典 id
      */
