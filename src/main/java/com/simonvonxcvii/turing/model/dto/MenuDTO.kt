@@ -4,9 +4,10 @@ import com.simonvonxcvii.turing.model.query.PageQuery
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotNull
 import jakarta.validation.constraints.Size
+import java.io.Serializable
 
 /**
- * Menu DTO
+ * DTO for [com.simonvonxcvii.turing.entity.Menu]
  *
  * @author Simon Von
  * @since 12/30/2022 4:03 PM
@@ -73,4 +74,4 @@ data class MenuDTO(
      * 子菜单
      */
     var children: MutableList<MenuDTO>? = mutableListOf()
-) : PageQuery()
+) : Serializable, PageQuery()

@@ -1,9 +1,10 @@
 package com.simonvonxcvii.turing.model.dto
 
 import jakarta.validation.constraints.NotBlank
+import java.io.Serializable
 
 /**
- * Menu Meta DTO
+ * DTO for [com.simonvonxcvii.turing.entity.MenuMeta]
  *
  * @author Simon Von
  * @since 12/30/2022 4:03 PM
@@ -83,4 +84,4 @@ data class MenuMetaDTO(
      * 外链-链接地址
      */
     var link: String? = null
-)
+) : Serializable

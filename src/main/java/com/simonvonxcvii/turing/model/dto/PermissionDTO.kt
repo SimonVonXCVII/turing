@@ -3,9 +3,10 @@ package com.simonvonxcvii.turing.model.dto
 import com.simonvonxcvii.turing.model.query.PageQuery
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotNull
+import java.io.Serializable
 
 /**
- * Permission DTO
+ * DTO for [com.simonvonxcvii.turing.entity.Permission]
  * 
  * @author Simon Von
  * @since 12/30/2022 4:03 PM
@@ -43,4 +44,4 @@ data class PermissionDTO(
      * 子级权限集合
      */
     var children: MutableList<PermissionDTO>? = mutableListOf()
-) : PageQuery()
+) : Serializable, PageQuery()

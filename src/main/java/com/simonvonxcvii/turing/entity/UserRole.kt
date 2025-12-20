@@ -1,9 +1,6 @@
 package com.simonvonxcvii.turing.entity
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.Table
-import jakarta.persistence.UniqueConstraint
+import jakarta.persistence.*
 import org.hibernate.annotations.SQLDelete
 import org.hibernate.annotations.SQLRestriction
 
@@ -28,16 +25,20 @@ import org.hibernate.annotations.SQLRestriction
 @SQLRestriction("deleted = FALSE")
 class UserRole(
     /**
-     * 用户 id
+     * 用户
+     * ⚠️注意：这将创建外键
      */
-    @Column(nullable = false, columnDefinition = "INTEGER", comment = "用户 id")
-    var userId: Int = 0,
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "user_id", nullable = false, comment = "用户 id")
+    var user: User = User(),
 
     /**
-     * 角色 id
+     * 角色
+     * ⚠️注意：这将创建外键
      */
-    @Column(nullable = false, columnDefinition = "INTEGER", comment = "角色 id")
-    var roleId: Int = 0
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "role_id", nullable = false, comment = "角色 id")
+    var role: Role = Role()
 ) : AbstractAuditable() {
     companion object {
         /**

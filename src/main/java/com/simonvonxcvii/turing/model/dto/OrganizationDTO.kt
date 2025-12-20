@@ -4,10 +4,11 @@ import com.simonvonxcvii.turing.model.query.PageQuery
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotNull
 import jakarta.validation.constraints.Pattern
+import java.io.Serializable
 import java.time.LocalDateTime
 
 /**
- * Organization DTO
+ * DTO for [com.simonvonxcvii.turing.entity.Organization]
  * 
  * @author Simon Von
  * @since 12/30/2022 4:03 PM
@@ -92,4 +93,4 @@ data class OrganizationDTO(
      * 创建时间
      */
     var createdDate: LocalDateTime? = null
-) : PageQuery()
+) : Serializable, PageQuery()

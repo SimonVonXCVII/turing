@@ -2,9 +2,10 @@ package com.simonvonxcvii.turing.model.dto
 
 import com.simonvonxcvii.turing.model.query.PageQuery
 import jakarta.validation.constraints.NotBlank
+import java.io.Serializable
 
 /**
- * Dict DTO
+ * DTO for [com.simonvonxcvii.turing.entity.Dict]
  * 
  * @author Simon Von
  * @since 12/30/2022 4:03 PM
@@ -52,4 +53,4 @@ data class DictDTO(
      * 下级字典
      */
     var children: MutableList<DictDTO>? = mutableListOf()
-) : PageQuery()
+) : Serializable, PageQuery()

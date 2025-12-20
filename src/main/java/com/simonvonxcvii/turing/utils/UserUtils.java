@@ -63,19 +63,30 @@ public class UserUtils {
      * @author Simon Von
      * @since 2023/8/25 16:06
      */
-    public static boolean isAdmin() {
-        return getUser().isAdmin();
+    public static boolean isSuper() {
+        return getUser().getRoles().contains("Super");
     }
 
     /**
-     * 当前用户是否是单位管理员
+     * 当前用户是否是管理员
      *
-     * @return 当前用户是否是单位管理员
+     * @return 当前用户是否是管理员
      * @author Simon Von
      * @since 2023/8/25 16:06
      */
-    public static boolean isManager() {
-        return getUser().isManager();
+    public static boolean isAdmin() {
+        return getUser().getRoles().contains("Admin");
+    }
+
+    /**
+     * 当前用户是否是用户
+     *
+     * @return 当前用户是否是用户
+     * @author Simon Von
+     * @since 12/20/25 8:37AM
+     */
+    public static boolean isUser() {
+        return getUser().getRoles().contains("User");
     }
 
     /**

@@ -113,41 +113,49 @@ class Organization(
     /**
      * 单位性质
      */
+    @Transient
     var property: String? = null
 
     /**
      * 单位管理员 id
      */
+    @Transient
     var orgManagerId: String? = null
 
     /**
      * 单位管理员姓名
      */
+    @Transient
     var orgManagerName: String? = null
 
     /**
      * 单位管理员电话
      */
+    @Transient
     var orgManagerMobile: String? = null
 
     /**
      * 单位状态
      */
+    @Transient
     var status: Int? = null
 
     /**
      * 单位剩余时间
      */
+    @Transient
     var remainingTime: Int? = null
 
     /**
      * 单位法人姓名
      */
+    @Transient
     var openPersonName: String? = null
 
     /**
      * 单位等级
      */
+    @Transient
     var orgLevel: String? = null
 
     companion object {

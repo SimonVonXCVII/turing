@@ -3,6 +3,7 @@ package com.simonvonxcvii.turing.model.dto
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotNull
 import jakarta.validation.constraints.Size
+import java.io.Serializable
 
 /**
  * Register DTO
@@ -81,4 +82,4 @@ data class RegisterDTO(
      * 性别
      */
     var gender: String? = null
-)
+) : Serializable

@@ -4,21 +4,16 @@ import com.simonvonxcvii.turing.model.query.PageQuery
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotEmpty
 import jakarta.validation.constraints.NotNull
+import java.io.Serializable
 import java.time.LocalDateTime
 
 /**
- * User DTO
- * 
+ * DTO for [com.simonvonxcvii.turing.entity.User]
+ *
  * @author Simon Von
  * @since 12/30/2022 4:03 PM
  */
 data class UserDTO(
-    /**
-     * 用户姓名
-     */
-    @field:NotBlank(message = "用户姓名不能为空")
-    var name: String? = null,
-
     /**
      * 用户姓名
      */
@@ -113,5 +108,5 @@ data class UserDTO(
      * 角色集合
      */
     @field:NotEmpty(message = "角色集合不能为空")
-    var roleList: MutableList<Int>? = mutableListOf()
-) : PageQuery()
+    var roleIdList: MutableList<Int>? = mutableListOf()
+) : Serializable, PageQuery()

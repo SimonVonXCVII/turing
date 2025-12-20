@@ -4,9 +4,10 @@ import com.simonvonxcvii.turing.model.query.PageQuery
 import com.simonvonxcvii.turing.utils.Insert
 import com.simonvonxcvii.turing.utils.Update
 import jakarta.validation.constraints.NotNull
+import java.io.Serializable
 
 /**
- * Organization Business DTO
+ * DTO for [com.simonvonxcvii.turing.entity.OrganizationBusiness]
  * 
  * @author Simon Von
  * @since 1/4/2023 4:59 PM
@@ -69,4 +70,4 @@ data class OrganizationBusinessDTO(
      */
     @field:NotNull(message = "业务申请状态不能为空", groups = [Update::class])
     var state: String? = null
-) : PageQuery()
+) : Serializable, PageQuery()

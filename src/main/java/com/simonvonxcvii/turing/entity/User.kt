@@ -124,82 +124,29 @@ class User(
     var needResetPassword: Boolean = true
 ) : AbstractAuditable(), UserDetails {
     /**
+     * 用户角色关联表
+     */
+    @OneToMany(cascade = [CascadeType.ALL], mappedBy = "user", orphanRemoval = true)
+    var userRoles: MutableList<UserRole> = mutableListOf()
+
+    /**
      * 用户角色
      */
+    @Transient
     @get:JvmName("getAuthoritiesValue")
     var authorities: Collection<Role> = mutableListOf()
 
     /**
      * 用户角色编码
      */
+    @Transient
     var roles: Set<String> = mutableSetOf()
 
     /**
      * 用户权限码
      */
+    @Transient
     var codes: Set<String> = mutableSetOf()
-
-    /**
-     * 是否是超级管理员
-     */
-    @get:JvmName("isAdmin")
-    var admin: Boolean = false
-
-    /**
-     * 当前用户的 token
-     *
-     * @since 2023/4/11 18:07
-     */
-    var token: String? = null
-
-    /**
-     * 用户所处的单位级别
-     *
-     * @since 2023/7/1 18:53
-     */
-    var orgLevel: String? = null
-
-    /**
-     * 省（市、区）编码
-     *
-     * @since 2023/4/11 18:07
-     */
-    var provinceCode: Int? = null
-
-    /**
-     * 市（州、盟）编码
-     *
-     * @since 2023/7/1 18:53
-     */
-    var cityCode: Int? = null
-
-    /**
-     * 县（市、旗）编码
-     *
-     * @since 2023/7/1 18:53
-     */
-    var districtCode: Int? = null
-
-    /**
-     * 省（市、区）名称
-     *
-     * @since 2023/7/1 18:53
-     */
-    var provinceName: String? = null
-
-    /**
-     * 市（州、盟）名称
-     *
-     * @since 2023/7/1 18:53
-     */
-    var cityName: String? = null
-
-    /**
-     * 县（市、旗）名称
-     *
-     * @since 2023/7/1 18:53
-     */
-    var districtName: String? = null
 
     override fun getAuthorities(): Collection<GrantedAuthority> {
         return authorities

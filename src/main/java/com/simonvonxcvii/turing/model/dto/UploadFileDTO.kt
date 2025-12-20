@@ -1,5 +1,7 @@
 package com.simonvonxcvii.turing.model.dto
 
+import java.io.Serializable
+
 /**
  * UploadFile DTO
  * 
@@ -16,4 +18,4 @@ data class UploadFileDTO(
      * 文件名
      */
     var filename: String? = null
-)
+) : Serializable

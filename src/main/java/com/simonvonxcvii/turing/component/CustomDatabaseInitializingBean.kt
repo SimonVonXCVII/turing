@@ -361,7 +361,7 @@ class CustomDatabaseInitializingBean(
         userJpaRepository.save(user)
 
 
-        val adminUserRole = UserRole(userId = user.id, roleId = adminRole.id)
+        val adminUserRole = UserRole(user = user, role = adminRole)
         userRoleJpaRepository.save(adminUserRole)
     }
 

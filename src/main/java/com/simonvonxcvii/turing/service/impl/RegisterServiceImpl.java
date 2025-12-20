@@ -1,6 +1,7 @@
 package com.simonvonxcvii.turing.service.impl;
 
 import com.simonvonxcvii.turing.entity.Organization;
+import com.simonvonxcvii.turing.entity.Role;
 import com.simonvonxcvii.turing.entity.User;
 import com.simonvonxcvii.turing.entity.UserRole;
 import com.simonvonxcvii.turing.enums.OrganizationTypeEnum;
@@ -89,14 +90,13 @@ public class RegisterServiceImpl implements RegisterService {
         user.setManager(Boolean.TRUE);
         user.setAccountNonLocked(Boolean.TRUE);
         user.setEnabled(Boolean.TRUE);
-        user.setAdmin(Boolean.FALSE);
         userJpaRepository.save(user);
 
         // 赋予单位管理员角色
         UserRole userRole = new UserRole();
-        userRole.setUserId(user.getId());
+        userRole.setUser(user);
         // TODO: 2023/9/8
-        userRole.setRoleId(40);
+        userRole.setRole(new Role());
         userRoleJpaRepository.save(userRole);
     }
 

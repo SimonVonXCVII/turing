@@ -25,7 +25,7 @@ import org.hibernate.annotations.SQLRestriction
 @SQLRestriction("deleted = FALSE")
 class RolePermission(
     /**
-     * 角色 id
+     * 角色
      * ⚠️注意：这将创建外键
      */
     @ManyToOne(optional = false)
@@ -33,7 +33,7 @@ class RolePermission(
     var role: Role = Role(),
 
     /**
-     * 权限 id
+     * 权限
      * ⚠️注意：这将创建外键
      */
     @ManyToOne(optional = false)

@@ -2,11 +2,12 @@ package com.simonvonxcvii.turing.model.dto
 
 import com.simonvonxcvii.turing.model.query.PageQuery
 import jakarta.validation.constraints.NotNull
+import java.io.Serializable
 import java.time.LocalDate
 import java.time.LocalDateTime
 
 /**
- * Role DTO
+ * DTO for [com.simonvonxcvii.turing.entity.Role]
  *
  * @author Simon Von
  * @since 12/30/2022 4:03 PM
@@ -61,4 +62,4 @@ data class RoleDTO(
      * 截止创建时间
      */
     var endTime: LocalDate? = null
-) : PageQuery()
+) : Serializable, PageQuery()

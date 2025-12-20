@@ -57,6 +57,12 @@ class Role(
     @OneToMany(cascade = [CascadeType.ALL], mappedBy = "role", orphanRemoval = true)
     var rolePermissions: MutableList<RolePermission> = mutableListOf()
 
+    /**
+     * 用户角色关联表
+     */
+    @OneToMany(mappedBy = "role")
+    var userRoles: MutableList<UserRole> = mutableListOf()
+
     override fun getAuthority(): String {
         return authority
     }

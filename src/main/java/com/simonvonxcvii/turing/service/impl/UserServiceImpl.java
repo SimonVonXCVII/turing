@@ -9,12 +9,10 @@ import com.simonvonxcvii.turing.repository.jpa.UserJpaRepository;
 import com.simonvonxcvii.turing.repository.jpa.UserRoleJpaRepository;
 import com.simonvonxcvii.turing.service.IUserService;
 import com.simonvonxcvii.turing.utils.UserUtils;
-import jakarta.persistence.criteria.Predicate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.jpa.domain.DeleteSpecification;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -87,17 +85,13 @@ public class UserServiceImpl implements IUserService {
         userJpaRepository.save(user);
         // 更新用户角色表
         // TODO 可以优化成只添加需要添加的，只删除需要删除的
-        DeleteSpecification<UserRole> spec = (root, query, builder) -> {
-            Predicate predicate = builder.equal(root.get(UserRole.USER_ID), dto.getId());
-            return query.where(predicate).getRestriction();
-        };
-        userRoleJpaRepository.delete(spec);
+        userRoleJpaRepository.deleteByUserId(dto.getId());
         List<UserRole> userRoleList = new LinkedList<>();
-        dto.getRoleList()
-                .forEach(id -> {
+        roleJpaRepository.findAllById(dto.getRoleIdList())
+                .forEach(role -> {
                     UserRole userRole = new UserRole();
-                    userRole.setUserId(user.getId());
-                    userRole.setRoleId(id);
+                    userRole.setUser(user);
+                    userRole.setRole(role);
                     userRoleList.add(userRole);
                 });
         userRoleJpaRepository.saveAll(userRoleList);
@@ -108,10 +102,10 @@ public class UserServiceImpl implements IUserService {
         Page<User> userPage;
         try {
             Specification<User> spec = Specification.<User>where((from, criteriaBuilder) -> {
-                if (!StringUtils.hasText(dto.getName())) {
+                if (!StringUtils.hasText(dto.getRealName())) {
                     return null;
                 }
-                return criteriaBuilder.like(from.get(User.NAME), "%" + dto.getName() + "%");
+                return criteriaBuilder.like(from.get(User.NAME), "%" + dto.getRealName() + "%");
             }).and((from, criteriaBuilder) -> {
                 if (dto.getMobile() == null) {
                     return null;
@@ -138,15 +132,15 @@ public class UserServiceImpl implements IUserService {
                 }
                 return criteriaBuilder.like(from.get(User.USERNAME), "%" + dto.getUsername() + "%");
             }).and((from, criteriaBuilder) -> {
-                if (CollectionUtils.isEmpty(dto.getRoleList())) {
+                if (CollectionUtils.isEmpty(dto.getRoleIdList())) {
                     return null;
                 }
-                List<UserRole> userRoleList = userRoleJpaRepository.findAllByRoleIdIn(dto.getRoleList());
+                List<UserRole> userRoleList = userRoleJpaRepository.findAllByRoleIdIn(dto.getRoleIdList());
                 if (userRoleList.isEmpty()) {
                     // todo
                     throw new RuntimeException();
                 }
-                List<Integer> userIdlist = userRoleList.stream().map(UserRole::getUserId).toList();
+                List<Integer> userIdlist = userRoleList.stream().map(UserRole::getUser).map(User::getId).toList();
                 return criteriaBuilder.in(from.get(User.ID).in(userIdlist));
             }).and((from, criteriaBuilder) -> {
                 if (dto.getAccountNonExpired() == null) {
