@@ -54,7 +54,6 @@ public class UserServiceImpl implements IUserService {
         User user = UserUtils.getUser();
         UserDTO userDTO = new UserDTO();
         BeanUtils.copyProperties(user, userDTO);
-        userDTO.setRealName(user.getName());
         return userDTO;
     }
 

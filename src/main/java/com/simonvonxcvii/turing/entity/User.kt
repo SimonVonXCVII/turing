@@ -39,7 +39,7 @@ class User(
      * 用户姓名
      */
     @Column(nullable = false, columnDefinition = "VARCHAR(64)", comment = "用户姓名")
-    var name: String = "",
+    var realName: String = "",
 
     /**
      * 用户电话
@@ -121,92 +121,86 @@ class User(
      */
     @Column(nullable = false, columnDefinition = "BOOLEAN", comment = "是否需要重置密码")
     @get:JvmName("isNeedResetPassword")
-    var needResetPassword: Boolean = true,
-
+    var needResetPassword: Boolean = true
+) : AbstractAuditable(), UserDetails {
     /**
      * 用户角色
      */
-    @Transient
     @get:JvmName("getAuthoritiesValue")
-    var authorities: Collection<Role> = mutableListOf(),
+    var authorities: Collection<Role> = mutableListOf()
 
     /**
      * 用户角色编码
      */
-    @Transient
-    var roles: Set<String> = mutableSetOf(),
+    var roles: Set<String> = mutableSetOf()
+
+    /**
+     * 用户权限码
+     */
+    var codes: Set<String> = mutableSetOf()
 
     /**
      * 是否是超级管理员
      */
-    @Transient
     @get:JvmName("isAdmin")
-    var admin: Boolean = false,
+    var admin: Boolean = false
 
     /**
      * 当前用户的 token
      *
      * @since 2023/4/11 18:07
      */
-    @Transient
-    var token: String? = null,
+    var token: String? = null
 
     /**
      * 用户所处的单位级别
      *
      * @since 2023/7/1 18:53
      */
-    @Transient
-    var orgLevel: String? = null,
+    var orgLevel: String? = null
 
     /**
      * 省（市、区）编码
      *
      * @since 2023/4/11 18:07
      */
-    @Transient
-    var provinceCode: Int? = null,
+    var provinceCode: Int? = null
 
     /**
      * 市（州、盟）编码
      *
      * @since 2023/7/1 18:53
      */
-    @Transient
-    var cityCode: Int? = null,
+    var cityCode: Int? = null
 
     /**
      * 县（市、旗）编码
      *
      * @since 2023/7/1 18:53
      */
-    @Transient
-    var districtCode: Int? = null,
+    var districtCode: Int? = null
 
     /**
      * 省（市、区）名称
      *
      * @since 2023/7/1 18:53
      */
-    @Transient
-    var provinceName: String? = null,
+    var provinceName: String? = null
 
     /**
      * 市（州、盟）名称
      *
      * @since 2023/7/1 18:53
      */
-    @Transient
-    var cityName: String? = null,
+    var cityName: String? = null
 
     /**
      * 县（市、旗）名称
      *
      * @since 2023/7/1 18:53
      */
-    @Transient
     var districtName: String? = null
-) : AbstractAuditable(), UserDetails {
+
     override fun getAuthorities(): Collection<GrantedAuthority> {
         return authorities
     }

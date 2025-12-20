@@ -122,6 +122,12 @@ class MenuMeta(
     @Column(columnDefinition = "VARCHAR(128)", comment = "外链-链接地址")
     var link: String? = null
 ) : AbstractAuditable() {
+    /**
+     * 菜单
+     */
+    @OneToOne(mappedBy = "meta")
+    var menu: Menu? = null
+
     companion object {
         /**
          * ES 索引名称

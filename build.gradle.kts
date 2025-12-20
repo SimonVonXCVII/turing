@@ -146,15 +146,18 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     // TODO 是否可以用 postgresql 替代 elasticsearch
 //    implementation("org.springframework.boot:spring-boot-starter-data-elasticsearch")
+//    implementation("org.springframework.boot:spring-boot-starter-data-jdbc")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-data-redis")
-    implementation("org.springframework.boot:spring-boot-starter-oauth2-authorization-server")
-    implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
-    implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
     implementation("org.springframework.boot:spring-boot-starter-security")
+    implementation("org.springframework.boot:spring-boot-starter-security-oauth2-authorization-server")
+    implementation("org.springframework.boot:spring-boot-starter-security-oauth2-client")
+    implementation("org.springframework.boot:spring-boot-starter-security-oauth2-resource-server")
 //    implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
     implementation("org.springframework.boot:spring-boot-starter-validation")
-    implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-webmvc")
+    // 用于保存 session，作用在于即使后端重启，前端依然可以在不重新登录的情况下正常刷新网页 todo master 分支中有使用它
+//    implementation("org.springframework.session:spring-session-data-redis")
     // todo 使用它
 //    developmentOnly("org.springframework.boot:spring-boot-devtools")
     // PDF TODO 尝试换成 apache 的，或者试试 itext

@@ -30,7 +30,7 @@ public class PermissionController {
         this.service = service;
     }
 
-    @Operation(summary = "获取权限码")
+    @Operation(summary = "获取用户权限码")
     @GetMapping("/codes")
     public ResponseEntity<Result<Set<String>>> codes() {
         return ResponseEntity.ok(Result.ok(service.codes()));

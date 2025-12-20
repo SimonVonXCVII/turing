@@ -1,6 +1,8 @@
 package com.simonvonxcvii.turing.config
 
+import com.simonvonxcvii.turing.filter.CustomCaptchaOncePerRequestFilter
 import com.simonvonxcvii.turing.properties.CustomSecurityProperties
+import com.simonvonxcvii.turing.utils.Constants
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpMethod
@@ -16,6 +18,7 @@ import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.access.AccessDeniedHandler
 import org.springframework.security.web.authentication.AuthenticationFailureHandler
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler
 import org.springframework.security.web.authentication.session.ConcurrentSessionControlAuthenticationStrategy
 import org.springframework.security.web.csrf.CsrfFilter
@@ -129,7 +132,7 @@ class SecurityConfig {
         corsConfigurationSource: CorsConfigurationSource,
         authenticationSuccessHandler: AuthenticationSuccessHandler,
         authenticationFailureHandler: AuthenticationFailureHandler,
-//        customCaptchaOncePerRequestFilter: CustomCaptchaOncePerRequestFilter,
+        customCaptchaOncePerRequestFilter: CustomCaptchaOncePerRequestFilter,
         customSecurityProperties: CustomSecurityProperties,
         accessDeniedHandler: AccessDeniedHandler,
         authenticationEntryPoint: AuthenticationEntryPoint,
@@ -146,7 +149,7 @@ class SecurityConfig {
             // 启用基于表单的身份验证。
             formLogin {
                 // 如果需要身份验证则重定向到登录页面（即“/login”）
-                loginPage = "/api/auth/login"
+//                loginPage = "/api/auth/login"
                 // 身份验证成功后使用的 AuthenticationSuccessHandler
                 this.authenticationSuccessHandler = authenticationSuccessHandler
                 // 身份验证失败后使用的 AuthenticationFailureHandler
@@ -154,7 +157,7 @@ class SecurityConfig {
                 // 身份验证失败时发送给用户的 URL
 //                failureUrl = null
 //                // 用于验证凭证的 URL
-//                loginProcessingUrl = null
+                loginProcessingUrl = Constants.LOGIN_URL
 //                // 是否授予每个用户对 failureUrl 以及 HttpSecurityBuilder、loginPage 和 loginProcessingUrl 的访问权限
 //                permitAll = true
 //                // 为给定的 Web 请求提供 org.springframework.security.core.Authentication.getDetails() 对象。
@@ -736,7 +739,7 @@ class SecurityConfig {
 //            }
 
             // 在指定 Filter 类的位置添加 Filter。此变体利用了 Kotlin 具体化的类型参数。
-//            addFilterAt<UsernamePasswordAuthenticationFilter>(customCaptchaOncePerRequestFilter)
+            addFilterAt<UsernamePasswordAuthenticationFilter>(customCaptchaOncePerRequestFilter)
 
             // 在指定 Filter 类的位置后添加 Filter。此变体利用了 Kotlin 具体化的类型参数。
 //            addFilterAfter<UsernamePasswordAuthenticationFilter>(customCaptchaOncePerRequestFilter)

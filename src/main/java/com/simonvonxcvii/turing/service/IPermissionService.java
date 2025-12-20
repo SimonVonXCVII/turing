@@ -16,7 +16,7 @@ import java.util.Set;
 public interface IPermissionService {
 
     /**
-     * 获取权限码
+     * 获取用户权限码
      * 这个接口用于获取用户的权限码，权限码用于控制用户的权限
      *
      * @return 用户的权限码

@@ -77,12 +77,12 @@ class Menu(
     var status: Byte = 1,
 
     /**
-     * 元数据 id
+     * 元数据
      * ⚠️注意：这将创建外键
      * cascade = [CascadeType.ALL] - crud 都将同步影响 meta
      * optional = false            - meta 不可为 null
      */
-    @OneToOne(cascade = [CascadeType.ALL], fetch = FetchType.LAZY, optional = false, orphanRemoval = true)
+    @OneToOne(cascade = [CascadeType.ALL], optional = false, orphanRemoval = true)
     @JoinColumn(name = "meta_id", nullable = false, comment = "元数据 id")
     var meta: MenuMeta = MenuMeta()
 ) : AbstractAuditable() {

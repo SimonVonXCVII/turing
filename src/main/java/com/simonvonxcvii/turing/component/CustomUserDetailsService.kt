@@ -1,17 +1,14 @@
 package com.simonvonxcvii.turing.component
 
-import com.simonvonxcvii.turing.entity.Role
-import com.simonvonxcvii.turing.entity.User
-import com.simonvonxcvii.turing.repository.jpa.OrganizationJpaRepository
-import com.simonvonxcvii.turing.repository.jpa.RoleJpaRepository
-import com.simonvonxcvii.turing.repository.jpa.UserJpaRepository
-import com.simonvonxcvii.turing.repository.jpa.UserRoleJpaRepository
+import com.simonvonxcvii.turing.entity.*
+import com.simonvonxcvii.turing.repository.jpa.*
 import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.security.authentication.*
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.stereotype.Component
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.util.StringUtils
 
 /**
@@ -29,6 +26,7 @@ class CustomUserDetailsService(
     private val userJpaRepository: UserJpaRepository,
     private val roleJpaRepository: RoleJpaRepository,
     private val userRoleJpaRepository: UserRoleJpaRepository,
+    private val rolePermissionJpaRepository: RolePermissionJpaRepository,
     private val organizationJpaRepository: OrganizationJpaRepository,
 ) : UserDetailsService {
     /**
@@ -48,6 +46,7 @@ class CustomUserDetailsService(
      * @throws UsernameNotFoundException 如果找不到用户或用户没有授权权限
      * @see org.springframework.security.authentication.dao.DaoAuthenticationProvider.additionalAuthenticationChecks
      */
+    @Transactional(readOnly = true)
     override fun loadUserByUsername(username: String): UserDetails {
         // todo 可以学习源码的其他实现中，先从缓存中获取。其他 Custom 类也可以尝试
         //  在 CustomLogoutSuccessHandler 中可以尝试不删除 redis 中的 user，删除规则可以尝试向 keycloak 颁发的 token 有效期看齐
@@ -64,29 +63,33 @@ class CustomUserDetailsService(
         if (!user.isEnabled) throw DisabledException("账号已禁用")
 
         user.admin = "admin" == user.username
-        // 超级管理员拥有所有角色和权限
-        val roleList = if (user.admin) {
-            roleJpaRepository.findAll().filterNotNull()
-        } else {
-            // 获取用户角色与用户关联记录表
-            val userRoleList = userRoleJpaRepository.findAllByUserId(user.id)
-                .also {
-                    if (it.isEmpty()) throw BadCredentialsException("非法账号，该账号没有角色：$username")
-                }
+        // 获取用户角色与用户关联记录表
+        val userRoleList = userRoleJpaRepository.findAllByUserId(user.id)
+            .also {
+                if (it.isEmpty()) throw BadCredentialsException("非法账号，该账号没有角色：$username")
+            }
 
-            // 获取用户角色
-            val userRoleIdList = userRoleList.stream().map { userRole -> userRole.roleId }.toList()
-            roleJpaRepository.findAllById(userRoleIdList)
-                .filterNotNull()
-                .also {
-                    if (it.isEmpty()) throw BadCredentialsException("非法账号，该账号没有角色：$username")
-                }
-        }
+        // 获取用户角色
+        val userRoleIdList = userRoleList.map(UserRole::roleId).toList()
+        val roleList = roleJpaRepository.findAllById(userRoleIdList)
+            .also {
+                if (it.isEmpty()) throw BadCredentialsException("非法账号，该账号没有角色：$username")
+            }
+
+        // 获取用户权限
+        val permissionCodeList = roleList
+            .asSequence()
+            .mapNotNull(Role::rolePermissions)
+            .flatten()
+            .mapNotNull(RolePermission::permission)
+            .mapNotNull(Permission::code)
+            .toSet()
 
         // 缓存用户其他信息到实体类
         // 缓存当前用户的角色集合
         user.authorities = roleList
-        user.roles = roleList.map(Role::authority).toSet()
+        user.roles = roleList.map(Role::name).toSet()
+        user.codes = permissionCodeList
         val organization = organizationJpaRepository.findById(user.orgId)
             .orElse(null) ?: throw BadCredentialsException("无法找到当前用户的单位信息")
         // 用户所处的单位级别

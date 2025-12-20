@@ -1,9 +1,6 @@
 package com.simonvonxcvii.turing.entity
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.Table
-import jakarta.persistence.UniqueConstraint
+import jakarta.persistence.*
 import org.hibernate.annotations.SQLDelete
 import org.hibernate.annotations.SQLRestriction
 
@@ -36,21 +33,21 @@ class Permission(
     /**
      * 权限名称
      */
-    @Column(unique = true, nullable = false, columnDefinition = "VARCHAR(32)", comment = "权限名称")
+    @Column(unique = true, nullable = false, columnDefinition = "VARCHAR(64)", comment = "权限名称")
     var name: String = "",
 
     /**
      * 权限编码
      */
-    @Column(unique = true, columnDefinition = "VARCHAR(32)", comment = "权限编码")
-    var code: String? = null,
-
-    /**
-     * 排序编号
-     */
-    @Column(unique = true, nullable = false, columnDefinition = "INTEGER", comment = "排序编号")
-    var sort: Int = 0,
+    @Column(unique = true, nullable = false, columnDefinition = "VARCHAR(64)", comment = "权限编码")
+    var code: String = ""
 ) : AbstractAuditable() {
+    /**
+     * 角色权限关联表
+     */
+    @OneToMany(mappedBy = "permission")
+    var rolePermissions: MutableList<RolePermission> = mutableListOf()
+
     companion object {
         /**
          * ES 索引名称
@@ -65,6 +62,5 @@ class Permission(
         const val PID = "pid"
         const val NAME = "name"
         const val CODE = "code"
-        const val SORT = "sort"
     }
 }

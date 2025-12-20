@@ -1,9 +1,6 @@
 package com.simonvonxcvii.turing.entity
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.Table
-import jakarta.persistence.UniqueConstraint
+import jakarta.persistence.*
 import org.hibernate.annotations.SQLDelete
 import org.hibernate.annotations.SQLRestriction
 import org.springframework.security.core.GrantedAuthority
@@ -54,6 +51,12 @@ class Role(
     @Column(columnDefinition = "VARCHAR(128)", comment = "备注")
     var remark: String? = null
 ) : AbstractAuditable(), GrantedAuthority {
+    /**
+     * 角色权限关联表
+     */
+    @OneToMany(cascade = [CascadeType.ALL], mappedBy = "role", orphanRemoval = true)
+    var rolePermissions: MutableList<RolePermission> = mutableListOf()
+
     override fun getAuthority(): String {
         return authority
     }

@@ -400,11 +400,9 @@ CREATE TABLE IF NOT EXISTS public.turing_permission
         CONSTRAINT con_public_turing_permission_constraint_1
             PRIMARY KEY,
     pid                INTEGER,
-    name               VARCHAR(32)                         NOT NULL
+    name               VARCHAR(64)                         NOT NULL
         UNIQUE,
-    code               VARCHAR(32)
-        UNIQUE,
-    sort               INTEGER                             NOT NULL
+    code               VARCHAR(64)                         NOT NULL
         UNIQUE,
     created_by         INTEGER,
     created_date       TIMESTAMP                           NOT NULL,
@@ -423,8 +421,6 @@ COMMENT ON COLUMN public.turing_permission.pid IS '上级权限 id';
 COMMENT ON COLUMN public.turing_permission.name IS '权限名称';
 
 COMMENT ON COLUMN public.turing_permission.code IS '权限编码';
-
-COMMENT ON COLUMN public.turing_permission.sort IS '排序编号';
 
 COMMENT ON COLUMN public.turing_permission.created_by IS '创建者';
 
@@ -530,7 +526,7 @@ CREATE TABLE IF NOT EXISTS public.turing_user
     id                      SERIAL
         CONSTRAINT con_public_turing_user_constraint_1
             PRIMARY KEY,
-    name                    VARCHAR(64)                         NOT NULL,
+    real_name               VARCHAR(64)                         NOT NULL,
     mobile                  BIGINT                              NOT NULL,
     gender                  VARCHAR(1)                          NOT NULL,
     org_id                  INTEGER                             NOT NULL,
@@ -557,7 +553,7 @@ COMMENT ON TABLE public.turing_user IS '用户表';
 
 COMMENT ON COLUMN public.turing_user.id IS '用户主键 id';
 
-COMMENT ON COLUMN public.turing_user.name IS '用户姓名';
+COMMENT ON COLUMN public.turing_user.real_name IS '用户姓名';
 
 COMMENT ON COLUMN public.turing_user.mobile IS '用户电话';
 

@@ -4,6 +4,7 @@ import com.simonvonxcvii.turing.entity.Permission;
 import com.simonvonxcvii.turing.model.dto.PermissionDTO;
 import com.simonvonxcvii.turing.repository.jpa.PermissionJpaRepository;
 import com.simonvonxcvii.turing.service.IPermissionService;
+import com.simonvonxcvii.turing.utils.UserUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Sort;
@@ -15,7 +16,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -34,7 +34,7 @@ public class PermissionServiceImpl implements IPermissionService {
 //    private final MenuJpaRepository menuJpaRepository;
 
     /**
-     * 获取权限码
+     * 获取用户权限码
      * 这个接口用于获取用户的权限码，权限码用于控制用户的权限
      *
      * @return 用户的权限码
@@ -43,10 +43,7 @@ public class PermissionServiceImpl implements IPermissionService {
      */
     @Override
     public Set<String> codes() {
-        List<Permission> permissionList = permissionJpaRepository.findAll(Sort.by(Permission.ID));
-        return permissionList.stream()
-                .map(Permission::getCode)
-                .collect(Collectors.toSet());
+        return UserUtils.getUser().getCodes();
     }
 
     /**
@@ -85,7 +82,7 @@ public class PermissionServiceImpl implements IPermissionService {
     @Override
     public List<PermissionDTO> selectList(PermissionDTO dto) {
         // 将两次查询改为提前查询所有数据，减少查询次数，减轻数据库压力
-        List<Permission> permissionList = permissionJpaRepository.findAll(Sort.by(Permission.SORT));
+        List<Permission> permissionList = permissionJpaRepository.findAll(Sort.by(Permission.ID));
         // 按条件过滤
         List<Permission> permissionList1 = permissionList.stream()// TODO use anyMatch
                 .filter(permission -> !StringUtils.hasText(dto.getName()) ||
@@ -93,7 +90,6 @@ public class PermissionServiceImpl implements IPermissionService {
                 .filter(permission -> !StringUtils.hasText(dto.getCode()) ||
                         (StringUtils.hasText(permission.getCode()) &&
                                 (permission.getCode().contains(dto.getCode()) || dto.getCode().contains(permission.getCode()))))
-                .filter(permission -> dto.getSort() == null || Objects.equals(permission.getSort(), dto.getSort()))
                 .toList();
         if (permissionList1.isEmpty()) {
             return new ArrayList<>();

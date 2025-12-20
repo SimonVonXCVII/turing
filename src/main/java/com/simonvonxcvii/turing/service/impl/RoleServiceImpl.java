@@ -3,6 +3,7 @@ package com.simonvonxcvii.turing.service.impl;
 import com.simonvonxcvii.turing.entity.Role;
 import com.simonvonxcvii.turing.entity.RolePermission;
 import com.simonvonxcvii.turing.model.dto.RoleDTO;
+import com.simonvonxcvii.turing.repository.jpa.PermissionJpaRepository;
 import com.simonvonxcvii.turing.repository.jpa.RoleJpaRepository;
 import com.simonvonxcvii.turing.repository.jpa.RolePermissionJpaRepository;
 import com.simonvonxcvii.turing.repository.jpa.UserRoleJpaRepository;
@@ -38,6 +39,7 @@ public class RoleServiceImpl implements IRoleService {
 
     private final RoleJpaRepository roleJpaRepository;
     private final RolePermissionJpaRepository rolePermissionJpaRepository;
+    private final PermissionJpaRepository permissionJpaRepository;
     private final UserRoleJpaRepository userRoleJpaRepository;
 
     @Override
@@ -54,11 +56,11 @@ public class RoleServiceImpl implements IRoleService {
         // 保存 RolePermission
         if (!CollectionUtils.isEmpty(dto.getPermissions())) {
             List<RolePermission> rolePermissionList = new LinkedList<>();
-            dto.getPermissions()
-                    .forEach(permissionId -> {
+            permissionJpaRepository.findAllById(dto.getPermissions())
+                    .forEach(permission -> {
                         RolePermission rolePermission = new RolePermission();
-                        rolePermission.setRoleId(role.getId());
-                        rolePermission.setPermissionId(permissionId);
+                        rolePermission.setRole(role);
+                        rolePermission.setPermission(permission);
                         rolePermissionList.add(rolePermission);
                     });
             rolePermissionJpaRepository.saveAll(rolePermissionList);
@@ -104,8 +106,8 @@ public class RoleServiceImpl implements IRoleService {
         Map<Integer, Set<Integer>> roleIdToPermissionIdSetMap = rolePermissionJpaRepository.findAll()
                 .stream()
                 .collect(Collectors.groupingBy(
-                        RolePermission::getRoleId,
-                        Collectors.mapping(RolePermission::getPermissionId, Collectors.toSet())
+                        rolePermission -> rolePermission.getRole().getId(),
+                        Collectors.mapping(rolePermission -> rolePermission.getPermission().getId(), Collectors.toSet())
                 ));
         return roleJpaRepository.findAll(ps, pageRequest)
                 .map(role -> {
@@ -120,9 +122,9 @@ public class RoleServiceImpl implements IRoleService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void updateById(Integer id, RoleDTO dto) {
-        // 修改 Role
         roleJpaRepository.findById(id)
                 .ifPresent(role -> {
+                    // 修改 Role
                     // 状态修改与单个修改
                     role.setStatus(dto.getStatus());
                     // 单个修改
@@ -131,22 +133,22 @@ public class RoleServiceImpl implements IRoleService {
                         role.setAuthority(dto.getName());
                         role.setRemark(dto.getRemark());
                     }
-                });
 
-        // 修改 RolePermission
-        if (!CollectionUtils.isEmpty(dto.getPermissions())) {
-            // TODO 可以优化成只添加需要添加的，只删除需要删除的
-            rolePermissionJpaRepository.deleteByRoleId(id);
-            List<RolePermission> rolePermissionList = new LinkedList<>();
-            dto.getPermissions()
-                    .forEach(permissionId -> {
-                        RolePermission rolePermission = new RolePermission();
-                        rolePermission.setRoleId(id);
-                        rolePermission.setPermissionId(permissionId);
-                        rolePermissionList.add(rolePermission);
-                    });
-            rolePermissionJpaRepository.saveAll(rolePermissionList);
-        }
+                    // 修改 RolePermission
+                    if (!CollectionUtils.isEmpty(dto.getPermissions())) {
+                        // TODO 可以优化成只添加需要添加的，只删除需要删除的
+                        rolePermissionJpaRepository.deleteByRoleId(id);
+                        List<RolePermission> rolePermissionList = new LinkedList<>();
+                        permissionJpaRepository.findAllById(dto.getPermissions())
+                                .forEach(permission -> {
+                                    RolePermission rolePermission = new RolePermission();
+                                    rolePermission.setRole(role);
+                                    rolePermission.setPermission(permission);
+                                    rolePermissionList.add(rolePermission);
+                                });
+                        rolePermissionJpaRepository.saveAll(rolePermissionList);
+                    }
+                });
     }
 
     @Override

@@ -1,5 +1,5 @@
 [versions]
-org-springframework-boot = "4.0.0"
+org-springframework-boot = "4.0.1"
 io-spring-dependency-management = "1.1.7"
 org-graalvm-buildtools-native = "0.11.3"
 org-jetbrains-kotlin = "2.3.0"

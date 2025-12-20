@@ -79,7 +79,7 @@ class CustomAuthenticationSuccessHandler(
             val map = mapOf(
                 "accessToken" to accessToken,
                 "id" to principal.id,
-                "realName" to principal.name,
+                "realName" to principal.realName,
                 "username" to principal.username,
                 "password" to principal.password,
                 "roles" to principal.roles,

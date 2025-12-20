@@ -17,5 +17,9 @@ interface Constants {
         const val PATTERN = "%"
 
         const val ESCAPE_CHAR = '/'
+
+        const val LOGIN_URL = "/api/auth/login"
+
+        const val LOGOUT_URL = "/api/auth/logout"
     }
 }
