@@ -20,8 +20,8 @@ class CorsConfig(@param:Value($$"${app.base-uri}") private val appBaseUri: Strin
     fun corsConfigurationSource(): CorsConfigurationSource {
         val config = CorsConfiguration()
         config.allowedOrigins = listOf(appBaseUri)
-//        config.allowedMethods = listOf(CorsConfiguration.ALL)
-        config.allowedMethods = listOf(POST.name(), GET.name(), PUT.name(), DELETE.name(), OPTIONS.name())
+        config.allowedMethods =
+            listOf(GET.name(), HEAD.name(), POST.name(), PUT.name(), PATCH.name(), DELETE.name(), OPTIONS.name())
         config.addAllowedHeader("X-XSRF-TOKEN")
         config.addAllowedHeader(HttpHeaders.CONTENT_TYPE)
         config.allowCredentials = true
