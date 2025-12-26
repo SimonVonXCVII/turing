@@ -1,12 +1,15 @@
-#logging:
-#  level:
-#    # root：根记录器，用于分配默认日志记录级别。
-#    root: debug
+app:
+  base-uri: http://localhost:5666
 
 custom:
   security:
     # 服务器网络地址
     host: http://localhost
+
+#logging:
+#  level:
+#    # root：根记录器，用于分配默认日志记录级别。
+#    root: debug
 
 spring:
   data:

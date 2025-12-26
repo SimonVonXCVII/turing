@@ -53,9 +53,9 @@ public class OrganizationBusinessController {
     @PreAuthorize("hasRole('TECHNICAL_DEFAULT')")
     @Operation(summary = "申请业务")
     @PostMapping("/insert")
-    public Result<Object> insert(@RequestBody @Validated(Insert.class) OrganizationBusinessDTO dto) throws IOException {
+    public ResponseEntity<Result<Object>> insert(@RequestBody @Validated(Insert.class) OrganizationBusinessDTO dto) throws IOException {
         service.insert(dto);
-        return Result.ok();
+        return ResponseEntity.ok(Result.ok());
     }
 
     @PreAuthorize("hasRole('TECHNICAL_DEFAULT')")

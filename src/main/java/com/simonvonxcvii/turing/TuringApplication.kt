@@ -19,6 +19,9 @@ import org.springframework.data.web.config.EnableSpringDataWebSupport
 // todo 是否需要 Role（角色表）添加前缀“ROLE_”
 // todo docker 运行的那些容器，能否启动它们的默认图形化界面？比如数据库？
 // todo Spring boot 4 JPA 项目，如何全局设置数据库所有查询出的数据，统一按照它们（实体类）的公共父类的 id 排序？
+// todo keycloak 对于项目来说可能是过重了，但在这个 oidc-keycloak 分支中可能还是可以去实现它。
+//  不不不，不应该使用 keycloak，因为它与前端也不对应，包括登录、角色管理这些
+//  应该完全使用 Spring security oauth2
 @EnableConfigurationProperties(CustomSecurityProperties::class)
 // 清晰化 jpa 包路径
 @EnableJpaRepositories("com.simonvonxcvii.turing.repository.jpa")

@@ -22,7 +22,7 @@ import java.time.format.DateTimeFormatter
  * @author Simon Von
  * @since 2022/9/26 19:58 周一
  */
-@Configuration
+@Configuration(proxyBeanMethods = false)
 class JacksonConfig {
     /**
      * 为给定类型配置自定义序列化器

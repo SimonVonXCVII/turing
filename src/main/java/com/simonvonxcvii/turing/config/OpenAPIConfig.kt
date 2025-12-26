@@ -182,7 +182,7 @@ import org.springframework.http.HttpHeaders
         )]
     )]
 )
-@Configuration
+@Configuration(proxyBeanMethods = false)
 class OpenAPIConfig {
 //    @Bean
 //    fun openAPI(): OpenAPI {

@@ -18,6 +18,9 @@ plugins {
      */
     alias(libs.plugins.org.jetbrains.kotlin.jvm)
     alias(libs.plugins.org.jetbrains.kotlin.plugin.spring)
+
+    id("io.spring.javaformat") version "0.0.47"
+    id("checkstyle")
 }
 
 /**
@@ -102,6 +105,19 @@ repositories {
 }
 
 /**
+ * 配置 org.gradle.api.plugins.quality.CheckstyleExtension 扩展。
+ */
+checkstyle {
+    toolVersion = "9.3"
+}
+
+//springJavaFormat {
+//    checkstyle {
+//        applyDefaultConfig()
+//    }
+//}
+
+/**
  * 配置此项目的依赖项。
  * 针对该项目的 DependencyHandlerScope 执行给定的配置块。
  */
@@ -176,8 +192,6 @@ dependencies {
     testImplementation("org.testcontainers:testcontainers-postgresql")
     // todo 使用它
 //    runtimeOnly("org.springframework.boot:spring-boot-docker-compose")
-//    runtimeOnly("io.spring.javaformat:spring-javaformat-maven-plugin")
-//    checkstyle("io.spring.javaformat:spring-javaformat-checkstyle:${javaFormatVersion}")
 
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }

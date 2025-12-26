@@ -27,9 +27,7 @@ import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository
 import org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher
 import org.springframework.security.web.util.matcher.AnyRequestMatcher
 import org.springframework.security.web.util.matcher.OrRequestMatcher
-import org.springframework.web.cors.CorsConfiguration
 import org.springframework.web.cors.CorsConfigurationSource
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 
 /**
  * Spring Boot Security 用于用户操作验证
@@ -38,7 +36,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource
  * @author Simon Von
  * @since 2022/5/1 14:45
  */
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @EnableWebSecurity // TODO 该注解在 Spring boot 项目中可以省略？
 @EnableMethodSecurity
 class SecurityConfig {
@@ -56,69 +54,16 @@ class SecurityConfig {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder()
     }
 
-    /**
-     * 由基于提供的反应性请求提供 CorsConfiguration 实例的类（通常是 HTTP 请求处理程序）实现的接口。
-     *
-     * @return 接受过滤器使用的 CorsConfigurationSource 的构造函数，以查找要用于每个传入请求的 CorsConfiguration。
-     * @author Simon Von
-     * @since 2022/10/4 19:46
-     */
-    @Bean
-    fun corsConfigurationSource(customSecurityProperties: CustomSecurityProperties): CorsConfigurationSource {
-        // 用于 CORS 配置的容器以及用于检查给定请求的实际来源、HTTP 方法和标头的方法。
-        // 默认情况下，新创建的 CorsConfiguration 不允许任何跨源请求，必须明确配置以指示应允许的内容。
-        // 使用 applyPermitDefaultValues() 翻转初始化模型，以开放默认值开始，这些默认值允许 GET、HEAD 和 POST 请求的所有跨源请求。
-        val config = CorsConfiguration().applyPermitDefaultValues()
-        // 设置允许的来源
-        // 允许跨源请求的源列表。默认情况下未设置，这意味着不允许任何来源
-        config.allowedOrigins = listOf(customSecurityProperties.host + ":5666")
-        // TODO 设置允许的原点模式
-        // setAllowedOrigins 的替代方案，它支持更灵活的来源模式，除了端口列表之外，主机名中的任何位置都带有“*”。 例子：
-        // https://*.domain1.com -- 以 domain1.com 结尾的域
-        // https://*.domain1.com:[8080,8081] -- 在端口 8080 或端口 8081 上以 domain1.com 结尾的域
-        // https://*.domain1.com:[*] -- 在任何端口上以 domain1.com 结尾的域，包括默认端口
-        // 逗号分隔的模式列表，例如 "https://*.a1.com,https://*.a2.com";
-        // 当通过属性占位符解析值时，这很方便，例如 "${原点}"; 请注意，此类占位符必须在外部解析。
-        // 与仅支持“*”且不能与 allowCredentials 一起使用的 allowedOrigins 相比，当匹配 allowedOriginPattern 时，
-        // Access-Control-Allow-Origin 响应标头将设置为匹配的来源，而不是“*”或模式。
-        // 因此，allowedOriginPatterns 可以与设置为 true 的 setAllowCredentials 结合使用。
-        // 默认情况下未设置。
-//        config.setAllowedOriginPatterns(Collections.singletonList("http://localhost:552*"));
-        // 设置允许的方法
-        // 将 HTTP 方法设置为允许，例如 “GET”、“POST”、“PUT”等。
-        // 特殊值“*”允许所有方法。
-        // 如果未设置，则只允许使用“GET”和“HEAD”。
-        // 默认情况下未设置。
-        config.allowedMethods = listOf(CorsConfiguration.ALL)
-        // 设置允许的请求头
-        // 将飞行前请求可以列出的标头列表设置为允许在实际请求期间使用。
-        // 特殊值“*”允许实际请求发送任何标头。
-        // 如果标头名称是以下之一，则不需要列出：Cache-Control、Content-Language、Expires、Last-Modified 或 Pragma。
-        // 默认情况下未设置。
-//        config.allowedHeaders = listOf(CorsConfiguration.ALL)
-        // TODO 设置暴露的请求头
-        // 设置响应标头列表，而不是简单标头（即 Cache-Control、Content-Language、Content-Type、Expires、Last-Modified 或 Pragma）
-        // 实际响应可能具有并且可以公开。
-        // 特殊值“*”允许为非凭证请求公开所有标头。
-        // 默认情况下未设置。
-//        config.setExposedHeaders(Collections.singletonList(CorsConfiguration.ALL));
-        // 设置允许凭据
-        // 是否支持用户凭据。
-        // 默认情况下未设置（即不支持用户凭据）。
-        config.allowCredentials = true
-        // 设置最大有效期
-        // 配置客户端可以缓存飞行前请求的响应多长时间（以秒为单位）。
-        // 默认情况下未设置。
-//        config.maxAge = 1800
-        // CorsConfigurationSource 使用 URL 模式为请求选择 CorsConfiguration。
-        val source = UrlBasedCorsConfigurationSource()
-        // 注册 Cors 配置
-        // 为指定的路径模式注册一个 CorsConfiguration。
-        // 添加映射路径，拦截一切请求
-        source.registerCorsConfiguration("/**", config)
-        // 接受过滤器使用的 CorsConfigurationSource 的构造函数，以查找要用于每个传入请求的 CorsConfiguration。
-        return source
-    }
+//    fun jwtAuthenticationConverter(): JwtAuthenticationConverter {
+//        val rolesConverter = JwtGrantedAuthoritiesConverter().apply {
+//            setAuthoritiesClaimName("realm_access.roles")
+//            setAuthorityPrefix("ROLE_")
+//        }
+//
+//        return JwtAuthenticationConverter().apply {
+//            setJwtGrantedAuthoritiesConverter(rolesConverter)
+//        }
+//    }
 
     /**
      * 对登录、退出、页面的访问权限、静态资源的管理

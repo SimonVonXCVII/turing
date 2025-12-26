@@ -13,7 +13,7 @@ import java.util.*
  * @author Simon Von
  * @since 2023/8/18 14:48
  */
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @EnableJpaAuditing
 class JpaConfig {
     /**

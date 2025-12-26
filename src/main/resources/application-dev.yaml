@@ -1,12 +1,15 @@
-#logging:
-#  level:
-#    # root：根记录器，用于分配默认日志记录级别。
-#    root: debug
+app:
+  base-uri: http://${HOST}:5666
 
 custom:
   security:
     # 服务器网络地址
     host: http://${HOST}
+
+#logging:
+#  level:
+#    # root：根记录器，用于分配默认日志记录级别。
+#    root: debug
 
 spring:
   config:
@@ -29,4 +32,8 @@ spring:
     hibernate:
       # DDL 模式。这实际上是“hibernate.hbm2ddl.auto”属性的快捷方式。
       # 当使用嵌入式数据库且未检测到模式管理器时，默认为“create-drop”。否则，默认为“none”。
-      ddl-auto: update
+      ddl-auto: create
+    properties:
+      hibernate:
+        # 格式化 sql
+        format_sql: true

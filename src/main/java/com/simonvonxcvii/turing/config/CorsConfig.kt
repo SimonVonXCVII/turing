@@ -1,0 +1,33 @@
+package com.simonvonxcvii.turing.config
+
+import org.springframework.beans.factory.annotation.Value
+import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Configuration
+import org.springframework.http.HttpHeaders
+import org.springframework.http.HttpMethod.*
+import org.springframework.web.cors.CorsConfiguration
+import org.springframework.web.cors.CorsConfigurationSource
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource
+
+/**
+ * @author Simon Von
+ * @since 12/23/25 7:35 PM
+ */
+@Configuration(proxyBeanMethods = false)
+class CorsConfig(@param:Value($$"${app.base-uri}") private val appBaseUri: String) {
+
+    @Bean
+    fun corsConfigurationSource(): CorsConfigurationSource {
+        val config = CorsConfiguration()
+        config.allowedOrigins = listOf(appBaseUri)
+//        config.allowedMethods = listOf(CorsConfiguration.ALL)
+        config.allowedMethods = listOf(POST.name(), GET.name(), PUT.name(), DELETE.name(), OPTIONS.name())
+        config.addAllowedHeader("X-XSRF-TOKEN")
+        config.addAllowedHeader(HttpHeaders.CONTENT_TYPE)
+        config.allowCredentials = true
+        val source = UrlBasedCorsConfigurationSource()
+        source.registerCorsConfiguration("/**", config)
+        return source
+    }
+
+}

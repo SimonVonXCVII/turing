@@ -12,6 +12,8 @@ import java.io.Serializable;
 
 /**
  * 标准的 Restful 请求响应实体。
+ *
+ * @param <T> 响应数据
  */
 @Getter
 @ToString
