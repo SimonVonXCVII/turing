@@ -9,7 +9,6 @@ import tools.jackson.databind.ext.javatime.deser.LocalTimeDeserializer
 import tools.jackson.databind.ext.javatime.ser.LocalDateSerializer
 import tools.jackson.databind.ext.javatime.ser.LocalDateTimeSerializer
 import tools.jackson.databind.ext.javatime.ser.LocalTimeSerializer
-import tools.jackson.databind.json.JsonMapper
 import tools.jackson.databind.module.SimpleModule
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -31,13 +30,13 @@ class JacksonConfig {
      * @since 2022/9/26 20:11
      */
     @Bean
-    fun jackson2ObjectMapperBuilder(builder: JsonMapper.Builder, jacksonProperties: JacksonProperties): JsonMapper {
+    fun customSimpleModule(jacksonProperties: JacksonProperties): SimpleModule {
         // 格式
         val dateTimeFormatter = DateTimeFormatter.ofPattern(jacksonProperties.dateFormat ?: "yyyy-MM-dd HH:mm:ss")
         val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
         val timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss")
 
-        val simpleModule = SimpleModule().apply {
+        return SimpleModule().apply {
             // 序列化
             addSerializer(LocalDateTime::class.java, LocalDateTimeSerializer(dateTimeFormatter))
             addSerializer(LocalDate::class.java, LocalDateSerializer(dateFormatter))
@@ -48,7 +47,5 @@ class JacksonConfig {
             addDeserializer(LocalDate::class.java, LocalDateDeserializer(dateFormatter))
             addDeserializer(LocalTime::class.java, LocalTimeDeserializer(timeFormatter))
         }
-
-        return builder.addModule(simpleModule).build()
     }
 }
