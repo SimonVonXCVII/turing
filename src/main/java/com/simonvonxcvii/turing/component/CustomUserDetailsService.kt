@@ -3,10 +3,6 @@ package com.simonvonxcvii.turing.component
 import com.simonvonxcvii.turing.entity.*
 import com.simonvonxcvii.turing.repository.jpa.UserJpaRepository
 import org.springframework.data.redis.core.RedisTemplate
-import org.springframework.security.authentication.AccountExpiredException
-import org.springframework.security.authentication.CredentialsExpiredException
-import org.springframework.security.authentication.DisabledException
-import org.springframework.security.authentication.LockedException
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.core.userdetails.UsernameNotFoundException
@@ -16,6 +12,8 @@ import org.springframework.util.StringUtils
 
 /**
  * 该类用于验证在有账号登录时是否与数据库账号匹配
+ * 注意：用户名和密码，以及 User 的 isAccountNonExpired、isAccountNonLocked、isCredentialsNonExpired 和 isEnabled
+ *  由 Spring security 内部完成校验，并返回 localizedMessage，所以不再需要手动校验
  * todo 该类的最关键或者唯一的作用，应该只是根据传来的 username 去数据库查询 user 数据，并包装成 UserDetails 返回
  *  以前，是自己签 token + 自己校验，所以需要在该类中使用 user.id, username 去创建 token
  *  现在，因为使用 OIDC，所以不再需要自己创建 token 了
@@ -48,18 +46,16 @@ class CustomUserDetailsService(
     @Transactional(readOnly = true)
     override fun loadUserByUsername(username: String): UserDetails {
         // todo 可以学习源码的其他实现中，先从缓存中获取。其他 Custom 类也可以尝试
-        //  在 CustomLogoutSuccessHandler 中可以尝试不删除 redis 中的 user，删除规则可以尝试向 keycloak 颁发的 token 有效期看齐
+        //  在 CustomLogoutSuccessHandler 中可以尝试不删除 redis 中的 user，
+        //  删除规则可以尝试向 authorizationserver 颁发的 token 有效期看齐
         if (!StringUtils.hasText(username)) {
             throw UsernameNotFoundException("用户账号不能为空")
         }
         // 获取用户数据
         val user = userJpaRepository.findOneByUsername(username)
-            .orElse(null) ?: throw UsernameNotFoundException("该用户账号不存在：$username")
-
-        if (!user.isAccountNonExpired) throw AccountExpiredException("账号已过期")
-        if (!user.isAccountNonLocked) throw LockedException("账号已锁定")
-        if (!user.isCredentialsNonExpired) throw CredentialsExpiredException("凭证已过期")
-        if (!user.isEnabled) throw DisabledException("账号已禁用")
+            .orElseThrow {
+                UsernameNotFoundException("该用户账号不存在：$username")
+            }
 
         // 获取用户角色数据
         val roleList = user.userRoles.map(UserRole::role).toList()

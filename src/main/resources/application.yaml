@@ -117,7 +117,7 @@ spring:
         issuer: "http://localhost:8081/realms/turing-realm"
       client:
         registration:
-          keycloak:
+          login-client:
             client-id: confidential-client
             client-secret: NGOH4PRxBePJeKSew4xEiXG4eS6siiVh
             authorization-grant-type: password
@@ -127,7 +127,7 @@ spring:
         #            provider:
         #            redirect-uri:
         provider:
-          keycloak:
+          spring:
             token-uri: http://localhost:8081/realms/turing-realm/protocol/openid-connect/token
             authorization-uri: http://localhost:8081/realms/turing-realm/protocol/openid-connect/auth
             user-info-uri: http://localhost:8081/realms/turing-realm/protocol/openid-connect/userinfo

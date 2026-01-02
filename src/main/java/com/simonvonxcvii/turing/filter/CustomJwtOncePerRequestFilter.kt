@@ -13,7 +13,7 @@
 ///**
 // * Jwt 请求调度的一次执行认证过滤器
 // * todo 使用 OIDC 模式后，该类是否也没必要存在了？
-// *  1. 检验 token 由 keycloak 完成了
+// *  1. 检验 token 由 authorizationserver 完成了
 // *  2. 把 token 中的 scope / roles 转换成 GrantedAuthority 放到 SecurityContext 里由 Spring Security 完成了
 // *  3. SecurityConfig.kt 中已经设置了 .requestMatchers(*securityProperties.whitelist.toTypedArray()).permitAll()，
 // *   所以 whitelist 也没必要再次写一遍
