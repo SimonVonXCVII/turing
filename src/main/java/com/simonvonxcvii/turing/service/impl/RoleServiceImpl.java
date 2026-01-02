@@ -1,5 +1,6 @@
 package com.simonvonxcvii.turing.service.impl;
 
+import com.simonvonxcvii.turing.common.exception.BizRuntimeException;
 import com.simonvonxcvii.turing.entity.Role;
 import com.simonvonxcvii.turing.entity.RolePermission;
 import com.simonvonxcvii.turing.model.dto.RoleDTO;
@@ -156,7 +157,7 @@ public class RoleServiceImpl implements IRoleService {
     public void deleteById(Integer id) {
         boolean exists = userRoleJpaRepository.existsByRoleId(id);
         if (exists) {
-            throw new RuntimeException("该角色已关联用户");
+            throw new BizRuntimeException("该角色已关联用户");
         }
         // 删除角色-权限关联数据
         rolePermissionJpaRepository.deleteByRoleId(id);

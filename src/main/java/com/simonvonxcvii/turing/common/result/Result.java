@@ -1,50 +1,17 @@
 package com.simonvonxcvii.turing.common.result;
 
-import lombok.Getter;
-import lombok.ToString;
-
-import java.io.Serializable;
-
-// TODO: 2023/4/12 是否能够改用为 ResponseEntity
-//  例如：Kotlin 的 kotlin.Result
-//  fun <T> Result<T>.onFailure(action: (exception: Throwable) -> Unit): Result<T>
-//  fun <T> Result<T>.onSuccess(action: (value: T) -> Unit): Result<T>
-
 /**
  * 标准的 Restful 请求响应实体。
  *
- * @param <T> 响应数据
+ * @param <T>     响应数据
+ * @param code    响应 Code
+ * @param data    响应数据
+ * @param error   是否错误，只能赋值 null，如果赋 true 前端 alert 无法显示信息
+ * @param message 消息
+ * @author Simon Von
+ * @since 7/31/23 5:09 AM
  */
-@Getter
-@ToString
-public class Result<T> implements Serializable {
-
-    /**
-     * 响应 Code
-     */
-    private final Integer code;
-
-    /**
-     * 响应数据
-     */
-    private final T data;
-
-    /**
-     * 是否成功
-     */
-    private final String error;
-
-    /**
-     * 消息
-     */
-    private final String message;
-
-    protected Result(Integer code, T data, String error, String message) {
-        this.code = code;
-        this.data = data;
-        this.error = error;
-        this.message = message;
-    }
+public record Result<T>(Integer code, T data, Boolean error, String message) {
 
     public static <T> Result<T> ok(T data) {
         return new Result<>(0, data, null, "ok");
@@ -54,7 +21,8 @@ public class Result<T> implements Serializable {
         return new Result<>(0, null, null, "ok");
     }
 
-    public static <T> Result<T> error(String error) {
-        return new Result<>(1, null, error, "error");
+    public static <T> Result<T> error(String message) {
+        return new Result<>(1, null, null, message);
     }
+
 }

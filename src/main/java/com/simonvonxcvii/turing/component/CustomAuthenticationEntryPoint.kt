@@ -1,5 +1,6 @@
 package com.simonvonxcvii.turing.component
 
+import com.simonvonxcvii.turing.common.result.Result
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.http.HttpStatus
@@ -80,7 +81,7 @@ class CustomAuthenticationEntryPoint(private val objectMapper: ObjectMapper) : A
         response.characterEncoding = StandardCharsets.UTF_8.name()
         response.contentType = MediaType.APPLICATION_JSON_VALUE
         response.status = HttpStatus.UNAUTHORIZED.value()
-        val string = objectMapper.writeValueAsString(RuntimeException(localizedMessage))
+        val string = objectMapper.writeValueAsString(Result.error<Any>(localizedMessage))
         response.writer.write(string)
     }
 }

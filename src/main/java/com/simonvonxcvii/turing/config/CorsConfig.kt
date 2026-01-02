@@ -14,10 +14,10 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource
  * @since 12/23/25 7:35 PM
  */
 @Configuration(proxyBeanMethods = false)
-class CorsConfig(@param:Value($$"${app.base-uri}") private val appBaseUri: String) {
+class CorsConfig {
 
     @Bean
-    fun corsConfigurationSource(): CorsConfigurationSource {
+    fun corsConfigurationSource(@Value($$"${app.base-uri}") appBaseUri: String): CorsConfigurationSource {
         val config = CorsConfiguration()
         config.allowedOrigins = listOf(appBaseUri)
         config.allowedMethods =
