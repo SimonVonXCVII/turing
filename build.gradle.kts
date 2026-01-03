@@ -1,74 +1,22 @@
 /**
  * todo 尝试 nativeCompile、bootBuildImage
- * 配置该项目的插件依赖项。
  */
 plugins {
-    /**
-     * 由 org.gradle.api.plugins.JavaPlugin 实现的内置 Gradle 插件。
-     */
     java
-    /**
-     * 添加对具有给定 id 的插件的依赖关系。
-     */
-    alias(libs.plugins.org.springframework.boot)
-    alias(libs.plugins.io.spring.dependency.management)
-    alias(libs.plugins.org.graalvm.buildtools.native)
-    /**
-     * 应用给定的 Kotlin 插件模块。
-     */
-    alias(libs.plugins.org.jetbrains.kotlin.jvm)
-    alias(libs.plugins.org.jetbrains.kotlin.plugin.spring)
-
-    id("io.spring.javaformat") version "0.0.47"
+    id("org.springframework.boot") version libs.versions.org.springframework.boot
+    id("io.spring.dependency-management") version libs.versions.io.spring.dependency.management
+    id("org.graalvm.buildtools.native") version libs.versions.org.graalvm.buildtools.native
+    id("org.jetbrains.kotlin.jvm") version libs.versions.org.jetbrains.kotlin
+    id("org.jetbrains.kotlin.plugin.spring") version libs.versions.org.jetbrains.kotlin
+    id("io.spring.javaformat") version libs.versions.io.spring.javaformat
     id("checkstyle")
 }
 
-/**
- * 配置此项目及其每个子项目。
- * 此方法针对该项目及其每个子项目执行给定的操作。
- */
 allprojects {
-    /**
-     * 设置该项目的组。
-     */
     group = "com.simonvonxcvii.turing"
-    /**
-     * 设置此项目的版本。
-     */
     version = "0.0.1-SNAPSHOT"
-
-    /**
-     * 配置该项目的存储库。
-     * 针对该项目的 RepositoryHandler 执行给定的配置块。
-     * 注：依赖下载速度取决于 repositories 内存储库的先后顺序
-     */
-    repositories {
-        /**
-         * 添加一个存储库，该存储库在本地 Maven 缓存中查找依赖项。 存储库的名称是“MavenLocal”。
-         * 例子：
-         *    repositories {
-         *        mavenLocal()
-         *    }
-         *
-         * 存储库的位置确定如下（按优先顺序）：
-         * 系统属性“maven.repo.local”的值（如果已设置）；
-         * 如果该文件存在并且设置了 ~/.m2/settings.xml 的元素 <localRepository> 的值；
-         * 如果此文件存在并且设置了元素，则 $M2_HOME/conf/settings.xml 的元素 <localRepository> 的值（其中 $M2_HOME 是具有该名称的环境变量的值）；
-         * 路径~/.m2/repository。
-         */
-        mavenLocal()
-        /**
-         * 添加一个存储库，该存储库在 Maven 中央存储库中查找依赖项。 用于访问此存储库的 URL 是“https://repo.maven.apache.org/maven2/”。
-         * 存储库的名称是“MavenRepo”。
-         */
-        mavenCentral()
-    }
 }
 
-/**
- * 配置该项目的子项目
- * 此方法针对该项目的子项目执行给定的操作。
- */
 subprojects {
     /**
      * 应用零个或多个插件或脚本。
@@ -80,10 +28,10 @@ subprojects {
          * 添加一个插件用于配置目标对象。 您可以多次调用此方法，以使用多个插件。 脚本和插件按照添加顺序应用。
          */
         plugin("java")
+        plugin("java-library")
         plugin("idea")
         plugin("org.springframework.boot")
         plugin("io.spring.dependency-management")
-        plugin("java-library")
         plugin("org.graalvm.buildtools.native")
         plugin("org.jetbrains.kotlin.jvm")
         plugin("org.jetbrains.kotlin.plugin.spring")
@@ -92,7 +40,7 @@ subprojects {
     }
 
     /**
-     * 配置 java 扩展。
+     * 配置 org.gradle.api.plugins.JavaPluginExtension 扩展。
      */
     java {
         /**
@@ -105,6 +53,18 @@ subprojects {
              */
             languageVersion = JavaLanguageVersion.of(25)
 //            languageVersion = JavaLanguageVersion.of(libs.versions.java.language.get()) todo
+        }
+    }
+
+    /**
+     * 配置 org.gradle.api.file.SourceDirectorySet 扩展。
+     */
+    kotlin {
+        /**
+         * 配置项目中 Kotlin JVM 和 Java 任务的 Java 工具链。
+         */
+        jvmToolchain {
+            languageVersion = JavaLanguageVersion.of(25)
         }
     }
 
@@ -143,6 +103,7 @@ subprojects {
         implementation("org.springframework.boot:spring-boot-starter")
         testImplementation("org.springframework.boot:spring-boot-starter-test")
         testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+        checkstyle("io.spring.javaformat:spring-javaformat-checkstyle")
     }
 
     /**

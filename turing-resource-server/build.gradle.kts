@@ -15,19 +15,9 @@ dependencies {
     // lombok
     compileOnly("org.projectlombok:lombok")
 
-    // https://central.sonatype.com/artifact/com.fasterxml.jackson.module/jackson-module-kotlin
-//    implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     // therapi
     // https://central.sonatype.com/artifact/com.github.therapi/therapi-runtime-javadoc
     implementation(libs.com.github.therapi.therapi.runtime.javadoc)
-    // google
-    // https://central.sonatype.com/artifact/com.google.guava/guava
-//    implementation(libs.com.google.guava.guava)
-    // https://central.sonatype.com/artifact/com.google.zxing/javase
-//    implementation(libs.com.google.zxing.javase)
-    // thumbnailator
-    // https://central.sonatype.com/artifact/net.coobird/thumbnailator
-//    implementation(libs.net.coobird.thumbnailator)
     // apache
     // https://central.sonatype.com/artifact/org.apache.poi/poi
     implementation(libs.org.apache.poi.poi)
@@ -60,9 +50,7 @@ dependencies {
 //    implementation("org.springframework.session:spring-session-data-redis")
     // todo 使用它
 //    developmentOnly("org.springframework.boot:spring-boot-devtools")
-    // PDF TODO 尝试换成 apache 的，或者试试 itext
-    // https://central.sonatype.com/artifact/org.xhtmlrenderer/flying-saucer-pdf
-//    implementation(libs.org.xhtmlrenderer.flying.saucer.pdf)
+    // PDF
 //    implementation("org.apache.pdfbox:pdfbox:3.0.1")
 
     // postgresql

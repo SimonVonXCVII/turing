@@ -1,36 +1,22 @@
 [versions]
 org-springframework-boot = "4.0.1"
 io-spring-dependency-management = "1.1.7"
+io-spring-javaformat = "0.0.47"
 org-graalvm-buildtools-native = "0.11.3"
 org-jetbrains-kotlin = "2.3.0"
 java-language = "25"
 com-github-therapi-runtime-javadoc = "0.15.0"
-com-google-guava = "33.4.8-jre"
-com-google-zxing = "3.5.3"
 de-codecentric-spring-boot-admin-dependencies = "3.5.6"
-net-coobird = "0.4.20"
 org-apache-poi-poi = "5.4.1"
-org-apache-velocity-velocity-engine-core = "2.4.1"
 org-springdoc = "3.0.1"
-org-xhtmlrenderer-flying-saucer-pdf = "9.13.0"
 
 [libraries]
 com-github-therapi-therapi-runtime-javadoc-scribe = { module = "com.github.therapi:therapi-runtime-javadoc-scribe", version.ref = "com-github-therapi-runtime-javadoc" }
 com-github-therapi-therapi-runtime-javadoc = { module = "com.github.therapi:therapi-runtime-javadoc", version.ref = "com-github-therapi-runtime-javadoc" }
-com-google-guava-guava = { module = "com.google.guava:guava", version.ref = "com-google-guava" }
-com-google-zxing-javase = { module = "com.google.zxing:javase", version.ref = "com-google-zxing" }
 de-codecentric-spring-boot-admin-dependencies = { module = "de.codecentric:spring-boot-admin-dependencies", version.ref = "de-codecentric-spring-boot-admin-dependencies" }
-net-coobird-thumbnailator = { module = "net.coobird:thumbnailator", version.ref = "net-coobird" }
 org-apache-poi-poi = { module = "org.apache.poi:poi", version.ref = "org-apache-poi-poi" }
-org-apache-velocity-velocity-engine-core = { module = "org.apache.velocity:velocity-engine-core", version.ref = "org-apache-velocity-velocity-engine-core" }
 org-springdoc-springdoc-openapi-starter-common = { module = "org.springdoc:springdoc-openapi-starter-common", version.ref = "org-springdoc" }
 org-springdoc-springdoc-openapi-starter-webmvc-api = { module = "org.springdoc:springdoc-openapi-starter-webmvc-api", version.ref = "org-springdoc" }
 org-springdoc-springdoc-openapi-starter-webmvc-ui = { module = "org.springdoc:springdoc-openapi-starter-webmvc-ui", version.ref = "org-springdoc" }
-org-xhtmlrenderer-flying-saucer-pdf = { module = "org.xhtmlrenderer:flying-saucer-pdf", version.ref = "org-xhtmlrenderer-flying-saucer-pdf" }
 
 [plugins]
-org-springframework-boot = { id = "org.springframework.boot", version.ref = "org-springframework-boot" }
-io-spring-dependency-management = { id = "io.spring.dependency-management", version.ref = "io-spring-dependency-management" }
-org-graalvm-buildtools-native = { id = "org.graalvm.buildtools.native", version.ref = "org-graalvm-buildtools-native" }
-org-jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "org-jetbrains-kotlin" }
-org-jetbrains-kotlin-plugin-spring = { id = "org.jetbrains.kotlin.plugin.spring", version.ref = "org-jetbrains-kotlin" }
