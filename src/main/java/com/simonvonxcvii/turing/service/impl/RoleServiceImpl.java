@@ -18,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.domain.DeleteSpecification;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -63,9 +64,9 @@ public class RoleServiceImpl implements IRoleService {
 
         // 更新角色权限表
         // TODO 可以优化成只添加需要添加的，只删除需要删除的
-        Specification<RolePermission> spec = (root, query, builder) -> {
+        DeleteSpecification<RolePermission> spec = (root, delete, builder) -> {
             Predicate predicate = builder.equal(root.get(RolePermission.ROLE_ID), dto.getId());
-            return query.where(predicate).getRestriction();
+            return delete.where(predicate).getRestriction();
         };
         rolePermissionJpaRepository.delete(spec);
         List<RolePermission> rolePermissionList = new LinkedList<>();
@@ -171,9 +172,9 @@ public class RoleServiceImpl implements IRoleService {
             throw BizRuntimeException.from("该角色已关联用户");
         }
         // 删除角色-权限关联数据
-        Specification<RolePermission> spec2 = (root, query, builder) -> {
+        DeleteSpecification<RolePermission> spec2 = (root, delete, builder) -> {
             Predicate predicate = builder.equal(root.get(RolePermission.ROLE_ID), id);
-            return query.where(predicate).getRestriction();
+            return delete.where(predicate).getRestriction();
         };
         rolePermissionJpaRepository.delete(spec2);
         roleJpaRepository.deleteById(id);

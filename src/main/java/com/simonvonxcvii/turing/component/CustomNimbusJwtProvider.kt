@@ -15,7 +15,6 @@ import org.springframework.boot.ssl.SslBundles
 import org.springframework.http.HttpHeaders
 import org.springframework.security.authentication.AuthenticationServiceException
 import org.springframework.security.oauth2.core.OAuth2AccessToken
-import org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames
 import org.springframework.security.oauth2.jwt.*
 import org.springframework.stereotype.Component
 import org.springframework.util.StringUtils
@@ -55,7 +54,7 @@ class CustomNimbusJwtProvider(
         val keyStore = stores.keyStore
         // 从指定的 JCE 密钥库加载 JWK。JWK 可以是 RSA 公钥/私钥、EC 公钥/私钥或密钥。需要 BouncyCastle。
         // 重要提示：X.509 证书未经验证！
-        val rsaKey = JWK.load(keyStore, keyStore.aliases().nextElement(), null)
+        val rsaKey = JWK.load(keyStore, keyStore?.aliases()?.nextElement(), null)
         // 使用单个键创建一个新的 JWK 集。
         val jwkSet = JWKSet(rsaKey)
         // 创建由不可变的 JWK 集支持的新 JWK 源。
@@ -126,7 +125,7 @@ class CustomNimbusJwtProvider(
             // 形参: JTI – JWT 的唯一标识符
             .id(UUID.randomUUID().toString())
             // 设置声明。
-            .claim(OAuth2ParameterNames.USERNAME, username)
+            .claim("username", username)
             .build()
         // 返回一个新的 JwtEncoderParameters，使用提供的 JwtClaimsSet 进行初始化。
         val jwtEncoderParameters = JwtEncoderParameters.from(jwtClaimsSet)
@@ -177,6 +176,6 @@ class CustomNimbusJwtProvider(
     fun getUsername(request: HttpServletRequest): String {
         // 校验请求是否正确携带 token
         val jwt = resolve(request)
-        return jwt.getClaim(OAuth2ParameterNames.USERNAME)
+        return jwt.getClaim("username")
     }
 }

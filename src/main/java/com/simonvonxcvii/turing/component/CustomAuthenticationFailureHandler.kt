@@ -1,12 +1,12 @@
 package com.simonvonxcvii.turing.component
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.simonvonxcvii.turing.common.exception.BizRuntimeException
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.security.core.AuthenticationException
 import org.springframework.security.web.authentication.AuthenticationFailureHandler
 import org.springframework.stereotype.Component
+import tools.jackson.databind.ObjectMapper
 
 /**
  * 用于处理失败的身份验证尝试的策略。

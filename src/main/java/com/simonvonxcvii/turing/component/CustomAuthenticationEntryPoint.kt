@@ -1,6 +1,5 @@
 package com.simonvonxcvii.turing.component
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.simonvonxcvii.turing.common.exception.BizRuntimeException
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
@@ -9,9 +8,6 @@ import org.springframework.security.authentication.ott.InvalidOneTimeTokenExcept
 import org.springframework.security.authentication.password.CompromisedPasswordException
 import org.springframework.security.core.AuthenticationException
 import org.springframework.security.core.userdetails.UsernameNotFoundException
-import org.springframework.security.oauth2.core.OAuth2AuthenticationException
-import org.springframework.security.oauth2.server.authorization.authentication.OAuth2AuthorizationCodeRequestAuthenticationException
-import org.springframework.security.oauth2.server.resource.InvalidBearerTokenException
 import org.springframework.security.web.AuthenticationEntryPoint
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedCredentialsNotFoundException
 import org.springframework.security.web.authentication.rememberme.CookieTheftException
@@ -20,6 +16,7 @@ import org.springframework.security.web.authentication.rememberme.RememberMeAuth
 import org.springframework.security.web.authentication.session.SessionAuthenticationException
 import org.springframework.security.web.authentication.www.NonceExpiredException
 import org.springframework.stereotype.Component
+import tools.jackson.databind.ObjectMapper
 
 /**
  * 由 ExceptionTranslationFilter 用于启动身份验证方案。
@@ -57,12 +54,12 @@ class CustomAuthenticationEntryPoint(private val objectMapper: ObjectMapper) : A
             is CompromisedPasswordException -> "提供的密码已受损"
             is CookieTheftException -> "Cookie 盗窃异常"
             is InsufficientAuthenticationException -> "凭据不够可信"
-            is InvalidBearerTokenException -> "无效的承载令牌"
+//            is InvalidBearerTokenException -> "无效的承载令牌"
             is InvalidCookieException -> "无效的 Cookie 异常"
             is InvalidOneTimeTokenException -> "一次性令牌无效"
             is NonceExpiredException -> "摘要随机数已过期"
-            is OAuth2AuthorizationCodeRequestAuthenticationException -> "尝试对 OAuth 2.0 授权请求（或同意）失败"
-            is OAuth2AuthenticationException -> "OAuth 2.0 相关的身份验证错误"
+//            is OAuth2AuthorizationCodeRequestAuthenticationException -> "尝试对 OAuth 2.0 授权请求（或同意）失败"
+//            is OAuth2AuthenticationException -> "OAuth 2.0 相关的身份验证错误"
             is PreAuthenticatedCredentialsNotFoundException -> "未找到预验证凭据异常"
             is ProviderNotFoundException -> "未找到身份验证提供者"
             is RememberMeAuthenticationException -> "记住我身份验证异常"

@@ -184,7 +184,7 @@ class CustomDatabaseInitializingBean(
             orgId = organization.id,
             orgName = organization.name,
             username = "admin",
-            password = passwordEncoder.encode("123456"),
+            password = passwordEncoder.encode("123456")!!,
             accountNonExpired = true,
             accountNonLocked = true,
             credentialsNonExpired = true,

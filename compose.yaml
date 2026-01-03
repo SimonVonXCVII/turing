@@ -43,54 +43,6 @@ services:
     volumes:
       - ./docker/postgresql/data:/var/lib/postgresql/18/docker
 
-  # todo 有没有比 keycloak 更好的选择，OIDC Provider（例如 Keycloak、Auth0、Azure AD 等）
-  # todo 创建的 89 张表直接在 turing 里了，如何设置下，使其存在另外一个 schema（数据库）中？
-  turing-keycloak:
-    # 指定自定义容器名称，而不是生成的默认名称。
-    container_name: turing-keycloak
-    # 覆盖容器镜像声明的默认命令（即 Dockerfile 的 CMD）。
-    command:
-      - start-dev
-      - --http-port=8081
-    # 表示服务之间的启动和关闭依赖关系。
-    depends_on:
-      turing-db:
-        # 设置依赖关系被视为满足的条件。
-        condition: service_healthy
-    # 定义容器中设置的环境变量。
-    environment:
-      KC_BOOTSTRAP_ADMIN_USERNAME: admin
-      KC_BOOTSTRAP_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
-    # 声明运行以确定该服务的容器是否“健康”的检查。
-    healthcheck:
-      # 定义 Compose 运行以检查容器健康状况的命令。
-      # https://www.keycloak.org/observability/health
-      test: [ "CMD-SHELL", "{ printf 'HEAD /health/ready HTTP/1.0\r\n\r\n' >&0; grep 'HTTP/1.0 200'; } 0<>/dev/tcp/localhost/9000" ]
-      # 运行状况检查将在容器启动后首先运行间隔秒，然后在之前的每个检查完成后再次运行间隔秒。
-      interval: 10s
-      # 如果单次运行检查花费的时间超过超时秒数，则检查被视为失败。
-      timeout: 10s
-      # 需要重试健康检查连续失败才能将容器视为不健康。
-      retries: 3
-      # 为需要时间引导的容器提供初始化时间。
-      start_period: 40s
-    # 声明用于服务容器的自定义主机名。
-    hostname: turing-keycloak
-    # 指定启动容器的图像。
-    image: quay.io/keycloak/keycloak:26.4
-    # 定义服务容器附加到的网络，引用顶级网络键下的条目。
-    networks:
-      - turing
-    # 暴露端口。 指定两个端口 (HOST:CONTAINER)，或仅指定容器端口（选择临时主机端口）。
-    ports:
-      - "8081:8081"
-    # 定义平台在容器终止时应用的策略。
-    restart: always
-    # 定义服务容器必须可以访问的挂载主机路径或命名卷。todo logging
-    volumes:
-      - ./docker/keycloak/data:/opt/keycloak/data
-      - ./docker/keycloak/conf/keycloak.conf:/opt/keycloak/conf/keycloak.conf
-
   # todo 有没有比 redis 更好的选择
   turing-redis:
     # 覆盖容器镜像声明的默认命令（即 Dockerfile 的 CMD）。
@@ -146,9 +98,6 @@ services:
     container_name: turing-backend
     # 表示服务之间的启动和关闭依赖关系。
     depends_on:
-      turing-keycloak:
-        # 设置依赖关系被视为满足的条件。
-        condition: service_healthy
       turing-redis:
         # 设置依赖关系被视为满足的条件。
         condition: service_healthy

@@ -1,6 +1,5 @@
 package com.simonvonxcvii.turing.component
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.simonvonxcvii.turing.common.exception.BizRuntimeException
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
@@ -8,6 +7,7 @@ import org.apache.commons.logging.LogFactory
 import org.springframework.security.access.AccessDeniedException
 import org.springframework.security.web.access.AccessDeniedHandler
 import org.springframework.stereotype.Component
+import tools.jackson.databind.ObjectMapper
 
 /**
  * 由 ExceptionTranslationFilter 用于处理 AccessDeniedException。
