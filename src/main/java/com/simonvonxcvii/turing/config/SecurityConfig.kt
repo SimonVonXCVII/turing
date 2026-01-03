@@ -1,8 +1,6 @@
 package com.simonvonxcvii.turing.config
 
-import com.simonvonxcvii.turing.filter.CustomCaptchaOncePerRequestFilter
 import com.simonvonxcvii.turing.properties.CustomSecurityProperties
-import com.simonvonxcvii.turing.utils.Constants
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpMethod
@@ -16,10 +14,6 @@ import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.AuthenticationEntryPoint
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.access.AccessDeniedHandler
-import org.springframework.security.web.authentication.AuthenticationFailureHandler
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
-import org.springframework.security.web.authentication.logout.LogoutSuccessHandler
 import org.springframework.security.web.authentication.session.ConcurrentSessionControlAuthenticationStrategy
 import org.springframework.security.web.csrf.CsrfFilter
 import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler
@@ -54,6 +48,13 @@ class SecurityConfig {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder()
     }
 
+    /**
+     * 自定义 JwtAuthenticationConverter
+     *
+     * @return JwtAuthenticationConverter
+     * @author Simon Von
+     * @since 12/26/25 at 1:36 AM
+     */
 //    fun jwtAuthenticationConverter(): JwtAuthenticationConverter {
 //        val rolesConverter = JwtGrantedAuthoritiesConverter().apply {
 //            setAuthoritiesClaimName("realm_access.roles")
@@ -75,13 +76,13 @@ class SecurityConfig {
     fun securityFilterChain(
         http: HttpSecurity,
         corsConfigurationSource: CorsConfigurationSource,
-        authenticationSuccessHandler: AuthenticationSuccessHandler,
-        authenticationFailureHandler: AuthenticationFailureHandler,
-        customCaptchaOncePerRequestFilter: CustomCaptchaOncePerRequestFilter,
+//        authenticationSuccessHandler: AuthenticationSuccessHandler,
+//        authenticationFailureHandler: AuthenticationFailureHandler,
+//        customCaptchaOncePerRequestFilter: CustomCaptchaOncePerRequestFilter,
         customSecurityProperties: CustomSecurityProperties,
         accessDeniedHandler: AccessDeniedHandler,
         authenticationEntryPoint: AuthenticationEntryPoint,
-        logoutSuccessHandler: LogoutSuccessHandler,
+//        logoutSuccessHandler: LogoutSuccessHandler,
     ): SecurityFilterChain {
         http {
             // 允许配置 HttpSecurity 仅在匹配提供的模式时调用。
@@ -92,32 +93,32 @@ class SecurityConfig {
 //            securityMatcher(pathPattern("/private/&ast;&ast;"))
 
             // 启用基于表单的身份验证。
-            formLogin {
-                // 如果需要身份验证则重定向到登录页面（即“/login”）
-//                loginPage = "/api/auth/login"
-                // 身份验证成功后使用的 AuthenticationSuccessHandler
-                this.authenticationSuccessHandler = authenticationSuccessHandler
-                // 身份验证失败后使用的 AuthenticationFailureHandler
-                this.authenticationFailureHandler = authenticationFailureHandler
-                // 身份验证失败时发送给用户的 URL
-//                failureUrl = null
-//                // 用于验证凭证的 URL
-                loginProcessingUrl = Constants.LOGIN_URL
-//                // 是否授予每个用户对 failureUrl 以及 HttpSecurityBuilder、loginPage 和 loginProcessingUrl 的访问权限
-//                permitAll = true
-//                // 为给定的 Web 请求提供 org.springframework.security.core.Authentication.getDetails() 对象。
-//                authenticationDetailsSource = null
-//                // 执行身份验证时查找用户名的 HTTP 参数
-//                usernameParameter = null
-//                // 执行身份验证时查找密码的 HTTP 参数
-//                passwordParameter = null
-//                // 禁用 FormLogin。
-//                disable()
-//                // 授予每个用户的失败 URL 以及 HttpSecurityBuilder、loginPage 和 loginProcessingUrl 的访问权限。
-//                permitAll()
-//                // 如果用户在身份验证之前没有访问过安全页面或者 alwaysUse 为真，则指定用户身份验证成功后将被重定向到哪里。
-//                defaultSuccessUrl("", true)
-            }
+//            formLogin {
+//                // 如果需要身份验证则重定向到登录页面（即“/login”）
+////                loginPage = "/api/auth/login"
+//                // 身份验证成功后使用的 AuthenticationSuccessHandler
+////                this.authenticationSuccessHandler = authenticationSuccessHandler
+//                // 身份验证失败后使用的 AuthenticationFailureHandler
+//                this.authenticationFailureHandler = authenticationFailureHandler
+//                // 身份验证失败时发送给用户的 URL
+////                failureUrl = null
+////                // 用于验证凭证的 URL
+//                loginProcessingUrl = Constants.LOGIN_URL
+////                // 是否授予每个用户对 failureUrl 以及 HttpSecurityBuilder、loginPage 和 loginProcessingUrl 的访问权限
+////                permitAll = true
+////                // 为给定的 Web 请求提供 org.springframework.security.core.Authentication.getDetails() 对象。
+////                authenticationDetailsSource = null
+////                // 执行身份验证时查找用户名的 HTTP 参数
+////                usernameParameter = null
+////                // 执行身份验证时查找密码的 HTTP 参数
+////                passwordParameter = null
+////                // 禁用 FormLogin。
+////                disable()
+////                // 授予每个用户的失败 URL 以及 HttpSecurityBuilder、loginPage 和 loginProcessingUrl 的访问权限。
+////                permitAll()
+////                // 如果用户在身份验证之前没有访问过安全页面或者 alwaysUse 为真，则指定用户身份验证成功后将被重定向到哪里。
+////                defaultSuccessUrl("", true)
+//            }
 
             // TODO: 2023/6/21 白名单里的请求路径居然直接跳过了跨域，不受跨域的限制！？
             // 允许根据 HttpServletRequest 限制访问
@@ -378,31 +379,31 @@ class SecurityConfig {
             }
 
             // 提供注销支持。
-            logout {
-                // SecurityContextLogoutHandler 是否应该在注销时清除 Authentication。
-//                clearAuthentication = true
-                // 注销时是否使 HttpSession 无效。
-//                invalidateHttpSession = true
-                // 触发注销的 URL。
-                logoutUrl = "/api/auth/logout"
-                // 触发注销发生的 RequestMatcher。
-//                logoutRequestMatcher = OrRequestMatcher()
-                // 注销后重定向到的 URL。
-//                logoutSuccessUrl = null
-                // 注销后使用的 LogoutSuccessHandler。如果指定了此参数，则 logoutSuccessUrl 将被忽略。
-                this.logoutSuccessHandler = logoutSuccessHandler
-//                permitAll = false
-                // 添加一个 LogoutHandler。默认情况下，SecurityContextLogoutHandler 会被添加为最后一个 LogoutHandler。
-//                addLogoutHandler()
-                // 允许指定注销成功时要删除的 cookie 的名称。
-                deleteCookies("SESSION", "JSESSIONID", "XSRF-TOKEN", "remember-me", "idea-**")
-                // 设置要使用的默认 LogoutSuccessHandler，该默认 LogoutSuccessHandler 优先为提供的 RequestMatcher 调用。
-//                defaultLogoutSuccessHandlerFor()
-                // 禁用注销
-//                disable()
-                // 授予每个用户访问 logoutSuccessUrl 和 logoutUrl 的权限。
-//                permitAll()
-            }
+//            logout {
+//                // SecurityContextLogoutHandler 是否应该在注销时清除 Authentication。
+////                clearAuthentication = true
+//                // 注销时是否使 HttpSession 无效。
+////                invalidateHttpSession = true
+//                // 触发注销的 URL。
+//                logoutUrl = "/api/auth/logout"
+//                // 触发注销发生的 RequestMatcher。
+////                logoutRequestMatcher = OrRequestMatcher()
+//                // 注销后重定向到的 URL。
+////                logoutSuccessUrl = null
+//                // 注销后使用的 LogoutSuccessHandler。如果指定了此参数，则 logoutSuccessUrl 将被忽略。
+////                this.logoutSuccessHandler = logoutSuccessHandler
+////                permitAll = false
+//                // 添加一个 LogoutHandler。默认情况下，SecurityContextLogoutHandler 会被添加为最后一个 LogoutHandler。
+////                addLogoutHandler()
+//                // 允许指定注销成功时要删除的 cookie 的名称。
+//                deleteCookies("SESSION", "JSESSIONID", "XSRF-TOKEN", "remember-me", "idea-**")
+//                // 设置要使用的默认 LogoutSuccessHandler，该默认 LogoutSuccessHandler 优先为提供的 RequestMatcher 调用。
+////                defaultLogoutSuccessHandlerFor()
+//                // 禁用注销
+////                disable()
+//                // 授予每个用户访问 logoutSuccessUrl 和 logoutUrl 的权限。
+////                permitAll()
+//            }
 
             // 使用 SAML 2.0 服务提供商配置身份验证支持。需要一个 RelyingPartyRegistrationRepository，
             // 并且必须在 ApplicationContext 中注册或通过 Saml2Dsl.relyingPartyRegistrationRepository 配置。
@@ -573,7 +574,7 @@ class SecurityConfig {
 //            }
 
             // 配置 OAuth 2.0 资源服务器支持。
-//            oauth2ResourceServer {
+            oauth2ResourceServer {
 //                // 用于使用 Bearer Tokens 进行身份验证的请求的 AccessDeniedHandler。
 //                this.accessDeniedHandler = null
 //                // 用于使用 Bearer Tokens 进行身份验证的请求的 AuthenticationEntryPoint。
@@ -582,8 +583,8 @@ class SecurityConfig {
 //                bearerTokenResolver = null
 //                authenticationManagerResolver = null
 //                // 启用 JWT 编码的承载令牌支持。
-//                jwt {
-//                    // AuthenticationManager 用于确定所提供的身份验证是否可以进行身份​​验证。
+                jwt {
+//                    // AuthenticationManager 用于确定所提供的身份验证是否可以进行身份验证。
 //                    authenticationManager = null
 //                    // 用于将 Jwt 转换为 AbstractAuthenticationToken 的转换器。
 //                    jwtAuthenticationConverter = null
@@ -591,10 +592,10 @@ class SecurityConfig {
 //                    jwtDecoder = null
 //                    // 使用 JSON Web Key (JWK) URL 配置 JwtDecoder
 //                    jwkSetUri = null
-//                }
+                }
 //                // 启用不透明令牌支持。
 //                opaqueToken {
-//                    // AuthenticationManager 用于确定所提供的身份验证是否可以进行身份​​验证。
+//                    // AuthenticationManager 用于确定所提供的身份验证是否可以进行身份验证。
 //                    authenticationManager = null
 //                    // Introspection 端点的 URI。
 //                    introspectionUri = null
@@ -604,7 +605,7 @@ class SecurityConfig {
 //                    // 配置 Introspection 端点的凭据。
 //                    introspectionClientCredentials("clientId", "clientSecret")
 //                }
-//            }
+            }
 
             // 配置 OIDC 1.0 注销支持。
 //            oidcLogout {
@@ -659,7 +660,7 @@ class SecurityConfig {
 //                // 要使用的 PersistentTokenRepository。
 //                // 默认为 org.springframework.security.web.authentication.rememberme.TokenBasedRememberMeServices
 //                tokenRepository = null
-//                // 当记住我令牌有效时，用于查找 UserDetails 的 UserDetailsS​​ervice
+//                // 当记住我令牌有效时，用于查找 UserDetails 的 UserDetailsService
 //                userDetailsService = null
 //                // 令牌的有效期（以秒为单位）。默认为 2 周
 //                tokenValiditySeconds = null
@@ -684,7 +685,7 @@ class SecurityConfig {
 //            }
 
             // 在指定 Filter 类的位置添加 Filter。此变体利用了 Kotlin 具体化的类型参数。
-            addFilterAt<UsernamePasswordAuthenticationFilter>(customCaptchaOncePerRequestFilter)
+//            addFilterAt<UsernamePasswordAuthenticationFilter>(customCaptchaOncePerRequestFilter)
 
             // 在指定 Filter 类的位置后添加 Filter。此变体利用了 Kotlin 具体化的类型参数。
 //            addFilterAfter<UsernamePasswordAuthenticationFilter>(customCaptchaOncePerRequestFilter)

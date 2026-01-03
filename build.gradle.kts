@@ -149,8 +149,6 @@ dependencies {
 //    implementation(libs.org.apache.velocity.velocity.engine.core)
     // kotlin 非必需
     implementation("org.jetbrains.kotlin:kotlin-reflect")
-    // keycloak
-//    implementation("org.keycloak:keycloak-spring-boot-starter:25.0.3")
     // springdoc
     // https://central.sonatype.com/namespace/org.springdoc
     implementation(libs.org.springdoc.springdoc.openapi.starter.common)

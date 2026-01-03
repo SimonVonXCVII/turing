@@ -54,36 +54,6 @@ services:
       - ./docker/postgresql/data:/var/lib/postgresql/18/docker
       - ./docker/postgresql/sh/init-user-db.sh:/docker-entrypoint-initdb.d/init-user-db.sh
 
-  # todo 有没有比 keycloak 更好的选择，OIDC Provider（例如 Keycloak、Auth0、Azure AD 等），Spring Authorization Server！？
-  turing-keycloak:
-    # 合并映射，引用锚点，公共配置
-    <<: *commons
-    # 指定自定义容器名称，而不是生成的默认名称。
-    container_name: turing-keycloak
-    # 表示服务之间的启动和关闭依赖关系。
-    depends_on:
-      turing-db: *condition
-    # 定义容器中设置的环境变量。
-    environment:
-      KC_BOOTSTRAP_ADMIN_USERNAME: ${KC_BOOTSTRAP_ADMIN_USERNAME}
-      KC_BOOTSTRAP_ADMIN_PASSWORD: ${KC_BOOTSTRAP_ADMIN_PASSWORD}
-    # 声明运行以确定该服务的容器是否“健康”的检查。
-    healthcheck:
-      # 定义 Compose 运行以检查容器健康状况的命令。
-      # https://www.keycloak.org/observability/health
-      test: [ "CMD-SHELL", "{ printf 'HEAD /health/ready HTTP/1.0\r\n\r\n' >&0; grep 'HTTP/1.0 200'; } 0<>/dev/tcp/localhost/9000" ]
-    # 声明用于服务容器的自定义主机名。
-    hostname: turing-keycloak
-    # 指定启动容器的图像。
-    image: quay.io/keycloak/keycloak:26.4.7
-    # 暴露端口。 指定两个端口 (HOST:CONTAINER)，或仅指定容器端口（选择临时主机端口）。
-    ports:
-      - "8081:8081"
-    # 定义服务容器必须可以访问的挂载主机路径或命名卷。
-    volumes:
-      - ./docker/keycloak/data:/opt/keycloak/data
-      - ./docker/keycloak/conf/keycloak.conf:/opt/keycloak/conf/keycloak.conf
-
   # todo 有没有比 redis 更好的选择
   turing-redis:
     # 合并映射，引用锚点，公共配置
@@ -119,7 +89,6 @@ services:
     container_name: turing-backend
     # 表示服务之间的启动和关闭依赖关系。
     depends_on:
-      turing-keycloak: *condition
       turing-redis: *condition
     # 声明运行以确定该服务的容器是否“健康”的检查。
     healthcheck:
