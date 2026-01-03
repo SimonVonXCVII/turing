@@ -100,47 +100,12 @@ spring:
     active: dev
   security:
     oauth2:
-      authorizationserver:
-        # 授权服务器的注册客户端。
-        #        client:
-        #          client-1:
-        #            jwk-set-uri:
-        #            require-authorization-consent:
-        #            require-proof-key:
-        #            token-endpoint-authentication-signing-algorithm:
-        #          client-2:
-        #            jwk-set-uri:
-        #            require-authorization-consent:
-        #            require-proof-key:
-        #            token-endpoint-authentication-signing-algorithm:
-        # 授权服务器发行者标识符的 URL。
-        issuer: "http://localhost:8081/realms/turing-realm"
-      client:
-        registration:
-          login-client:
-            client-id: confidential-client
-            client-secret: NGOH4PRxBePJeKSew4xEiXG4eS6siiVh
-            authorization-grant-type: password
-            scope: openid,profile,email
-        #            client-authentication-method:
-        #            client-name:
-        #            provider:
-        #            redirect-uri:
-        provider:
-          spring:
-            token-uri: http://localhost:8081/realms/turing-realm/protocol/openid-connect/token
-            authorization-uri: http://localhost:8081/realms/turing-realm/protocol/openid-connect/auth
-            user-info-uri: http://localhost:8081/realms/turing-realm/protocol/openid-connect/userinfo
-            user-name-attribute: preferred_username
-      #            issuer-uri:
-      #            jwk-set-uri:
-      #            user-info-authentication-method:
       resourceserver:
         jwt:
           # URI 可以是 OpenID Connect 发现端点，也可以是 RFC 8414 定义的 OAuth 2.0 授权服务器元数据端点。
-          issuer-uri: "http://localhost:8081/realms/turing-realm"
+          issuer-uri: http://localhost:9000
           # 用于验证 JWT 令牌的 JSON Web Key URI。
-          #          jwk-set-uri: "http://localhost:8081/realms/turing-realm/protocol/openid-connect/certs"
+          #          jwk-set-uri: http://localhost:8081/realms/turing-realm/protocol/openid-connect/certs
           # 包含用于验证 JWT 的公钥的文件的位置。
   #          public-key-location:
   #  rabbitmq:
