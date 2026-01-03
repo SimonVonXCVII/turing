@@ -1,0 +1,58 @@
+package com.simonvonxcvii.turing.resource.server.controller;
+
+import com.simonvonxcvii.turing.resource.server.common.result.Result;
+import com.simonvonxcvii.turing.resource.server.model.dto.DictDTO;
+import com.simonvonxcvii.turing.resource.server.service.IDictService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.data.domain.Page;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+
+/**
+ * <p>
+ * 字典表 前端控制器
+ * </p>
+ *
+ * @author Simon Von
+ * @since 2022-12-30 12:49:40
+ */
+@Tag(name = "DictController", description = "字典表 前端控制器")
+@RestController
+@RequestMapping("/api/dict")
+public class DictController {
+
+    private final IDictService service;
+
+    public DictController(IDictService service) {
+        this.service = service;
+    }
+
+    @Operation(summary = "单个新增或修改")
+    @PostMapping("/insertOrUpdate")
+    public ResponseEntity<Result<Object>> insertOrUpdate(@RequestBody @Validated DictDTO dto) {
+        service.insertOrUpdate(dto);
+        return ResponseEntity.ok(Result.ok());
+    }
+
+    @Operation(summary = "分页查询")
+    @PostMapping("/selectPage")
+    public ResponseEntity<Result<Page<DictDTO>>> selectPage(@RequestBody DictDTO dto) {
+        return ResponseEntity.ok(Result.ok(service.selectPage(dto)));
+    }
+
+    @Operation(summary = "地区及下级地区查询")
+    @GetMapping("/getAreaByCode")
+    public ResponseEntity<Result<DictDTO>> getAreaByCode(Integer code) {
+        return ResponseEntity.ok(Result.ok(service.getAreaByCode(code)));
+    }
+
+    @Operation(summary = "根据主键 id 逻辑删除")
+    @DeleteMapping("/deleteById/{id}")
+    public ResponseEntity<Result<Object>> deleteDictByIds(@PathVariable Integer id) {
+        service.deleteById(id);
+        return ResponseEntity.ok(Result.ok());
+    }
+
+}

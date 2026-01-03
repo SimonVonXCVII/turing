@@ -1,0 +1,131 @@
+package com.simonvonxcvii.turing.resource.server.entity
+
+import com.simonvonxcvii.turing.resource.server.enums.OrganizationBusinessBusinessLinksEnum
+import com.simonvonxcvii.turing.resource.server.enums.OrganizationBusinessLevelEnum
+import com.simonvonxcvii.turing.resource.server.enums.OrganizationBusinessQualityControlTypeEnum
+import com.simonvonxcvii.turing.resource.server.enums.OrganizationBusinessStateEnum
+import jakarta.persistence.*
+import org.hibernate.annotations.SQLDelete
+import org.hibernate.annotations.SQLRestriction
+
+/**
+ * 单位业务表
+ * Transient 属性的字段，建议添加到圆括号 () 中，而不是花括号 {} 中，因为可以存在于生成的 toString() 等方法中
+ *
+ * @author Simon Von
+ * @since 2022-12-29 11:33:31
+ */
+@Entity
+@Table(
+    schema = "public",
+    name = "turing_organization_business",
+    uniqueConstraints = [
+        UniqueConstraint(name = "con_public_turing_organization_business_constraint_1", columnNames = arrayOf("id"))
+    ],
+    comment = "单位业务表"
+)
+// @SQLDelete 只支持 delete(T entity) 和 deleteById(ID id)
+@SQLDelete(sql = "UPDATE turing_organization_business SET deleted = TRUE WHERE id = ? AND version = ? AND deleted = FALSE")
+@SQLRestriction("deleted = FALSE")
+class OrganizationBusiness(
+    /**
+     * 单位 id
+     */
+    @Column(nullable = false, columnDefinition = "INTEGER", comment = "单位 id")
+    var orgId: Int = 0,
+
+    /**
+     * 单位名称
+     */
+    @Column(nullable = false, columnDefinition = "VARCHAR(128)", comment = "单位名称")
+    var orgName: String = "",
+
+    /**
+     * 业务环节
+     */
+    @Enumerated(EnumType.STRING)
+    @Column(columnDefinition = "VARCHAR[]", comment = "业务环节")
+    var link: MutableSet<OrganizationBusinessBusinessLinksEnum>? = null,
+
+    /**
+     * 质控类型
+     */
+    @Enumerated(EnumType.STRING)
+    @Column(columnDefinition = "VARCHAR[]", comment = "质控类型")
+    var type: MutableSet<OrganizationBusinessQualityControlTypeEnum>? = null,
+
+    /**
+     * 业务申请所在省（市、区）编码
+     */
+    @Column(nullable = false, columnDefinition = "INTEGER", comment = "业务申请所在省（市、区）编码")
+    var provinceCode: Int = 0,
+
+    /**
+     * 业务申请所在市（州、盟）编码
+     */
+    @Column(columnDefinition = "INTEGER", comment = "业务申请所在市（州、盟）编码")
+    var cityCode: Int? = null,
+
+    /**
+     * 业务申请所在县（市、旗）编码
+     */
+    @Column(columnDefinition = "INTEGER", comment = "业务申请所在区县（市、旗）编码")
+    var districtCode: Int? = null,
+
+    /**
+     * 业务申请所在省（市、区）名称
+     */
+    @Column(nullable = false, columnDefinition = "VARCHAR(16)", comment = "业务申请所在省（市、区）名称")
+    var provinceName: String = "",
+
+    /**
+     * 业务申请所在市（州、盟）名称
+     */
+    @Column(columnDefinition = "VARCHAR(16)", comment = "业务申请所在市（州、盟）名称")
+    var cityName: String? = null,
+
+    /**
+     * 业务申请所在县（市、旗）名称
+     */
+    @Column(columnDefinition = "VARCHAR(16)", comment = "业务申请所在区县（市、旗）名称")
+    var districtName: String? = null,
+
+    /**
+     * 业务申请状态
+     */
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, columnDefinition = "VARCHAR(64)", comment = "业务申请状态")
+    var state: OrganizationBusinessStateEnum = OrganizationBusinessStateEnum.AWAITING_CHECK,
+
+    /**
+     * 申请业务级别
+     */
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, columnDefinition = "VARCHAR(64)", comment = "申请业务级别")
+    var businessLevel: OrganizationBusinessLevelEnum = OrganizationBusinessLevelEnum.DISTRICT
+) : AbstractAuditable() {
+    companion object {
+        /**
+         * ES 索引名称
+         */
+        const val INDEX = "turing_organization_business"
+
+        /**
+         * Redis key 前缀
+         */
+        const val REDIS_KEY_PREFIX = "$INDEX:"
+
+        const val ORG_ID = "orgId"
+        const val ORG_NAME = "orgName"
+        const val LINK = "link"
+        const val TYPE = "type"
+        const val PROVINCE_CODE = "provinceCode"
+        const val CITY_CODE = "cityCode"
+        const val DISTRICT_CODE = "districtCode"
+        const val PROVINCE_NAME = "provinceName"
+        const val CITY_NAME = "cityName"
+        const val DISTRICT_NAME = "districtName"
+        const val STATE = "state"
+        const val BUSINESS_LEVEL = "businessLevel"
+    }
+}

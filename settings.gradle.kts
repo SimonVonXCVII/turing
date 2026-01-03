@@ -6,3 +6,5 @@ pluginManagement {
         mavenCentral()
     }
 }
+
+include("turing-resource-server")
