@@ -11,7 +11,7 @@ de-codecentric-spring-boot-admin-dependencies = "3.5.6"
 net-coobird = "0.4.20"
 org-apache-poi-poi = "5.4.1"
 org-apache-velocity-velocity-engine-core = "2.4.1"
-org-springdoc = "3.0.0"
+org-springdoc = "3.0.1"
 org-xhtmlrenderer-flying-saucer-pdf = "9.13.0"
 
 [libraries]
