@@ -27,8 +27,8 @@ import org.springframework.data.web.config.EnableSpringDataWebSupport
 // 为了获得稳定的 JSON 结构，使用该方式来全局解决问题，让 Spring Data 自动处理分页对象的序列化，提供稳定的 JSON 结构
 @EnableSpringDataWebSupport(pageSerializationMode = EnableSpringDataWebSupport.PageSerializationMode.VIA_DTO)
 @SpringBootApplication
-class TuringApplication
+class TuringResourceServerApplication
 
 fun main(args: Array<String>) {
-    runApplication<TuringApplication>(*args)
+    runApplication<TuringResourceServerApplication>(*args)
 }
