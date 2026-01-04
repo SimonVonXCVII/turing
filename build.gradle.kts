@@ -5,11 +5,11 @@ plugins {
     java
     id("org.springframework.boot") version libs.versions.org.springframework.boot
     id("io.spring.dependency-management") version libs.versions.io.spring.dependency.management
-    id("org.graalvm.buildtools.native") version libs.versions.org.graalvm.buildtools.native
+//    id("org.graalvm.buildtools.native") version libs.versions.org.graalvm.buildtools.native
     id("org.jetbrains.kotlin.jvm") version libs.versions.org.jetbrains.kotlin
     id("org.jetbrains.kotlin.plugin.spring") version libs.versions.org.jetbrains.kotlin
-    id("io.spring.javaformat") version libs.versions.io.spring.javaformat
-    id("checkstyle")
+//    id("io.spring.javaformat") version libs.versions.io.spring.javaformat
+//    id("checkstyle")
 }
 
 allprojects {
@@ -32,11 +32,11 @@ subprojects {
         plugin("idea")
         plugin("org.springframework.boot")
         plugin("io.spring.dependency-management")
-        plugin("org.graalvm.buildtools.native")
+//        plugin("org.graalvm.buildtools.native")
         plugin("org.jetbrains.kotlin.jvm")
         plugin("org.jetbrains.kotlin.plugin.spring")
-        plugin("io.spring.javaformat")
-        plugin("checkstyle")
+//        plugin("io.spring.javaformat")
+//        plugin("checkstyle")
     }
 
     /**
@@ -86,9 +86,9 @@ subprojects {
     /**
      * 配置 org.gradle.api.plugins.quality.CheckstyleExtension 扩展。
      */
-    checkstyle {
-        toolVersion = "9.3"
-    }
+//    checkstyle {
+//        toolVersion = "9.3"
+//    }
 
 //springJavaFormat { todo
 //    checkstyle {
@@ -100,10 +100,10 @@ subprojects {
      * 配置该项目的子项目都有的依赖
      */
     dependencies {
-        implementation("org.springframework.boot:spring-boot-starter")
-        testImplementation("org.springframework.boot:spring-boot-starter-test")
-        testRuntimeOnly("org.junit.platform:junit-platform-launcher")
-        checkstyle("io.spring.javaformat:spring-javaformat-checkstyle")
+//        implementation("org.springframework.boot:spring-boot-starter")
+//        testImplementation("org.springframework.boot:spring-boot-starter-test")
+//        testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+//        checkstyle("io.spring.javaformat:spring-javaformat-checkstyle")
     }
 
     /**

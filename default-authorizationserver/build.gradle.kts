@@ -5,8 +5,8 @@ dependencies {
 //    implementation(project(":spring-security-oauth2-authorization-server"))
 
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
-    testImplementation("org.springframework.boot:spring-boot-starter-test")
-    testImplementation("org.springframework.security:spring-security-test")
+    testImplementation("org.springframework.boot:spring-boot-starter-webmvc-test")
+    testImplementation("org.springframework.boot:spring-boot-starter-security-test")
     testImplementation("org.junit.jupiter:junit-jupiter")
     testImplementation("org.htmlunit:htmlunit")
 }
