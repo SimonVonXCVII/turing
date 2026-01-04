@@ -30,9 +30,9 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 public class SecurityConfig {
 
-	@Bean
-	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-		// @formatter:off
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        // @formatter:off
 		http
 			.securityMatcher("/user/**")
 			.authorizeHttpRequests((authorize) -> authorize
@@ -44,7 +44,7 @@ public class SecurityConfig {
 			.oauth2Client(Customizer.withDefaults());
 		// @formatter:on
 
-		return http.build();
-	}
+        return http.build();
+    }
 
 }

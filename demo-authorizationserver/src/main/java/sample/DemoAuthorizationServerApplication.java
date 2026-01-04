@@ -36,25 +36,25 @@ import java.util.Arrays;
 @ImportRuntimeHints(DemoAuthorizationServerApplication.DemoAuthorizationServerApplicationRuntimeHintsRegistrar.class)
 public class DemoAuthorizationServerApplication {
 
-	static class DemoAuthorizationServerApplicationRuntimeHintsRegistrar implements RuntimeHintsRegistrar {
+    static void main(String[] args) {
+        SpringApplication.run(DemoAuthorizationServerApplication.class, args);
+    }
 
-		@Override
-		public void registerHints(RuntimeHints hints, ClassLoader classLoader) {
-			// Thymeleaf
-			hints.reflection().registerTypes(
-					Arrays.asList(
-							TypeReference.of(AuthorizationConsentController.ScopeWithDescription.class),
-							TypeReference.of(Lists.class)
-					), builder ->
-							builder.withMembers(MemberCategory.DECLARED_FIELDS,
-									MemberCategory.INVOKE_DECLARED_CONSTRUCTORS, MemberCategory.INVOKE_DECLARED_METHODS)
-			);
-		}
+    static class DemoAuthorizationServerApplicationRuntimeHintsRegistrar implements RuntimeHintsRegistrar {
 
-	}
+        @Override
+        public void registerHints(RuntimeHints hints, ClassLoader classLoader) {
+            // Thymeleaf
+            hints.reflection().registerTypes(
+                    Arrays.asList(
+                            TypeReference.of(AuthorizationConsentController.ScopeWithDescription.class),
+                            TypeReference.of(Lists.class)
+                    ), builder ->
+                            builder.withMembers(MemberCategory.DECLARED_FIELDS,
+                                    MemberCategory.INVOKE_DECLARED_CONSTRUCTORS, MemberCategory.INVOKE_DECLARED_METHODS)
+            );
+        }
 
-	public static void main(String[] args) {
-		SpringApplication.run(DemoAuthorizationServerApplication.class, args);
-	}
+    }
 
 }

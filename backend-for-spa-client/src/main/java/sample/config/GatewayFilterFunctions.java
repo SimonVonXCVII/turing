@@ -35,30 +35,30 @@ import static org.springframework.cloud.gateway.server.mvc.common.MvcUtils.getAp
  */
 public interface GatewayFilterFunctions {
 
-	@Shortcut
-	static HandlerFilterFunction<ServerResponse, ServerResponse> relayTokenIfExists(String clientRegistrationId) {
-		return (request, next) -> {
-			Authentication principal = (Authentication) request.servletRequest().getUserPrincipal();
-			OAuth2AuthorizedClientRepository authorizedClientRepository = getApplicationContext(request)
-					.getBean(OAuth2AuthorizedClientRepository.class);
-			OAuth2AuthorizedClient authorizedClient = authorizedClientRepository.loadAuthorizedClient(
-					clientRegistrationId, principal, request.servletRequest());
-			if (authorizedClient != null) {
-				OAuth2AccessToken accessToken = authorizedClient.getAccessToken();
-				ServerRequest bearerRequest = ServerRequest.from(request)
-						.headers(httpHeaders -> httpHeaders.setBearerAuth(accessToken.getTokenValue())).build();
-				return next.handle(bearerRequest);
-			}
-			return next.handle(request);
-		};
-	}
+    @Shortcut
+    static HandlerFilterFunction<ServerResponse, ServerResponse> relayTokenIfExists(String clientRegistrationId) {
+        return (request, next) -> {
+            Authentication principal = (Authentication) request.servletRequest().getUserPrincipal();
+            OAuth2AuthorizedClientRepository authorizedClientRepository = getApplicationContext(request)
+                    .getBean(OAuth2AuthorizedClientRepository.class);
+            OAuth2AuthorizedClient authorizedClient = authorizedClientRepository.loadAuthorizedClient(
+                    clientRegistrationId, principal, request.servletRequest());
+            if (authorizedClient != null) {
+                OAuth2AccessToken accessToken = authorizedClient.getAccessToken();
+                ServerRequest bearerRequest = ServerRequest.from(request)
+                        .headers(httpHeaders -> httpHeaders.setBearerAuth(accessToken.getTokenValue())).build();
+                return next.handle(bearerRequest);
+            }
+            return next.handle(request);
+        };
+    }
 
-	class FilterSupplier extends SimpleFilterSupplier {
+    class FilterSupplier extends SimpleFilterSupplier {
 
-		FilterSupplier() {
-			super(GatewayFilterFunctions.class);
-		}
+        FilterSupplier() {
+            super(GatewayFilterFunctions.class);
+        }
 
-	}
+    }
 
 }

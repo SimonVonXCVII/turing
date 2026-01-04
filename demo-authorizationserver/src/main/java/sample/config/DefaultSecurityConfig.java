@@ -39,7 +39,7 @@ import sample.federation.FederatedIdentityAuthenticationSuccessHandler;
 @Configuration(proxyBeanMethods = false)
 public class DefaultSecurityConfig {
 
-	// @formatter:off
+    // @formatter:off
 	@Bean
 	public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
 		http
@@ -62,11 +62,11 @@ public class DefaultSecurityConfig {
 	}
 	// @formatter:on
 
-	private AuthenticationSuccessHandler authenticationSuccessHandler() {
-		return new FederatedIdentityAuthenticationSuccessHandler();
-	}
+    private AuthenticationSuccessHandler authenticationSuccessHandler() {
+        return new FederatedIdentityAuthenticationSuccessHandler();
+    }
 
-	// @formatter:off
+    // @formatter:off
 	@Bean
 	public UserDetailsService users() {
 		UserDetails user = User.withDefaultPasswordEncoder()
@@ -78,14 +78,14 @@ public class DefaultSecurityConfig {
 	}
 	// @formatter:on
 
-	@Bean
-	public SessionRegistry sessionRegistry() {
-		return new SessionRegistryImpl();
-	}
+    @Bean
+    public SessionRegistry sessionRegistry() {
+        return new SessionRegistryImpl();
+    }
 
-	@Bean
-	public HttpSessionEventPublisher httpSessionEventPublisher() {
-		return new HttpSessionEventPublisher();
-	}
+    @Bean
+    public HttpSessionEventPublisher httpSessionEventPublisher() {
+        return new HttpSessionEventPublisher();
+    }
 
 }

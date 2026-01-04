@@ -38,7 +38,7 @@ public class ResourceServerConfig {
 		in the `Jwt` against the SHA-256 Thumbprint of the supplied `X509Certificate`.
 	 */
 
-	// @formatter:off
+    // @formatter:off
 	@Bean
 	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		http

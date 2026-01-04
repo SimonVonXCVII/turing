@@ -34,30 +34,30 @@ import java.util.Objects;
 @RestController
 public class UserController {
 
-	private final RestClient restClient;
+    private final RestClient restClient;
 
-	public UserController(@Value("${messages.base-uri}") String baseUrl) {
-		this.restClient = RestClient.builder()
-				.baseUrl(baseUrl)
-				.build();
-	}
+    public UserController(@Value("${messages.base-uri}") String baseUrl) {
+        this.restClient = RestClient.builder()
+                .baseUrl(baseUrl)
+                .build();
+    }
 
-	@GetMapping(value = "/user/messages", params = "use_case=delegation")
-	public List<String> getMessagesWithDelegation(
-			@RegisteredOAuth2AuthorizedClient("messaging-client-token-exchange-with-delegation")
-					OAuth2AuthorizedClient authorizedClient) {
-		return getUserMessages(authorizedClient);
-	}
+    @GetMapping(value = "/user/messages", params = "use_case=delegation")
+    public List<String> getMessagesWithDelegation(
+            @RegisteredOAuth2AuthorizedClient("messaging-client-token-exchange-with-delegation")
+            OAuth2AuthorizedClient authorizedClient) {
+        return getUserMessages(authorizedClient);
+    }
 
-	@GetMapping(value = "/user/messages", params = "use_case=impersonation")
-	public List<String> getMessagesWithImpersonation(
-			@RegisteredOAuth2AuthorizedClient("messaging-client-token-exchange-with-impersonation")
-					OAuth2AuthorizedClient authorizedClient) {
-		return getUserMessages(authorizedClient);
-	}
+    @GetMapping(value = "/user/messages", params = "use_case=impersonation")
+    public List<String> getMessagesWithImpersonation(
+            @RegisteredOAuth2AuthorizedClient("messaging-client-token-exchange-with-impersonation")
+            OAuth2AuthorizedClient authorizedClient) {
+        return getUserMessages(authorizedClient);
+    }
 
-	private List<String> getUserMessages(OAuth2AuthorizedClient authorizedClient) {
-		// @formatter:off
+    private List<String> getUserMessages(OAuth2AuthorizedClient authorizedClient) {
+        // @formatter:off
 		String[] messages = Objects.requireNonNull(
 				this.restClient.get()
 						.uri("/messages")
@@ -67,10 +67,10 @@ public class UserController {
 		);
 		// @formatter:on
 
-		List<String> userMessages = new ArrayList<>(Arrays.asList(messages));
-		userMessages.add("%s has %d unread messages".formatted(authorizedClient.getPrincipalName(), messages.length));
+        List<String> userMessages = new ArrayList<>(Arrays.asList(messages));
+        userMessages.add("%s has %d unread messages".formatted(authorizedClient.getPrincipalName(), messages.length));
 
-		return userMessages;
-	}
+        return userMessages;
+    }
 
 }

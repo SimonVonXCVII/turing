@@ -59,132 +59,8 @@ import java.util.function.Supplier;
 @Configuration(proxyBeanMethods = false)
 public class RestClientConfig {
 
-	@Bean("default-client-rest-client")
-	public RestClient defaultClientRestClient(
-			OAuth2AuthorizedClientRepository authorizedClientRepository,
-			OAuth2AuthorizedClientManager authorizedClientManager,
-			@Qualifier("default-client-http-request-factory") Supplier<ClientHttpRequestFactory> clientHttpRequestFactory) {
-
-		OAuth2ClientHttpRequestInterceptor requestInterceptor =
-				new OAuth2ClientHttpRequestInterceptor(authorizedClientManager);
-		OAuth2AuthorizationFailureHandler authorizationFailureHandler =
-				OAuth2ClientHttpRequestInterceptor.authorizationFailureHandler(authorizedClientRepository);
-		requestInterceptor.setAuthorizationFailureHandler(authorizationFailureHandler);
-		// @formatter:off
-		return RestClient.builder()
-				.requestFactory(clientHttpRequestFactory.get())
-				.requestInterceptor(requestInterceptor)
-				.build();
-		// @formatter:on
-	}
-
-	@Bean("self-signed-demo-client-rest-client")
-	public RestClient selfSignedDemoClientRestClient(
-			ClientRegistrationRepository clientRegistrationRepository,
-			OAuth2AuthorizedClientRepository authorizedClientRepository,
-			@Qualifier("self-signed-demo-client-http-request-factory") Supplier<ClientHttpRequestFactory> clientHttpRequestFactory) {
-
-		RestClient restClient = accessTokenRestClient(clientHttpRequestFactory);
-
-		// @formatter:off
-		OAuth2AuthorizedClientProvider authorizedClientProvider =
-				OAuth2AuthorizedClientProviderBuilder.builder()
-						.clientCredentials(clientCredentials ->
-								clientCredentials.accessTokenResponseClient(
-										createClientCredentialsTokenResponseClient(restClient)))
-						.build();
-		// @formatter:on
-
-		DefaultOAuth2AuthorizedClientManager authorizedClientManager = new DefaultOAuth2AuthorizedClientManager(
-				clientRegistrationRepository, authorizedClientRepository);
-		authorizedClientManager.setAuthorizedClientProvider(authorizedClientProvider);
-
-		OAuth2ClientHttpRequestInterceptor requestInterceptor =
-				new OAuth2ClientHttpRequestInterceptor(authorizedClientManager);
-		OAuth2AuthorizationFailureHandler authorizationFailureHandler =
-				OAuth2ClientHttpRequestInterceptor.authorizationFailureHandler(authorizedClientRepository);
-		requestInterceptor.setAuthorizationFailureHandler(authorizationFailureHandler);
-
-		// @formatter:off
-		return RestClient.builder()
-				.requestFactory(clientHttpRequestFactory.get())
-				.requestInterceptor(requestInterceptor)
-				.build();
-		// @formatter:on
-	}
-
-	@Bean
-	public OAuth2AuthorizedClientManager authorizedClientManager(
-			ClientRegistrationRepository clientRegistrationRepository,
-			OAuth2AuthorizedClientRepository authorizedClientRepository,
-			@Qualifier("default-client-http-request-factory") Supplier<ClientHttpRequestFactory> clientHttpRequestFactory) {
-
-		RestClient restClient = accessTokenRestClient(clientHttpRequestFactory);
-
-		// @formatter:off
-		OAuth2AuthorizedClientProvider authorizedClientProvider =
-				OAuth2AuthorizedClientProviderBuilder.builder()
-						.authorizationCode()
-						.refreshToken()
-						.clientCredentials(clientCredentials ->
-								clientCredentials.accessTokenResponseClient(
-										createClientCredentialsTokenResponseClient(restClient)))
-						.provider(new DeviceCodeOAuth2AuthorizedClientProvider())
-						.build();
-		// @formatter:on
-
-		DefaultOAuth2AuthorizedClientManager authorizedClientManager = new DefaultOAuth2AuthorizedClientManager(
-				clientRegistrationRepository, authorizedClientRepository);
-		authorizedClientManager.setAuthorizedClientProvider(authorizedClientProvider);
-
-		// Set a contextAttributesMapper to obtain device_code from the request
-		authorizedClientManager.setContextAttributesMapper(DeviceCodeOAuth2AuthorizedClientProvider
-				.deviceCodeContextAttributesMapper());
-
-		return authorizedClientManager;
-	}
-
-	@Bean("default-client-http-request-factory")
-	Supplier<ClientHttpRequestFactory> defaultClientHttpRequestFactory(SslBundles sslBundles) {
-		return () -> {
-			SslBundle sslBundle = sslBundles.getBundle("demo-client");
-			final SSLContext sslContext = sslBundle.createSslContext();
-			final SSLConnectionSocketFactory sslConnectionSocketFactory =
-					new SSLConnectionSocketFactory(sslContext, NoopHostnameVerifier.INSTANCE);
-			final Registry<ConnectionSocketFactory> socketFactoryRegistry = RegistryBuilder.<ConnectionSocketFactory>create()
-					.register("http", PlainConnectionSocketFactory.getSocketFactory())
-					.register("https", sslConnectionSocketFactory)
-					.build();
-			final BasicHttpClientConnectionManager connectionManager =
-					new BasicHttpClientConnectionManager(socketFactoryRegistry);
-			final CloseableHttpClient httpClient = HttpClients.custom()
-					.setConnectionManager(connectionManager)
-					.build();
-			return new HttpComponentsClientHttpRequestFactory(httpClient);
-		};
-	}
-
-	@Bean("self-signed-demo-client-http-request-factory")
-	Supplier<ClientHttpRequestFactory> selfSignedDemoClientHttpRequestFactory(SslBundles sslBundles) {
-		return () -> {
-			SslBundle sslBundle = sslBundles.getBundle("self-signed-demo-client");
-			final SSLContext sslContext = sslBundle.createSslContext();
-			final SSLConnectionSocketFactory sslConnectionSocketFactory =
-					new SSLConnectionSocketFactory(sslContext, NoopHostnameVerifier.INSTANCE);
-			final Registry<ConnectionSocketFactory> socketFactoryRegistry = RegistryBuilder.<ConnectionSocketFactory>create()
-					.register("https", sslConnectionSocketFactory)
-					.build();
-			final BasicHttpClientConnectionManager connectionManager =
-					new BasicHttpClientConnectionManager(socketFactoryRegistry);
-			final CloseableHttpClient httpClient = HttpClients.custom()
-					.setConnectionManager(connectionManager)
-					.build();
-			return new HttpComponentsClientHttpRequestFactory(httpClient);
-		};
-	}
-
-	private static RestClient accessTokenRestClient(Supplier<ClientHttpRequestFactory> clientHttpRequestFactory) {
-		// @formatter:off
+    private static RestClient accessTokenRestClient(Supplier<ClientHttpRequestFactory> clientHttpRequestFactory) {
+        // @formatter:off
 		return RestClient.builder()
 				.requestFactory(clientHttpRequestFactory.get())
 				.messageConverters((messageConverters) -> {
@@ -196,16 +72,140 @@ public class RestClientConfig {
 				.build();
 		// @formatter:on
 
-	}
+    }
 
-	private static OAuth2AccessTokenResponseClient<OAuth2ClientCredentialsGrantRequest> createClientCredentialsTokenResponseClient(
-			RestClient restClient) {
-		RestClientClientCredentialsTokenResponseClient clientCredentialsTokenResponseClient =
-				new RestClientClientCredentialsTokenResponseClient();
-		clientCredentialsTokenResponseClient.setParametersConverter(new DefaultOAuth2TokenRequestParametersConverter<>());
-		clientCredentialsTokenResponseClient.setRestClient(restClient);
+    private static OAuth2AccessTokenResponseClient<OAuth2ClientCredentialsGrantRequest> createClientCredentialsTokenResponseClient(
+            RestClient restClient) {
+        RestClientClientCredentialsTokenResponseClient clientCredentialsTokenResponseClient =
+                new RestClientClientCredentialsTokenResponseClient();
+        clientCredentialsTokenResponseClient.setParametersConverter(new DefaultOAuth2TokenRequestParametersConverter<>());
+        clientCredentialsTokenResponseClient.setRestClient(restClient);
 
-		return clientCredentialsTokenResponseClient;
-	}
+        return clientCredentialsTokenResponseClient;
+    }
+
+    @Bean("default-client-rest-client")
+    public RestClient defaultClientRestClient(
+            OAuth2AuthorizedClientRepository authorizedClientRepository,
+            OAuth2AuthorizedClientManager authorizedClientManager,
+            @Qualifier("default-client-http-request-factory") Supplier<ClientHttpRequestFactory> clientHttpRequestFactory) {
+
+        OAuth2ClientHttpRequestInterceptor requestInterceptor =
+                new OAuth2ClientHttpRequestInterceptor(authorizedClientManager);
+        OAuth2AuthorizationFailureHandler authorizationFailureHandler =
+                OAuth2ClientHttpRequestInterceptor.authorizationFailureHandler(authorizedClientRepository);
+        requestInterceptor.setAuthorizationFailureHandler(authorizationFailureHandler);
+        // @formatter:off
+		return RestClient.builder()
+				.requestFactory(clientHttpRequestFactory.get())
+				.requestInterceptor(requestInterceptor)
+				.build();
+		// @formatter:on
+    }
+
+    @Bean("self-signed-demo-client-rest-client")
+    public RestClient selfSignedDemoClientRestClient(
+            ClientRegistrationRepository clientRegistrationRepository,
+            OAuth2AuthorizedClientRepository authorizedClientRepository,
+            @Qualifier("self-signed-demo-client-http-request-factory") Supplier<ClientHttpRequestFactory> clientHttpRequestFactory) {
+
+        RestClient restClient = accessTokenRestClient(clientHttpRequestFactory);
+
+        // @formatter:off
+		OAuth2AuthorizedClientProvider authorizedClientProvider =
+				OAuth2AuthorizedClientProviderBuilder.builder()
+						.clientCredentials(clientCredentials ->
+								clientCredentials.accessTokenResponseClient(
+										createClientCredentialsTokenResponseClient(restClient)))
+						.build();
+		// @formatter:on
+
+        DefaultOAuth2AuthorizedClientManager authorizedClientManager = new DefaultOAuth2AuthorizedClientManager(
+                clientRegistrationRepository, authorizedClientRepository);
+        authorizedClientManager.setAuthorizedClientProvider(authorizedClientProvider);
+
+        OAuth2ClientHttpRequestInterceptor requestInterceptor =
+                new OAuth2ClientHttpRequestInterceptor(authorizedClientManager);
+        OAuth2AuthorizationFailureHandler authorizationFailureHandler =
+                OAuth2ClientHttpRequestInterceptor.authorizationFailureHandler(authorizedClientRepository);
+        requestInterceptor.setAuthorizationFailureHandler(authorizationFailureHandler);
+
+        // @formatter:off
+		return RestClient.builder()
+				.requestFactory(clientHttpRequestFactory.get())
+				.requestInterceptor(requestInterceptor)
+				.build();
+		// @formatter:on
+    }
+
+    @Bean
+    public OAuth2AuthorizedClientManager authorizedClientManager(
+            ClientRegistrationRepository clientRegistrationRepository,
+            OAuth2AuthorizedClientRepository authorizedClientRepository,
+            @Qualifier("default-client-http-request-factory") Supplier<ClientHttpRequestFactory> clientHttpRequestFactory) {
+
+        RestClient restClient = accessTokenRestClient(clientHttpRequestFactory);
+
+        // @formatter:off
+		OAuth2AuthorizedClientProvider authorizedClientProvider =
+				OAuth2AuthorizedClientProviderBuilder.builder()
+						.authorizationCode()
+						.refreshToken()
+						.clientCredentials(clientCredentials ->
+								clientCredentials.accessTokenResponseClient(
+										createClientCredentialsTokenResponseClient(restClient)))
+						.provider(new DeviceCodeOAuth2AuthorizedClientProvider())
+						.build();
+		// @formatter:on
+
+        DefaultOAuth2AuthorizedClientManager authorizedClientManager = new DefaultOAuth2AuthorizedClientManager(
+                clientRegistrationRepository, authorizedClientRepository);
+        authorizedClientManager.setAuthorizedClientProvider(authorizedClientProvider);
+
+        // Set a contextAttributesMapper to obtain device_code from the request
+        authorizedClientManager.setContextAttributesMapper(DeviceCodeOAuth2AuthorizedClientProvider
+                .deviceCodeContextAttributesMapper());
+
+        return authorizedClientManager;
+    }
+
+    @Bean("default-client-http-request-factory")
+    Supplier<ClientHttpRequestFactory> defaultClientHttpRequestFactory(SslBundles sslBundles) {
+        return () -> {
+            SslBundle sslBundle = sslBundles.getBundle("demo-client");
+            final SSLContext sslContext = sslBundle.createSslContext();
+            final SSLConnectionSocketFactory sslConnectionSocketFactory =
+                    new SSLConnectionSocketFactory(sslContext, NoopHostnameVerifier.INSTANCE);
+            final Registry<ConnectionSocketFactory> socketFactoryRegistry = RegistryBuilder.<ConnectionSocketFactory>create()
+                    .register("http", PlainConnectionSocketFactory.getSocketFactory())
+                    .register("https", sslConnectionSocketFactory)
+                    .build();
+            final BasicHttpClientConnectionManager connectionManager =
+                    new BasicHttpClientConnectionManager(socketFactoryRegistry);
+            final CloseableHttpClient httpClient = HttpClients.custom()
+                    .setConnectionManager(connectionManager)
+                    .build();
+            return new HttpComponentsClientHttpRequestFactory(httpClient);
+        };
+    }
+
+    @Bean("self-signed-demo-client-http-request-factory")
+    Supplier<ClientHttpRequestFactory> selfSignedDemoClientHttpRequestFactory(SslBundles sslBundles) {
+        return () -> {
+            SslBundle sslBundle = sslBundles.getBundle("self-signed-demo-client");
+            final SSLContext sslContext = sslBundle.createSslContext();
+            final SSLConnectionSocketFactory sslConnectionSocketFactory =
+                    new SSLConnectionSocketFactory(sslContext, NoopHostnameVerifier.INSTANCE);
+            final Registry<ConnectionSocketFactory> socketFactoryRegistry = RegistryBuilder.<ConnectionSocketFactory>create()
+                    .register("https", sslConnectionSocketFactory)
+                    .build();
+            final BasicHttpClientConnectionManager connectionManager =
+                    new BasicHttpClientConnectionManager(socketFactoryRegistry);
+            final CloseableHttpClient httpClient = HttpClients.custom()
+                    .setConnectionManager(connectionManager)
+                    .build();
+            return new HttpComponentsClientHttpRequestFactory(httpClient);
+        };
+    }
 
 }

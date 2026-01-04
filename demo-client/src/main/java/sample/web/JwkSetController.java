@@ -37,31 +37,31 @@ import java.util.UUID;
  */
 @RestController
 public class JwkSetController {
-	private final JWKSet jwkSet;
+    private final JWKSet jwkSet;
 
-	public JwkSetController(SslBundles sslBundles) throws Exception {
-		this.jwkSet = initJwkSet(sslBundles);
-	}
+    public JwkSetController(SslBundles sslBundles) throws Exception {
+        this.jwkSet = initJwkSet(sslBundles);
+    }
 
-	@GetMapping("/jwks")
-	public Map<String, Object> getJwkSet() {
-		return this.jwkSet.toJSONObject();
-	}
+    private static JWKSet initJwkSet(SslBundles sslBundles) throws Exception {
+        SslBundle sslBundle = sslBundles.getBundle("self-signed-demo-client");
+        KeyStore keyStore = sslBundle.getStores().getKeyStore();
+        String alias = sslBundle.getKey().getAlias();
 
-	private static JWKSet initJwkSet(SslBundles sslBundles) throws Exception {
-		SslBundle sslBundle = sslBundles.getBundle("self-signed-demo-client");
-		KeyStore keyStore = sslBundle.getStores().getKeyStore();
-		String alias = sslBundle.getKey().getAlias();
+        Certificate certificate = keyStore.getCertificate(alias);
 
-		Certificate certificate = keyStore.getCertificate(alias);
+        RSAKey rsaKey = new RSAKey.Builder((RSAPublicKey) certificate.getPublicKey())
+                .keyUse(KeyUse.SIGNATURE)
+                .keyID(UUID.randomUUID().toString())
+                .x509CertChain(Collections.singletonList(Base64.encode(certificate.getEncoded())))
+                .build();
 
-		RSAKey rsaKey = new RSAKey.Builder((RSAPublicKey) certificate.getPublicKey())
-				.keyUse(KeyUse.SIGNATURE)
-				.keyID(UUID.randomUUID().toString())
-				.x509CertChain(Collections.singletonList(Base64.encode(certificate.getEncoded())))
-				.build();
+        return new JWKSet(rsaKey);
+    }
 
-		return new JWKSet(rsaKey);
-	}
+    @GetMapping("/jwks")
+    public Map<String, Object> getJwkSet() {
+        return this.jwkSet.toJSONObject();
+    }
 
 }

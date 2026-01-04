@@ -64,39 +64,39 @@ import java.util.UUID;
  */
 @Configuration(proxyBeanMethods = false)
 public class AuthorizationServerConfig {
-	private static final String CUSTOM_CONSENT_PAGE_URI = "/oauth2/consent";
+    private static final String CUSTOM_CONSENT_PAGE_URI = "/oauth2/consent";
 
-	@Bean
-	@Order(Ordered.HIGHEST_PRECEDENCE)
-	public SecurityFilterChain authorizationServerSecurityFilterChain(
-			HttpSecurity http, RegisteredClientRepository registeredClientRepository,
-			AuthorizationServerSettings authorizationServerSettings) throws Exception {
+    @Bean
+    @Order(Ordered.HIGHEST_PRECEDENCE)
+    public SecurityFilterChain authorizationServerSecurityFilterChain(
+            HttpSecurity http, RegisteredClientRepository registeredClientRepository,
+            AuthorizationServerSettings authorizationServerSettings) throws Exception {
 
-		/*
-		 * This sample demonstrates the use of a public client that does not
-		 * store credentials or authenticate with the authorization server.
-		 *
-		 * The following components show how to customize the authorization
-		 * server to allow for device clients to perform requests to the
-		 * OAuth 2.0 Device Authorization Endpoint and Token Endpoint without
-		 * a clientId/clientSecret.
-		 *
-		 * CAUTION: These endpoints will not require any authentication, and can
-		 * be accessed by any client that has a valid clientId.
-		 *
-		 * It is therefore RECOMMENDED to carefully monitor the use of these
-		 * endpoints and employ any additional protections as needed, which is
-		 * outside the scope of this sample.
-		 */
-		DeviceClientAuthenticationConverter deviceClientAuthenticationConverter =
-				new DeviceClientAuthenticationConverter(
-						authorizationServerSettings.getDeviceAuthorizationEndpoint());
-		DeviceClientAuthenticationProvider deviceClientAuthenticationProvider =
-				new DeviceClientAuthenticationProvider(registeredClientRepository);
+        /*
+         * This sample demonstrates the use of a public client that does not
+         * store credentials or authenticate with the authorization server.
+         *
+         * The following components show how to customize the authorization
+         * server to allow for device clients to perform requests to the
+         * OAuth 2.0 Device Authorization Endpoint and Token Endpoint without
+         * a clientId/clientSecret.
+         *
+         * CAUTION: These endpoints will not require any authentication, and can
+         * be accessed by any client that has a valid clientId.
+         *
+         * It is therefore RECOMMENDED to carefully monitor the use of these
+         * endpoints and employ any additional protections as needed, which is
+         * outside the scope of this sample.
+         */
+        DeviceClientAuthenticationConverter deviceClientAuthenticationConverter =
+                new DeviceClientAuthenticationConverter(
+                        authorizationServerSettings.getDeviceAuthorizationEndpoint());
+        DeviceClientAuthenticationProvider deviceClientAuthenticationProvider =
+                new DeviceClientAuthenticationProvider(registeredClientRepository);
 
-		OAuth2AuthorizationServerConfigurer authorizationServerConfigurer = new OAuth2AuthorizationServerConfigurer();
+        OAuth2AuthorizationServerConfigurer authorizationServerConfigurer = new OAuth2AuthorizationServerConfigurer();
 
-		// @formatter:off
+        // @formatter:off
 		http
 			.securityMatcher(authorizationServerConfigurer.getEndpointsMatcher())
 			.with(authorizationServerConfigurer, (authorizationServer) ->
@@ -128,10 +128,10 @@ public class AuthorizationServerConfig {
 				)
 			);
 		// @formatter:on
-		return http.build();
-	}
+        return http.build();
+    }
 
-	// @formatter:off
+    // @formatter:off
 	@Bean
 	public JdbcRegisteredClientRepository registeredClientRepository(JdbcTemplate jdbcTemplate) {
 		RegisteredClient messagingClient = RegisteredClient.withId(UUID.randomUUID().toString())
@@ -201,44 +201,44 @@ public class AuthorizationServerConfig {
 	}
 	// @formatter:on
 
-	@Bean
-	public JdbcOAuth2AuthorizationService authorizationService(JdbcTemplate jdbcTemplate,
-			RegisteredClientRepository registeredClientRepository) {
-		return new JdbcOAuth2AuthorizationService(jdbcTemplate, registeredClientRepository);
-	}
+    @Bean
+    public JdbcOAuth2AuthorizationService authorizationService(JdbcTemplate jdbcTemplate,
+                                                               RegisteredClientRepository registeredClientRepository) {
+        return new JdbcOAuth2AuthorizationService(jdbcTemplate, registeredClientRepository);
+    }
 
-	@Bean
-	public JdbcOAuth2AuthorizationConsentService authorizationConsentService(JdbcTemplate jdbcTemplate,
-			RegisteredClientRepository registeredClientRepository) {
-		// Will be used by the ConsentController
-		return new JdbcOAuth2AuthorizationConsentService(jdbcTemplate, registeredClientRepository);
-	}
+    @Bean
+    public JdbcOAuth2AuthorizationConsentService authorizationConsentService(JdbcTemplate jdbcTemplate,
+                                                                             RegisteredClientRepository registeredClientRepository) {
+        // Will be used by the ConsentController
+        return new JdbcOAuth2AuthorizationConsentService(jdbcTemplate, registeredClientRepository);
+    }
 
-	@Bean
-	public OAuth2TokenCustomizer<JwtEncodingContext> idTokenCustomizer() {
-		return new FederatedIdentityIdTokenCustomizer();
-	}
+    @Bean
+    public OAuth2TokenCustomizer<JwtEncodingContext> idTokenCustomizer() {
+        return new FederatedIdentityIdTokenCustomizer();
+    }
 
-	@Bean
-	public JWKSource<SecurityContext> jwkSource() {
-		RSAKey rsaKey = Jwks.generateRsa();
-		JWKSet jwkSet = new JWKSet(rsaKey);
-		return (jwkSelector, securityContext) -> jwkSelector.select(jwkSet);
-	}
+    @Bean
+    public JWKSource<SecurityContext> jwkSource() {
+        RSAKey rsaKey = Jwks.generateRsa();
+        JWKSet jwkSet = new JWKSet(rsaKey);
+        return (jwkSelector, securityContext) -> jwkSelector.select(jwkSet);
+    }
 
-	@Bean
-	public JwtDecoder jwtDecoder(JWKSource<SecurityContext> jwkSource) {
-		return OAuth2AuthorizationServerConfiguration.jwtDecoder(jwkSource);
-	}
+    @Bean
+    public JwtDecoder jwtDecoder(JWKSource<SecurityContext> jwkSource) {
+        return OAuth2AuthorizationServerConfiguration.jwtDecoder(jwkSource);
+    }
 
-	@Bean
-	public AuthorizationServerSettings authorizationServerSettings() {
-		return AuthorizationServerSettings.builder().build();
-	}
+    @Bean
+    public AuthorizationServerSettings authorizationServerSettings() {
+        return AuthorizationServerSettings.builder().build();
+    }
 
-	@Bean
-	public EmbeddedDatabase embeddedDatabase() {
-		// @formatter:off
+    @Bean
+    public EmbeddedDatabase embeddedDatabase() {
+        // @formatter:off
 		return new EmbeddedDatabaseBuilder()
 				.generateUniqueName(true)
 				.setType(EmbeddedDatabaseType.H2)
@@ -248,6 +248,6 @@ public class AuthorizationServerConfig {
 				.addScript("org/springframework/security/oauth2/server/authorization/client/oauth2-registered-client-schema.sql")
 				.build();
 		// @formatter:on
-	}
+    }
 
 }

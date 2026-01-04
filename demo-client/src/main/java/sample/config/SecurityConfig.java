@@ -36,7 +36,7 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @Configuration(proxyBeanMethods = false)
 public class SecurityConfig {
 
-	// @formatter:off
+    // @formatter:off
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http,
 			ClientRegistrationRepository clientRegistrationRepository) throws Exception {
@@ -55,16 +55,16 @@ public class SecurityConfig {
 	}
 	// @formatter:on
 
-	private LogoutSuccessHandler oidcLogoutSuccessHandler(
-			ClientRegistrationRepository clientRegistrationRepository) {
-		OidcClientInitiatedLogoutSuccessHandler oidcLogoutSuccessHandler =
-				new OidcClientInitiatedLogoutSuccessHandler(clientRegistrationRepository);
+    private LogoutSuccessHandler oidcLogoutSuccessHandler(
+            ClientRegistrationRepository clientRegistrationRepository) {
+        OidcClientInitiatedLogoutSuccessHandler oidcLogoutSuccessHandler =
+                new OidcClientInitiatedLogoutSuccessHandler(clientRegistrationRepository);
 
-		// Set the location that the End-User's User Agent will be redirected to
-		// after the logout has been performed at the Provider
-		oidcLogoutSuccessHandler.setPostLogoutRedirectUri("{baseUrl}/logged-out");
+        // Set the location that the End-User's User Agent will be redirected to
+        // after the logout has been performed at the Provider
+        oidcLogoutSuccessHandler.setPostLogoutRedirectUri("{baseUrl}/logged-out");
 
-		return oidcLogoutSuccessHandler;
-	}
+        return oidcLogoutSuccessHandler;
+    }
 
 }

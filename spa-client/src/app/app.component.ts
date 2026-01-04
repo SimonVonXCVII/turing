@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {NgIf, NgForOf} from '@angular/common';
+import {NgForOf, NgIf} from '@angular/common';
 import {HttpClient} from '@angular/common/http';
 import {catchError, of} from 'rxjs';
 import {environment} from "./environment";

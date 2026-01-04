@@ -28,18 +28,18 @@ import org.springframework.context.annotation.Configuration;
 @Configuration(proxyBeanMethods = false)
 public class TomcatServerConfig {
 
-	@Bean
-	public WebServerFactoryCustomizer<TomcatServletWebServerFactory> connectorCustomizer() {
-		return (tomcat) -> tomcat.addAdditionalConnectors(createHttpConnector());
-	}
+    @Bean
+    public WebServerFactoryCustomizer<TomcatServletWebServerFactory> connectorCustomizer() {
+        return (tomcat) -> tomcat.addAdditionalConnectors(createHttpConnector());
+    }
 
-	private Connector createHttpConnector() {
-		Connector connector = new Connector(TomcatServletWebServerFactory.DEFAULT_PROTOCOL);
-		connector.setScheme("http");
-		connector.setPort(8090);
-		connector.setSecure(false);
-		connector.setRedirectPort(8443);
-		return connector;
-	}
+    private Connector createHttpConnector() {
+        Connector connector = new Connector(TomcatServletWebServerFactory.DEFAULT_PROTOCOL);
+        connector.setScheme("http");
+        connector.setPort(8090);
+        connector.setSecure(false);
+        connector.setRedirectPort(8443);
+        return connector;
+    }
 
 }

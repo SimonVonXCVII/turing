@@ -26,16 +26,16 @@ import org.springframework.util.Assert;
  */
 public final class OAuth2DeviceGrantRequest extends AbstractOAuth2AuthorizationGrantRequest {
 
-	private final String deviceCode;
+    private final String deviceCode;
 
-	public OAuth2DeviceGrantRequest(ClientRegistration clientRegistration, String deviceCode) {
-		super(AuthorizationGrantType.DEVICE_CODE, clientRegistration);
-		Assert.hasText(deviceCode, "deviceCode cannot be empty");
-		this.deviceCode = deviceCode;
-	}
+    public OAuth2DeviceGrantRequest(ClientRegistration clientRegistration, String deviceCode) {
+        super(AuthorizationGrantType.DEVICE_CODE, clientRegistration);
+        Assert.hasText(deviceCode, "deviceCode cannot be empty");
+        this.deviceCode = deviceCode;
+    }
 
-	public String getDeviceCode() {
-		return this.deviceCode;
-	}
+    public String getDeviceCode() {
+        return this.deviceCode;
+    }
 
 }
