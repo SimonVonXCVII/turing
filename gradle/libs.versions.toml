@@ -3,12 +3,12 @@ org-springframework-boot = "4.0.5"
 io-spring-dependency-management = "1.1.7"
 io-spring-javaformat = "0.0.47"
 org-graalvm-buildtools-native = "0.11.5"
-org-jetbrains-kotlin = "2.3.10"
+org-jetbrains-kotlin = "2.3.20"
 java-language = "25"
 com-github-therapi-runtime-javadoc = "0.15.0"
 de-codecentric-spring-boot-admin-dependencies = "4.0.2"
 org-apache-poi-poi = "5.4.1"
-org-springdoc = "3.0.1"
+org-springdoc = "3.0.2"
 
 [libraries]
 com-github-therapi-therapi-runtime-javadoc-scribe = { module = "com.github.therapi:therapi-runtime-javadoc-scribe", version.ref = "com-github-therapi-runtime-javadoc" }

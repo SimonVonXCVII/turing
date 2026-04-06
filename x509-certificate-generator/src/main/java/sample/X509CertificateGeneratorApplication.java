@@ -98,9 +98,9 @@ public class X509CertificateGeneratorApplication implements CommandLineRunner {
         String distinguishedName = "CN=" + commonName + ", " + baseDistinguishedName;
         KeyPair rootKeyPair = BouncyCastleUtils.generateRSAKeyPair();
         X509Certificate rootCertificate = BouncyCastleUtils.createTrustAnchorCertificate(rootKeyPair, distinguishedName);
-        writeCertificatePEMEncoded(rootCertificate, "./turing/x509-certificate-generator/generated/" + commonName + ".pem");
+        writeCertificatePEMEncoded(rootCertificate, "./x509-certificate-generator/generated/" + commonName + ".pem");
         writeKeystore(rootKeyPair, new Certificate[]{rootCertificate}, commonName,
-                null, "./turing/x509-certificate-generator/generated/" + commonName + "-keystore.p12");
+                null, "./x509-certificate-generator/generated/" + commonName + "-keystore.p12");
         TrustedCertificateHolder[] rootTrustedCertificate = {new TrustedCertificateHolder(rootCertificate, rootCommonName)};
 
         // Generate the CA (intermediary) certificate and keystore file
@@ -110,9 +110,9 @@ public class X509CertificateGeneratorApplication implements CommandLineRunner {
         KeyPair caKeyPair = BouncyCastleUtils.generateRSAKeyPair();
         X509Certificate caCertificate = BouncyCastleUtils.createCACertificate(
                 rootCertificate, rootKeyPair.getPrivate(), caKeyPair.getPublic(), distinguishedName);
-        writeCertificatePEMEncoded(caCertificate, "./turing/x509-certificate-generator/generated/" + commonName + ".pem");
+        writeCertificatePEMEncoded(caCertificate, "./x509-certificate-generator/generated/" + commonName + ".pem");
         writeKeystore(caKeyPair, new Certificate[]{caCertificate, rootCertificate}, commonName,
-                rootTrustedCertificate, "./turing/x509-certificate-generator/generated/" + commonName + "-keystore.p12");
+                rootTrustedCertificate, "./x509-certificate-generator/generated/" + commonName + "-keystore.p12");
         TrustedCertificateHolder[] caTrustedCertificate = {new TrustedCertificateHolder(caCertificate, caCommonName)};
 
         // Generate the certificate and keystore file for the demo-client sample
@@ -123,7 +123,7 @@ public class X509CertificateGeneratorApplication implements CommandLineRunner {
                 caCertificate, caKeyPair.getPrivate(), demoClientKeyPair.getPublic(), distinguishedName);
         demoClientCertificate.verify(caCertificate.getPublicKey(), BC_PROVIDER);
         writeKeystore(demoClientKeyPair, new Certificate[]{demoClientCertificate, caCertificate, rootCertificate}, commonName,
-                caTrustedCertificate, "./turing/demo-client/src/main/resources/keystore.p12");
+                caTrustedCertificate, "./demo-client/src/main/resources/keystore.p12");
 
         // Generate a self-signed certificate and keystore file for the demo-client sample
         commonName = "demo-client-sample";
@@ -132,7 +132,7 @@ public class X509CertificateGeneratorApplication implements CommandLineRunner {
         KeyPair selfSignedDemoClientKeyPair = BouncyCastleUtils.generateRSAKeyPair();
         X509Certificate selfSignedDemoClientCertificate = BouncyCastleUtils.createTrustAnchorCertificate(selfSignedDemoClientKeyPair, distinguishedName);
         writeKeystore(selfSignedDemoClientKeyPair, new Certificate[]{selfSignedDemoClientCertificate}, alias,
-                caTrustedCertificate, "./turing/demo-client/src/main/resources/keystore-self-signed.p12");
+                caTrustedCertificate, "./demo-client/src/main/resources/keystore-self-signed.p12");
         TrustedCertificateHolder[] trustedCertificates = {
                 caTrustedCertificate[0],
                 new TrustedCertificateHolder(selfSignedDemoClientCertificate, alias)
@@ -146,7 +146,7 @@ public class X509CertificateGeneratorApplication implements CommandLineRunner {
                 caCertificate, caKeyPair.getPrivate(), messagesResourceKeyPair.getPublic(), distinguishedName);
         messagesResourceCertificate.verify(caCertificate.getPublicKey(), BC_PROVIDER);
         writeKeystore(messagesResourceKeyPair, new Certificate[]{messagesResourceCertificate, caCertificate, rootCertificate}, commonName,
-                trustedCertificates, "./turing/messages-resource/src/main/resources/keystore.p12");
+                trustedCertificates, "./messages-resource/src/main/resources/keystore.p12");
 
         // Generate the certificate and keystore file for the demo-authorizationserver sample
         commonName = "demo-authorizationserver-sample";
@@ -156,7 +156,7 @@ public class X509CertificateGeneratorApplication implements CommandLineRunner {
                 caCertificate, caKeyPair.getPrivate(), demoAuthorizationServerKeyPair.getPublic(), distinguishedName);
         demoAuthorizationServerCertificate.verify(caCertificate.getPublicKey(), BC_PROVIDER);
         writeKeystore(demoAuthorizationServerKeyPair, new Certificate[]{demoAuthorizationServerCertificate, caCertificate, rootCertificate}, commonName,
-                trustedCertificates, "./turing/demo-authorizationserver/src/main/resources/keystore.p12");
+                trustedCertificates, "./demo-authorizationserver/src/main/resources/keystore.p12");
     }
 
     private record TrustedCertificateHolder(Certificate certificate, String alias) {
