@@ -17,6 +17,7 @@ dependencyResolutionManagement {
 }
 
 include(
+    "turing-common",
     "turing-resource-server",
     "backend-for-spa-client",
     "default-authorizationserver",

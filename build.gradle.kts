@@ -10,6 +10,7 @@ plugins {
     id("org.jetbrains.kotlin.plugin.spring") version libs.versions.org.jetbrains.kotlin
 //    id("io.spring.javaformat") version libs.versions.io.spring.javaformat
 //    id("checkstyle")
+    kotlin("plugin.jpa") version libs.versions.org.jetbrains.kotlin
 }
 
 allprojects {
@@ -51,7 +52,7 @@ subprojects {
             /**
              * 工具链需要支持的 Java 语言的确切版本。
              */
-            languageVersion = JavaLanguageVersion.of(25)
+            languageVersion = JavaLanguageVersion.of(26)
 //            languageVersion = JavaLanguageVersion.of(libs.versions.java.language.get()) todo
         }
     }
@@ -64,7 +65,7 @@ subprojects {
          * 配置项目中 Kotlin JVM 和 Java 任务的 Java 工具链。
          */
         jvmToolchain {
-            languageVersion = JavaLanguageVersion.of(25)
+            languageVersion = JavaLanguageVersion.of(26)
         }
     }
 
@@ -124,29 +125,20 @@ subprojects {
 //            dependency("org.springdoc:springdoc-openapi-javadoc:${property("springdocVersion")}")
 //            dependency("org.springdoc:springdoc-openapi-ui:${property("springdocVersion")}")
 //        }
-        /**
-         * 使用给定操作配置依赖项管理导入。
-         */
+
         imports {
-            /**
-             * 导入具有给定坐标（格式为 group:name:version）的 Maven bom。
-             */
-            mavenBom("de.codecentric:spring-boot-admin-dependencies:3.5.6")
-//            mavenBom(libs.de.codecentric.spring.boot.admin.dependencies) todo
+            mavenBom("de.codecentric:spring-boot-admin-dependencies:4.0.4")
+//            mavenBom(libs.de.codecentric.spring.boot.admin.dependencies.get().toString())
         }
     }
 
-    /**
-     * tasks: 返回该项目的任务。
-     * withType: 返回一个集合，其中包含此集合中给定类型的对象。 相当于调用 withType(type).all(configureAction)。
-     * Test: 执行 JUnit（3.8.x、4.x 或 5.x）或 TestNG 测试。 测试始终在（一个或多个）单独的 JVM 中运行。
-     */
+    kotlin {
+        compilerOptions {
+            freeCompilerArgs.addAll("-Xjsr305=strict", "-Xannotation-default-target=param-property")
+        }
+    }
+
     tasks.withType<Test> {
-        /**
-         * 指定应使用 JUnit Platform 来发现和执行测试。
-         * 如果您的测试使用 JUnit Jupiter/JUnit5，请使用此选项。
-         * JUnit Platform 支持多个测试引擎，允许在其之上构建其他测试框架。 即使您不直接使用 JUnit，您也可能需要使用此选项。
-         */
         useJUnitPlatform()
     }
 }
