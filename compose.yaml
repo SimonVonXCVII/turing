@@ -69,7 +69,7 @@ services:
     # 声明用于服务容器的自定义主机名。
     hostname: turing-redis
     # 指定启动容器的图像。
-    image: redis:8.6.3
+    image: redis:8.8.0
     # 暴露端口。 指定两个端口 (HOST:CONTAINER)，或仅指定容器端口（选择临时主机端口）。
     ports:
       - "6379:6379"
@@ -118,7 +118,7 @@ services:
     # 声明用于服务容器的自定义主机名。
     hostname: turing-nginx
     # 指定启动容器的图像。
-    image: nginx:1.31.0
+    image: nginx:1.31.2
     # 暴露端口。 指定两个端口 (HOST:CONTAINER)，或仅指定容器端口（选择临时主机端口）。
     ports:
       - "80:80"
@@ -145,7 +145,7 @@ services:
     # 声明用于服务容器的自定义主机名。
     hostname: turing-portainer
     # 指定启动容器的图像。
-    image: portainer/portainer-ce:2.41.1
+    image: portainer/portainer-ce:2.43.0
     # 暴露端口。 指定两个端口 (HOST:CONTAINER)，或仅指定容器端口（选择临时主机端口）。
     ports:
       - "9000:9000"

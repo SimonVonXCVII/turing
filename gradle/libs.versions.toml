@@ -1,12 +1,12 @@
 [versions]
-org-springframework-boot = "4.0.6"
+org-springframework-boot = "4.1.0"
 io-spring-dependency-management = "1.1.7"
 io-spring-javaformat = "0.0.47"
-org-graalvm-buildtools-native = "0.11.5"
-org-jetbrains-kotlin = "2.3.21"
+org-graalvm-buildtools-native = "1.1.1"
+org-jetbrains-kotlin = "2.4.0"
 java-language = "26"
 com-github-therapi-runtime-javadoc = "0.15.0"
-de-codecentric-spring-boot-admin-dependencies = "4.0.4"
+de-codecentric-spring-boot-admin-dependencies = "4.1.1"
 org-apache-poi-poi = "5.4.1"
 org-springdoc = "3.0.3"
 
