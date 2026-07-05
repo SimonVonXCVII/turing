@@ -111,68 +111,6 @@ COMMENT ON COLUMN public.turing_dict.deleted IS '逻辑删除';
 ALTER TABLE public.turing_dict
     OWNER TO postgres;
 
-CREATE TABLE IF NOT EXISTS public.turing_menu
-(
-    id                 SERIAL
-        CONSTRAINT con_public_turing_menu_constraint_1
-            PRIMARY KEY,
-    type               VARCHAR(8)                          NOT NULL,
-    name               VARCHAR(64)                         NOT NULL
-        UNIQUE,
-    pid                INTEGER,
-    path               VARCHAR(128),
-    active_path        VARCHAR(128),
-    component          VARCHAR(128),
-    auth_code          VARCHAR(128)
-        UNIQUE,
-    status             SMALLINT                            NOT NULL,
-    meta_id            INTEGER                             NOT NULL
-        references public.turing_menu_meta (id),
-    created_by         INTEGER,
-    created_date       TIMESTAMP                           NOT NULL,
-    last_modified_by   INTEGER,
-    last_modified_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    version            INTEGER   DEFAULT 0                 NOT NULL,
-    deleted            BOOLEAN   DEFAULT FALSE             NOT NULL
-);
-
-COMMENT ON TABLE public.turing_menu IS '菜单表';
-
-COMMENT ON COLUMN public.turing_menu.id IS '菜单 id';
-
-COMMENT ON COLUMN public.turing_menu.type IS '菜单类型';
-
-COMMENT ON COLUMN public.turing_menu.name IS '菜单名称';
-
-COMMENT ON COLUMN public.turing_menu.pid IS '上级菜单 id';
-
-COMMENT ON COLUMN public.turing_menu.path IS '路由地址';
-
-COMMENT ON COLUMN public.turing_menu.active_path IS '激活路径';
-
-COMMENT ON COLUMN public.turing_menu.component IS '页面组件';
-
-COMMENT ON COLUMN public.turing_menu.auth_code IS '权限标识';
-
-COMMENT ON COLUMN public.turing_menu.status IS '状态';
-
-COMMENT ON COLUMN public.turing_menu.meta_id IS '元数据 id';
-
-COMMENT ON COLUMN public.turing_menu.created_by IS '创建者';
-
-COMMENT ON COLUMN public.turing_menu.created_date IS '创建时间';
-
-COMMENT ON COLUMN public.turing_menu.last_modified_by IS '最后修改者';
-
-COMMENT ON COLUMN public.turing_menu.last_modified_date IS '最后修改时间';
-
-COMMENT ON COLUMN public.turing_menu.version IS '乐观锁版本';
-
-COMMENT ON COLUMN public.turing_menu.deleted IS '逻辑删除';
-
-ALTER TABLE public.turing_menu
-    OWNER TO postgres;
-
 CREATE TABLE IF NOT EXISTS public.turing_menu_meta
 (
     id                    SERIAL
@@ -250,6 +188,68 @@ COMMENT ON COLUMN public.turing_menu_meta.version IS '乐观锁版本';
 COMMENT ON COLUMN public.turing_menu_meta.deleted IS '逻辑删除';
 
 ALTER TABLE public.turing_menu_meta
+    OWNER TO postgres;
+
+CREATE TABLE IF NOT EXISTS public.turing_menu
+(
+    id                 SERIAL
+        CONSTRAINT con_public_turing_menu_constraint_1
+            PRIMARY KEY,
+    type               VARCHAR(8)                          NOT NULL,
+    name               VARCHAR(64)                         NOT NULL
+        UNIQUE,
+    pid                INTEGER,
+    path               VARCHAR(128),
+    active_path        VARCHAR(128),
+    component          VARCHAR(128),
+    auth_code          VARCHAR(128)
+        UNIQUE,
+    status             SMALLINT                            NOT NULL,
+    meta_id            INTEGER                             NOT NULL
+        references public.turing_menu_meta (id),
+    created_by         INTEGER,
+    created_date       TIMESTAMP                           NOT NULL,
+    last_modified_by   INTEGER,
+    last_modified_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    version            INTEGER   DEFAULT 0                 NOT NULL,
+    deleted            BOOLEAN   DEFAULT FALSE             NOT NULL
+);
+
+COMMENT ON TABLE public.turing_menu IS '菜单表';
+
+COMMENT ON COLUMN public.turing_menu.id IS '菜单 id';
+
+COMMENT ON COLUMN public.turing_menu.type IS '菜单类型';
+
+COMMENT ON COLUMN public.turing_menu.name IS '菜单名称';
+
+COMMENT ON COLUMN public.turing_menu.pid IS '上级菜单 id';
+
+COMMENT ON COLUMN public.turing_menu.path IS '路由地址';
+
+COMMENT ON COLUMN public.turing_menu.active_path IS '激活路径';
+
+COMMENT ON COLUMN public.turing_menu.component IS '页面组件';
+
+COMMENT ON COLUMN public.turing_menu.auth_code IS '权限标识';
+
+COMMENT ON COLUMN public.turing_menu.status IS '状态';
+
+COMMENT ON COLUMN public.turing_menu.meta_id IS '元数据 id';
+
+COMMENT ON COLUMN public.turing_menu.created_by IS '创建者';
+
+COMMENT ON COLUMN public.turing_menu.created_date IS '创建时间';
+
+COMMENT ON COLUMN public.turing_menu.last_modified_by IS '最后修改者';
+
+COMMENT ON COLUMN public.turing_menu.last_modified_date IS '最后修改时间';
+
+COMMENT ON COLUMN public.turing_menu.version IS '乐观锁版本';
+
+COMMENT ON COLUMN public.turing_menu.deleted IS '逻辑删除';
+
+ALTER TABLE public.turing_menu
     OWNER TO postgres;
 
 CREATE TABLE IF NOT EXISTS public.turing_organization
