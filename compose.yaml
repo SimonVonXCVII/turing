@@ -28,6 +28,29 @@ networks:
     # 指定该网络应使用哪个驱动程序。
     driver: bridge
 
+volumes:
+  turing-postgresql-data:
+    name: turing-postgresql-data
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ${PWD}/docker/postgresql/data
+  turing-redis-data:
+    name: turing-redis-data
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ${PWD}/docker/redis/data
+  turing-portainer-data:
+    name: turing-portainer-data
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ${PWD}/docker/portainer/data
+
 # 服务是应用程序中计算资源的抽象定义，可以独立于其他组件进行扩展/替换。
 services:
   turing-db:
@@ -51,7 +74,7 @@ services:
       - "5432:5432"
     # 定义服务容器必须可以访问的挂载主机路径或命名卷。
     volumes:
-      - ./docker/postgresql/data:/var/lib/postgresql/18/docker
+      - turing-postgresql-data:/var/lib/postgresql
       - ./docker/postgresql/sh/init-user-db.sh:/docker-entrypoint-initdb.d/init-user-db.sh
 
   # todo 有没有比 redis 更好的选择
@@ -75,7 +98,7 @@ services:
       - "6379:6379"
     # 定义服务容器必须可以访问的挂载主机路径或命名卷。
     volumes:
-      - ./docker/redis/data:/data
+      - turing-redis-data:/data
       - ./docker/redis/sh/healthcheck.sh:/usr/local/bin/healthcheck.sh
 
   turing-backend:
@@ -151,5 +174,5 @@ services:
       - "9000:9000"
       - "9443:9443"
     # 定义服务容器必须可以访问的挂载主机路径或命名卷。
-#    volumes:
-#      - /var/run/docker.sock:/var/run/docker.sock
+    volumes:
+      - turing-portainer-data:/data
