@@ -59,7 +59,7 @@ COMMENT ON COLUMN public.turing_app_file.version IS '乐观锁版本';
 COMMENT ON COLUMN public.turing_app_file.deleted IS '逻辑删除';
 
 ALTER TABLE public.turing_app_file
-    OWNER TO postgres;
+    OWNER TO turing;
 
 CREATE TABLE IF NOT EXISTS public.turing_dict
 (
@@ -109,7 +109,7 @@ COMMENT ON COLUMN public.turing_dict.version IS '乐观锁版本';
 COMMENT ON COLUMN public.turing_dict.deleted IS '逻辑删除';
 
 ALTER TABLE public.turing_dict
-    OWNER TO postgres;
+    OWNER TO turing;
 
 CREATE TABLE IF NOT EXISTS public.turing_menu_meta
 (
@@ -188,7 +188,7 @@ COMMENT ON COLUMN public.turing_menu_meta.version IS '乐观锁版本';
 COMMENT ON COLUMN public.turing_menu_meta.deleted IS '逻辑删除';
 
 ALTER TABLE public.turing_menu_meta
-    OWNER TO postgres;
+    OWNER TO turing;
 
 CREATE TABLE IF NOT EXISTS public.turing_menu
 (
@@ -250,7 +250,7 @@ COMMENT ON COLUMN public.turing_menu.version IS '乐观锁版本';
 COMMENT ON COLUMN public.turing_menu.deleted IS '逻辑删除';
 
 ALTER TABLE public.turing_menu
-    OWNER TO postgres;
+    OWNER TO turing;
 
 CREATE TABLE IF NOT EXISTS public.turing_organization
 (
@@ -324,7 +324,7 @@ COMMENT ON COLUMN public.turing_organization.version IS '乐观锁版本';
 COMMENT ON COLUMN public.turing_organization.deleted IS '逻辑删除';
 
 ALTER TABLE public.turing_organization
-    OWNER TO postgres;
+    OWNER TO turing;
 
 CREATE TABLE IF NOT EXISTS public.turing_organization_business
 (
@@ -392,7 +392,7 @@ COMMENT ON COLUMN public.turing_organization_business.version IS '乐观锁版�
 COMMENT ON COLUMN public.turing_organization_business.deleted IS '逻辑删除';
 
 ALTER TABLE public.turing_organization_business
-    OWNER TO postgres;
+    OWNER TO turing;
 
 CREATE TABLE IF NOT EXISTS public.turing_permission
 (
@@ -435,7 +435,7 @@ COMMENT ON COLUMN public.turing_permission.version IS '乐观锁版本';
 COMMENT ON COLUMN public.turing_permission.deleted IS '逻辑删除';
 
 ALTER TABLE public.turing_permission
-    OWNER TO postgres;
+    OWNER TO turing;
 
 CREATE TABLE IF NOT EXISTS public.turing_role
 (
@@ -481,7 +481,7 @@ COMMENT ON COLUMN public.turing_role.version IS '乐观锁版本';
 COMMENT ON COLUMN public.turing_role.deleted IS '逻辑删除';
 
 ALTER TABLE public.turing_role
-    OWNER TO postgres;
+    OWNER TO turing;
 
 CREATE TABLE IF NOT EXISTS public.turing_role_permission
 (
@@ -519,7 +519,7 @@ COMMENT ON COLUMN public.turing_role_permission.version IS '乐观锁版本';
 COMMENT ON COLUMN public.turing_role_permission.deleted IS '逻辑删除';
 
 ALTER TABLE public.turing_role_permission
-    OWNER TO postgres;
+    OWNER TO turing;
 
 CREATE TABLE IF NOT EXISTS public.turing_user
 (
@@ -594,7 +594,7 @@ COMMENT ON COLUMN public.turing_user.version IS '乐观锁版本';
 COMMENT ON COLUMN public.turing_user.deleted IS '逻辑删除';
 
 ALTER TABLE public.turing_user
-    OWNER TO postgres;
+    OWNER TO turing;
 
 CREATE TABLE IF NOT EXISTS public.turing_user_role
 (
@@ -632,4 +632,4 @@ COMMENT ON COLUMN public.turing_user_role.version IS '乐观锁版本';
 COMMENT ON COLUMN public.turing_user_role.deleted IS '逻辑删除';
 
 ALTER TABLE public.turing_user_role
-    OWNER TO postgres;
+    OWNER TO turing;
