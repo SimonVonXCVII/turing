@@ -1,6 +1,6 @@
 package com.simonvonxcvii.turing.resource.server.service;
 
-import com.simonvonxcvii.turing.resource.server.model.dto.OrganizationDTO;
+import com.simonvonxcvii.turing.resource.server.model.dto.OrganizationDto;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
@@ -18,17 +18,17 @@ public interface IOrganizationService {
     /**
      * 单个新增或修改
      */
-    void insertOrUpdate(OrganizationDTO dto);
+    void insertOrUpdate(OrganizationDto dto);
 
     /**
      * 分页查询
      */
-    Page<OrganizationDTO> selectPage(OrganizationDTO dto);
+    Page<OrganizationDto> selectPage(OrganizationDto dto);
 
     /**
      * 查询单位 id 和单位名称列表
      */
-    List<OrganizationDTO> selectIdAndNameList();
+    List<OrganizationDto> selectIdAndNameList();
 
     /**
      * 【测试项目分类管理】菜单【添加测试项目分类】弹窗中的检测实验室和检测质控实验室接口
@@ -38,7 +38,7 @@ public interface IOrganizationService {
      * @author Simon Von
      * @since 2023/4/4 14:52
      */
-    List<OrganizationDTO> selectList(String name);
+    List<OrganizationDto> selectList(String name);
 
     /**
      * 根据 id 逻辑删除单位及其关联的用户和用户的角色

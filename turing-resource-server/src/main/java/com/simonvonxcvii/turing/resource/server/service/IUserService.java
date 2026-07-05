@@ -1,6 +1,6 @@
 package com.simonvonxcvii.turing.resource.server.service;
 
-import com.simonvonxcvii.turing.resource.server.model.dto.UserDTO;
+import com.simonvonxcvii.turing.common.model.dto.UserDto;
 import org.springframework.data.domain.Page;
 
 /**
@@ -19,17 +19,17 @@ public interface IUserService {
      * @author Simon Von
      * @since 12/17/2022 8:19 PM
      */
-    UserDTO info();
+    UserDto info();
 
     /**
      * 单个新增或修改
      */
-    void insertOrUpdate(UserDTO dto);
+    void insertOrUpdate(UserDto dto);
 
     /**
      * 分页查询
      */
-    Page<UserDTO> selectPage(UserDTO dto);
+    Page<UserDto> selectPage(UserDto dto);
 
     /**
      * 根据用户 id 逻辑删除用户

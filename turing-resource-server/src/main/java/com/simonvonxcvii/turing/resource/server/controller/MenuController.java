@@ -1,7 +1,7 @@
 package com.simonvonxcvii.turing.resource.server.controller;
 
-import com.simonvonxcvii.turing.resource.server.common.result.Result;
-import com.simonvonxcvii.turing.resource.server.model.dto.MenuDTO;
+import com.simonvonxcvii.turing.common.result.Result;
+import com.simonvonxcvii.turing.resource.server.model.dto.MenuDto;
 import com.simonvonxcvii.turing.resource.server.service.IMenuService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -33,7 +33,7 @@ public class MenuController {
 
     @Operation(summary = "新增数据")
     @PostMapping
-    public ResponseEntity<Result<Object>> insert(@RequestBody @Validated MenuDTO dto) {
+    public ResponseEntity<Result<Object>> insert(@RequestBody @Validated MenuDto dto) {
         service.insert(dto);
         return ResponseEntity.ok(Result.ok());
     }
@@ -52,14 +52,14 @@ public class MenuController {
 
     @Operation(summary = "条件查询")
     @GetMapping("/list")
-    public ResponseEntity<Result<List<MenuDTO>>> selectBy() {
+    public ResponseEntity<Result<List<MenuDto>>> selectBy() {
         return ResponseEntity.ok(Result.ok(service.selectBy()));
     }
 
     @Operation(summary = "修改数据")
     @PutMapping("/{id}")
     public ResponseEntity<Result<Object>> updateById(@PathVariable @NotNull(message = "主键 id 不能为 null") Integer id,
-                                                     @RequestBody MenuDTO dto) {
+                                                     @RequestBody MenuDto dto) {
         service.updateById(id, dto);
         return ResponseEntity.ok(Result.ok());
     }

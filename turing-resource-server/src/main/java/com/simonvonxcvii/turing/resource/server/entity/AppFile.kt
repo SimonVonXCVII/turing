@@ -1,10 +1,10 @@
 package com.simonvonxcvii.turing.resource.server.entity
 
+import com.simonvonxcvii.turing.common.entity.AbstractAuditable
 import com.simonvonxcvii.turing.resource.server.enums.FileTypeEnum
 import jakarta.persistence.*
 import org.hibernate.annotations.SQLDelete
 import org.hibernate.annotations.SQLRestriction
-import java.util.*
 
 /**
  * 文件表

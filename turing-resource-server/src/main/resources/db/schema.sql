@@ -66,7 +66,7 @@ CREATE TABLE IF NOT EXISTS public.turing_dict
     id                 SERIAL
         CONSTRAINT con_public_turing_dict_constraint_1
             PRIMARY KEY,
-    type               VARCHAR(32),
+    type               VARCHAR(64),
     pid                INTEGER,
     name               VARCHAR(32)                         NOT NULL,
     value              VARCHAR(32)                         NOT NULL,
@@ -116,7 +116,7 @@ CREATE TABLE IF NOT EXISTS public.turing_menu_meta
     id                    SERIAL
         CONSTRAINT con_public_turing_menu_meta_constraint_1
             PRIMARY KEY,
-    menu_id               INTEGER                             NOT NULL,
+--     menu_id               INTEGER                             NOT NULL,
     title                 VARCHAR(64)                         NOT NULL,
     icon                  VARCHAR(128),
     active_icon           VARCHAR(128),
@@ -145,7 +145,7 @@ COMMENT ON TABLE public.turing_menu_meta IS '菜单表';
 
 COMMENT ON COLUMN public.turing_menu_meta.id IS '菜单 id';
 
-COMMENT ON COLUMN public.turing_menu_meta.menu_id IS '菜单 id';
+-- COMMENT ON COLUMN public.turing_menu_meta.menu_id IS '菜单 id';
 
 COMMENT ON COLUMN public.turing_menu_meta.title IS '标题';
 

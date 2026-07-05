@@ -5,6 +5,24 @@ server:
     client-auth: want
 
 spring:
+  config:
+    # 导入额外的配置数据。
+    import: optional:file:.env[.properties]
+  datasource:
+    # 数据库的 JDBC URL。
+    url: jdbc:postgresql://${HOST}:5432/turing
+    # 数据库的登录用户名。
+    username: turing
+    # 数据库的登录密码。
+    password: ${POSTGRES_PASSWORD}
+  sql:
+    init:
+      mode: always
+      schema-locations:
+        - classpath:db/oauth2-authorization-consent-schema.sql
+        - classpath:db/oauth2-authorization-schema.sql
+        - classpath:db/oauth2-registered-client-schema.sql
+  #      platform: postgres
   ssl:
     bundle:
       jks:

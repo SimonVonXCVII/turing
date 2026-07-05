@@ -1,6 +1,6 @@
 package com.simonvonxcvii.turing.resource.server.service;
 
-import com.simonvonxcvii.turing.resource.server.model.dto.RoleDTO;
+import com.simonvonxcvii.turing.common.model.dto.RoleDto;
 import org.springframework.data.domain.Page;
 
 /**
@@ -16,12 +16,12 @@ public interface IRoleService {
     /**
      * 新增数据
      */
-    void insert(RoleDTO dto);
+    void insert(RoleDto dto);
 
     /**
      * 条件查询
      */
-    Page<RoleDTO> selectBy(RoleDTO dto);
+    Page<RoleDto> selectBy(RoleDto dto);
 
     /**
      * 修改数据
@@ -29,7 +29,7 @@ public interface IRoleService {
      * @param id  主键 id
      * @param dto 其他数据
      */
-    void updateById(Integer id, RoleDTO dto);
+    void updateById(Integer id, RoleDto dto);
 
     /**
      * 逻辑删除

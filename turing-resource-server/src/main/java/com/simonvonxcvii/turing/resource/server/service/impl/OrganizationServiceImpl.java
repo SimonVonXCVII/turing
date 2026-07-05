@@ -1,15 +1,18 @@
 package com.simonvonxcvii.turing.resource.server.service.impl;
 
-import com.simonvonxcvii.turing.resource.server.entity.*;
+import com.simonvonxcvii.turing.common.entity.AbstractAuditable;
+import com.simonvonxcvii.turing.common.entity.User;
+import com.simonvonxcvii.turing.common.repository.jpa.UserJpaRepository;
+import com.simonvonxcvii.turing.common.repository.jpa.UserRoleJpaRepository;
+import com.simonvonxcvii.turing.resource.server.entity.Dict;
+import com.simonvonxcvii.turing.resource.server.entity.Organization;
+import com.simonvonxcvii.turing.resource.server.entity.OrganizationBusiness;
 import com.simonvonxcvii.turing.resource.server.enums.OrganizationBusinessBusinessLinksEnum;
 import com.simonvonxcvii.turing.resource.server.enums.OrganizationBusinessStateEnum;
-import com.simonvonxcvii.turing.resource.server.model.dto.OrganizationDTO;
+import com.simonvonxcvii.turing.resource.server.model.dto.OrganizationDto;
 import com.simonvonxcvii.turing.resource.server.repository.jpa.OrganizationBusinessJpaRepository;
 import com.simonvonxcvii.turing.resource.server.repository.jpa.OrganizationJpaRepository;
-import com.simonvonxcvii.turing.resource.server.repository.jpa.UserJpaRepository;
-import com.simonvonxcvii.turing.resource.server.repository.jpa.UserRoleJpaRepository;
 import com.simonvonxcvii.turing.resource.server.service.IOrganizationService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -34,7 +37,6 @@ import java.util.stream.Collectors;
  * @author Simon Von
  * @since 2022-12-29 11:33:31
  */
-@RequiredArgsConstructor
 @Service
 public class OrganizationServiceImpl implements IOrganizationService {
 
@@ -44,9 +46,23 @@ public class OrganizationServiceImpl implements IOrganizationService {
     private final UserRoleJpaRepository userRoleJpaRepository;
     private final StringRedisTemplate stringRedisTemplate;
 
+    public OrganizationServiceImpl(
+            OrganizationJpaRepository organizationJpaRepository,
+            OrganizationBusinessJpaRepository organizationBusinessJpaRepository,
+            UserJpaRepository userJpaRepository,
+            UserRoleJpaRepository userRoleJpaRepository,
+            StringRedisTemplate stringRedisTemplate
+    ) {
+        this.organizationJpaRepository = organizationJpaRepository;
+        this.organizationBusinessJpaRepository = organizationBusinessJpaRepository;
+        this.userJpaRepository = userJpaRepository;
+        this.userRoleJpaRepository = userRoleJpaRepository;
+        this.stringRedisTemplate = stringRedisTemplate;
+    }
+
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void insertOrUpdate(OrganizationDTO dto) {
+    public void insertOrUpdate(OrganizationDto dto) {
         Organization organization;
         // 新增
         if (dto.getId() == null) {
@@ -69,7 +85,7 @@ public class OrganizationServiceImpl implements IOrganizationService {
     }
 
     @Override
-    public Page<OrganizationDTO> selectPage(OrganizationDTO dto) {
+    public Page<OrganizationDto> selectPage(OrganizationDto dto) {
         Specification<Organization> spec = Specification.<Organization>where((root, builder) -> {
             if (!StringUtils.hasText(dto.getName())) {
                 return null;
@@ -110,18 +126,18 @@ public class OrganizationServiceImpl implements IOrganizationService {
         PageRequest pageRequest = PageRequest.of(dto.getPage() - 1, dto.getPageSize());
         return organizationJpaRepository.findAll(spec, pageRequest)
                 .map(organization -> {
-                    OrganizationDTO organizationDTO = new OrganizationDTO();
+                    OrganizationDto organizationDTO = new OrganizationDto();
                     BeanUtils.copyProperties(organization, organizationDTO);
                     return organizationDTO;
                 });
     }
 
     @Override
-    public List<OrganizationDTO> selectIdAndNameList() {
+    public List<OrganizationDto> selectIdAndNameList() {
         return organizationJpaRepository.findAll()
                 .stream()
                 .map(organization -> {
-                    OrganizationDTO dto = new OrganizationDTO();
+                    OrganizationDto dto = new OrganizationDto();
                     dto.setId(organization.getId());
                     dto.setName(organization.getName());
                     return dto;
@@ -138,7 +154,7 @@ public class OrganizationServiceImpl implements IOrganizationService {
      * @since 2023/4/4 14:52
      */
     @Override
-    public List<OrganizationDTO> selectList(String name) {
+    public List<OrganizationDto> selectList(String name) {
         Specification<OrganizationBusiness> spec =
                 Specification.<OrganizationBusiness>where((from, builder) ->
                         builder.like(from.get(OrganizationBusiness.LINK),
@@ -153,13 +169,13 @@ public class OrganizationServiceImpl implements IOrganizationService {
         return organizationBusinessJpaRepository.findAll(spec)
                 .stream()
                 .map(organizationBusiness -> {
-                    OrganizationDTO dto = new OrganizationDTO();
+                    OrganizationDto dto = new OrganizationDto();
                     dto.setId(organizationBusiness.getOrgId());
                     dto.setName(organizationBusiness.getOrgName());
                     return dto;
                 })
                 .collect(Collectors.collectingAndThen(Collectors.toCollection(() ->
-                        new TreeSet<>(Comparator.comparing(OrganizationDTO::getId))), ArrayList::new));
+                        new TreeSet<>(Comparator.comparing(OrganizationDto::getId))), ArrayList::new));
     }
 
     @Override

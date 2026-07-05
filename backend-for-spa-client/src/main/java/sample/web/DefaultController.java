@@ -16,8 +16,13 @@
 package sample.web;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
+import org.springframework.security.oauth2.client.annotation.RegisteredOAuth2AuthorizedClient;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+
+import java.util.Collections;
+import java.util.Map;
 
 /**
  * @author Joe Grandja
@@ -38,6 +43,11 @@ public class DefaultController {
     @GetMapping("/authorized")
     public String authorized() {
         return "redirect:" + this.appBaseUri;
+    }
+
+    @GetMapping("/token")
+    public Map<String, String> getToken(@RegisteredOAuth2AuthorizedClient("messaging-client-oidc") OAuth2AuthorizedClient authorizedClient) {
+        return Collections.singletonMap("token", authorizedClient.getAccessToken().getTokenValue());
     }
 
 }

@@ -1,15 +1,14 @@
 package com.simonvonxcvii.turing.resource.server.service.impl;
 
-import com.simonvonxcvii.turing.resource.server.common.exception.BizRuntimeException;
-import com.simonvonxcvii.turing.resource.server.entity.Role;
-import com.simonvonxcvii.turing.resource.server.entity.RolePermission;
-import com.simonvonxcvii.turing.resource.server.model.dto.RoleDTO;
-import com.simonvonxcvii.turing.resource.server.repository.jpa.PermissionJpaRepository;
-import com.simonvonxcvii.turing.resource.server.repository.jpa.RoleJpaRepository;
-import com.simonvonxcvii.turing.resource.server.repository.jpa.RolePermissionJpaRepository;
-import com.simonvonxcvii.turing.resource.server.repository.jpa.UserRoleJpaRepository;
+import com.simonvonxcvii.turing.common.entity.Role;
+import com.simonvonxcvii.turing.common.entity.RolePermission;
+import com.simonvonxcvii.turing.common.exception.BizRuntimeException;
+import com.simonvonxcvii.turing.common.model.dto.RoleDto;
+import com.simonvonxcvii.turing.common.repository.jpa.PermissionJpaRepository;
+import com.simonvonxcvii.turing.common.repository.jpa.RoleJpaRepository;
+import com.simonvonxcvii.turing.common.repository.jpa.RolePermissionJpaRepository;
+import com.simonvonxcvii.turing.common.repository.jpa.UserRoleJpaRepository;
 import com.simonvonxcvii.turing.resource.server.service.IRoleService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -34,7 +33,6 @@ import java.util.stream.Collectors;
  * @author Simon Von
  * @since 2022-12-22 16:22:50
  */
-@RequiredArgsConstructor
 @Service
 public class RoleServiceImpl implements IRoleService {
 
@@ -43,9 +41,21 @@ public class RoleServiceImpl implements IRoleService {
     private final PermissionJpaRepository permissionJpaRepository;
     private final UserRoleJpaRepository userRoleJpaRepository;
 
+    public RoleServiceImpl(
+            RoleJpaRepository roleJpaRepository,
+            RolePermissionJpaRepository rolePermissionJpaRepository,
+            PermissionJpaRepository permissionJpaRepository,
+            UserRoleJpaRepository userRoleJpaRepository
+    ) {
+        this.roleJpaRepository = roleJpaRepository;
+        this.rolePermissionJpaRepository = rolePermissionJpaRepository;
+        this.permissionJpaRepository = permissionJpaRepository;
+        this.userRoleJpaRepository = userRoleJpaRepository;
+    }
+
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void insert(RoleDTO dto) {
+    public void insert(RoleDto dto) {
         // 保存 Role
         Role role = new Role();
         role.setName(dto.getName());
@@ -69,7 +79,7 @@ public class RoleServiceImpl implements IRoleService {
     }
 
     @Override
-    public Page<RoleDTO> selectBy(RoleDTO dto) {
+    public Page<RoleDto> selectBy(RoleDto dto) {
         Specification<Role> ps = Specification.<Role>where((from, builder) -> {
             if (!StringUtils.hasText(dto.getName())) {
                 return null;
@@ -112,7 +122,7 @@ public class RoleServiceImpl implements IRoleService {
                 ));
         return roleJpaRepository.findAll(ps, pageRequest)
                 .map(role -> {
-                    RoleDTO roleDTO = new RoleDTO();
+                    RoleDto roleDTO = new RoleDto();
                     BeanUtils.copyProperties(role, roleDTO);
                     Set<Integer> rolePermissionIdSet = roleIdToPermissionIdSetMap.get(role.getId());
                     roleDTO.setPermissions(rolePermissionIdSet);
@@ -122,7 +132,7 @@ public class RoleServiceImpl implements IRoleService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void updateById(Integer id, RoleDTO dto) {
+    public void updateById(Integer id, RoleDto dto) {
         roleJpaRepository.findById(id)
                 .ifPresent(role -> {
                     // 修改 Role

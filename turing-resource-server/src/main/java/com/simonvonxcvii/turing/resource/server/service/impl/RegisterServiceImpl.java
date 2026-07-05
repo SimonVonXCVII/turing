@@ -1,16 +1,15 @@
 package com.simonvonxcvii.turing.resource.server.service.impl;
 
+import com.simonvonxcvii.turing.common.entity.Role;
+import com.simonvonxcvii.turing.common.entity.User;
+import com.simonvonxcvii.turing.common.entity.UserRole;
+import com.simonvonxcvii.turing.common.repository.jpa.UserJpaRepository;
+import com.simonvonxcvii.turing.common.repository.jpa.UserRoleJpaRepository;
 import com.simonvonxcvii.turing.resource.server.entity.Organization;
-import com.simonvonxcvii.turing.resource.server.entity.Role;
-import com.simonvonxcvii.turing.resource.server.entity.User;
-import com.simonvonxcvii.turing.resource.server.entity.UserRole;
 import com.simonvonxcvii.turing.resource.server.enums.OrganizationTypeEnum;
-import com.simonvonxcvii.turing.resource.server.model.dto.RegisterDTO;
+import com.simonvonxcvii.turing.resource.server.model.dto.RegisterDto;
 import com.simonvonxcvii.turing.resource.server.repository.jpa.OrganizationJpaRepository;
-import com.simonvonxcvii.turing.resource.server.repository.jpa.UserJpaRepository;
-import com.simonvonxcvii.turing.resource.server.repository.jpa.UserRoleJpaRepository;
 import com.simonvonxcvii.turing.resource.server.service.RegisterService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -22,7 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
  * @author Simon Von
  * @since 2023/4/12 22:20
  */
-@RequiredArgsConstructor
 @Service
 public class RegisterServiceImpl implements RegisterService {
 
@@ -30,6 +28,18 @@ public class RegisterServiceImpl implements RegisterService {
     private final UserRoleJpaRepository userRoleJpaRepository;
     private final OrganizationJpaRepository organizationJpaRepository;
     private final PasswordEncoder passwordEncoder;
+
+    public RegisterServiceImpl(
+            UserJpaRepository userJpaRepository,
+            UserRoleJpaRepository userRoleJpaRepository,
+            OrganizationJpaRepository organizationJpaRepository,
+            PasswordEncoder passwordEncoder
+    ) {
+        this.userJpaRepository = userJpaRepository;
+        this.userRoleJpaRepository = userRoleJpaRepository;
+        this.organizationJpaRepository = organizationJpaRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     /**
      * // TODO: 2023/8/31 测试
@@ -40,7 +50,7 @@ public class RegisterServiceImpl implements RegisterService {
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void register(RegisterDTO dto) {
+    public void register(RegisterDto dto) {
         boolean exists = organizationJpaRepository.existsByName(dto.getName());
         if (exists) {
             throw new RuntimeException("该单位名称已经注册，请重新输入");

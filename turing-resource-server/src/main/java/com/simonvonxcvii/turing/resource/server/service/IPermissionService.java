@@ -1,6 +1,6 @@
 package com.simonvonxcvii.turing.resource.server.service;
 
-import com.simonvonxcvii.turing.resource.server.model.dto.PermissionDTO;
+import com.simonvonxcvii.turing.common.model.dto.PermissionDto;
 
 import java.util.List;
 import java.util.Set;
@@ -31,7 +31,7 @@ public interface IPermissionService {
      * @author Simon Von
      * @since 3/4/2023 9:28 PM
      */
-    void insertOrUpdate(PermissionDTO dto);
+    void insertOrUpdate(PermissionDto dto);
 
     /**
      * 查询所有父级子级权限集合
@@ -40,7 +40,7 @@ public interface IPermissionService {
      * @author Simon Von
      * @since 3/4/2023 9:28 PM
      */
-    List<PermissionDTO> selectList(PermissionDTO dto);
+    List<PermissionDto> selectList(PermissionDto dto);
 
     /**
      * 根据主键 id 逻辑删除

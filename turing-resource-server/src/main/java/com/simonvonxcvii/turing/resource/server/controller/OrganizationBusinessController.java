@@ -1,7 +1,7 @@
 package com.simonvonxcvii.turing.resource.server.controller;
 
-import com.simonvonxcvii.turing.resource.server.common.result.Result;
-import com.simonvonxcvii.turing.resource.server.model.dto.OrganizationBusinessDTO;
+import com.simonvonxcvii.turing.common.result.Result;
+import com.simonvonxcvii.turing.resource.server.model.dto.OrganizationBusinessDto;
 import com.simonvonxcvii.turing.resource.server.service.IOrganizationBusinessService;
 import com.simonvonxcvii.turing.resource.server.utils.Insert;
 import com.simonvonxcvii.turing.resource.server.utils.Update;
@@ -39,21 +39,21 @@ public class OrganizationBusinessController {
     @PreAuthorize("hasAnyRole('TECHNICAL_DEFAULT', 'ADMIN_PROVINCE_GOV', 'STAFF_PROVINCE_GOV', 'ADMIN_CITY_GOV', 'STAFF_CITY_GOV', 'ADMIN_DISTRICT_GOV', 'STAFF_DISTRICT_GOV')")
     @Operation(summary = "单位管理员查询本单位已申请业务或者审核人员查询")
     @PostMapping("/selectPage")
-    public ResponseEntity<Result<Page<OrganizationBusinessDTO>>> selectPage(@RequestBody OrganizationBusinessDTO dto) throws IOException {
+    public ResponseEntity<Result<Page<OrganizationBusinessDto>>> selectPage(@RequestBody OrganizationBusinessDto dto) throws IOException {
         return ResponseEntity.ok(Result.ok(service.selectPage(dto)));
     }
 
     @Operation(summary = "单位管理员在点击编辑前查询单条数据")
     @Parameter(name = "id", description = "主键 id")
     @GetMapping("/getOneById")
-    public ResponseEntity<Result<OrganizationBusinessDTO>> getOneById(@NotNull(message = "id 不能为空") String id) throws IOException {
+    public ResponseEntity<Result<OrganizationBusinessDto>> getOneById(@NotNull(message = "id 不能为空") String id) throws IOException {
         return ResponseEntity.ok(Result.ok(service.getOneById(id)));
     }
 
     @PreAuthorize("hasRole('TECHNICAL_DEFAULT')")
     @Operation(summary = "申请业务")
     @PostMapping("/insert")
-    public ResponseEntity<Result<Object>> insert(@RequestBody @Validated(Insert.class) OrganizationBusinessDTO dto) throws IOException {
+    public ResponseEntity<Result<Object>> insert(@RequestBody @Validated(Insert.class) OrganizationBusinessDto dto) throws IOException {
         service.insert(dto);
         return ResponseEntity.ok(Result.ok());
     }
@@ -61,7 +61,7 @@ public class OrganizationBusinessController {
     @PreAuthorize("hasRole('TECHNICAL_DEFAULT')")
     @Operation(summary = "申请页面更新业务")
     @PutMapping("/applyUpdate")
-    public ResponseEntity<Result<Object>> applyUpdate(@RequestBody @Validated(Update.class) OrganizationBusinessDTO dto) throws IOException {
+    public ResponseEntity<Result<Object>> applyUpdate(@RequestBody @Validated(Update.class) OrganizationBusinessDto dto) throws IOException {
         service.applyUpdate(dto);
         return ResponseEntity.ok(Result.ok());
     }
@@ -69,7 +69,7 @@ public class OrganizationBusinessController {
     @PreAuthorize("hasAnyRole('ADMIN_PROVINCE_GOV', 'STAFF_PROVINCE_GOV', 'ADMIN_CITY_GOV', 'STAFF_CITY_GOV', 'ADMIN_DISTRICT_GOV', 'STAFF_DISTRICT_GOV')")
     @Operation(summary = "审核页面更新业务")
     @PutMapping("/checkUpdate")
-    public ResponseEntity<Result<Object>> checkUpdate(@RequestBody @Validated(Update.class) OrganizationBusinessDTO dto) throws IOException {
+    public ResponseEntity<Result<Object>> checkUpdate(@RequestBody @Validated(Update.class) OrganizationBusinessDto dto) throws IOException {
         service.checkUpdate(dto);
         return ResponseEntity.ok(Result.ok());
     }

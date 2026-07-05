@@ -1,7 +1,7 @@
 package com.simonvonxcvii.turing.resource.server.controller;
 
-import com.simonvonxcvii.turing.resource.server.common.result.Result;
-import com.simonvonxcvii.turing.resource.server.model.dto.RegisterDTO;
+import com.simonvonxcvii.turing.common.result.Result;
+import com.simonvonxcvii.turing.resource.server.model.dto.RegisterDto;
 import com.simonvonxcvii.turing.resource.server.service.RegisterService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -31,7 +31,7 @@ public class RegisterController {
 
     @Operation(summary = "注册")
     @PostMapping
-    public ResponseEntity<Result<Object>> register(@RequestBody @Valid RegisterDTO dto) {
+    public ResponseEntity<Result<Object>> register(@RequestBody @Valid RegisterDto dto) {
         service.register(dto);
         return ResponseEntity.ok(Result.ok());
     }

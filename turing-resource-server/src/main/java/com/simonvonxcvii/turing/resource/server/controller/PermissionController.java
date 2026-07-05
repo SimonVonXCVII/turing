@@ -1,7 +1,7 @@
 package com.simonvonxcvii.turing.resource.server.controller;
 
-import com.simonvonxcvii.turing.resource.server.common.result.Result;
-import com.simonvonxcvii.turing.resource.server.model.dto.PermissionDTO;
+import com.simonvonxcvii.turing.common.model.dto.PermissionDto;
+import com.simonvonxcvii.turing.common.result.Result;
 import com.simonvonxcvii.turing.resource.server.service.IPermissionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -38,14 +38,14 @@ public class PermissionController {
 
     @Operation(summary = "单个新增或修改")
     @PostMapping("/insertOrUpdate")
-    public ResponseEntity<Result<Object>> insertOrUpdate(@RequestBody @Validated PermissionDTO dto) {
+    public ResponseEntity<Result<Object>> insertOrUpdate(@RequestBody @Validated PermissionDto dto) {
         service.insertOrUpdate(dto);
         return ResponseEntity.ok(Result.ok());
     }
 
     @Operation(summary = "获取所有的权限列表")
     @PostMapping("/selectList")
-    public ResponseEntity<Result<Object>> selectList(@RequestBody PermissionDTO dto) {
+    public ResponseEntity<Result<Object>> selectList(@RequestBody PermissionDto dto) {
         return ResponseEntity.ok(Result.ok(service.selectList(dto)));
     }
 

@@ -1,10 +1,17 @@
 package com.simonvonxcvii.turing.resource.server.component
 
-import com.simonvonxcvii.turing.resource.server.entity.*
+import com.simonvonxcvii.turing.common.entity.*
+import com.simonvonxcvii.turing.common.repository.jpa.*
+import com.simonvonxcvii.turing.resource.server.entity.Dict
+import com.simonvonxcvii.turing.resource.server.entity.Menu
+import com.simonvonxcvii.turing.resource.server.entity.MenuMeta
+import com.simonvonxcvii.turing.resource.server.entity.Organization
 import com.simonvonxcvii.turing.resource.server.enums.DictTypeEnum
 import com.simonvonxcvii.turing.resource.server.enums.MenuTypeEnum
 import com.simonvonxcvii.turing.resource.server.enums.OrganizationTypeEnum
-import com.simonvonxcvii.turing.resource.server.repository.jpa.*
+import com.simonvonxcvii.turing.resource.server.repository.jpa.DictJpaRepository
+import com.simonvonxcvii.turing.resource.server.repository.jpa.MenuJpaRepository
+import com.simonvonxcvii.turing.resource.server.repository.jpa.OrganizationJpaRepository
 import org.apache.commons.logging.LogFactory
 import org.springframework.beans.factory.InitializingBean
 import org.springframework.core.io.ClassPathResource
@@ -41,39 +48,39 @@ class CustomDatabaseInitializingBean(
 ) : InitializingBean {
     @Throws(Exception::class)
     override fun afterPropertiesSet() {
-        // 判断是否需要初始化，如果表数据存在说明不需要
+        // 先判断数据库中表是否存在
+//        val connection = dataSource.connection
+//        val isTableExist = connection.metaData
+//            .getTables("turing", "public", "turing_dict", arrayOf("TABLE"))
+//            .next()
+//
+//        // 如果表不存在，则初始化数据库表
+//        if (!isTableExist) {
+//            val classPathResourceTableSql = ClassPathResource("/db/schema.sql")
+//            val exists = classPathResourceTableSql.exists()
+//            if (!exists) {
+//                log.warn("数据库表文件不存在，无法初始化")
+//                return
+//            }
+//            ScriptUtils.executeSqlScript(connection, classPathResourceTableSql)
+//        }
+
+        // 如果表存在并且有初始数据，则返回
         val exists = dictJpaRepository.existsByType(DictTypeEnum.AREA)
         if (exists) {
             return
         }
-//        val connection = dataSource.connection
-//        connection.metaData.getTables(null, null, "turing_dict", null)
-//            .next()
-//            .run { if (this) return }
 
-        // 创建数据库表
-        // 已实现在服务启动时自动检测是否存在实体类对应的 table，不存在则根据实体类相关注解自动生成对应的 table
-//        val classPathResourceTableSql = ClassPathResource("/db/schema.sql")
-//        classPathResourceTableSql.exists()
-//            .run {
-//                if (!this) {
-//                    log.warn("数据库表文件不存在，无法初始化")
-//                    return
-//                }
-//            }
-//        ScriptUtils.executeSqlScript(connection, classPathResourceTableSql)
-
-        // 创建基础数据
+        // 否则初始化表数据
         init()
 
         // 创建地区数据
         log.info("开始初始化区域字典")
         val classPathResourceAreaCsv = ClassPathResource("/dict/area.csv")
-        classPathResourceAreaCsv.exists().run {
-            if (!this) {
-                log.warn("区域文件不存在，无法初始化")
-                return
-            }
+        val exists1 = classPathResourceAreaCsv.exists()
+        if (!exists1) {
+            log.warn("区域文件不存在，无法初始化")
+            return
         }
 
         val areaList = ArrayList<Area>()
@@ -112,7 +119,7 @@ class CustomDatabaseInitializingBean(
         }
         // 按层级
         val detailVoMap = areaList.stream()
-            .collect(Collectors.toMap(Function { a: Area? -> a!!.adCode }, Function.identity<Area>()))
+            .collect(Collectors.toMap(Function { a: Area? -> a!!.adCode }, Function.identity()))
         val pid = Function { a: Area -> a.parentAdCode }
         val consumer = BiConsumer { parent: Area?, child: Area ->
             if (parent == null) {

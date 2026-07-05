@@ -1,5 +1,6 @@
 package com.simonvonxcvii.turing.resource.server.entity
 
+import com.simonvonxcvii.turing.common.entity.AbstractAuditable
 import com.simonvonxcvii.turing.resource.server.enums.DictTypeEnum
 import jakarta.persistence.*
 import org.hibernate.annotations.SQLDelete

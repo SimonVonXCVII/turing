@@ -1,7 +1,7 @@
 package com.simonvonxcvii.turing.resource.server.service;
 
 import com.simonvonxcvii.turing.resource.server.enums.FileTypeEnum;
-import com.simonvonxcvii.turing.resource.server.model.dto.UploadFileDTO;
+import com.simonvonxcvii.turing.resource.server.model.dto.UploadFileDto;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -31,7 +31,7 @@ public interface IAppFileService {
      * @author Simon Von
      * @since 2023-04-01 23:08:08
      */
-    UploadFileDTO uploadFile(MultipartFile multipartFile, String originalFilename, String suffix,
+    UploadFileDto uploadFile(MultipartFile multipartFile, String originalFilename, String suffix,
                              FileTypeEnum bizType, String remark, Boolean isCompress, boolean isApp) throws IOException;
 
     /**

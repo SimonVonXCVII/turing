@@ -1,7 +1,7 @@
 package com.simonvonxcvii.turing.resource.server.controller;
 
-import com.simonvonxcvii.turing.resource.server.common.result.Result;
-import com.simonvonxcvii.turing.resource.server.model.dto.OrganizationDTO;
+import com.simonvonxcvii.turing.common.result.Result;
+import com.simonvonxcvii.turing.resource.server.model.dto.OrganizationDto;
 import com.simonvonxcvii.turing.resource.server.service.IOrganizationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -33,26 +33,26 @@ public class OrganizationController {
 
     @Operation(summary = "单个新增或修改")
     @PostMapping("/insertOrUpdate")
-    public ResponseEntity<Result<Object>> insertOrUpdate(@RequestBody @Validated OrganizationDTO dto) {
+    public ResponseEntity<Result<Object>> insertOrUpdate(@RequestBody @Validated OrganizationDto dto) {
         service.insertOrUpdate(dto);
         return ResponseEntity.ok(Result.ok());
     }
 
     @Operation(summary = "分页查询")
     @PostMapping("/selectPage")
-    public ResponseEntity<Result<Page<OrganizationDTO>>> selectPage(@RequestBody OrganizationDTO dto) {
+    public ResponseEntity<Result<Page<OrganizationDto>>> selectPage(@RequestBody OrganizationDto dto) {
         return ResponseEntity.ok(Result.ok(service.selectPage(dto)));
     }
 
     @Operation(summary = "查询单位 id 和单位名称列表")
     @GetMapping("/selectIdAndNameList")
-    public ResponseEntity<Result<List<OrganizationDTO>>> selectIdAndNameList() {
+    public ResponseEntity<Result<List<OrganizationDto>>> selectIdAndNameList() {
         return ResponseEntity.ok(Result.ok(service.selectIdAndNameList()));
     }
 
     @Operation(summary = "【测试项目分类管理】菜单【添加测试项目分类】弹窗中的检测实验室和检测质控实验室接口")
     @GetMapping("/selectList")
-    public ResponseEntity<Result<List<OrganizationDTO>>> selectList(String name) {
+    public ResponseEntity<Result<List<OrganizationDto>>> selectList(String name) {
         return ResponseEntity.ok(Result.ok(service.selectList(name)));
     }
 

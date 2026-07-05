@@ -3,6 +3,7 @@ package com.simonvonxcvii.turing.resource.server
 import com.simonvonxcvii.turing.resource.server.properties.CustomSecurityProperties
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.context.properties.EnableConfigurationProperties
+import org.springframework.boot.persistence.autoconfigure.EntityScan
 import org.springframework.boot.runApplication
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories
 import org.springframework.data.web.config.EnableSpringDataWebSupport
@@ -23,10 +24,16 @@ import org.springframework.data.web.config.EnableSpringDataWebSupport
 @EnableConfigurationProperties(CustomSecurityProperties::class)
 // 清晰化 jpa 包路径
 @EnableJpaRepositories("com.simonvonxcvii.turing.resource.server.repository.jpa")
+@EntityScan("com.simonvonxcvii.turing.resource.server.entity")
 // 默认情况下不支持按原样序列化 PageImpl 实例，这意味着无法保证生成的 JSON 结构的稳定性
 // 为了获得稳定的 JSON 结构，使用该方式来全局解决问题，让 Spring Data 自动处理分页对象的序列化，提供稳定的 JSON 结构
 @EnableSpringDataWebSupport(pageSerializationMode = EnableSpringDataWebSupport.PageSerializationMode.VIA_DTO)
-@SpringBootApplication
+@SpringBootApplication(
+    scanBasePackages = [
+        "com.simonvonxcvii.turing.resource.server",
+        "com.simonvonxcvii.turing.common"
+    ]
+)
 class TuringResourceServerApplication
 
 fun main(args: Array<String>) {

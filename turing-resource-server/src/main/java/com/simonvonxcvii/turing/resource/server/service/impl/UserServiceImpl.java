@@ -1,15 +1,18 @@
 package com.simonvonxcvii.turing.resource.server.service.impl;
 
-import com.simonvonxcvii.turing.resource.server.entity.*;
-import com.simonvonxcvii.turing.resource.server.model.dto.RoleDTO;
-import com.simonvonxcvii.turing.resource.server.model.dto.UserDTO;
+import com.simonvonxcvii.turing.common.entity.AbstractAuditable;
+import com.simonvonxcvii.turing.common.entity.Role;
+import com.simonvonxcvii.turing.common.entity.User;
+import com.simonvonxcvii.turing.common.entity.UserRole;
+import com.simonvonxcvii.turing.common.model.dto.RoleDto;
+import com.simonvonxcvii.turing.common.model.dto.UserDto;
+import com.simonvonxcvii.turing.common.repository.jpa.RoleJpaRepository;
+import com.simonvonxcvii.turing.common.repository.jpa.UserJpaRepository;
+import com.simonvonxcvii.turing.common.repository.jpa.UserRoleJpaRepository;
+import com.simonvonxcvii.turing.common.utils.UserUtils;
+import com.simonvonxcvii.turing.resource.server.entity.Organization;
 import com.simonvonxcvii.turing.resource.server.repository.jpa.OrganizationJpaRepository;
-import com.simonvonxcvii.turing.resource.server.repository.jpa.RoleJpaRepository;
-import com.simonvonxcvii.turing.resource.server.repository.jpa.UserJpaRepository;
-import com.simonvonxcvii.turing.resource.server.repository.jpa.UserRoleJpaRepository;
 import com.simonvonxcvii.turing.resource.server.service.IUserService;
-import com.simonvonxcvii.turing.resource.server.utils.UserUtils;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -31,7 +34,6 @@ import java.util.List;
  * @author Simon Von
  * @since 2022-12-19 15:58:28
  */
-@RequiredArgsConstructor
 @Service
 public class UserServiceImpl implements IUserService {
 
@@ -41,6 +43,20 @@ public class UserServiceImpl implements IUserService {
     private final UserRoleJpaRepository userRoleJpaRepository;
     private final RoleJpaRepository roleJpaRepository;
 
+    public UserServiceImpl(
+            PasswordEncoder passwordEncoder,
+            UserJpaRepository userJpaRepository,
+            OrganizationJpaRepository organizationJpaRepository,
+            UserRoleJpaRepository userRoleJpaRepository,
+            RoleJpaRepository roleJpaRepository
+    ) {
+        this.passwordEncoder = passwordEncoder;
+        this.userJpaRepository = userJpaRepository;
+        this.organizationJpaRepository = organizationJpaRepository;
+        this.userRoleJpaRepository = userRoleJpaRepository;
+        this.roleJpaRepository = roleJpaRepository;
+    }
+
     /**
      * 获取用户信息
      *
@@ -48,16 +64,16 @@ public class UserServiceImpl implements IUserService {
      * @since 12/17/2022 8:19 PM
      */
     @Override
-    public UserDTO info() {
+    public UserDto info() {
         User user = UserUtils.getUser();
-        UserDTO userDTO = new UserDTO();
+        UserDto userDTO = new UserDto();
         BeanUtils.copyProperties(user, userDTO);
         return userDTO;
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void insertOrUpdate(UserDTO dto) {
+    public void insertOrUpdate(UserDto dto) {
         User user;
         // 新增
         if (dto.getId() == null) {
@@ -67,13 +83,13 @@ public class UserServiceImpl implements IUserService {
         else {
             user = userJpaRepository.findById(dto.getId()).orElseThrow(() -> new RuntimeException("无法查找到用户数据"));
         }
-        dto.setAccountNonExpired(Boolean.TRUE);
-        dto.setAccountNonLocked(Boolean.TRUE);
-        dto.setCredentialsNonExpired(Boolean.TRUE);
-        dto.setEnabled(Boolean.TRUE);
-        dto.setManager(Boolean.FALSE);
-        dto.setNeedResetPassword(Boolean.TRUE);
         BeanUtils.copyProperties(dto, user, AbstractAuditable.CREATED_DATE);
+        user.setAccountNonExpired(Boolean.TRUE);
+        user.setAccountNonLocked(Boolean.TRUE);
+        user.setCredentialsNonExpired(Boolean.TRUE);
+        user.setEnabled(Boolean.TRUE);
+        user.setManager(Boolean.FALSE);
+        user.setNeedResetPassword(Boolean.TRUE);
         // 密码
         String password = passwordEncoder.encode(dto.getMobile().toString().substring(3));
         assert password != null;
@@ -85,7 +101,7 @@ public class UserServiceImpl implements IUserService {
         userJpaRepository.save(user);
         // 更新用户角色表
         // TODO 可以优化成只添加需要添加的，只删除需要删除的
-        userRoleJpaRepository.deleteByUserId(dto.getId());
+        userRoleJpaRepository.deleteByUserId(user.getId());
         List<UserRole> userRoleList = new LinkedList<>();
         roleJpaRepository.findAllById(dto.getRoleIdList())
                 .forEach(role -> {
@@ -98,7 +114,7 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    public Page<UserDTO> selectPage(UserDTO dto) {
+    public Page<UserDto> selectPage(UserDto dto) {
         Page<User> userPage;
         try {
             Specification<User> spec = Specification.<User>where((from, criteriaBuilder) -> {
@@ -180,25 +196,25 @@ public class UserServiceImpl implements IUserService {
             return Page.empty();
         }
         return userPage.map(user -> {
-            UserDTO userDTO = new UserDTO();
+            UserDto userDTO = new UserDto();
             BeanUtils.copyProperties(user, userDTO);
             List<UserRole> userRoleList = userRoleJpaRepository.findAllByUserId(user.getId());
             if (userRoleList.isEmpty()) {
                 throw new RuntimeException("数据异常，该用户没有角色：" + user.getUsername());
             }
-            List<Integer> iDList = userRoleList.stream().map(AbstractAuditable::getId).toList();
-            List<Role> roleList = roleJpaRepository.findAllById(iDList);
+            List<Integer> roleIdList = userRoleList.stream().map(UserRole::getRole).map(Role::getId).toList();
+            List<Role> roleList = roleJpaRepository.findAllById(roleIdList);
             if (roleList.isEmpty()) {
                 throw new RuntimeException("数据异常，该用户没有角色：" + user.getUsername());
             }
-            List<RoleDTO> roleDTOList = roleList.stream()
+            List<RoleDto> roleDtoList = roleList.stream()
                     .map(role -> {
-                        RoleDTO roleDTO = new RoleDTO();
+                        RoleDto roleDTO = new RoleDto();
                         BeanUtils.copyProperties(role, roleDTO);
                         return roleDTO;
                     })
                     .toList();
-            userDTO.setAuthorities(roleDTOList);
+            userDTO.setAuthorities(roleDtoList);
             return userDTO;
         });
     }

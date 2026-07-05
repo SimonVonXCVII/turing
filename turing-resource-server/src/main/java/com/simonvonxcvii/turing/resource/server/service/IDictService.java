@@ -1,6 +1,6 @@
 package com.simonvonxcvii.turing.resource.server.service;
 
-import com.simonvonxcvii.turing.resource.server.model.dto.DictDTO;
+import com.simonvonxcvii.turing.resource.server.model.dto.DictDto;
 import org.springframework.data.domain.Page;
 
 /**
@@ -19,7 +19,7 @@ public interface IDictService {
      * @author Simon Von
      * @since 2023/9/7 16:25
      */
-    void insertOrUpdate(DictDTO dto);
+    void insertOrUpdate(DictDto dto);
 
     /**
      * 分页查询
@@ -27,7 +27,7 @@ public interface IDictService {
      * @author Simon Von
      * @since 2023/9/7 15:48
      */
-    Page<DictDTO> selectPage(DictDTO dto);
+    Page<DictDto> selectPage(DictDto dto);
 
     /**
      * 根据区域行政编码获取区域数据
@@ -37,7 +37,7 @@ public interface IDictService {
      * @author Simon Von
      * @since 12/30/2022 2:42 PM
      */
-    DictDTO getAreaByCode(Integer code);
+    DictDto getAreaByCode(Integer code);
 
     /**
      * 根据主键 id 逻辑删除

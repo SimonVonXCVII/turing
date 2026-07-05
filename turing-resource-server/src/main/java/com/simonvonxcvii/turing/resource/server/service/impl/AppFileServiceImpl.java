@@ -1,13 +1,12 @@
 package com.simonvonxcvii.turing.resource.server.service.impl;
 
+import com.simonvonxcvii.turing.common.utils.UserUtils;
 import com.simonvonxcvii.turing.resource.server.entity.AppFile;
 import com.simonvonxcvii.turing.resource.server.enums.FileTypeEnum;
-import com.simonvonxcvii.turing.resource.server.model.dto.UploadFileDTO;
+import com.simonvonxcvii.turing.resource.server.model.dto.UploadFileDto;
 import com.simonvonxcvii.turing.resource.server.repository.jpa.AppFileJpaRepository;
 import com.simonvonxcvii.turing.resource.server.service.IAppFileService;
-import com.simonvonxcvii.turing.resource.server.utils.UserUtils;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.http.ContentDisposition;
@@ -34,13 +33,16 @@ import java.util.UUID;
  * @author Simon Von
  * @since 2023-04-01 23:08:08
  */
-@RequiredArgsConstructor
 @Service
 public class AppFileServiceImpl implements IAppFileService {
 
     private static final Log log = LogFactory.getLog(AppFileServiceImpl.class);
 
     private final AppFileJpaRepository appFileJpaRepository;
+
+    public AppFileServiceImpl(AppFileJpaRepository appFileJpaRepository) {
+        this.appFileJpaRepository = appFileJpaRepository;
+    }
 
     /**
      * 上传文件
@@ -58,7 +60,7 @@ public class AppFileServiceImpl implements IAppFileService {
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public UploadFileDTO uploadFile(
+    public UploadFileDto uploadFile(
             MultipartFile multipartFile, String originalFilename, String suffix, FileTypeEnum bizType, String remark,
             Boolean isCompress, boolean isApp
     ) throws IOException {
@@ -94,7 +96,7 @@ public class AppFileServiceImpl implements IAppFileService {
         String md5 = DigestUtils.md5DigestAsHex(bytes);
         // 通过 md5 查询文件
         Optional<AppFile> appFileOptional = appFileJpaRepository.findOneByMd5(md5);
-        UploadFileDTO dto = new UploadFileDTO();
+        UploadFileDto dto = new UploadFileDto();
         // 如果文件存在则直接返回文件信息
         if (appFileOptional.isPresent()) {
             // 设置需要返回的文件信息

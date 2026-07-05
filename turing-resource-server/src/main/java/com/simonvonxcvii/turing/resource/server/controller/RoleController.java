@@ -1,7 +1,7 @@
 package com.simonvonxcvii.turing.resource.server.controller;
 
-import com.simonvonxcvii.turing.resource.server.common.result.Result;
-import com.simonvonxcvii.turing.resource.server.model.dto.RoleDTO;
+import com.simonvonxcvii.turing.common.model.dto.RoleDto;
+import com.simonvonxcvii.turing.common.result.Result;
 import com.simonvonxcvii.turing.resource.server.service.IRoleService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -32,21 +32,21 @@ public class RoleController {
 
     @Operation(summary = "新增数据")
     @PostMapping
-    public ResponseEntity<Result<Object>> insert(@RequestBody @Validated RoleDTO dto) {
+    public ResponseEntity<Result<Object>> insert(@RequestBody @Validated RoleDto dto) {
         service.insert(dto);
         return ResponseEntity.ok(Result.ok());
     }
 
     @Operation(summary = "条件查询")
     @PostMapping("/list")
-    public ResponseEntity<Result<Page<RoleDTO>>> selectBy(@RequestBody RoleDTO dto) {
+    public ResponseEntity<Result<Page<RoleDto>>> selectBy(@RequestBody RoleDto dto) {
         return ResponseEntity.ok(Result.ok(service.selectBy(dto)));
     }
 
     @Operation(summary = "修改数据")
     @PutMapping("/{id}")
     public ResponseEntity<Result<Object>> updateById(@PathVariable @NotNull(message = "主键 id 不能为 null") Integer id,
-                                                     @RequestBody RoleDTO dto) {
+                                                     @RequestBody RoleDto dto) {
         service.updateById(id, dto);
         return ResponseEntity.ok(Result.ok());
     }

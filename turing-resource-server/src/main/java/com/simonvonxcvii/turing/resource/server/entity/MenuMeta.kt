@@ -1,5 +1,6 @@
 package com.simonvonxcvii.turing.resource.server.entity
 
+import com.simonvonxcvii.turing.common.entity.AbstractAuditable
 import com.simonvonxcvii.turing.resource.server.enums.MenuBadgeTypeEnum
 import com.simonvonxcvii.turing.resource.server.enums.MenuBadgeVariantsEnum
 import jakarta.persistence.*
@@ -71,44 +72,38 @@ class MenuMeta(
     /**
      * 缓存标签页
      */
-    @Column(columnDefinition = "BOOLEAN", comment = "缓存标签页")
-    @get:JvmName("isKeepAlive")
-    var keepAlive: Boolean? = false,
+    @Column(name = "keep_alive", columnDefinition = "BOOLEAN", comment = "缓存标签页")
+    var isKeepAlive: Boolean? = false,
 
     /**
      * 固定在标签
      */
-    @Column(columnDefinition = "BOOLEAN", comment = "固定在标签")
-    @get:JvmName("isAffixTab")
-    var affixTab: Boolean? = false,
+    @Column(name = "affix_tab", columnDefinition = "BOOLEAN", comment = "固定在标签")
+    var isAffixTab: Boolean? = false,
 
     /**
      * 隐藏菜单
      */
-    @Column(columnDefinition = "BOOLEAN", comment = "隐藏菜单")
-    @get:JvmName("isHideInMenu")
-    var hideInMenu: Boolean? = false,
+    @Column(name = "hide_in_menu", columnDefinition = "BOOLEAN", comment = "隐藏菜单")
+    var isHideInMenu: Boolean? = false,
 
     /**
      * 隐藏子菜单
      */
-    @Column(columnDefinition = "BOOLEAN", comment = "隐藏子菜单")
-    @get:JvmName("isHideChildrenInMenu")
-    var hideChildrenInMenu: Boolean? = false,
+    @Column(name = "hide_children_in_menu", columnDefinition = "BOOLEAN", comment = "隐藏子菜单")
+    var isHideChildrenInMenu: Boolean? = false,
 
     /**
      * 在面包屑中隐藏
      */
-    @Column(columnDefinition = "BOOLEAN", comment = "隐藏子菜单")
-    @get:JvmName("isHideInBreadcrumb")
-    var hideInBreadcrumb: Boolean? = false,
+    @Column(name = "hide_in_breadcrumb", columnDefinition = "BOOLEAN", comment = "隐藏子菜单")
+    var isHideInBreadcrumb: Boolean? = false,
 
     /**
      * 在标签栏中隐藏
      */
-    @Column(columnDefinition = "BOOLEAN", comment = "在标签栏中隐藏")
-    @get:JvmName("isHideInTab")
-    var hideInTab: Boolean? = false,
+    @Column(name = "hide_in_tab", columnDefinition = "BOOLEAN", comment = "在标签栏中隐藏")
+    var isHideInTab: Boolean? = false,
 
     /**
      * 内嵌-链接地址
@@ -125,8 +120,8 @@ class MenuMeta(
     /**
      * 菜单
      */
-    @OneToOne(mappedBy = "meta")
-    var menu: Menu? = null
+//    @OneToOne(mappedBy = "meta")
+//    var menu: Menu? = null
 
     companion object {
         /**

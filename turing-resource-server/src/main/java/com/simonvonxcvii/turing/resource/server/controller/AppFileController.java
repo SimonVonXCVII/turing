@@ -1,8 +1,8 @@
 package com.simonvonxcvii.turing.resource.server.controller;
 
-import com.simonvonxcvii.turing.resource.server.common.result.Result;
+import com.simonvonxcvii.turing.common.result.Result;
 import com.simonvonxcvii.turing.resource.server.enums.FileTypeEnum;
-import com.simonvonxcvii.turing.resource.server.model.dto.UploadFileDTO;
+import com.simonvonxcvii.turing.resource.server.model.dto.UploadFileDto;
 import com.simonvonxcvii.turing.resource.server.service.IAppFileService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -40,7 +40,7 @@ public class AppFileController {
     @Operation(summary = "web 端上传文件")
     @PostMapping(value = "/webUploadFile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Result<UploadFileDTO>> webUploadFile(
+    public ResponseEntity<Result<UploadFileDto>> webUploadFile(
             @Parameter(description = "文件") @RequestParam MultipartFile file,
             @Parameter(description = "文件业务类型") @RequestParam Integer bizType,
             @Parameter(description = "备注") String remark
@@ -60,7 +60,7 @@ public class AppFileController {
     @Operation(summary = "web 端上传图片")
     @PostMapping(value = "/webUploadImage", consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Result<UploadFileDTO>> webUploadImage(
+    public ResponseEntity<Result<UploadFileDto>> webUploadImage(
             @Parameter(description = "文件") @RequestParam MultipartFile file,
             @Parameter(description = "文件业务类型") @RequestParam Integer bizType,
             @Parameter(description = "备注") String remark,
@@ -81,7 +81,7 @@ public class AppFileController {
     @Operation(summary = "app 端上传文件")
     @PostMapping(value = "/appUploadFile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Result<UploadFileDTO>> appUploadFile(
+    public ResponseEntity<Result<UploadFileDto>> appUploadFile(
             @Parameter(description = "文件") @RequestParam MultipartFile file,
             @Parameter(description = "文件业务类型") @RequestParam Integer bizType,
             @Parameter(description = "备注") String remark
@@ -101,7 +101,7 @@ public class AppFileController {
     @Operation(summary = "app 端上传图片")
     @PostMapping(value = "/appUploadImage", consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Result<UploadFileDTO>> appUploadImage(
+    public ResponseEntity<Result<UploadFileDto>> appUploadImage(
             @Parameter(description = "文件") @RequestParam MultipartFile file,
             @Parameter(description = "文件业务类型") @RequestParam Integer bizType,
             @Parameter(description = "备注") String remark,

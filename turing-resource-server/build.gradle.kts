@@ -1,3 +1,6 @@
+plugins {
+    kotlin("plugin.jpa")
+}
 /**
  * 设置此项目的描述。
  */
@@ -9,11 +12,7 @@ description = "turing resource server"
  */
 dependencies {
     annotationProcessor(libs.com.github.therapi.therapi.runtime.javadoc.scribe)
-    annotationProcessor("org.projectlombok:lombok")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
-
-    // lombok
-    compileOnly("org.projectlombok:lombok")
 
     // therapi
     // https://central.sonatype.com/artifact/com.github.therapi/therapi-runtime-javadoc
@@ -68,4 +67,6 @@ dependencies {
 //    runtimeOnly("org.springframework.boot:spring-boot-docker-compose")
 
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+
+    implementation(project(":turing-common"))
 }

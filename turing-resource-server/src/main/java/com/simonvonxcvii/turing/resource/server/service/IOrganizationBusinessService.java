@@ -1,6 +1,6 @@
 package com.simonvonxcvii.turing.resource.server.service;
 
-import com.simonvonxcvii.turing.resource.server.model.dto.OrganizationBusinessDTO;
+import com.simonvonxcvii.turing.resource.server.model.dto.OrganizationBusinessDto;
 import org.springframework.data.domain.Page;
 
 import java.io.IOException;
@@ -23,7 +23,7 @@ public interface IOrganizationBusinessService {
      * @author Simon Von
      * @since 1/5/2023 10:15 AM
      */
-    Page<OrganizationBusinessDTO> selectPage(OrganizationBusinessDTO dto) throws IOException;
+    Page<OrganizationBusinessDto> selectPage(OrganizationBusinessDto dto) throws IOException;
 
     /**
      * 单位管理员在点击编辑前查询单条数据
@@ -33,7 +33,7 @@ public interface IOrganizationBusinessService {
      * @author Simon Von
      * @since 1/5/2023 10:15 AM
      */
-    OrganizationBusinessDTO getOneById(String id) throws IOException;
+    OrganizationBusinessDto getOneById(String id) throws IOException;
 
     /**
      * 申请业务
@@ -42,7 +42,7 @@ public interface IOrganizationBusinessService {
      * @author Simon Von
      * @since 1/4/2023 4:57 PM
      */
-    void insert(OrganizationBusinessDTO dto) throws IOException;
+    void insert(OrganizationBusinessDto dto) throws IOException;
 
     /**
      * 申请页面更新业务
@@ -51,7 +51,7 @@ public interface IOrganizationBusinessService {
      * @author Simon Von
      * @since 1/4/2023 4:57 PM
      */
-    void applyUpdate(OrganizationBusinessDTO dto) throws IOException;
+    void applyUpdate(OrganizationBusinessDto dto) throws IOException;
 
     /**
      * 审核页面更新业务
@@ -60,6 +60,6 @@ public interface IOrganizationBusinessService {
      * @author Simon Von
      * @since 2023/3/25 14:32
      */
-    void checkUpdate(OrganizationBusinessDTO dto) throws IOException;
+    void checkUpdate(OrganizationBusinessDto dto) throws IOException;
 
 }

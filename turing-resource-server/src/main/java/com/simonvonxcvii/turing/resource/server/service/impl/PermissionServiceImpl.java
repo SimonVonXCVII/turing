@@ -1,11 +1,10 @@
 package com.simonvonxcvii.turing.resource.server.service.impl;
 
-import com.simonvonxcvii.turing.resource.server.entity.Permission;
-import com.simonvonxcvii.turing.resource.server.model.dto.PermissionDTO;
-import com.simonvonxcvii.turing.resource.server.repository.jpa.PermissionJpaRepository;
+import com.simonvonxcvii.turing.common.entity.Permission;
+import com.simonvonxcvii.turing.common.model.dto.PermissionDto;
+import com.simonvonxcvii.turing.common.repository.jpa.PermissionJpaRepository;
+import com.simonvonxcvii.turing.common.utils.UserUtils;
 import com.simonvonxcvii.turing.resource.server.service.IPermissionService;
-import com.simonvonxcvii.turing.resource.server.utils.UserUtils;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -25,13 +24,16 @@ import java.util.Set;
  * @author Simon Von
  * @since 2022-12-22 16:22:49
  */
-@RequiredArgsConstructor
 @Service
 public class PermissionServiceImpl implements IPermissionService {
 
     private final PermissionJpaRepository permissionJpaRepository;
 //    private final RolePermissionJpaRepository rolePermissionJpaRepository;
 //    private final MenuJpaRepository menuJpaRepository;
+
+    public PermissionServiceImpl(PermissionJpaRepository permissionJpaRepository) {
+        this.permissionJpaRepository = permissionJpaRepository;
+    }
 
     /**
      * 获取用户权限码
@@ -54,7 +56,7 @@ public class PermissionServiceImpl implements IPermissionService {
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void insertOrUpdate(PermissionDTO dto) {
+    public void insertOrUpdate(PermissionDto dto) {
         if (dto.getPid() == null && dto.getSort() % 100 != 0) {
             throw new RuntimeException("父级权限的排序编号必须是一百的整数倍");
         }
@@ -80,7 +82,7 @@ public class PermissionServiceImpl implements IPermissionService {
      * @since 3/4/2023 9:28 PM
      */
     @Override
-    public List<PermissionDTO> selectList(PermissionDTO dto) {
+    public List<PermissionDto> selectList(PermissionDto dto) {
         // 将两次查询改为提前查询所有数据，减少查询次数，减轻数据库压力
         List<Permission> permissionList = permissionJpaRepository.findAll(Sort.by(Permission.ID));
         // 按条件过滤
@@ -115,12 +117,12 @@ public class PermissionServiceImpl implements IPermissionService {
         List<Permission> childList = permissionList1.stream().filter(permission -> permission.getPid() != null).toList();
         return parentList.stream()
                 .map(parent -> {
-                    PermissionDTO parentDTO = new PermissionDTO();
+                    PermissionDto parentDTO = new PermissionDto();
                     BeanUtils.copyProperties(parent, parentDTO);
                     childList.stream()
                             .filter(child -> Objects.equals(parent.getId(), child.getPid()))
                             .forEach(child -> {
-                                PermissionDTO childDTO = new PermissionDTO();
+                                PermissionDto childDTO = new PermissionDto();
                                 BeanUtils.copyProperties(child, childDTO);
                                 parentDTO.getChildren().add(childDTO);
                             });

@@ -1,6 +1,6 @@
 package com.simonvonxcvii.turing.resource.server.service;
 
-import com.simonvonxcvii.turing.resource.server.model.dto.MenuDTO;
+import com.simonvonxcvii.turing.resource.server.model.dto.MenuDto;
 
 import java.util.List;
 
@@ -17,7 +17,7 @@ public interface IMenuService {
     /**
      * 新增数据
      */
-    void insert(MenuDTO dto);
+    void insert(MenuDto dto);
 
     /**
      * 查询名称是否存在
@@ -44,7 +44,7 @@ public interface IMenuService {
     /**
      * 条件查询
      */
-    List<MenuDTO> selectBy();
+    List<MenuDto> selectBy();
 
     /**
      * 修改数据
@@ -54,7 +54,7 @@ public interface IMenuService {
      * @author Simon Von
      * @since 12/16/25 5:28 AM
      */
-    void updateById(Integer id, MenuDTO dto);
+    void updateById(Integer id, MenuDto dto);
 
     /**
      * 逻辑删除

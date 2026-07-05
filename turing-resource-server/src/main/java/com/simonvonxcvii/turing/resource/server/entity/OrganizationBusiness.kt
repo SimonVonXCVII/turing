@@ -1,5 +1,6 @@
 package com.simonvonxcvii.turing.resource.server.entity
 
+import com.simonvonxcvii.turing.common.entity.AbstractAuditable
 import com.simonvonxcvii.turing.resource.server.enums.OrganizationBusinessBusinessLinksEnum
 import com.simonvonxcvii.turing.resource.server.enums.OrganizationBusinessLevelEnum
 import com.simonvonxcvii.turing.resource.server.enums.OrganizationBusinessQualityControlTypeEnum

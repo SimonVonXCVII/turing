@@ -5,10 +5,9 @@ import com.simonvonxcvii.turing.resource.server.entity.MenuMeta;
 import com.simonvonxcvii.turing.resource.server.enums.MenuBadgeTypeEnum;
 import com.simonvonxcvii.turing.resource.server.enums.MenuBadgeVariantsEnum;
 import com.simonvonxcvii.turing.resource.server.enums.MenuTypeEnum;
-import com.simonvonxcvii.turing.resource.server.model.dto.MenuDTO;
+import com.simonvonxcvii.turing.resource.server.model.dto.MenuDto;
 import com.simonvonxcvii.turing.resource.server.repository.jpa.MenuJpaRepository;
 import com.simonvonxcvii.turing.resource.server.service.IMenuService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -28,15 +27,18 @@ import java.util.stream.Collectors;
  * @author Simon Von
  * @since 2022-12-26 18:25:51
  */
-@RequiredArgsConstructor
 @Service
 public class MenuServiceImpl implements IMenuService {
 
     private final MenuJpaRepository menuJpaRepository;
 
+    public MenuServiceImpl(MenuJpaRepository menuJpaRepository) {
+        this.menuJpaRepository = menuJpaRepository;
+    }
+
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void insert(MenuDTO dto) {
+    public void insert(MenuDto dto) {
         // MenuMeta
         MenuMeta menuMeta = new MenuMeta();
         BeanUtils.copyProperties(dto.getMeta(), menuMeta);
@@ -75,7 +77,7 @@ public class MenuServiceImpl implements IMenuService {
     }
 
     @Override
-    public List<MenuDTO> selectBy() {
+    public List<MenuDto> selectBy() {
         // 1. 提前查询所有数据，减少查询次数，减轻数据库压力
         List<Menu> menuList = menuJpaRepository.findAll(Sort.by(Menu.ID));
         // 2. Menu 按 pid 分组：pid -> childrenMenuList
@@ -90,7 +92,7 @@ public class MenuServiceImpl implements IMenuService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void updateById(Integer id, MenuDTO dto) {
+    public void updateById(Integer id, MenuDto dto) {
         // 从数据库查询出来后，如果对该对象作了修改，那么 JPA / Hibernate 会自动更新数据库
         menuJpaRepository.findById(id)
                 .ifPresent(menu -> {
@@ -143,8 +145,8 @@ public class MenuServiceImpl implements IMenuService {
      * @author Simon Von
      * @since 12/16/25 11:14 AM
      */
-    public MenuDTO buildTree(Menu menu, Map<Integer, List<Menu>> childrenMenuListMap) {
-        MenuDTO dto = convertToDTO(menu);
+    public MenuDto buildTree(Menu menu, Map<Integer, List<Menu>> childrenMenuListMap) {
+        MenuDto dto = convertToDTO(menu);
         childrenMenuListMap.getOrDefault(menu.getId(), Collections.emptyList())
                 .forEach(child -> dto.getChildren().add(
                         buildTree(child, childrenMenuListMap)
@@ -160,9 +162,9 @@ public class MenuServiceImpl implements IMenuService {
      * @author Simon Von
      * @since 12/15/25 11:24 PM
      */
-    public MenuDTO convertToDTO(Menu menu) {
+    public MenuDto convertToDTO(Menu menu) {
         // Menu
-        MenuDTO menuDTO = new MenuDTO();
+        MenuDto menuDTO = new MenuDto();
         BeanUtils.copyProperties(menu, menuDTO);
         menuDTO.setType(menu.getType().getValue());
         // MenuMeta

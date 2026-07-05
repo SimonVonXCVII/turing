@@ -11,7 +11,6 @@ import org.springframework.security.config.annotation.web.invoke
 import org.springframework.security.core.session.SessionRegistryImpl
 import org.springframework.security.crypto.factory.PasswordEncoderFactories
 import org.springframework.security.crypto.password.PasswordEncoder
-import org.springframework.security.web.AuthenticationEntryPoint
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.access.AccessDeniedHandler
 import org.springframework.security.web.authentication.session.ConcurrentSessionControlAuthenticationStrategy
@@ -81,7 +80,7 @@ class SecurityConfig {
 //        customCaptchaOncePerRequestFilter: CustomCaptchaOncePerRequestFilter,
         customSecurityProperties: CustomSecurityProperties,
         accessDeniedHandler: AccessDeniedHandler,
-        authenticationEntryPoint: AuthenticationEntryPoint,
+//        authenticationEntryPoint: AuthenticationEntryPoint,
 //        logoutSuccessHandler: LogoutSuccessHandler,
     ): SecurityFilterChain {
         http {
@@ -351,7 +350,7 @@ class SecurityConfig {
                 // 要使用的 AccessDeniedHandler
                 this.accessDeniedHandler = accessDeniedHandler
                 // 要使用的 AuthenticationEntryPoint
-                this.authenticationEntryPoint = authenticationEntryPoint
+//                this.authenticationEntryPoint = authenticationEntryPoint
                 // 设置要使用的默认 AccessDeniedHandler，该默认 AccessDeniedHandler 优先为提供的 RequestMatcher 调用。
 //                defaultAccessDeniedHandlerFor(accessDeniedHandler, AnyRequestMatcher.INSTANCE)
 //                // 设置要使用的默认 AuthenticationEntryPoint，该默认 AuthenticationEntryPoint 优先为提供的 RequestMatcher 调用。

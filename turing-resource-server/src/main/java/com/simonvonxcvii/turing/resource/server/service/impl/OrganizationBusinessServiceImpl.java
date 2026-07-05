@@ -1,19 +1,18 @@
 package com.simonvonxcvii.turing.resource.server.service.impl;
 
+import com.simonvonxcvii.turing.common.entity.User;
+import com.simonvonxcvii.turing.common.repository.jpa.UserJpaRepository;
+import com.simonvonxcvii.turing.common.utils.UserUtils;
 import com.simonvonxcvii.turing.resource.server.entity.Dict;
 import com.simonvonxcvii.turing.resource.server.entity.Organization;
 import com.simonvonxcvii.turing.resource.server.entity.OrganizationBusiness;
-import com.simonvonxcvii.turing.resource.server.entity.User;
 import com.simonvonxcvii.turing.resource.server.enums.OrganizationBusinessLevelEnum;
 import com.simonvonxcvii.turing.resource.server.enums.OrganizationBusinessStateEnum;
-import com.simonvonxcvii.turing.resource.server.model.dto.OrganizationBusinessDTO;
+import com.simonvonxcvii.turing.resource.server.model.dto.OrganizationBusinessDto;
 import com.simonvonxcvii.turing.resource.server.repository.jpa.OrganizationBusinessJpaRepository;
 import com.simonvonxcvii.turing.resource.server.repository.jpa.OrganizationJpaRepository;
-import com.simonvonxcvii.turing.resource.server.repository.jpa.UserJpaRepository;
 import com.simonvonxcvii.turing.resource.server.service.IOrganizationBusinessService;
-import com.simonvonxcvii.turing.resource.server.utils.UserUtils;
 import jakarta.persistence.criteria.Predicate;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.domain.Specification;
@@ -31,7 +30,6 @@ import java.io.IOException;
  * @author Simon Von
  * @since 2022-12-29 11:33:31
  */
-@RequiredArgsConstructor
 @Service
 public class OrganizationBusinessServiceImpl implements IOrganizationBusinessService {
 
@@ -39,6 +37,18 @@ public class OrganizationBusinessServiceImpl implements IOrganizationBusinessSer
     private final OrganizationJpaRepository organizationJpaRepository;
     private final UserJpaRepository userJpaRepository;
     private final StringRedisTemplate stringRedisTemplate;
+
+    public OrganizationBusinessServiceImpl(
+            OrganizationBusinessJpaRepository organizationBusinessJpaRepository,
+            OrganizationJpaRepository organizationJpaRepository,
+            UserJpaRepository userJpaRepository,
+            StringRedisTemplate stringRedisTemplate
+    ) {
+        this.organizationBusinessJpaRepository = organizationBusinessJpaRepository;
+        this.organizationJpaRepository = organizationJpaRepository;
+        this.userJpaRepository = userJpaRepository;
+        this.stringRedisTemplate = stringRedisTemplate;
+    }
 
     /**
      * 单位管理员查询本单位已申请业务或者审核人员查询
@@ -49,7 +59,7 @@ public class OrganizationBusinessServiceImpl implements IOrganizationBusinessSer
      * @since 1/5/2023 10:15 AM
      */
     @Override
-    public Page<OrganizationBusinessDTO> selectPage(OrganizationBusinessDTO dto) throws IOException {
+    public Page<OrganizationBusinessDto> selectPage(OrganizationBusinessDto dto) throws IOException {
 //        SearchResponse<OrganizationBusiness> searchResponse = elasticsearchClient.search(searchRequest -> {
 //                    searchRequest.index(OrganizationBusiness.INDEX)
 //                            // 首页默认从 0 开始
@@ -123,7 +133,7 @@ public class OrganizationBusinessServiceImpl implements IOrganizationBusinessSer
      * @since 1/5/2023 10:15 AM
      */
     @Override
-    public OrganizationBusinessDTO getOneById(String id) throws IOException {
+    public OrganizationBusinessDto getOneById(String id) throws IOException {
 //        GetResponse<OrganizationBusiness> organizationBusinessGetResponse = elasticsearchClient.get(GetRequest.of(
 //                builder -> builder.index(OrganizationBusiness.INDEX)
 //                        .id(id)), OrganizationBusiness.class);
@@ -146,7 +156,7 @@ public class OrganizationBusinessServiceImpl implements IOrganizationBusinessSer
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void insert(OrganizationBusinessDTO dto) throws IOException {
+    public void insert(OrganizationBusinessDto dto) throws IOException {
         Specification<OrganizationBusiness> spec = Specification
                 .<OrganizationBusiness>where((from, builder) ->
                         builder.equal(from.get(OrganizationBusiness.ORG_ID), UserUtils.getOrgId()))
@@ -218,7 +228,7 @@ public class OrganizationBusinessServiceImpl implements IOrganizationBusinessSer
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void applyUpdate(OrganizationBusinessDTO dto) throws IOException {
+    public void applyUpdate(OrganizationBusinessDto dto) throws IOException {
         OrganizationBusiness organizationBusiness = organizationBusinessJpaRepository.findById(dto.getId())
                 .orElseThrow(() -> new RuntimeException("没有找到该业务记录"));
         // TODO 晚些时候修改！
@@ -286,7 +296,7 @@ public class OrganizationBusinessServiceImpl implements IOrganizationBusinessSer
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void checkUpdate(OrganizationBusinessDTO dto) throws IOException {
+    public void checkUpdate(OrganizationBusinessDto dto) throws IOException {
         OrganizationBusiness organizationBusiness = organizationBusinessJpaRepository.findById(dto.getId())
                 .orElseThrow(() -> new RuntimeException("没有找到该业务记录"));
         // TODO 不知道使用 OrganizationBusinessStateEnum.valueOf(dto.getState()) 对不对

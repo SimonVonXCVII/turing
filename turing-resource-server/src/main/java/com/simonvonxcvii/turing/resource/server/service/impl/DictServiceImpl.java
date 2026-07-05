@@ -2,10 +2,9 @@ package com.simonvonxcvii.turing.resource.server.service.impl;
 
 import com.simonvonxcvii.turing.resource.server.entity.Dict;
 import com.simonvonxcvii.turing.resource.server.enums.DictTypeEnum;
-import com.simonvonxcvii.turing.resource.server.model.dto.DictDTO;
+import com.simonvonxcvii.turing.resource.server.model.dto.DictDto;
 import com.simonvonxcvii.turing.resource.server.repository.jpa.DictJpaRepository;
 import com.simonvonxcvii.turing.resource.server.service.IDictService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -26,15 +25,18 @@ import java.util.List;
  * @author Simon Von
  * @since 2022-12-30 12:49:40
  */
-@RequiredArgsConstructor
 @Service
 public class DictServiceImpl implements IDictService {
 
     private final DictJpaRepository dictJpaRepository;
 
+    public DictServiceImpl(DictJpaRepository dictJpaRepository) {
+        this.dictJpaRepository = dictJpaRepository;
+    }
+
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void insertOrUpdate(DictDTO dto) {
+    public void insertOrUpdate(DictDto dto) {
         Dict dict;
         // 新增
         if (dto.getId() == null) {
@@ -52,7 +54,7 @@ public class DictServiceImpl implements IDictService {
     }
 
     @Override
-    public Page<DictDTO> selectPage(DictDTO dto) {
+    public Page<DictDto> selectPage(DictDto dto) {
         Specification<Dict> spec = Specification.<Dict>where((from, builder) -> {
             if (!StringUtils.hasText(dto.getType())) {
                 return null;
@@ -73,7 +75,7 @@ public class DictServiceImpl implements IDictService {
         PageRequest pageRequest = PageRequest.of(dto.getPage() - 1, dto.getPageSize());
         return dictJpaRepository.findAll(spec, pageRequest)
                 .map(dict -> {
-                    DictDTO dictDTO = new DictDTO();
+                    DictDto dictDTO = new DictDto();
                     BeanUtils.copyProperties(dict, dictDTO);
                     return dictDTO;
                 });
@@ -89,9 +91,9 @@ public class DictServiceImpl implements IDictService {
      * @since 12/30/2022 2:42 PM
      */
     @Override
-    public DictDTO getAreaByCode(Integer code) {
+    public DictDto getAreaByCode(Integer code) {
         if (code == null) {
-            DictDTO dictDTO = new DictDTO();
+            DictDto dictDTO = new DictDto();
             List<Dict> children = dictJpaRepository.findAllByPidIsNullAndTypeEquals(
                     DictTypeEnum.AREA, Sort.by(Dict.SORT));
             if (!children.isEmpty()) {
@@ -101,7 +103,7 @@ public class DictServiceImpl implements IDictService {
         }
         Dict dict = dictJpaRepository.findOneByValueEqualsAndTypeEquals(code.toString(), DictTypeEnum.AREA)
                 .orElseThrow(() -> new RuntimeException("没有找到区域编码：" + code));
-        DictDTO dictDTO = convertToDictDTO(dict);
+        DictDto dictDTO = convertToDictDTO(dict);
         List<Dict> children = dictJpaRepository.findAllByPidEqualsAndTypeEquals(
                 dict.getId(), DictTypeEnum.AREA, Sort.by(Dict.SORT));
         if (!children.isEmpty()) {
@@ -116,8 +118,8 @@ public class DictServiceImpl implements IDictService {
         dictJpaRepository.deleteById(id);
     }
 
-    public DictDTO convertToDictDTO(Dict dict) {
-        DictDTO dictDTO = new DictDTO();
+    public DictDto convertToDictDTO(Dict dict) {
+        DictDto dictDTO = new DictDto();
         BeanUtils.copyProperties(dict, dictDTO);
         dictDTO.setChildren(new ArrayList<>());
         return dictDTO;

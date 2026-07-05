@@ -1,7 +1,7 @@
 package com.simonvonxcvii.turing.resource.server.controller;
 
-import com.simonvonxcvii.turing.resource.server.common.result.Result;
-import com.simonvonxcvii.turing.resource.server.model.dto.DictDTO;
+import com.simonvonxcvii.turing.common.result.Result;
+import com.simonvonxcvii.turing.resource.server.model.dto.DictDto;
 import com.simonvonxcvii.turing.resource.server.service.IDictService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -31,20 +31,20 @@ public class DictController {
 
     @Operation(summary = "单个新增或修改")
     @PostMapping("/insertOrUpdate")
-    public ResponseEntity<Result<Object>> insertOrUpdate(@RequestBody @Validated DictDTO dto) {
+    public ResponseEntity<Result<Object>> insertOrUpdate(@RequestBody @Validated DictDto dto) {
         service.insertOrUpdate(dto);
         return ResponseEntity.ok(Result.ok());
     }
 
     @Operation(summary = "分页查询")
     @PostMapping("/selectPage")
-    public ResponseEntity<Result<Page<DictDTO>>> selectPage(@RequestBody DictDTO dto) {
+    public ResponseEntity<Result<Page<DictDto>>> selectPage(@RequestBody DictDto dto) {
         return ResponseEntity.ok(Result.ok(service.selectPage(dto)));
     }
 
     @Operation(summary = "地区及下级地区查询")
     @GetMapping("/getAreaByCode")
-    public ResponseEntity<Result<DictDTO>> getAreaByCode(Integer code) {
+    public ResponseEntity<Result<DictDto>> getAreaByCode(Integer code) {
         return ResponseEntity.ok(Result.ok(service.getAreaByCode(code)));
     }
 

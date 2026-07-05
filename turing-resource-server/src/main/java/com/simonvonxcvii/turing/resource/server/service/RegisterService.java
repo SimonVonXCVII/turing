@@ -1,6 +1,6 @@
 package com.simonvonxcvii.turing.resource.server.service;
 
-import com.simonvonxcvii.turing.resource.server.model.dto.RegisterDTO;
+import com.simonvonxcvii.turing.resource.server.model.dto.RegisterDto;
 
 /**
  * 注册 服务类
@@ -16,6 +16,6 @@ public interface RegisterService {
      * @author Simon Von
      * @since 2023/4/12 22:20
      */
-    void register(RegisterDTO dto);
+    void register(RegisterDto dto);
 
 }
