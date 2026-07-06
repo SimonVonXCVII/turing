@@ -3,7 +3,6 @@ package com.simonvonxcvii.turing.common.entity
 import jakarta.persistence.*
 import org.hibernate.annotations.SQLDelete
 import org.hibernate.annotations.SQLRestriction
-import org.springframework.security.core.GrantedAuthority
 
 /**
  * 角色表
@@ -36,7 +35,7 @@ class Role(
      * @see org.springframework.security.core.GrantedAuthority
      */
     @Column(unique = true, nullable = false, columnDefinition = "VARCHAR(64)", comment = "角色名称")
-    @get:JvmName("getAuthorityValue")
+//    @get:JvmName("getAuthorityValue")
     var authority: String = "",
 
     /**
@@ -50,7 +49,7 @@ class Role(
      */
     @Column(columnDefinition = "VARCHAR(128)", comment = "备注")
     var remark: String? = null
-) : AbstractAuditable(), GrantedAuthority {
+) : AbstractAuditable() {
     /**
      * 角色权限关联表
      */
@@ -64,10 +63,6 @@ class Role(
 //    @JsonIgnore
     @OneToMany(mappedBy = "role")
     var userRoles: MutableList<UserRole> = mutableListOf()
-
-    override fun getAuthority(): String {
-        return authority
-    }
 
     companion object {
         /**

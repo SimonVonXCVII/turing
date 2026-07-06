@@ -27,14 +27,14 @@ abstract class AbstractAuditable(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false, columnDefinition = "INTEGER", comment = "表主键 id")
-    open var id: Int = 0,
+    var id: Int = 0,
 
     /**
      * 创建者
      */
     @CreatedBy
     @Column(columnDefinition = "INTEGER", comment = "创建者")
-    open var createdBy: Int? = null,
+    var createdBy: Int? = null,
 
     /**
      * 创建时间 TODO 通过字节码发现 @field: 才是对的，那么到底是使用 @param: 更好还是 @field: 更好
@@ -44,14 +44,14 @@ abstract class AbstractAuditable(
 //    @field:JsonSerialize(using = LocalDateTimeSerializer::class)
     @CreatedDate
     @Column(nullable = false, columnDefinition = "TIMESTAMP", comment = "创建时间")
-    open var createdDate: LocalDateTime = LocalDateTime.now(),
+    var createdDate: LocalDateTime = LocalDateTime.now(),
 
     /**
      * 最后修改者
      */
     @LastModifiedBy
     @Column(columnDefinition = "INTEGER", comment = "最后修改者")
-    open var lastModifiedBy: Int? = null,
+    var lastModifiedBy: Int? = null,
 
     /**
      * 最后修改时间
@@ -61,20 +61,20 @@ abstract class AbstractAuditable(
 //    @field:JsonSerialize(using = LocalDateTimeSerializer::class)
     @LastModifiedDate
     @Column(nullable = false, columnDefinition = "TIMESTAMP", comment = "最后修改时间")
-    open var lastModifiedDate: LocalDateTime = LocalDateTime.now(),
+    var lastModifiedDate: LocalDateTime = LocalDateTime.now(),
 
     /**
      * 乐观锁版本
      */
     @Version
     @Column(nullable = false, columnDefinition = "INTEGER", comment = "乐观锁版本")
-    open var version: Int = 0,
+    var version: Int = 0,
 
     /**
      * 逻辑删除标记
      */
     @Column(name = "deleted", nullable = false, columnDefinition = "BOOLEAN", comment = "逻辑删除")
-    open var isDeleted: Boolean = false
+    var isDeleted: Boolean = false
 ) : Serializable {
     companion object {
         const val ID = "id"

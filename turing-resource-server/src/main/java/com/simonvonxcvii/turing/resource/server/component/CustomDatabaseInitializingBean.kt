@@ -358,12 +358,12 @@ class CustomDatabaseInitializingBean(
             orgName = organization.name,
             username = "admin",
             password = passwordEncoder.encode("123456")!!,
-            accountNonExpired = true,
-            accountNonLocked = true,
-            credentialsNonExpired = true,
-            enabled = true,
-            manager = true,
-            needResetPassword = false
+            isAccountNonExpired = true,
+            isAccountNonLocked = true,
+            isCredentialsNonExpired = true,
+            isEnabled = true,
+            isManager = true,
+            isNeedResetPassword = false
         )
         userJpaRepository.save(user)
 

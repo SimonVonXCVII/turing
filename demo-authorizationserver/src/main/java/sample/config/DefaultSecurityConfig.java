@@ -15,6 +15,8 @@
  */
 package sample.config;
 
+import com.simonvonxcvii.turing.common.entity.Role;
+import com.simonvonxcvii.turing.common.entity.UserRole;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.simple.JdbcClient;
@@ -25,10 +27,13 @@ import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
 import sample.federation.FederatedIdentityAuthenticationSuccessHandler;
+
+import java.util.List;
 
 /**
  * @author Joe Grandja
@@ -77,23 +82,20 @@ public class DefaultSecurityConfig {
                     .orElseThrow(() -> UsernameNotFoundException.fromUsername(username));
 
             // 获取用户角色数据
-//        val roleList = user.userRoles.map(UserRole::role).toList()
+			List<String> roleList = user.getUserRoles().stream().map(UserRole::getRole).map(Role::getAuthority).toList();
 
-            return User.withDefaultPasswordEncoder()
-                    .username(username)
-//                    .password(user.getPassword())
-            		.password("123456")
-//            .passwordEncoder {
-//                PasswordEncoderFactories.createDelegatingPasswordEncoder().encode(it)
-//            }
-//            .roles(*roleList.map(Role::name).toTypedArray())
-                    .roles("ADMIN")
+            return User.withUsername(username)
+				.password(user.getPassword())
+//            		.password("123456")
+				.passwordEncoder(s ->  PasswordEncoderFactories.createDelegatingPasswordEncoder().encode(s))
+				.roles(roleList.toArray(new String[0]))
+//                    .roles("ADMIN")
 //                    .authorities("ROLE_ADMIN")
-//                    .accountExpired(!user.isAccountNonExpired())
-//                    .accountLocked(!user.isAccountNonLocked())
-//                    .credentialsExpired(!user.isCredentialsNonExpired())
-//                    .disabled(!user.isEnabled())
-                    .build();
+				.accountExpired(!user.isAccountNonExpired())
+				.accountLocked(!user.isAccountNonLocked())
+				.credentialsExpired(!user.isCredentialsNonExpired())
+				.disabled(!user.isEnabled())
+				.build();
         };
 
 //		UserDetails user = User.withDefaultPasswordEncoder()

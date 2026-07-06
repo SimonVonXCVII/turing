@@ -3,7 +3,6 @@ package com.simonvonxcvii.turing.common.entity
 import jakarta.persistence.*
 import org.hibernate.annotations.SQLDelete
 import org.hibernate.annotations.SQLRestriction
-import org.springframework.security.core.userdetails.UserDetails
 
 /**
  * 用户表
@@ -74,54 +73,59 @@ class User(
      * 登录账号
      */
     @Column(unique = true, nullable = false, columnDefinition = "VARCHAR(64)", comment = "登录账号")
-    @get:JvmName("getUsernameValue")
+//    @get:JvmName("getUsernameValue")
     var username: String = "",
 
     /**
      * 用户密码
      */
     @Column(nullable = false, columnDefinition = "VARCHAR(128)", comment = "用户密码")
-    @get:JvmName("getPasswordValue")
+//    @get:JvmName("getPasswordValue")
     var password: String = "",
 
     /**
      * 是否账号没有过期
      */
-    @Column(nullable = false, columnDefinition = "BOOLEAN", comment = "是否账号没有过期")
-    var accountNonExpired: Boolean = true,
+    @Column(name = "account_non_expired", nullable = false, columnDefinition = "BOOLEAN", comment = "是否账号没有过期")
+    var isAccountNonExpired: Boolean = true,
 
     /**
      * 是否账号没有锁定
      */
-    @Column(nullable = false, columnDefinition = "BOOLEAN", comment = "是否账号没有锁定")
-    var accountNonLocked: Boolean = true,
+    @Column(name = "account_non_locked", nullable = false, columnDefinition = "BOOLEAN", comment = "是否账号没有锁定")
+    var isAccountNonLocked: Boolean = true,
 
     /**
      * 是否凭证没有过期
      */
-    @Column(nullable = false, columnDefinition = "BOOLEAN", comment = "是否凭证没有过期")
-    var credentialsNonExpired: Boolean = true,
+    @Column(
+        name = "credentials_non_expired",
+        nullable = false,
+        columnDefinition = "BOOLEAN",
+        comment = "是否凭证没有过期"
+    )
+    var isCredentialsNonExpired: Boolean = true,
 
     /**
      * 是否启用
      */
-    @Column(nullable = false, columnDefinition = "BOOLEAN", comment = "是否启用")
-    var enabled: Boolean = true,
+    @Column(name = "enabled", nullable = false, columnDefinition = "BOOLEAN", comment = "是否启用")
+    var isEnabled: Boolean = true,
 
     /**
      * 是否单位管理员
      */
-    @Column(nullable = false, columnDefinition = "BOOLEAN", comment = "是否单位管理员")
-    @get:JvmName("isManager")
-    var manager: Boolean = false,
+    @Column(name = "manager", nullable = false, columnDefinition = "BOOLEAN", comment = "是否单位管理员")
+//    @get:JvmName("isManager")
+    var isManager: Boolean = false,
 
     /**
      * 是否需要重置密码
      */
-    @Column(nullable = false, columnDefinition = "BOOLEAN", comment = "是否需要重置密码")
-    @get:JvmName("isNeedResetPassword")
-    var needResetPassword: Boolean = true
-) : AbstractAuditable(), UserDetails {
+    @Column(name = "need_reset_password", nullable = false, columnDefinition = "BOOLEAN", comment = "是否需要重置密码")
+//    @get:JvmName("isNeedResetPassword")
+    var isNeedResetPassword: Boolean = true
+) : AbstractAuditable() {
     /**
      * 用户角色关联表
      */
@@ -132,7 +136,7 @@ class User(
      * 用户角色
      */
     @Transient
-    @get:JvmName("getAuthoritiesValue")
+//    @get:JvmName("getAuthoritiesValue")
     var authorities: Collection<Role> = mutableListOf()
 
     /**
@@ -146,20 +150,6 @@ class User(
      */
     @Transient
     var codes: Set<String> = mutableSetOf()
-
-    override fun getAuthorities() = authorities
-
-    override fun getPassword() = password
-
-    override fun getUsername() = username
-
-    override fun isAccountNonExpired() = accountNonExpired
-
-    override fun isAccountNonLocked() = accountNonLocked
-
-    override fun isCredentialsNonExpired() = credentialsNonExpired
-
-    override fun isEnabled() = enabled
 
     companion object {
         /**
