@@ -20,3 +20,8 @@ org-springdoc-springdoc-openapi-starter-webmvc-api = { module = "org.springdoc:s
 org-springdoc-springdoc-openapi-starter-webmvc-ui = { module = "org.springdoc:springdoc-openapi-starter-webmvc-ui", version.ref = "org-springdoc" }
 
 [plugins]
+spring-boot = { id = "org.springframework.boot", version.ref = "org-springframework-boot" }
+spring-dependency-management = { id = "io.spring.dependency-management", version.ref = "io-spring-dependency-management" }
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "org-jetbrains-kotlin" }
+kotlin-spring = { id = "org.jetbrains.kotlin.plugin.spring", version.ref = "org-jetbrains-kotlin" }
+kotlin-jpa = { id = "org.jetbrains.kotlin.plugin.jpa", version.ref = "org-jetbrains-kotlin" }

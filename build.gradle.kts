@@ -3,14 +3,14 @@
  */
 plugins {
     java
-    id("org.springframework.boot") version libs.versions.org.springframework.boot
-    id("io.spring.dependency-management") version libs.versions.io.spring.dependency.management
+    alias(libs.plugins.spring.boot) apply false
+    alias(libs.plugins.spring.dependency.management)
 //    id("org.graalvm.buildtools.native") version libs.versions.org.graalvm.buildtools.native
-    id("org.jetbrains.kotlin.jvm") version libs.versions.org.jetbrains.kotlin
-    id("org.jetbrains.kotlin.plugin.spring") version libs.versions.org.jetbrains.kotlin
+    alias(libs.plugins.kotlin.jvm)
+    alias(libs.plugins.kotlin.spring) apply false
 //    id("io.spring.javaformat") version libs.versions.io.spring.javaformat
 //    id("checkstyle")
-    kotlin("plugin.jpa") version libs.versions.org.jetbrains.kotlin
+    alias(libs.plugins.kotlin.jpa) apply false
 }
 
 allprojects {
