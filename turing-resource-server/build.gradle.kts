@@ -1,15 +1,8 @@
 plugins {
+    id("org.springframework.boot")
     kotlin("plugin.jpa")
 }
-/**
- * 设置此项目的描述。
- */
-description = "turing resource server"
 
-/**
- * 配置此项目的依赖项。
- * 针对该项目的 DependencyHandlerScope 执行给定的配置块。
- */
 dependencies {
     annotationProcessor(libs.com.github.therapi.therapi.runtime.javadoc.scribe)
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")

@@ -1,9 +1,5 @@
-extra["springCloudVersion"] = "2025.1.0"
-
-dependencyManagement {
-    imports {
-        mavenBom("org.springframework.cloud:spring-cloud-dependencies:${extra["springCloudVersion"]}")
-    }
+plugins {
+    id("org.springframework.boot")
 }
 
 dependencies {

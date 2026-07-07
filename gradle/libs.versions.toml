@@ -1,10 +1,11 @@
 [versions]
 org-springframework-boot = "4.1.0"
 io-spring-dependency-management = "1.1.7"
+org-springframework-cloud = "2025.1.2"
 io-spring-javaformat = "0.0.47"
 org-graalvm-buildtools-native = "1.1.1"
-org-jetbrains-kotlin = "2.4.0"
-java-language = "26"
+org-jetbrains-kotlin = "2.3.21"
+java-language = "25"
 com-github-therapi-runtime-javadoc = "0.15.0"
 de-codecentric-spring-boot-admin-dependencies = "4.1.1"
 org-apache-poi-poi = "5.4.1"
@@ -13,7 +14,6 @@ org-springdoc = "3.0.3"
 [libraries]
 com-github-therapi-therapi-runtime-javadoc-scribe = { module = "com.github.therapi:therapi-runtime-javadoc-scribe", version.ref = "com-github-therapi-runtime-javadoc" }
 com-github-therapi-therapi-runtime-javadoc = { module = "com.github.therapi:therapi-runtime-javadoc", version.ref = "com-github-therapi-runtime-javadoc" }
-de-codecentric-spring-boot-admin-dependencies = { module = "de.codecentric:spring-boot-admin-dependencies", version.ref = "de-codecentric-spring-boot-admin-dependencies" }
 org-apache-poi-poi = { module = "org.apache.poi:poi", version.ref = "org-apache-poi-poi" }
 org-springdoc-springdoc-openapi-starter-common = { module = "org.springdoc:springdoc-openapi-starter-common", version.ref = "org-springdoc" }
 org-springdoc-springdoc-openapi-starter-webmvc-api = { module = "org.springdoc:springdoc-openapi-starter-webmvc-api", version.ref = "org-springdoc" }

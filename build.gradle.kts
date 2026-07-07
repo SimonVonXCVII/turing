@@ -19,14 +19,16 @@ allprojects {
 }
 
 val javaLanguage = libs.versions.java.language.get().toInt()
-val springBootAdmin = libs.de.codecentric.spring.boot.admin.dependencies.get().toString()
+val springBootVersion = libs.versions.org.springframework.boot.get()
+val springCloudVersion = libs.versions.org.springframework.cloud.get()
+val springBootAdminVersion = libs.versions.de.codecentric.spring.boot.admin.dependencies.get()
 
 subprojects {
     apply {
-        plugin("java")
-        plugin("java-library")
-        plugin("idea")
-        plugin("org.springframework.boot")
+//        plugin("java")
+//        plugin("java-library")
+//        plugin("idea")
+//        plugin("org.springframework.boot")
         plugin("io.spring.dependency-management")
 //        plugin("org.graalvm.buildtools.native")
         plugin("org.jetbrains.kotlin.jvm")
@@ -84,7 +86,9 @@ subprojects {
 //        }
 
         imports {
-            mavenBom(springBootAdmin)
+            mavenBom("org.springframework.boot:spring-boot-dependencies:$springBootVersion")
+            mavenBom("org.springframework.cloud:spring-cloud-dependencies:$springCloudVersion")
+            mavenBom("de.codecentric:spring-boot-admin-dependencies:$springBootAdminVersion")
         }
     }
 
