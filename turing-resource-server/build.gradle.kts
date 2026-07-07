@@ -1,6 +1,17 @@
 plugins {
     id("org.springframework.boot")
+    kotlin("jvm")
+    kotlin("plugin.spring")
     kotlin("plugin.jpa")
+}
+
+kotlin {
+    jvmToolchain {
+        languageVersion = JavaLanguageVersion.of(libs.versions.java.language.get())
+    }
+    compilerOptions {
+        freeCompilerArgs.addAll("-Xjsr305=strict", "-Xannotation-default-target=param-property")
+    }
 }
 
 dependencies {

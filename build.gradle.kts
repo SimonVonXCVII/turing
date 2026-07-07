@@ -6,7 +6,7 @@ plugins {
     alias(libs.plugins.spring.boot) apply false
     alias(libs.plugins.spring.dependency.management)
 //    id("org.graalvm.buildtools.native") version libs.versions.org.graalvm.buildtools.native
-    alias(libs.plugins.kotlin.jvm)
+    alias(libs.plugins.kotlin.jvm) apply false
     alias(libs.plugins.kotlin.spring) apply false
 //    id("io.spring.javaformat") version libs.versions.io.spring.javaformat
 //    id("checkstyle")
@@ -25,26 +25,17 @@ val springBootAdminVersion = libs.versions.de.codecentric.spring.boot.admin.depe
 
 subprojects {
     apply {
-//        plugin("java")
+        plugin("java")
 //        plugin("java-library")
 //        plugin("idea")
-//        plugin("org.springframework.boot")
         plugin("io.spring.dependency-management")
 //        plugin("org.graalvm.buildtools.native")
-        plugin("org.jetbrains.kotlin.jvm")
-        plugin("org.jetbrains.kotlin.plugin.spring")
 //        plugin("io.spring.javaformat")
 //        plugin("checkstyle")
     }
 
     java {
         toolchain {
-            languageVersion = JavaLanguageVersion.of(javaLanguage)
-        }
-    }
-
-    kotlin {
-        jvmToolchain {
             languageVersion = JavaLanguageVersion.of(javaLanguage)
         }
     }
@@ -65,12 +56,12 @@ subprojects {
 //    }
 //}
 
-    dependencies {
+//    dependencies {
 //        implementation("org.springframework.boot:spring-boot-starter")
 //        testImplementation("org.springframework.boot:spring-boot-starter-test")
 //        testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 //        checkstyle("io.spring.javaformat:spring-javaformat-checkstyle")
-    }
+//    }
 
     dependencyManagement {
 //        dependencies { todo
@@ -89,12 +80,6 @@ subprojects {
             mavenBom("org.springframework.boot:spring-boot-dependencies:$springBootVersion")
             mavenBom("org.springframework.cloud:spring-cloud-dependencies:$springCloudVersion")
             mavenBom("de.codecentric:spring-boot-admin-dependencies:$springBootAdminVersion")
-        }
-    }
-
-    kotlin {
-        compilerOptions {
-            freeCompilerArgs.addAll("-Xjsr305=strict", "-Xannotation-default-target=param-property")
         }
     }
 
