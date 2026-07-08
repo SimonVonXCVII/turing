@@ -19,7 +19,7 @@ x-commons: &commons
 # 定义锚点：依赖条件公共配置
 x-condition: &condition
   # 设置依赖关系被视为满足的条件。
-  condition: service_started
+  condition: service_healthy
 
 # 允许服务相互通信的层。
 networks:
