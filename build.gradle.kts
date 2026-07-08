@@ -2,7 +2,7 @@
  * todo 尝试 nativeCompile、bootBuildImage
  */
 plugins {
-    java
+    base
     alias(libs.plugins.spring.boot) apply false
     alias(libs.plugins.spring.dependency.management)
 //    id("org.graalvm.buildtools.native") version libs.versions.org.graalvm.buildtools.native
@@ -34,16 +34,14 @@ subprojects {
 //        plugin("checkstyle")
     }
 
-    java {
+    extensions.configure<JavaPluginExtension> {
         toolchain {
-            languageVersion = JavaLanguageVersion.of(javaLanguage)
+            languageVersion.set(JavaLanguageVersion.of(javaLanguage))
         }
     }
 
-    configurations {
-        compileOnly {
-            extendsFrom(configurations.annotationProcessor.get())
-        }
+    configurations.named("compileOnly") {
+        extendsFrom(configurations.named("annotationProcessor").get())
     }
 
 //    checkstyle {
